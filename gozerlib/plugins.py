@@ -99,10 +99,10 @@ class Plugins(LazyDict):
 
         if not replace:
             if modname in sys.modules:
-                logging.warn("plugins - %s is already loaded" % modname)
+                logging.debug("plugins - %s is already loaded" % modname)
                 return
 
-        logging.debug("plugins - loading %s" % modname)
+        logging.info("plugins - loading %s" % modname)
         mod = __import__(modname)
 
         try:

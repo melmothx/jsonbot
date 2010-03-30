@@ -122,7 +122,7 @@ class WaveEvent(EventBase):
 
     def append(self, item):
 
-        if self.blip:
+        if not self.target and self.blip:
             self.target = self.blip.reply()
 
         self.target.append(item)

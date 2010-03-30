@@ -1,2 +1,3 @@
+cp config/app.yaml gaeupload
 ~/google_appengine/appcfg.py update gaeupload
 
