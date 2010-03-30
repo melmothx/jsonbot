@@ -12,15 +12,22 @@ import os
 upload = []
 
 def uploadlist(dir):
-
+    upl = []
+    
     for file in os.listdir(dir):
-        if not os.path.isdir(file):
+        d = dir + os.sep + file
+        if os.path.isdir(d):
+            #upload.append(dir + os.sep + file)
+            upl.extend(uploadlist(d))
+        else:
             if file.endswith(".pyc"):
                 continue
-            upload.append(dir + os.sep + file)   
-        else:
-            upload.append(dir + os.sep + file)
-            uploadlist(dir + os.sep + file)
+            upl.append(d)   
+
+    return upl
+
+upload = uploadlist('gaeupload')
+print upload
 
 setup(
     name='jsonbot',
@@ -61,7 +68,6 @@ setup(
               'waveplugs',
               'commonplugs'],
     package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs']},
-    data_files=[('gaeupload', upload)],
     install_requires = ['simplejson >= 1.0', 'nose >= 0.11'],
     long_description = """
 JSONBOT is a bot that stores all its data in json format. It runs on the 
@@ -85,4 +91,10 @@ see http://jsonbot.googlecode.com
     ],
    zip_safe=False, 
    test_suite = 'nose.collector',
+   data_files=[('config', glob.glob('config/*.example')),
+               ('gaeupload', glob.glob('gaeupload/*.py')),
+               ('gaeupload/assets', uploadlist('gaeupload/assets')),
+               ('gaeupload/templates', uploadlist('gaeupload/templates')),
+               ('gaeupload/waveapi', uploadlist('gaeupload/waveapi')),
+               ('gaeupload/gadgets', uploadlist('gaeupload/gadgets'))],
 )
