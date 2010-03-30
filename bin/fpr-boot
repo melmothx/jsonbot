@@ -1,0 +1,2 @@
+cp ~/regs/jsonbot/* config
+cp config/app.yaml gaeupload

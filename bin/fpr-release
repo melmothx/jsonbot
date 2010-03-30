@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+
+
+import sys
+import os
+import shutil
+
+sys.path.insert(0, os.getcwd())
+
+from gozerlib.utils.generic import gethighest, dosed
+
+try:
+    targetin = sys.argv[1]
+except IndexError:
+    print "fpr-release <name>"
+    os._exit(1)
+
+target = targetin
+orig = 'jsonbot'
+new = 'releases' + os.sep + target
+
+if not os.path.isdir('releases'):
+    os.mkdir('releases')
+
+if not os.path.isdir(new):
+    os.mkdir(new) 
+
+print "STARTING"
+
+if os.path.isdir(new + '.old'):
+    backup = gethighest('releases', target + '.old')
+else:
+    backup =  target + '.old'
+
+if os.path.isdir(new):
+    print "MOVING %s TO %s" % (new, 'releases' + os.sep + backup)
+    os.rename(new, 'releases' + os.sep + backup)
+
+def sed(source, target):
+
+    print "source: %s target: %s" % (source, target)
+
+    
+    for f in os.listdir(target):
+        if f.startswith('.'):
+            continue
+        if f.endswith(".pyc"):
+            continue
+        if f.endswith("~"):
+            continue
+        try:
+            print "sedding %s" % f
+            dosed(target + os.sep + f, 's/%s/%s/' % (orig, targetin))
+            dosed(target + os.sep + f, 's/%s/%s/' % (orig.upper(), targetin.upper()))
+        except IOError, ex:
+            if 'Is a dir' in str(ex):
+                sed(source + os.sep + f, target + os.sep + f)
+            else:
+                raise
+
+print "making backup"
+
+
+print "COPYING RESULTS TO %s" % target
+
+def copydir(source, target):
+    try:
+        shutil.copytree(source, target, symlinks=True)
+    except OSError:
+        print "can't copy %s to %s" % (source, target)
+        os._exit(1)
+    sed(source, target)
+
+copydir('config', new + os.sep + 'config')
+copydir('bin', new + os.sep + 'bin')
+copydir('gaeupload', new + os.sep + 'gaeupload')
+copydir('gozerlib', new + os.sep + 'gozerlib')
+copydir('commonplugs', new + os.sep + 'commonplugs')
+copydir('waveplugs', new + os.sep + 'waveplugs')
+copydir('simplejson', new + os.sep + 'simplejson')
+    
+print "DONE"

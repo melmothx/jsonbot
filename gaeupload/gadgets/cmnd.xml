@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="jsonbot" 
+    author = "Bart Thate"
+    author_email = "bthate@gmail.com"
+    description = "IRC style command bot"
+    screenshot = "http://jsonbot.appspot.com/assets/screenshot.png"
+    thumbnail = "http://jsonbot.appspot.com/assets/favicon.png">
+    <Require feature="wave-preview" />
+    <Require feature="dynamic-height" />
+    <Require feature="minimessage" />
+  </ModulePrefs>
+<Content type="html">
+<![CDATA[ 
+<html>
+  <head>
+    <link rel="stylesheet" href="https://jsonbot.appspot.com/_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="https://jsonbot.appspot.com/_static/pygments.css" type="text/css" />
+
+    <script type="text/javascript">
+
+      gadgets.util.registerOnLoadHandler(init);
+
+      // vars
+
+      var url = "https://jsonbot.appspot.com/exec/";
+      var starttime = new Date();
+      var interval_id;
+      var lastpolled = new Date();
+      var sleeptime = 300000;
+      var host = "";
+      var viewer = "";
+      var hostid = "";
+      var viewerid = "";
+      var waveid = "";
+
+      // utils functions
+
+      function elapsed() {
+        last = new Date();
+        diff = last.getTime() - starttime.getTime();
+        starttime = last;
+        return diff;
+      }
+
+      // state 
+
+      function stateUpdated() {
+        hostid = wave.getHost().getId();
+        viewerid = wave.getViewer().getId();
+        waveid = wave.getWaveId();
+      }
+
+      // INIT
+
+      function init() {
+        status("initialising ... ");
+	if (wave) {
+          wave.setStateCallback(stateUpdated);
+        }        
+        setTimeout("start();", 1000)
+      }
+
+      // start function .. call on load of applet
+
+      function start() {
+        if (!viewerid) {
+          viewerid = window.location.host;
+        }
+        var txt = "enter a command in the box above.";
+        output(txt);
+        if (wave && wave.isInWaveContainer()) {
+          doCmnd("welcome", dotop);
+        }
+        status('done');
+        gadgets.window.adjustHeight();
+      }
+
+      // function to launch on enter in the command box
+
+      function doenter(form)
+      {
+        var keycode;
+        if (window.event) keycode = window.event.keyCode;
+           else if (e) keycode = e.which;
+        else return true;
+        if (keycode == 13)
+        {
+           doCmnd(form.input.value, response);
+           return false;
+        }
+        else
+          return true;
+      }
+
+      // output functions
+
+      function mini(text) {
+        var html = "<b>";
+        html += text;
+        html += "</b>";
+        var msg = new gadgets.MiniMessage(__MODULE_ID__, document.getElementById("footer_div"));
+        msg.createDismissibleMessage(html);
+      }
+
+      function output(text) {
+        var html = "<p>";
+        html += text;
+        html += "</p>";
+
+        var element = document.getElementById('content_div');  
+        element.innerHTML = html;
+        // gadgets.window.adjustHeight();
+      }
+
+      function footer(text) {
+        var html = "<i>";
+        html += text;
+        html += "</i>";
+
+        var element = document.getElementById('footer_div');  
+        element.innerHTML = html;
+        // gadgets.window.adjustHeight();
+      }
+
+      function topper(text) {
+        var html = "<p>";
+        html += text;
+        html += "</p>";
+
+        var element = document.getElementById('topper_div');  
+        element.innerHTML = html;
+        // gadgets.window.adjustHeight();
+      }
+
+      function status(text) {
+        var html = "<i>";
+        html += text;
+        html += "</i>";
+
+        var element = document.getElementById('footer_div');
+        element.innerHTML += html;
+        //gadgets.window.adjustHeight();
+      }
+
+      // response functions
+
+      function response(obj) {
+        var html = "<p>";
+        html += obj.text;
+        html += "</p>";
+
+        footer(elapsed() + " millisec");
+
+        var element = document.getElementById('content_div');
+        element.innerHTML = html;
+        gadgets.window.adjustHeight();
+      }
+
+      function dotop(obj) {
+        var html = "<b>";
+        html += obj.text;
+        html += "</b>";
+
+        footer(elapsed() + " millisec");
+
+        var element = document.getElementById('topper_div');
+        element.innerHTML = html;
+        gadgets.window.adjustHeight();
+      }
+
+      function doCmnd(cmnd, resp) {
+        var params = {}
+        var postdata = {
+          content : cmnd,
+          who : viewerid
+        }
+
+        footer("loading ... ");
+        starttime = new Date();
+
+        params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
+        params[gadgets.io.RequestParameters.POST_DATA] = gadgets.io.encodeValues(postdata);
+
+        if (resp) {
+            gadgets.io.makeRequest(url, resp, params);
+        }
+        else {
+            gadgets.io.makeRequest(url, response, params);
+        }
+        document.forms.commandform.input.value = "";
+        // document.forms.commandform.input.focus();
+      }
+
+      function loop(sleep) {
+        doCmnd("rss-peekall", dotop);
+        // lastpolled = new Date();
+        // lpdate = lastpolled.getTime();
+        // status("last polled at " + lpdate);
+      }
+ 
+    </script>
+  </head>
+  <body align="center">
+    <div class="related" id="status_div">
+      <ul> 
+        <li class="right" style="margin-right: 10px">
+          <a href="http://gozerbot.org/gzrdoc" title="home" onclick='window.open("http://gozerbot.org/gzrdoc"); return false'>home</a></li>
+        <li class="right" style="margin-right: 10px">
+      </ul>
+    </div> 
+    <div class="document">
+      <div class="body">
+        <h1>JSONBOT 0.1</h1>
+        <div id="topper_div"></div>
+        <form name="commandform" action="javascript:void(0);" method="GET">
+          <b>&lt;-</b><input type="text" name="input" onKeyPress="return doenter(this.form)"><b>-&gt;</b>
+        </form>
+        <div id="content_div"></div>
+      </div>
+      <div class="footer" id="footer_div"></div>
+    </div>
+  </body>
+</html>
+    ]]> 
+  </Content>
+</Module>

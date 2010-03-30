@@ -1,0 +1,3 @@
+export PYTHONPATH="$PYTHONPATH:gaeupload:."
+nosetests -v -w tests --gae-lib-root ~/google_appengine --gae-application gaeupload --with-gae --debug-log debug.log
+

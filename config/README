@@ -1,0 +1,4 @@
+This is the config dir of JSONBOT - see the toplevel "config" dir
+
+copy the .example files to their normal parts and edit plz.
+bin/gb-run and bin/gb-upload copy these files over to the gaeupload dir.

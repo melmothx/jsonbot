@@ -1,0 +1,346 @@
+#!/usr/bin/env python
+#
+#
+
+""" jsonbot documentation generator. """
+
+import boot
+
+from gozerlib.utils.exception import handle_exception
+from gozerlib.utils.generic import toascii, splittxt, strippedtxt
+from gozerlib.plugins import plugs
+from gozerlib.examples import examples
+from gozerlib.users import GozerUsers
+from gozerlib.commands import cmnds
+from gozerlib.aliases import aliasreverse
+from gozerlib.config import Config
+from gozerlib.threads.thr import start_new_thread
+
+import os
+
+plugs.loadall(force=True)
+users = GozerUsers()
+
+try:
+    users.add('test', ['test@test', ], ['OPER', 'USER', 'QUOTE', 'MAIL'])
+except Exception, ex:
+    pass
+
+try:
+    users.setemail('test', 'bthate@gmail.com')
+except Exception, ex:
+    pass
+
+def gendoc(f, output):
+    base = os.path.basename(f).replace('.py', '')
+    output.write('=' * (len(base)+2) + '\n')
+    output.write(' %s ' % base.upper() + '\n')
+    output.write('=' * (len(base)+2) + '\n')
+    try:
+        plugins.reload('gozerlib.plugs', base)
+    except:
+        try:
+            plugins.reload('waveplugs', base)
+        except:
+            pass
+    if not plugins.plugs.has_key(base):
+        output.write("\nERROR: no %s plugin found\n\n" % base)
+        output.flush()
+        output.close()
+        return
+    output.write("| \n" + '\n')
+    output.write("about" + '\n')
+    output.write("-----" + '\n')
+    output.write("| \n" + '\n')
+    try:
+        author = plugins.plugs[base].__author__
+        output.write(":author:  %s" % author.strip() + '\n')
+    except AttributeError:
+        output.write(":author:  Bart Thate <bthate@gmail.com>" + '\n')
+    output.write(":contact: IRCNET/#dunkbots" + '\n')
+    output.write(':distribution: core' + '\n')
+    try:
+        license = plugins.plugs[base].__license__
+        output.write(":license:  %s" % license.strip() + '\n\n')
+    except AttributeError:
+        output.write(":license: Public Domain" + '\n\n')
+    output.write("| \n" + '\n')
+    data = {'author': 'unknown', 'description': '', 'commands': [], 'examples': {}, 'descriptions': {}, 'callbacks': {}, 'aliases': {}, 'permissions': {}, 'options': {}}
+    data['description'] = plugins.plugs[base].__doc__
+    cmndlist = []
+    for j, z in cmnds.iteritems():
+        if j in donot:
+            continue
+        if z.plugname == base:
+            cmndlist.append(j)
+    relist = []
+    for reitem in rebefore.relist:
+        if reitem.plugname == base:
+            relist.append(reitem)
+    for reitem in reafter.relist:
+        if reitem.plugname == base:
+            relist.append(reitem)
+    cmndlist.sort()
+    try:
+        first = plugins.plugs[base].__gendocfirst__
+        for i in first[::-1]: 
+            try:
+                cmndlist.remove(i)
+            except ValueError:
+                continue
+            cmndlist.insert(0,i)
+    except AttributeError:
+        pass
+    try:
+        first = plugins.plugs[base].__gendoclast__
+        for i in first[::-1]: 
+            try:
+                cmndlist.remove(i)
+            except ValueError:
+                continue
+            cmndlist.append(i)
+    except AttributeError:
+        pass
+    try:
+        skip = plugins.plugs[base].__gendocskip__
+        for i in skip[::-1]: 
+            try:
+                cmndlist.remove(i)
+            except ValueError:
+                continue
+    except AttributeError:
+        pass
+    for command in cmndlist:
+        data['commands'].append(command)
+        alias = aliasreverse(command)
+        data['options'][command] = cmnds.options(command)
+        if alias:
+            data['aliases'][command] = alias
+        try:
+            ex = examples[command]
+        except Exception, exx:
+            continue
+        try:
+            data['permissions'][command] = cmnds.perms(command)
+        except: 
+            pass
+        data['examples'][command] = []
+        exampleslist = re.split('\d\)', ex.example)
+        for e in exampleslist:
+            data['examples'][command].append(e.strip())
+            data['descriptions'][command] = ex.descr
+    if data.has_key('description'):
+        output.write("description" + '\n')
+        output.write( "-----------" + '\n')
+        output.write( "| \n\n")
+        output.write((data['description'] or 'none') + '\n\n')
+        output.write("\n\n| \n" + '\n')
+    output.write('commands' + '\n')
+    output.write("--------" + '\n')
+    output.write("| \n" + '\n')
+    output.write("\n    :commands in this plugin: %s\n\n" % ' .. '.join(cmnds.getcommands(base)))
+    output.write("| \n" + '\n')
+    teller = 1
+    for command in data['commands']:
+        try:
+            funcname = cmnds.getcommand(command).func.func_name
+        except AttributeError:
+            funcname = 'none'
+        if data['aliases'].has_key(command):
+            output.write('%s) *%s (%s) .. [%s]*' % (teller, command, data['aliases'][command], funcname) + '\n')
+        else:
+            output.write('%s) *%s .. [%s]*' % (teller, command, funcname) + '\n')
+        if data['descriptions'].has_key(command):
+            output.write('\n    :description: %s' % data['descriptions'][command] + '\n')
+        if data['permissions'].has_key(command):
+            output.write('\n    :permissions: %s' % ' .. '.join(data['permissions'][command]) + '\n')
+        if data['options'].has_key(command):
+             output.write("\n    :options: %s\n" % data['options'][command])
+        if data['examples'].has_key(command):
+            output.write('\n    :examples:' + '\n')
+            for i in data['examples'][command]:
+                if not i:
+                     continue
+                output.write('\n    ::\n\n        <user> !%s' % i.strip() + '\n')
+                out = None
+                try:
+                    config['loglevel'] = 1000
+                    out = bot.test(i.strip())
+                    if not out:
+                        output.write("        <output> none" + '\n')
+                        continue
+                    result = ' .. '.join(out)
+                    result = result.replace('\002', '')
+                    teller2 = 1
+                    for j in splittxt(result, 50):
+                        if teller2 > 10:
+                            output.write('         - output trunked -' + '\n')
+                            break
+                        output.write('        <output> %s' % j + '\n')
+                        teller2 += 1
+                    output.write('\n\n')
+                except Exception, ex:
+                    handle_exception(short=True)
+        teller += 1
+    if not data['commands']:
+        output.write("no commands in this plugin" + '\n')
+    if relist:
+        output.write("\nregular expressions" + '\n')
+        output.write("-------------------" + '\n')
+        output.write("| \n" + '\n')
+        teller = 1
+        for reitem in relist:
+            output.write("%s) %s [%s]" % (teller, reitem.regex, reitem.func.func_name) + '\n')
+            try:
+                output.write("     " + reitem.func.__doc__ + '\n')
+            except AttributeError:
+                pass
+            teller += 1
+    output.write('\nfunctions\n')
+    output.write('---------\n')
+    output.write("\n    :functions implemented in this plugin: %s\n\n\n" % ' .. '.join(cmnds.getfuncnames(base)))
+
+    output.flush()
+    output.close()
+    print "DONE %s" % f 
+
+#config['loglevel'] = oldlevel
+
+def domods(dir):
+    try:
+        os.mkdir('doc' + os.sep +'gozerlib')
+    except:
+        pass
+    try:
+        os.mkdir('doc' + os.sep + 'waveplugs')
+    except:
+        pass
+    mdir = dir.split(os.sep)[-1]
+    for mod in os.listdir(dir):
+        m = mod.split(os.sep)[-1]
+        z = m[:-3]
+        thedir = dir + os.sep + mod
+        if mod.endswith('.py') and not '__init__' in mod:
+            mfile = '..' + os.sep + '..' + os.sep + mdir + os.sep + mod
+            print "writing %s" % m + '.txt'
+            if 'waveplugs' in dir:
+                f = open('doc' + os.sep + 'waveplugs' + os.sep + z + '.txt', 'w')
+            else:
+                f = open('doc' + os.sep + 'gozerlib' + os.sep + z + '.txt', 'w')
+            f.write("%s\n%s\n\n" % (z, '=' * len(z)))
+            f.write("description\n~~~~~~~~~~~\n")
+            if 'waveplugs' in dir:
+                f.write(".. automodule:: waveplugs.%s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % z)
+                f.write("code\n~~~~\n\n.. literalinclude:: ../../%s\n    :linenos:\n\n" % thedir)
+            else:
+                f.write(".. automodule:: gozerlib.%s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % z)
+                f.write("code\n~~~~\n\n.. literalinclude:: ../../%s\n    :linenos:\n\n" % thedir)
+            f.flush()
+            f.close()
+        elif os.path.isdir(thedir) and not thedir.endswith('.hg'):
+            if 'waveplugs' in dir:
+                try:
+                    os.mkdir('doc' + os.sep + 'waveplugs' + os.sep + m)
+                except:
+                    pass
+            else:
+                try:
+                    os.mkdir('doc' + os.sep + 'gozerlib' + os.sep + m)
+                except:
+                    pass
+            inthedir = []
+            for mm in os.listdir(thedir):
+                if mm.endswith('.py') and not '__init__' in mm:
+                    n = mm[:-3]
+                    mfile = '..' + os.sep + '..' + os.sep +'..' + os.sep + mdir + os.sep + m + os.sep + n + '.py'
+                    print "writing %s" % n + '.txt'
+                    if 'waveplugs' in dir:
+                        f = open('doc' + os.sep + 'waveplugs' + os.sep + m + os.sep + n + '.txt', 'w')
+                        p = 'waveplugs.%s.%s' % (m, n)
+                        f.write("%s\n%s\n\n" % (p, '=' * len(p)))
+                        f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
+                        f.write("code\n~~~~\n\n.. literalinclude:: ../../../waveplugs/%s/%s.py\n    :linenos:\n\n" % (m, n))
+                    else:
+                        f = open('doc' + os.sep + 'gozerlib' + os.sep + m + os.sep + n + '.txt', 'w')
+                        p = 'gozerlib.%s.%s' % (m, n)
+                        f.write("%s\n%s\n\n" % (p, '=' * len(p)))
+                        f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
+                        f.write("code\n~~~~\n\n.. literalinclude:: ../../../gozerlib/%s/%s.py\n    :linenos:\n\n" % (m, n))
+                    f.flush()
+                    f.close()
+            if 'waveplugs' in dir:
+                try:
+                    os.mkdir('doc' + os.sep + 'waveplugs' + os.sep + mod)
+                except:
+                    pass
+                f = open('doc' + os.sep + 'waveplugs' + os.sep + mod + os.sep + 'index.txt', 'w')
+                f.write("""
+%s.%s
+%s
+
+.. toctree::
+    :maxdepth: 1
+    :glob:
+
+    *
+""" % ('waveplugs', mod, "=" * (len('waveplugs.' + mod) + 1)))
+                f.flush()
+                f.close()
+            else:
+                try:
+                    os.mkdir('doc' +os.sep + 'gozerlib' + os.sep + mod)
+                except:
+                    pass
+
+                f = open('doc' + os.sep + 'gozerlib' + os.sep + mod + os.sep + 'index.txt', 'w')
+                f.write("""
+%s.%s
+%s
+
+.. toctree::
+    :maxdepth: 1
+    :glob:
+
+    *
+""" % ('gozerlib', mod, "=" * (len('gozerlib.' + mod) + 1)))
+                f.flush()
+                f.close()
+
+if __name__ == '__main__':
+    threads = []
+    domods('gozerlib')
+    domods('waveplugs')
+
+    try:
+        os.mkdir('doc' + os.sep + 'plugins')
+    except:
+        pass
+
+    try:
+        os.mkdir('doc' + os.sep + 'plugins' + os.sep + 'plugs')
+    except:
+        pass
+
+    try:
+        os.mkdir('doc' + os.sep + 'plugins' + os.sep + 'waveplugs')
+    except:
+        pass
+  
+    if False:
+        for file in os.listdir(os.getcwd() + os.sep + '..' + os.sep +'gozerbot' + os.sep + 'plugs'):
+            if not file.endswith('.py') or '__init__' in file:
+                continue
+            f = open('plugsdoc' + os.sep + 'baseplugs' + os.sep + file[:-3] + '.txt', 'w')
+            threads.append(start_new_thread(gendoc, (file, f)))
+        for file in os.listdir(os.getcwd() + os.sep + '..' + os.sep +'gozerplugs'):
+            if not file.endswith('.py') or '__init__' in file:
+                continue
+            f = open('plugsdoc' + os.sep + 'gozerplugs' + os.sep + file[:-3] + '.txt', 'w')
+            threads.append(start_new_thread(gendoc, (file, f)))
+    for thread in threads:
+        thread.join()
+
+    #import shutil
+    #shutil.copyfile('mindex.txt', 'modsdoc' + os.sep + 'index.txt')
+    #shutil.copyfile('pindex.txt', 'plugdoc' + os.sep + 'index.txt')
+    #shutil.copyfile('plugsdocindex.txt', 'plugsdoc' + os.sep + 'index.txt')

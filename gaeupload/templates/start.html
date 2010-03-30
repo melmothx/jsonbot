@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+<script type="text/javascript">
+
+<!-- This script and many more are available free online at -->
+<!-- The JavaScript Source!! http://javascript.internet.com -->
+<!-- John Munn  (jrmunn@home.com) -->
+
+<!-- Begin
+ function putFocus(formInst, elementInst) {
+  if (document.forms.length > 0) {
+   document.forms[formInst].elements[elementInst].focus();
+  }
+ }
+// The second number in the "onLoad" command in the body
+// tag determines the form's focus. Counting starts with '0'
+//  End -->
+</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to {{ appname }}</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '{{ version }}',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="{{ version }}" href="" />
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="{{ logouturl }}" title="logout">logout</i></a></li>
+        <li class="right" style="margin-right: 10px">
+          <a href="{{ loginurl }}" title="login">{{ who }}</i></a> |</li>
+        <li><a href="http://jsonbot.googlecode.com" onclick='window.open("http://jsonbot.googlecode.com"); return false'>HOME</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+        <div class="body" align="center">
+            
+        <h1>{{ appname }}<a class="headerlink" href="" </a></h1>
+        <p><b>see the !help command</b></p>
+    </head>
+    <body onLoad="{{ onload }}">
+    <form action="/dispatch/" method="post" align="center">
+	      <div><b>&lt;-</b><input type="commit" name="content"><b>-&gt;</b></div>
+    </form>

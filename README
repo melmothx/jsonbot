@@ -1,0 +1,20 @@
+# JSONBOT README
+#
+#
+
+FeedProvider is a wave and xmpp bot for pushing pubsubhubbub feeds to Google Wave and
+Jabber. Combined with a feed fetching service like superfeedr.com it can
+deliver your feeds on multiple platforms (wave and xmpp are suported now
+though xmpp conferences are not yet supported), IRC support is being
+provided by a seperate standalone program (under development right now).
+
+FeedProvider is free code (MIT) and can be cloned where needed. Source code
+is at http://jsonbot.googlecode.com. Live demo at http://jsonbot.org
+(web) and jsonbot@appspot.com (wave/xmpp).
+
+To register a feed use !hb-register <feedname> <url> or !hb-start <feedname>
+if the feed is already added.
+
+see docs/INSTALL on how to upload your own bot.
+
+

@@ -1,0 +1,7 @@
+if [ -e ./config/app.yaml ]
+then
+   cp ./config/* ./gaeupload
+   ~/google_appengine/dev_appserver.py -c ./gaeupload
+else
+   cat ./config/README
+fi
