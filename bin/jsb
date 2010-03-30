@@ -6,17 +6,24 @@
 
 import sys
 import os
+import logging
 sys.path.insert(0, os.getcwd())
+from gozerlib.utils.generic import getversion
+from gozerlib.utils.generic import getversion
+print getversion()
 
 # gozerlib imports
-
+#from gozerlib.eggs import loadeggs
+#logging.warn("running eggs init")
+#loadeggs(os.getcwd(), log=True)
+from gozerlib.plugins import Plugins
 from gozerlib.botbase import BotBase
 from gozerlib.plugins import Plugins
 from gozerlib.config import Config
 from gozerlib.datadir import makedirs, datadir
 import gozerlib.users as users
-from gozerlib.utils.generic import getversion
 from gozerlib.boot import boot
+from gozerlib.plugs import *
 
 ## basic imports
 
@@ -24,10 +31,11 @@ import getpass
 import logging
 
 ## functions
-print getversion()
 makedirs()
-boot()
-bot = BotBase()
+#boot()
+plugs = Plugins()
+plugs.importmodules(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
+bot = BotBase(plugs=plugs)
 bot.users.make_owner(getpass.getuser())
-bot.loadplugs(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
+#bot.loadplugs(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
 bot.start()

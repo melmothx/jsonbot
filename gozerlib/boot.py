@@ -35,19 +35,19 @@ def boot(force=False):
          admin.callbacktable = Persist('callbacktable')
     
     if not admin.cmndtable.data or force:
-        plugs.loadall(plugin_packages)
+        plugs.importmodules(plugin_packages)
         admin.loaded = True
         savecmndtable()
 
     if not admin.pluginlist.data or force:
         if not admin.loaded:
-            plugs.loadall(plugin_packages)
+            plugs.importmodules(plugin_packages)
             admin.loaded = True
         savepluginlist()
 
     if not admin.callbacktable.data or force:
         if not admin.loaded:
-            plugs.loadall(plugin_packages)
+            plugs.importmodules(plugin_packages)
             loaded = True
         savecallbacktable()
 

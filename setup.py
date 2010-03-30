@@ -62,12 +62,12 @@ setup(
               'gozerlib.socket',
               'gozerlib.socket.irc',
               'gozerlib.socket.util',
-              'gozerlib.plugs',
               'gozerlib.gozernet',
               'gozerlib.contrib',
+              'gozerlib.plugs',
               'waveplugs',
               'commonplugs'],
-    package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs']},
+    package_dir={'jsonbot': ['gozerlib', 'gozerlib.plugs', 'waveplugs', 'commonplugs']},
     install_requires = ['simplejson >= 1.0', 'nose >= 0.11'],
     long_description = """
 JSONBOT is a bot that stores all its data in json format. It runs on the 

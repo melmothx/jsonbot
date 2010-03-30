@@ -13,6 +13,7 @@ from utils.lazydict import LazyDict
 from utils.exception import handle_exception
 from admin import cmndtable
 from errors import NoSuchPlugin
+from jsbimport import force_import
 
 ## basic imports
 
@@ -60,7 +61,11 @@ class Plugins(LazyDict):
                 try:
                     plugs = os.listdir(p + os.sep + '..')
                 except OSError:
-                    logging.warn("can't find %s plugin dir - %s" % (p, os.getcwd()))
+                    logging.warn("can't find %s plugin dir - %s - trying load" % (p, os.getcwd()))
+                    try:
+                        self.load(path)
+                    except ImportError:
+                        logging.warn("can't load %s module" % path)
                     continue
 
             for plug in plugs:
@@ -76,6 +81,19 @@ class Plugins(LazyDict):
                         handle_exception()
 
         return self
+
+    def importmodules(self, mods):
+ 
+        for mod in mods:
+            try:
+                imp = force_import(mod)
+                logging.warn(str(imp))
+                for plug in imp.__plugs__:
+                    self.load("%s.%s" % (mod,plug))
+            except AttributeError:
+                logging.warn("no plugins in %s" % mod)
+            except Exception, ex:
+                handle_exception()
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
