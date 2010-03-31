@@ -12,7 +12,7 @@ sys.path.insert(0, os.getcwd())
 # print version
 
 from gozerlib.utils.generic import getversion
-print getversion()
+print getversion('CONSOLE')
 
 ## parse options
 

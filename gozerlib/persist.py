@@ -39,7 +39,7 @@ try:
     from google.appengine.api.memcache import get, set, replace
     from google.appengine.api.datastore_errors import Timeout
 
-    logging.warn("persist - using BigTable based Persist")
+    logging.debug("persist - using BigTable based Persist")
 
     ## classes
 
@@ -151,7 +151,7 @@ except ImportError:
 
     # no google so use file based persist
 
-    logging.warn("using file based Persist")
+    logging.debug("using file based Persist")
 
     ## defines
 

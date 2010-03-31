@@ -9,10 +9,13 @@ import sys
 
 sys.path.insert(0, os.getcwd())
 
-## gozerlib imports
+## print version
 
 from gozerlib.utils.generic import getversion
 print getversion('IRC')
+
+## gozerlib impors
+
 from gozerlib.socket.irc.bot import Bot
 from gozerlib.datadir import makedirs
 from gozerlib.admin import plugin_packages
@@ -33,7 +36,7 @@ import time
 
 if True:
     from optparse import OptionParser
-    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + gozerlib.__version__)
+    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
     parser.add_option('', '-r', type='string', default=False, dest='doresume', 
                   metavar='PATH', 
                   help="resume the bot from the folder specified")
