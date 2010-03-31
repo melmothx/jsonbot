@@ -1,0 +1,8 @@
+if [ -e "~/google_appengine" ]
+then
+    echo "i need google_appengine installed in ~"
+else
+    export PATH="$PATH:.:./bin"
+    jsb-bootstrap
+    jsb-init
+fi

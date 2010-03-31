@@ -1,0 +1,18 @@
+export PATH="$PATH:~"
+
+if [ -e ~/regs/jsonbot/ ]
+then
+    cp ~/regs/jsonbot/* config
+fi
+
+if [ -e config/app.yaml ]
+then
+    cp config/app.yaml gaeupload
+fi
+
+if [ -e gaeupload/config ]
+then
+    echo "gaupload/config already exists"
+else
+    ln -s config gaeupload/config
+fi

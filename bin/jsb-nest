@@ -31,7 +31,7 @@ opts.args = args
 if opts.directory:
     installdir = opts.directory
 else:
-    installdir = 'gozernest'
+    installdir = 'jsbnest'
 
 if not os.path.isdir(installdir):
     os.mkdir(installdir)

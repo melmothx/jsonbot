@@ -27,7 +27,6 @@ def uploadlist(dir):
     return upl
 
 upload = uploadlist('gaeupload')
-print upload
 
 setup(
     name='jsonbot',
@@ -39,9 +38,9 @@ setup(
     description='The JSON everywhere bot ;] for wave/web/xmpp/IRC/console',
     license='MIT',
     scripts = ['bin/jsb', 
-               'bin/jsb-boot',
+               'bin/jsb-init',
+               'bin/jsb-bootstrap',
                'bin/jsb-clone',
-               'bin/jsb-installupload',
                'bin/jsb-irc',
                'bin/jsb-makedocs',
                'bin/jsb-makehtml',
@@ -49,6 +48,7 @@ setup(
                'bin/jsb-release',
                'bin/jsb-run',
                'bin/jsb-runrelease',
+               'bin/jsb-start',
                'bin/jsb-test',
                'bin/jsb-unittest',
                'bin/jsb-upload',
