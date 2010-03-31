@@ -1,3 +1,10 @@
-export PYTHONPATH="$PYTHONPATH:$1:."
-nosetests -v --gae-lib-root ~/google_appengine --gae-application $1 --with-gae --debug-log debug.log
+if [ $1 ]
+then
+  TARGET=$1
+else
+  TARGET="gaeupload"
+fi
+
+export PYTHONPATH="$PYTHONPATH:$TARGET:."
+nosetests -v -w tests --gae-lib-root ~/google_appengine --gae-application $TARGET --with-gae --debug-log debug.log
 
