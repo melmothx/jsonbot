@@ -15,7 +15,6 @@ import os
 import pkg_resources
 import shutil
 
-
 ## boot
 
 if len(sys.argv) > 1:
@@ -56,15 +55,13 @@ def copyover(source, target):
         shutil.copytree(source, target)   
     except OSError, ex:
         print "can't copy %s to %s ==> %s" % (source, target, str(ex))
-  
+
     if len(sys.argv) > 1:
-        sed(target, release)
-
-
+        sed(source, target)
+  
 def sed(source, target):
 
     print "source: %s target: %s" % (source, target)
-
 
     for f in os.listdir(target):
         if f.startswith('.'):
@@ -73,15 +70,13 @@ def sed(source, target):
             continue
         if f.endswith("~"):
             continue
-        try:
-            #print "sedding %s" % f
+        if os.path.isdir(target + os.sep + f):
+            sed(source + os.sep + f, target + os.sep + f)
+            continue
+        else:
+            print "sedding %s (%s) - %s" % (f, orig, targetin)
             dosed(target + os.sep + f, 's/%s/%s/' % (orig, targetin))
             dosed(target + os.sep + f, 's/%s/%s/' % (orig.upper(), targetin.upper()))
-        except IOError, ex:
-            if 'Is a dir' in str(ex):
-                sed(source + os.sep + f, target + os.sep + f)
-            else:
-                raise
 
 
 ## doit
@@ -100,3 +95,4 @@ source = pkg_resources.resource_filename('waveplugs', '')
 copyover(source, release + os.sep + 'waveplugs')
 source = pkg_resources.resource_filename('simplejson', '')
 copyover(source, release + os.sep + 'simplejson')
+
