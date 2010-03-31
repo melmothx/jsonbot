@@ -4,9 +4,6 @@
 
 """ install the GAE upload dir so it can be uploaded. """
 
-## gozerlib imports
-
-from gozerlib.utils.generic import gethighest, dosed
 
 ## imports
 
@@ -17,6 +14,13 @@ import shutil
 
 ## boot
 
+sys.path.insert(0, os.getcwd())
+
+
+## gozerlib imports
+
+from gozerlib.utils.generic import gethighest, dosed
+
 if len(sys.argv) > 1:
      if not os.path.isdir('releases'):
          os.mkdir('releases')
@@ -25,8 +29,8 @@ if len(sys.argv) > 1:
          os.mkdir(release)
      targetin = sys.argv[1]
 else:
-     release = 'upload'
-     targetin = 'upload'
+     release = "releases" + os.sep + 'jsonbot'
+     targetin = 'jsonbot'
 
 
 if os.path.isdir(release + '.old'):
@@ -39,7 +43,7 @@ if os.path.isdir(release):
     os.rename(release, backup)
 
 #sys.path.insert(0, os.getcwd())
-pkg_resources.require("jsonbot>=0.1")
+#pkg_resources.require("jsonbot>=0.1")
 
 ## define
 
@@ -95,5 +99,4 @@ source = pkg_resources.resource_filename('waveplugs', '')
 copyover(source, release + os.sep + 'waveplugs')
 source = pkg_resources.resource_filename('simplejson', '')
 copyover(source, release + os.sep + 'simplejson')
-copyover('config', release + os.sep + 'config')
-
+#copyover('config', release + os.sep + 'config')

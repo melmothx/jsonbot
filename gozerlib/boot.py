@@ -18,6 +18,9 @@ import users
 
 import logging
 import os
+import sys
+
+sys.path.insert(0, os.getcwd())
 
 ## define
 

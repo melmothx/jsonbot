@@ -13,7 +13,7 @@ from utils.lazydict import LazyDict
 from utils.exception import handle_exception
 from admin import cmndtable
 from errors import NoSuchPlugin
-from jsbimport import force_import
+from jsbimport import force_import, _import
 
 ## basic imports
 
@@ -43,15 +43,15 @@ class Plugins(LazyDict):
 
         for mod in paths:
             try:
-                imp = force_import(mod)
-                for plug in imp.__plugs__:
-                    self.load("%s.%s" % (mod,plug))
+                imp = _import(mod)
             except ImportError:
                 logging.warn("no %s plugin package found" % mod)
+                continue
+            try:
+                for plug in imp.__plugs__:
+                    self.load("%s.%s" % (mod,plug))
             except AttributeError:
                 logging.warn("no plugins in %s" % mod)
-            except Exception, ex:
-                handle_exception()
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
@@ -79,8 +79,11 @@ class Plugins(LazyDict):
                 return
 
         logging.info("plugins - loading %s" % modname)
-        mod = __import__(modname)
-
+        try:
+            basemod = __import__(modname)
+        except ImportError, ex:
+            logging.error("can't import %s - %s" % (modname, str(ex)))
+            return
         try:
             self[modname] = sys.modules[modname]
         except KeyError:

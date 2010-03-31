@@ -7,7 +7,7 @@ else
   TARGET="jsonbot"
 fi
 
-if [ -e ~/regs/"$TARGET"/ ]
+if [ -e ~/regs/$TARGET/ ]
 then
-    cp ~/regs/"$TARGET"/* config
+    cp ~/regs/$TARGET/* releases/$TARGET/config
 fi
