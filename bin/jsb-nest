@@ -296,7 +296,7 @@ if __name__=='__main__':
         argsstring = ' '.join(opts.args)
 
         if opts.file:
-            runstring = '--install-dir %s -a %s' % (nestdir, opts.file)
+            runstring = '--install-dir %s -s %s/bin %s' % (nestdir, nestdir, opts.file)
         elif opts.deps:
             runstring = '--install-dir %s simplejson %s' % (nestdir, argsstring)
         else:

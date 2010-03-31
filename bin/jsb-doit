@@ -1,4 +1,4 @@
 ./setup.py bdist_egg
 ./bin/jsb-nest -f dist/jsonbot-0.1-py2.6.egg
 cd jsbnest
-./jsb-start
+./bin/jsb-start
