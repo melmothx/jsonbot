@@ -1,2 +1,3 @@
-~/google_appengine/appcfg.py update releases/$1/gaeupload
+cp releases/$1/config/app.yaml releases/$1/app.yaml
+~/google_appengine/appcfg.py update releases/$1/
 
