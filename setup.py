@@ -2,32 +2,9 @@
 #
 #
 
-__copyright__ = 'this file is in the public domain'
-__revision__ = '$Id: setup.py 71 2005-11-10 13:37:50Z bart $'
-
 from setuptools import setup
 import glob
 import os
-
-upload = []
-
-def uploadlist(dir):
-    upl = []
-    
-    for file in os.listdir(dir):
-        d = dir + os.sep + file
-        if os.path.isdir(d):
-            #upload.append(dir + os.sep + file)
-            upl.extend(uploadlist(d))
-        else:
-            if file.endswith(".pyc"):
-                continue
-            upl.append(d)   
-
-    return upl
-
-upload = uploadlist('gaeupload')
-print upload
 
 setup(
     name='jsonbot',
@@ -91,10 +68,4 @@ see http://jsonbot.googlecode.com
     ],
    zip_safe=False, 
    test_suite = 'nose.collector',
-   data_files=[('config', glob.glob('config/*.example')),
-               ('gaeupload', glob.glob('gaeupload/*.py')),
-               ('gaeupload/assets', uploadlist('gaeupload/assets')),
-               ('gaeupload/templates', uploadlist('gaeupload/templates')),
-               ('gaeupload/waveapi', uploadlist('gaeupload/waveapi')),
-               ('gaeupload/gadgets', uploadlist('gaeupload/gadgets'))],
 )

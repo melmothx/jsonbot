@@ -8,14 +8,34 @@ import sys
 import os
 import logging
 sys.path.insert(0, os.getcwd())
-from gozerlib.utils.generic import getversion
+
+# print version
+
 from gozerlib.utils.generic import getversion
 print getversion()
 
+## parse options
+
+if True:
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser.add_option('-o', '--owner', type='string', default=False,
+dest='owner', 
+                  help="owner of the bot")
+    parser.add_option('-l', '--loglevel', type='string', default="error",
+dest='loglevel', help="set loglevel")
+
+    opts, args = parser.parse_args()
+    opts.args = args
+
+## set loglevel
+
+from gozerlib.utils.log import setloglevel
+setloglevel(opts.loglevel)
+
+
 # gozerlib imports
-#from gozerlib.eggs import loadeggs
-#logging.warn("running eggs init")
-#loadeggs(os.getcwd(), log=True)
+
 from gozerlib.plugins import Plugins
 from gozerlib.botbase import BotBase
 from gozerlib.plugins import Plugins
@@ -30,12 +50,12 @@ from gozerlib.plugs import *
 import getpass
 import logging
 
-## functions
+
+## start the bot
+
 makedirs()
-#boot()
 plugs = Plugins()
-plugs.importmodules(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
+plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
 bot = BotBase(plugs=plugs)
 bot.users.make_owner(getpass.getuser())
-#bot.loadplugs(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
 bot.start()

@@ -28,7 +28,7 @@ def _import(name, path=None):
 
     """
 
-    logging.warn('_import - importing %s' % name)
+    logging.debug('import - importing %s' % name)
 
     splitted = name.split('.')
     

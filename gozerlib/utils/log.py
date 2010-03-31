@@ -15,7 +15,7 @@ LEVELS = {'debug': logging.DEBUG,
 
 def setloglevel(level_name):
     level = LEVELS.get(level_name, logging.NOTSET)
-    logging.warn("setting loglevel to %s (%s)" % (str(level), level_name))
+    logging.info("setting loglevel to %s (%s)" % (str(level), level_name))
     logger = logging.getLogger()
     logger.setLevel(level)
 

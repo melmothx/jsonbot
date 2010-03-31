@@ -44,7 +44,7 @@ def getversion(txt=""):
     """ return a version string. """
 
     from gozerlib.config import cfg
-    return u"<- %s ->" % (cfg.get('version') + u' ' + txt)
+    return u"%s" % (cfg.get('version') + u' ' + txt)
 
 def splittxt(what, l=375):
     """ split output into seperate chunks. """

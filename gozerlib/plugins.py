@@ -41,53 +41,9 @@ class Plugins(LazyDict):
 
         """
 
-        if default:
-            logging.debug('on demand plug loading is enabled')
-
-            for plug in default:
-                try:
-                    self.load(plug)
-                except Exception, ex:
-                    handle_exception()
-
-            return
-
-        for path in paths:
-            p = path.replace('.', os.sep)
-
-            try:
-                plugs = os.listdir(p)
-            except OSError:
-                try:
-                    plugs = os.listdir(p + os.sep + '..')
-                except OSError:
-                    logging.warn("can't find %s plugin dir - %s - trying load" % (p, os.getcwd()))
-                    try:
-                        self.load(path)
-                    except ImportError:
-                        logging.warn("can't load %s module" % path)
-                    continue
-
-            for plug in plugs:
-                if plug.endswith(".py"):
-                    mod = ".".join(path.split(os.sep))
-                    modname = "%s.%s" % (mod, plug[:-3])
-                    try:
-                        if force:
-                            self.reload(modname)
-                        else:
-                            self.load(modname)
-                    except Exception, ex:
-                        handle_exception()
-
-        return self
-
-    def importmodules(self, mods):
- 
-        for mod in mods:
+        for mod in paths:
             try:
                 imp = force_import(mod)
-                logging.warn(str(imp))
                 for plug in imp.__plugs__:
                     self.load("%s.%s" % (mod,plug))
             except AttributeError:
