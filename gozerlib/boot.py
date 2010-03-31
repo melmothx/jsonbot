@@ -35,7 +35,7 @@ def boot(force=False):
          admin.callbacktable = Persist('callbacktable')
     
     if not admin.cmndtable.data or force:
-        plugs.loadll(plugin_packages)
+        plugs.loadall(plugin_packages)
         admin.loaded = True
         savecmndtable()
 

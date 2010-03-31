@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+#
+#
+
+""" install the GAE upload dir so it can be uploaded. """
+
+## gozerlib imports
+
+from gozerlib.utils.generic import gethighest
+
+## imports
+
+import sys
+import os
+import pkg_resources
+import shutil
+
+## boot
+
+#sys.path.insert(0, os.getcwd())
+pkg_resources.require("jsonbot==0.1")
+
+## functions
+
+def copyover(source, target):
+    if os.path.isdir(target + '.old'):
+        backup = gethighest(os.getcwd(), target + '.old')
+    else:
+        backup = target + '.old'
+
+    if os.path.isdir(target):
+        print "MOVING %s TO %s" % (target, backup)
+        os.rename(target, backup)
+
+    print "COPYING RESULTS TO %s" % target
+
+    try:
+        shutil.copytree(source, target)   
+    except OSError, ex:
+        print "can't copy %s to %s ==> %s" % (source, target, str(ex))
+
+
+## doit
+
+source = pkg_resources.resource_filename("gaeupload", '')
+copyover(source, 'gaeupload')
+source = pkg_resources.resource_filename("tests", '')
+copyover(source, 'tests')
+source = pkg_resources.resource_filename('config', '')
+copyover(source, 'config')

@@ -46,6 +46,8 @@ class Plugins(LazyDict):
                 imp = force_import(mod)
                 for plug in imp.__plugs__:
                     self.load("%s.%s" % (mod,plug))
+            except ImportError:
+                logging.warn("no %s plugin package found" % mod)
             except AttributeError:
                 logging.warn("no plugins in %s" % mod)
             except Exception, ex:

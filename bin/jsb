@@ -41,9 +41,9 @@ from gozerlib.botbase import BotBase
 from gozerlib.plugins import Plugins
 from gozerlib.config import Config
 from gozerlib.datadir import makedirs, datadir
-import gozerlib.users as users
+from gozerlib.users import Users
 from gozerlib.boot import boot
-from gozerlib.plugs import *
+from gozerlib.errors import NoOwnerSet
 
 ## basic imports
 
@@ -56,6 +56,12 @@ import logging
 makedirs()
 plugs = Plugins()
 plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
-bot = BotBase(plugs=plugs)
-bot.users.make_owner(getpass.getuser())
+users = Users()
+users.make_owner(getpass.getuser())
+
+try:
+    bot = BotBase(plugs=plugs, users=users)
+except NoOwnerSet:
+    print "the owner is not set in config/mainconfig"
+    os._exit(1)
 bot.start()
