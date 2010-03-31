@@ -20,10 +20,10 @@ from gozerlib.botbase import BotBase
 from gozerlib.threads import start_new_thread, threaded
 from gozerlib.utils.pdod import Pdod
 from gozerlib.channelbase import ChannelBase
+from gozerlib.morphs import inputmorphs, outputmorphs
 
 ## gozerlib.irc imports
 
-from morphs import inputmorphs, outputmorphs
 from ircevent import Ircevent
 from monitor import saymonitor
 from wait import Wait
@@ -238,6 +238,7 @@ class Irc(BotBase):
         self.reconnectcount = 0
         saymonitor.start()
         self.connectok.wait()
+        logging.warn("irc - logged on!")
         return 1
 
     def _readloop(self):
@@ -1098,11 +1099,14 @@ pingtime2)
     def handle_error(self, ievent):
 
         """ show error. """
+        logging.error(str(ievent))
+        if ievent.cmnd == "422":
+            return
 
         if ievent.txt.startswith('Closing'):
-            logging.error("irc - error - %s" % ievent.txt)
+            logging.error("irc - %s" % ievent.txt)
         else:
-            logging.error("irc - ERROR %s - %s" % (ievent.arguments, ievent.txt))
+            logging.error("irc - %s - %s" % (ievent.arguments, ievent.txt))
 
     def ping(self):
 

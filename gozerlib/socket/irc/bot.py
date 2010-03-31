@@ -35,7 +35,7 @@ from irc import Irc
 from ircevent import Ircevent
 from monitor import outmonitor
 from wait import Privwait
-from gozerlib.socket.util.generic import getlistensocket, checkchan, makeargrest
+from gozerlib.socket.utils.generic import getlistensocket, checkchan, makeargrest
 
 ## basic imports
 

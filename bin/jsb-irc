@@ -132,7 +132,7 @@ if opts.force:
 ## start bot
 try:
     bot = Bot(cfg)
-    bot.nick = cfg.nick or 'gb2'
+    bot.nick = cfg.nick or 'jsonbot'
 except NoOwnerSet, ex:
     print "owner is not set in %s - use the -o option" % str(ex)
     os._exit(1)

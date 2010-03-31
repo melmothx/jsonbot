@@ -157,8 +157,8 @@ class Ircevent(EventBase):
         # show error
         try:
             nr = int(self.cmnd)
-            if nr > 399:
-                logging.error('irc - error %s: %s %s' % (self.cmnd, self.arguments, self.txt))
+            if nr > 399 and not nr == 422:
+                logging.error('irc - %s - %s - %s' % (self.cmnd, self.arguments, self.txt))
         except ValueError:
             pass
 
