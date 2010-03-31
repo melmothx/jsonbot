@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import gethighest
+from gozerlib.utils.generic import gethighest, dosed
 
 ## imports
 
@@ -15,22 +15,38 @@ import os
 import pkg_resources
 import shutil
 
+
 ## boot
 
+if len(sys.argv) > 1:
+     if not os.path.isdir('releases'):
+         os.mkdir('releases')
+     release = 'releases' + os.sep + sys.argv[1]
+     targetin = sys.argv[1]
+else:
+     release = 'upload'
+     targetin = 'upload'
+
+
+if os.path.isdir(release + '.old'):
+    backup = gethighest('releases', release + '.old')
+else:
+    backup = release + '.old'
+
+if os.path.isdir(release):
+    print "MOVING %s TO %s" % (release, backup)
+    os.rename(release, backup)
+
 #sys.path.insert(0, os.getcwd())
-pkg_resources.require("jsonbot==0.1")
+pkg_resources.require("jsonbot>=0.1")
+
+## define
+
+orig = 'jsonbot'
 
 ## functions
 
 def copyover(source, target):
-    if os.path.isdir(target + '.old'):
-        backup = gethighest(os.getcwd(), target + '.old')
-    else:
-        backup = target + '.old'
-
-    if os.path.isdir(target):
-        print "MOVING %s TO %s" % (target, backup)
-        os.rename(target, backup)
 
     print "COPYING RESULTS TO %s" % target
 
@@ -38,21 +54,48 @@ def copyover(source, target):
         shutil.copytree(source, target)   
     except OSError, ex:
         print "can't copy %s to %s ==> %s" % (source, target, str(ex))
+  
+    if len(sys.argv) > 1:
+        print "sedding %s for %s" % (target, release)
+        sed(target, release)
+
+
+def sed(source, target):
+
+    print "source: %s target: %s" % (source, target)
+
+
+    for f in os.listdir(target):
+        if f.startswith('.'):
+            continue
+        if f.endswith(".pyc"):
+            continue
+        if f.endswith("~"):
+            continue
+        try:
+            #print "sedding %s" % f
+            dosed(target + os.sep + f, 's/%s/%s/' % (orig, targetin))
+            dosed(target + os.sep + f, 's/%s/%s/' % (orig.upper(), targetin.upper()))
+        except IOError, ex:
+            if 'Is a dir' in str(ex):
+                sed(source + os.sep + f, target + os.sep + f)
+            else:
+                raise
 
 
 ## doit
 
 source = pkg_resources.resource_filename("gaeupload", '')
-copyover(source, 'upload')
+copyover(source, release)
 source = pkg_resources.resource_filename("tests", '')
-copyover(source, 'tests')
+copyover(source, release + os.sep + 'tests')
 source = pkg_resources.resource_filename('config', '')
-copyover(source, 'config')
+copyover(source, release + os.sep + 'config')
 source = pkg_resources.resource_filename('gozerlib', '')
-copyover(source, 'upload' + os.sep + 'gozerlib')
+copyover(source, release + os.sep + 'gozerlib')
 source = pkg_resources.resource_filename('commonplugs', '')
-copyover(source, 'upload' + os.sep + 'commonplugs')
+copyover(source, release + os.sep + 'commonplugs')
 source = pkg_resources.resource_filename('waveplugs', '')
-copyover(source, 'upload' + os.sep + 'waveplugs')
+copyover(source, release + os.sep + 'waveplugs')
 source = pkg_resources.resource_filename('simplejson', '')
-copyover(source, 'upload' + os.sep + 'simplejson')
+copyover(source, release + os.sep + 'simplejson')
