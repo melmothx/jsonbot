@@ -4,15 +4,16 @@ if [ -e ~/regs/jsonbot/ ]
 then
     cp ~/regs/jsonbot/* config
 fi
+cd gaeupload
 
-if [ -e config/app.yaml ]
+if [ -e ./config/app.yaml ]
 then
-    cp config/app.yaml gaeupload
+    ln -s ../config/app.yaml
 fi
 
-#if [ -e gaeupload/config ]
-#then
-#    echo "gaupload/config already exists"
-#else
-#    ln -s config gaeupload/config
-#fi
+if [ -e ./gaeupload/config ]
+then
+    echo "gaupload/config already exists"
+else
+    ln -s ../config
+fi

@@ -17,8 +17,11 @@ import users
 ## basic imports
 
 import logging
+import os
 
 ## define
+
+rundir = "run"
 
 ## functions
 
@@ -28,11 +31,11 @@ def boot(force=False):
     logging.warn("booting ..")
 
     if not admin.cmndtable:
-        admin.cmndtable = Persist('cmndtable')
+        admin.cmndtable = Persist(rundir + os.sep + 'cmndtable')
     if not admin.pluginlist:
-         admin.pluginlist = Persist('pluginlist')
+         admin.pluginlist = Persist(rundir + os.sep + 'pluginlist')
     if not admin.callbacktable:
-         admin.callbacktable = Persist('callbacktable')
+         admin.callbacktable = Persist(rundir + os.sep + 'callbacktable')
     
     if not admin.cmndtable.data or force:
         plugs.loadall(plugin_packages)

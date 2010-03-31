@@ -50,7 +50,6 @@ setup(
                'bin/jsb-runrelease',
                'bin/jsb-start',
                'bin/jsb-test',
-               'bin/jsb-unittest',
                'bin/jsb-upload',
                'bin/jsb-uprelease'],
     packages=['gozerlib', 

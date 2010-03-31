@@ -11,8 +11,8 @@
 ## gozerlib imports
 
 from gozerlib.utils.exception import handle_exception
-from gozerlib.socket.util.generic import getrandomnick, toenc, fromenc, strippedtxt
-from gozerlib.socket.util.generic import fix_format, splittxt, waitforqueue, uniqlist
+from gozerlib.socket.utils.generic import getrandomnick, toenc, fromenc, strippedtxt
+from gozerlib.socket.utils.generic import fix_format, splittxt, waitforqueue, uniqlist
 from gozerlib.utils.locking import lockdec
 from gozerlib.config import cfg as config
 from gozerlib.datadir import datadir
