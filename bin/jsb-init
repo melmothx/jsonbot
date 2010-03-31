@@ -10,9 +10,9 @@ then
     cp config/app.yaml gaeupload
 fi
 
-if [ -e gaeupload/config ]
-then
-    echo "gaupload/config already exists"
-else
-    ln -s config gaeupload/config
-fi
+#if [ -e gaeupload/config ]
+#then
+#    echo "gaupload/config already exists"
+#else
+#    ln -s config gaeupload/config
+#fi
