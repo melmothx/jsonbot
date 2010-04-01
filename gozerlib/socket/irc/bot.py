@@ -617,7 +617,8 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
             chan = ievent.channel
             # channel mode change has 2 arguments
             self.getchannelmode(chan)
-            self.channels.set(chan, 'mode', ievent.arguments[1])    
+            if self.channels:
+                self.channels.set(chan, 'mode', ievent.arguments[1])    
 
     def handle_311(self, ievent):
 
@@ -642,8 +643,10 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         host = args[3]
         userhost = "%s@%s" % (user, host)
         logging.debug('adding %s to userhosts: %s' % (nick, userhost))
-        self.userhosts.data[nick] = userhost
-        self.userchannels.adduniq(nick, channel)
+        if self.userhosts:
+             self.userhosts.data[nick] = userhost
+        if self.userchannels:
+            self.userchannels.adduniq(nick, channel)
 
     def handle_353(self, ievent):
 
