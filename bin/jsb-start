@@ -12,5 +12,4 @@ else
   echo "target is $TARGET"
   export PATH=".:./bin:$PATH"
   jsb-bootstrap $TARGET
-  jsb-init $TARGET
 fi

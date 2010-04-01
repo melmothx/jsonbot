@@ -296,9 +296,9 @@ if __name__=='__main__':
         argsstring = ' '.join(opts.args)
 
         if opts.file:
-            runstring = '--install-dir %s -U %s' % (nestdir, opts.file)
+            runstring = '--install-dir %s -a -U %s' % (nestdir, opts.file)
         elif opts.deps:
-            runstring = '--install-dir %s simplejson %s' % (nestdir, argsstring)
+            runstring = '--install-dir %s simplejson nose %s' % (nestdir, argsstring)
         else:
             runstring = '--install-dir %s -a -U jsonbot %s' % (nestdir, argsstring)
 
