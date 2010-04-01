@@ -1,9 +1,18 @@
+if [ $1 ]
+then
+    TARGET=$1
+else
+    TARGET="jsonbot"
+fi
+
 if [ -e "~/google_appengine" ]
 then
     echo "i need google_appengine installed in ~"
 else
-    export PATH=".:./bin:$PATH"
-    jsb-bootstrap
-    jsb-init
-    cp releases/$1/config/app.yaml releases/$1
+  echo "target is $TARGET"
+  export PATH=".:./bin:$PATH"
+  jsb-bootstrap $TARGET
+  jsb-init $TARGET
+  FILE="releases/$TARGET/config/app.yaml"
+  cp $FILE releases/$TARGET
 fi
