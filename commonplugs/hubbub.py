@@ -313,7 +313,7 @@ class HubbubWatcher(PlugPersist):
                             logging.info('hubbub - %s is not in the format (botname, bottype, channel)' % str(item))
                             continue
                 else:
-                    logging.debug('hubbub - %s is not in the format (bottype, channel)' % item.data.url)
+                    logging.debug('hubbub - %s is not in the format (botname, bottype, channel)' % item.data.url)
                     continue
 
                 try:

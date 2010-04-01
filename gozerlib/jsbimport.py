@@ -12,7 +12,27 @@ import thread
 import logging
 
 def _import(name):
-    return __import__(name)
+    try:
+        mods = []
+        mm = ""
+        for m in name.split('.'):
+            mm += m
+            mods.append(mm)
+            mm += "."
+
+        for mod in mods:
+            try:
+                logging.warn("trying %s" % mod)
+                imp = __import__(mod)
+            except ImportError, ex:
+                logging.error("can't import %s - %s" % (name, str(ex)))
+                return
+    except ImportError:
+        logging.warn("no %s module found" % name)
+        return
+
+    logging.warn("jsbimport - got module %s" % sys.modules[name])
+    return sys.modules[name]
 
 def __import(name, path=None):
 
