@@ -58,10 +58,12 @@ plugs = Plugins()
 plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs'])
 users = Users()
 users.make_owner(getpass.getuser())
+cfg = Config()
+cfg.owner = getpass.getuser()
 
 try:
-    bot = BotBase(plugs=plugs, users=users)
+    bot = BotBase(cfg, plugs=plugs, users=users)
 except NoOwnerSet:
-    print "the owner is not set in config/mainconfig"
+    print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
 bot.start()

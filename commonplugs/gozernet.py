@@ -13,6 +13,7 @@ from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.utils.exception import handle_exception
 from gozerlib.gozernet.bot import GozerNetBot
+from gozerlib.config import cfg, Config
 
 ## simplejson imports
 
@@ -27,7 +28,6 @@ import re
 
 outxmpp = "primalsoup@gozerbot.org"
 state = PlugPersist('gozernet')
-gnbot = GozerNetBot()
 
 if not state.data:
     state.data = {}

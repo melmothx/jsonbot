@@ -13,6 +13,4 @@ else
   export PATH=".:./bin:$PATH"
   jsb-bootstrap $TARGET
   jsb-init $TARGET
-  FILE="releases/$TARGET/config/app.yaml"
-  cp $FILE releases/$TARGET
 fi

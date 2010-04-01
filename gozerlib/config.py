@@ -265,7 +265,7 @@ class Config(LazyDict):
         if self.filename == 'mainconfig':
             self.setdefault('owner', [])
             self.setdefault('loglist',  [])
-            self.setdefault('quitmsg', "http://jsonbot.org")
+            self.setdefault('quitmsg', "http://jsonbot.googelcode.com")
             self.setdefault('debug', 0)
             self.setdefault('plugdeny', [])
             self.setdefault('dotchars',  " .. ")
