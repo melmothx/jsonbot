@@ -1,4 +1,4 @@
 export PATH="./bin:.:$PATH"
 jsb-bootstrap $1
 jsb-init $1
-jsb-uprelease $1
+jsb-upload $1

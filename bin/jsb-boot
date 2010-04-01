@@ -1,4 +1,0 @@
-export PATH="./bin:.:$PATH"
-jsb-bootstrap $1
-jsb-init $1
-cp releases/$1/config/app.yaml releases/$1
