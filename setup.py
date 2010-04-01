@@ -83,5 +83,6 @@ see http://jsonbot.googlecode.com
                ('gaeupload/assets', uploadlist('gaeupload/assets')),
                ('gaeupload/templates', uploadlist('gaeupload/templates')),
                ('gaeupload/waveapi', uploadlist('gaeupload/waveapi')),
+               ('gaeupload/waveapi/oauth', uploadlist('gaeupload/waveapi/oauth')),
                ('gaeupload/gadgets', uploadlist('gaeupload/gadgets'))],
 )

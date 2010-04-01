@@ -61,7 +61,7 @@ def sed(source, target):
     print "source: %s target: %s" % (source, target)
 
     for f in os.listdir(target):
-        if f.startswith('.'):
+        if f.startswith('..'):
             continue
         if f.endswith(".pyc"):
             continue
