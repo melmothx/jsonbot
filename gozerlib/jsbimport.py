@@ -23,7 +23,7 @@ def _import(name):
         logging.debug("jsbimport - trying %s" % mod)
         imp = __import__(mod)
 
-    logging.warn("jsbimport - got module %s" % sys.modules[name])
+    logging.debug("jsbimport - got module %s" % sys.modules[name])
     return sys.modules[name]
 
 def __import(name, path=None):

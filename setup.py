@@ -2,9 +2,6 @@
 #
 #
 
-__copyright__ = 'this file is in the public domain'
-__revision__ = '$Id: setup.py 71 2005-11-10 13:37:50Z bart $'
-
 from setuptools import setup
 import glob
 import os
@@ -38,17 +35,10 @@ setup(
     description='The JSON everywhere bot ;] for wave/web/xmpp/IRC/console',
     license='MIT',
     scripts = ['bin/jsb', 
-               'bin/jsb-init',
-               'bin/jsb-bootstrap',
                'bin/jsb-clone',
                'bin/jsb-irc', 
-               'bin/jsb-makedocs',
-               'bin/jsb-makehtml',
-               'bin/jsb-nest',
-               'bin/jsb-nose',
                'bin/jsb-release',
                'bin/jsb-run',
-               'bin/jsb-start',
                'bin/jsb-test',
                'bin/jsb-upload'],
     packages=['gozerlib', 
@@ -66,7 +56,7 @@ setup(
               'gozerlib.plugs',
               'waveplugs',
               'commonplugs'],
-    package_dir={'jsonbot': ['gozerlib', 'gozerlib.plugs', 'waveplugs', 'commonplugs']},
+    package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs']},
     install_requires = ['simplejson >= 1.0', 'nose >= 0.11'],
     long_description = """
 JSONBOT is a bot that stores all its data in json format. It runs on the 
@@ -90,9 +80,8 @@ see http://jsonbot.googlecode.com
     ],
    zip_safe=False, 
    test_suite = 'nose.collector',
-   install_package_data=True,
    data_files=[('config', glob.glob('config/*.example') + ['config/__init__.py']),
-               ('tests', glob.glob('tests/*.py') + ['tests/__init__.py']),
+               ('tests', glob.glob('tests/*.py')),
                ('gaeupload', glob.glob('gaeupload/*.py')),
                ('gaeupload/assets', uploadlist('gaeupload/assets')),
                ('gaeupload/templates', uploadlist('gaeupload/templates')),

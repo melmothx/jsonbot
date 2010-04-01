@@ -52,19 +52,12 @@ orig = 'jsonbot'
 ## functions
 
 def copyover(source, target):
-
     print "COPYING RESULTS TO %s" % target
-
-    try:
-        shutil.copytree(source, target)   
-    except OSError, ex:
-        print "can't copy %s to %s ==> %s" % (source, target, str(ex))
-
+    shutil.copytree(source, target)   
     if len(sys.argv) > 1:
         sed(source, target)
   
 def sed(source, target):
-
     print "source: %s target: %s" % (source, target)
 
     for f in os.listdir(target):
@@ -89,8 +82,17 @@ source = pkg_resources.resource_filename("gaeupload", '')
 copyover(source, release)
 source = pkg_resources.resource_filename("tests", '')
 copyover(source, release + os.sep + 'tests')
-#source = pkg_resources.resource_filename('config', '')
-#copyover(source, release + os.sep + 'config')
+try:
+    homedir = os.path.expanduser("~")
+    copyover(homedir + os.sep + "regs" + os.sep + targetin, release + os.sep + 'config')
+    try:
+        shutil.copy(release + os.sep + 'config' + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
+    except IOError:
+        print "app.yaml is missing in %s" % (homedir + os.sep + 'regs' + os.sep + targetin, )
+        os._exit(1)
+except OSError:
+    source = pkg_resources.resource_filename("config", '')
+    copyover(source, release + os.sep + 'config')
 source = pkg_resources.resource_filename('gozerlib', '')
 copyover(source, release + os.sep + 'gozerlib')
 source = pkg_resources.resource_filename('commonplugs', '')
