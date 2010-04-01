@@ -79,6 +79,7 @@ see http://jsonbot.googlecode.com
    test_suite = 'nose.collector',
    data_files=[('config', glob.glob('config/*.example') + ['config/__init__.py']),
                ('tests', glob.glob('tests/*.py')),
+               ('simplejson', glob.glob('simplejson/*.py')),
                ('gaeupload', glob.glob('gaeupload/*.py')),
                ('gaeupload/assets', uploadlist('gaeupload/assets')),
                ('gaeupload/templates', uploadlist('gaeupload/templates')),

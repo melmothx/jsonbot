@@ -32,7 +32,7 @@ from google.appengine.api import users as gusers
 
 ## simplejson import
 
-from waveapi.simplejson import loads
+from simplejson import loads
 
 ## basic imports
 
