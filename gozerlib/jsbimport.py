@@ -11,7 +11,10 @@ import os
 import thread
 import logging
 
-def _import(name, path=None):
+def _import(name):
+    return __import__(name)
+
+def __import(name, path=None):
 
     """
         import module <name> with the imp module  .. will reload module is 
@@ -66,6 +69,4 @@ def force_import(name):
     except KeyError:
         pass
     plug = _import(name)
-    if plug:
-        sys.modules[name] = plug
-        return plug
+    return plug

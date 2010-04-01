@@ -40,16 +40,32 @@ class Plugins(LazyDict):
             otherwise load all plugins for default_plugins list.
 
         """
+        imp = None
+        for module in paths:
+            try:
+                mods = []
+                mm = ""
+                for m in module.split('.'):
+                    mm += m
+                    mods.append(mm)
+                    mm += "."
 
-        for mod in paths:
-            try:
-                imp = _import(mod)
+                for mod in mods:
+                    try:
+                        logging.warn("trying %s" % mod)
+                        imp = __import__(mod)
+                    except ImportError, ex:
+                        logging.error("can't import %s - %s" % (module, str(ex)))
+                        return
             except ImportError:
-                logging.warn("no %s plugin package found" % mod)
+                logging.warn("no %s plugin package found" % module)
                 continue
+            logging.warn("plugins - got plugin package %s" % str(imp))
             try:
-                for plug in imp.__plugs__:
+                for plug in sys.modules[module].__plugs__:
                     self.load("%s.%s" % (mod,plug))
+            except KeyError:
+                logging.warn("failed to load plugin package %s" % module)
             except AttributeError:
                 logging.warn("no plugins in %s" % mod)
 
@@ -79,11 +95,20 @@ class Plugins(LazyDict):
                 return
 
         logging.info("plugins - loading %s" % modname)
-        try:
-            basemod = __import__(modname)
-        except ImportError, ex:
-            logging.error("can't import %s - %s" % (modname, str(ex)))
-            return
+        mods = []
+        mm = ""
+        for m in modname.split('.'):
+            mm += m
+            mods.append(mm)
+            mm += "."
+
+        for mod in mods:
+            try:
+                logging.warn("trying %s" % mod)
+                _import(mod)
+            except ImportError, ex:
+                logging.error("can't import %s - %s" % (modname, str(ex)))
+                return
         try:
             self[modname] = sys.modules[modname]
         except KeyError:
