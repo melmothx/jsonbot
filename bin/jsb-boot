@@ -1,0 +1,3 @@
+./bin/jsb-bootstrap $1
+./bin/jsb-init $1
+cp releases/$1/config/app.yaml releases/$1

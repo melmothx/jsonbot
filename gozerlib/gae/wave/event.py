@@ -127,9 +127,8 @@ class WaveEvent(EventBase):
 
         self.result.append(unicode(item))
 
-        if self.target:
-            self.target.append(item)
-            return self.target
+        self.target.append(item)
+        return self.target
 
     def append_root(self, item):
 

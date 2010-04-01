@@ -1,0 +1,2 @@
+./bin/jsb-boot $1
+./bin/jsb-run $1
