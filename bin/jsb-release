@@ -14,7 +14,7 @@ from gozerlib.utils.generic import gethighest, dosed
 try:
     targetin = sys.argv[1]
 except IndexError:
-    print "fpr-release <name>"
+    print "jsb-release <name>"
     os._exit(1)
 
 target = targetin

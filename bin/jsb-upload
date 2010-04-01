@@ -1,3 +1,0 @@
-cp config/app.yaml upload
-~/google_appengine/appcfg.py update upload
-

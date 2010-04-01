@@ -1,7 +1,0 @@
-if [ -e ./config/app.yaml ]
-then
-   cp ./config/* releases/$1/
-   google_appengine/dev_appserver.py -c releases/$1/gaeupload
-else
-   cat ./config/README
-fi

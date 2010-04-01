@@ -1,2 +1,3 @@
-./bin/jsb-boot $1
-./bin/jsb-run $1
+export PATH="./bin:.:$PATH"
+jsb-boot $1
+jsb-run $1

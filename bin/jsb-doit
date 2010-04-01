@@ -1,4 +1,5 @@
-./setup.py bdist_egg
-./bin/jsb-nest -f dist/jsonbot-0.1-py2.6.egg
+export PATH="./bin:.:$PATH"
+setup.py bdist_egg
+jsb-nest -f dist/jsonbot-0.1-py2.6.egg
 cd jsbnest
 ./bin/jsb-start
