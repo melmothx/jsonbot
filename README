@@ -20,3 +20,5 @@ jsonbot provides the following programs:
 * jsb-upload - upload a release to the GAE
 
 see docs/INSTALL on how to upload your own bot.
+
+JSONBOT is free code (MIT)

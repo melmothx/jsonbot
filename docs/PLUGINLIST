@@ -1,0 +1,35 @@
+PLUGINLIST
+==========
+
+JSONBOT 0.1 contains the following plugins:
+
+  * 8b - eight ball
+  * admin - administator related commands
+  * ask - plugin for asking "experts" a question
+  * choice - choice out of a list .. used in pipelines
+  * core - core bot commands
+  * count - count the numbers in a resutl .. used in pipelines
+  * gadget - wave gadget support
+  * gcalc - use google to calculate
+  * gozernet - connect multiple JSONBOTs through xmpp
+  * grep - grep the result .. used in pipelines
+  * hubbub - pubsubhubbub plugin providing subscribe functionality
+  * ipcalc - ipcalculator
+  * irc - IRC related commands
+  * misc - other commands
+  * more - do a more on buffered output
+  * not - negated grep .. used in pipelines
+  * outputcache - show outputcache data
+  * relay - relay to other waves/xmpp account
+  * reload - reloading of plugins
+  * reverse - reverse the result .. also used in pipelines
+  * sort - sort the result .. used in pipelines
+  * tail - tail the result .. used in pipelines
+  * tinyurl - get a tinyurl 
+  * uniq - make the result unique .. used in pipelines
+  * user - user management
+  * userstate - userstate management
+  * watcher - watch waves .. get notified in xmpp
+  * wave - wave related commands
+  * welcome - welcome messages shown in the gadget
+  * wikipedia - query wikipedia
