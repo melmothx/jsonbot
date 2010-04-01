@@ -104,6 +104,17 @@ except OSError, ex:
 try:
     shutil.copy(release + os.sep + 'config' + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
 except IOError:
-    print "app.yaml is missing in %s" % (release + os.sep + 'config' + os.sep + targetin, )
-    copyover(release + os.sep + 'config', homedir + os.sep + "regs" + os.sep + targetin)
-    print "please edit ~/regs/%s/ dir" % (targetin,)
+    print "app.yaml is missing in %s." % (release + os.sep + 'config' + os.sep + targetin, )
+    try:
+        copyover(release + os.sep + 'config', homedir + os.sep + "regs" + os.sep + targetin)
+        print "please edit ~/regs/%s/ dir and rerun this program." % (targetin,)
+    except OSError:
+        pass
+    try:
+        shutil.copy(release + os.sep + 'config' + os.sep + 'app.yaml.example', release + os.sep + 'app.yaml')
+    except IOError:
+        print "app.yaml is missing in %s. see app.yaml.example" % (homedir + os.sep + 'regs'  + os.sep + targetin, )
+    try:
+        shutil.copy(release + os.sep + 'config' + os.sep + 'mainconfig.example', release + os.sep + 'mainconfig')
+    except IOError:
+        print "mainconfig is missing in %s. see mainconfig.example" % (homedir + os.sep + 'regs'  + os.sep + targetin, )

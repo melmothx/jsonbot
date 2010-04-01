@@ -48,7 +48,7 @@ class BotBase(LazyDict):
 
         self.owner = self.cfg.owner
         if not self.owner:
-            raise NoOwnerSet(self.cfg.cfile)
+            logging.warn("owner is not set in %s" % self.cfg.cfile)
 
         self.setusers(usersin)
         self.users.make_owner(self.owner)

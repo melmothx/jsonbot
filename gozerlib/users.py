@@ -529,7 +529,10 @@ class Users(Persist):
 
     def make_owner(self, userhosts):
         """ see if owner already has a user account if not add it. """ 
-        assert(userhosts)
+        if not userhosts:
+            logging.warn("no usershosts provided in make_owner")
+            return
+
         owner = []
 
         if type(userhosts) != types.ListType:
