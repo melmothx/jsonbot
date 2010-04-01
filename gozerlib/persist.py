@@ -62,7 +62,7 @@ try:
             if 'lib' in self.plugname:
                 self.plugname = calledfrom(sys._getframe(1))
 
-            self.fn = unicode(filename.strip()) # filename to save to
+            self.fn = unicode(stripname(filename.strip())) # filename to save to
             self.key = None
             self.obj = None
             jsontxt = get(self.fn)
@@ -168,7 +168,7 @@ except ImportError:
 
             """ Persist constructor """
 
-            self.fn = filename # filename to save to
+            self.fn = stripname(filename.strip()) # filename to save to
             self.lock = thread.allocate_lock() # lock used when saving)
             self.data = LazyDict() # attribute to hold the data
 
