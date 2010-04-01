@@ -7,14 +7,15 @@
 ## basic imports
 
 import string
+import os
 
 ## define
 
-allowednamechars = string.ascii_letters + string.digits + '!.@-'
+allowednamechars = string.ascii_letters + string.digits + '!.@-' + os.sep
 
 ## functions
 
-def stripname(name, allowed=[]):
+def stripname(name, allowed=""):
     """ strip all not allowed chars from name. """
     res = ""
     for c in name:
