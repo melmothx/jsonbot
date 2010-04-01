@@ -64,6 +64,9 @@ class EventBase(LazyDict):
 
     def reply(self, txt, result=[], *args, **kwargs):
         """ reply to this event """
+        if self.checkqueues(result):
+            return
+
         resp = self.makeresponse(txt, result)
 
         if self.bot:
