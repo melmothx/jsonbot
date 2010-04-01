@@ -82,17 +82,6 @@ source = pkg_resources.resource_filename("gaeupload", '')
 copyover(source, release)
 source = pkg_resources.resource_filename("tests", '')
 copyover(source, release + os.sep + 'tests')
-try:
-    homedir = os.path.expanduser("~")
-    copyover(homedir + os.sep + "regs" + os.sep + targetin, release + os.sep + 'config')
-    try:
-        shutil.copy(release + os.sep + 'config' + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
-    except IOError:
-        print "app.yaml is missing in %s" % (homedir + os.sep + 'regs' + os.sep + targetin, )
-        os._exit(1)
-except OSError:
-    source = pkg_resources.resource_filename("config", '')
-    copyover(source, release + os.sep + 'config')
 source = pkg_resources.resource_filename('gozerlib', '')
 copyover(source, release + os.sep + 'gozerlib')
 source = pkg_resources.resource_filename('commonplugs', '')
@@ -101,4 +90,20 @@ source = pkg_resources.resource_filename('waveplugs', '')
 copyover(source, release + os.sep + 'waveplugs')
 source = pkg_resources.resource_filename('simplejson', '')
 copyover(source, release + os.sep + 'simplejson')
-#copyover('config', release + os.sep + 'config')
+
+homedir = os.path.expanduser("~")
+try:
+    copyover(homedir + os.sep + "regs" + os.sep + targetin, release + os.sep + 'config')
+except OSError, ex:
+    print str(ex)
+    try:
+        source = pkg_resources.resource_filename("config", '')
+        copyover(source, release + os.sep + 'config')
+    except OSError, ex:
+        print str(ex)
+try:
+    shutil.copy(release + os.sep + 'config' + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
+except IOError:
+    print "app.yaml is missing in %s" % (release + os.sep + 'config' + os.sep + targetin, )
+    copyover(release + os.sep + 'config', homedir + os.sep + "regs" + os.sep + targetin)
+    print "please edit ~/regs/%s/ dir" % (targetin,)
