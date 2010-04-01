@@ -306,7 +306,7 @@ class Irc(BotBase):
                     doreconnect = 1
                     logging('irc - no pong received')
                     break
-                logging.error("irc - socket timeout")
+                logging.debug("irc - socket timeout")
                 pingsend = self.ping()
                 if not pingsend:
                     doreconnect = 1
@@ -676,7 +676,7 @@ realname))
 
         """ set pongcheck on received pong. """
 
-        logging.warn('received server pong')
+        logging.debug('received server pong')
         self.pongcheck = 1
 
     def sendraw(self, txt):
