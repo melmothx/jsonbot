@@ -1433,7 +1433,7 @@ def handle_hubbubregister(bot, ievent):
 
         if int(result.status) > 200 and int(result.status) < 300:
             if watcher.add(name, url, ievent.userhost):
-                watcher.start(bot.type, name, target)
+                watcher.start(bot.name, bot.type, name, target)
                 ievent.reply('%s started. status code is %s' % (url, result.status))
             else:
                 ievent.reply("there already exists a %s feed" % name)
