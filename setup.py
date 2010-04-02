@@ -66,7 +66,6 @@ see http://jsonbot.googlecode.com
         'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Environment :: Other Environment',
-         'Framework :: GAE',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: Unix',
