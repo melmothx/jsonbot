@@ -12,6 +12,8 @@ def uploadlist(dir):
     upl = []
     
     for file in os.listdir(dir):
+        if not file or file.startswith('.'):
+            continue
         d = dir + os.sep + file
         if os.path.isdir(d):
             #upload.append(dir + os.sep + file)
@@ -27,7 +29,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.1',
+    version='0.1.1',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
@@ -76,10 +78,10 @@ see http://jsonbot.googlecode.com
     ],
    zip_safe=False, 
    test_suite = 'nose.collector',
-   data_files=[('config', glob.glob('config/*.example') + ['config/__init__.py']),
-               ('tests', glob.glob('tests/*.py')),
-               ('simplejson', glob.glob('simplejson/*.py')),
-               ('gaeupload', glob.glob('gaeupload/*.py')),
+   data_files=[('config', uploadlist('config')),
+               ('tests', uploadlist('tests')),
+               ('simplejson', uploadlist('simplejson')),
+               ('gaeupload', uploadlist('gaeupload')),
                ('gaeupload/assets', uploadlist('gaeupload/assets')),
                ('gaeupload/templates', uploadlist('gaeupload/templates')),
                ('gaeupload/waveapi', uploadlist('gaeupload/waveapi')),

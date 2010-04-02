@@ -1,1 +1,4 @@
 recursive-include gaeupload *
+recursive-include config *
+recursive-include tests *
+recursive-include simplejson *
