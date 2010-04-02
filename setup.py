@@ -63,7 +63,7 @@ and GAE side communicate through JSON either over XMPP or HTTP POST.
 see http://jsonbot.googlecode.com
 """,
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Environment :: Other Environment',
          'Framework :: GAE',
