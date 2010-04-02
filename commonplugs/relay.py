@@ -260,4 +260,4 @@ def handle_relayblocklist(bot, event):
         event.reply('no blocks for %s' % origin)
 
 cmnds.add('relay-blocklist', handle_relayblocklist, 'OPER')
-examples.add('relay-blocklist', 'show blocked relays to us'. 'relay-blocklist')
+examples.add('relay-blocklist', 'show blocked relays to us', 'relay-blocklist')
