@@ -2,7 +2,7 @@
 #
 #
 
-""" json over xmpp. """
+""" events passed as json over xmpp. """
 
 ## gozerbot imports
 
@@ -24,7 +24,7 @@ from simplejson import dumps
 import socket
 import re
 
-## VARS
+## defines
 
 outxmpp = "primalsoup@gozerbot.org"
 state = PlugPersist('gozernet')
@@ -38,8 +38,10 @@ if not state.data.has_key('out'):
 if not state.data.has_key('forward'):
     state.data['forward'] = []
 
-def handle_gozernet_addout(bot, event):
+## commands
 
+def handle_gozernet_addout(bot, event):
+    """ add a bot (JID) to receive out events. """
     global state
 
     if not event.rest:
@@ -55,7 +57,7 @@ def handle_gozernet_addout(bot, event):
 cmnds.add('gozernet-addout', handle_gozernet_addout, 'OPER')
 
 def handle_gozernet_delout(bot, event):
-
+    """ stop sending events to another bot. """
     global state
 
     if not event.rest:
@@ -73,12 +75,13 @@ def handle_gozernet_delout(bot, event):
 cmnds.add('gozernet-delout', handle_gozernet_delout, 'OPER')
 
 def handle_gozernet_outs(bot, event):
+    """ show to which other bots we are sending. """
     event.reply(state.data['out'])
 
 cmnds.add('gozernet-outs', handle_gozernet_outs, 'OPER')
 
 def handle_gozernetforward(bot, event):
-
+    """ forward all events occuring on channel (wave) to the gozernet. """
     if not event.args:
         event.missing('<channel>')
         return
@@ -91,7 +94,7 @@ cmnds.add('gozernet-forward', handle_gozernetforward, 'OPER')
 examples.add('gozernet-forward', 'add a forward item so that channels matching this get send over the gozernet', 'gozernet-forward #dunkbots')
 
 def handle_gozernetdelforward(bot, event):
-
+    """ stop forwarding a channel (wave) to the gozernet. """ 
     if not event.args:
         event.missing('<channel>')
         return
@@ -107,13 +110,14 @@ cmnds.add('gozernet-delforward', handle_gozernetdelforward, 'OPER')
 examples.add('gozernet-delforward', 'remove a forward item so that channels matching this no longer get send over the gozernet', 'gozernet-delforward #dunkbots')
 
 def handle_gozernetlistforward(bot, event):
+    """ list all forwarded channels (waves). """
     event.reply("gozernet forwards: ", state.data['forward'])  
 
 cmnds.add('gozernet-listforward', handle_gozernetlistforward, 'OPER') 
 examples.add('gozernet-listforward', 'show gozernet forwards', 'gozernet-listforward')
 
 def handle_gozernetcmnd(bot, event):
-
+    """ do a command on the gozernet. """
     cmndstring = event.rest
 
     if not cmndstring:

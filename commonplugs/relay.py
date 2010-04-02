@@ -2,7 +2,7 @@
 #
 #
 
-""" relay to other users/channels. """
+""" relay to other users/channels/waves. """
 
 ## gozerlib imports
 
@@ -35,11 +35,8 @@ relay = PlugPersist('relay')
 ## see gozerlib/callbacks.py
   
 def relayprecondition(bot, event):
-
     """ check to see whether the callback needs to be executed. """
-
     origin = event.origin or event.channel
-
     if event.txt and origin in relay.data and not event.iscmnd and not event.isremote:
         return True
 
@@ -52,63 +49,44 @@ def relayprecondition(bot, event):
 ## must be registered)
 
 def relaycallback(bot, event):
-
     """ this is the callbacks that handles the responses to questions. """
-
     # determine where the event came from
-
     origin = event.origin or event.channel
 
     try:
-
         # loop over relays for origin
-
         for botname, type, target in relay.data[origin]:
-
             try:
                 logging.debug('trying relay of %s to (%s,%s)' % (origin, type, target))
-
                 # tests to prevent looping
-
                 if event.txt.find('] [') != -1:
                     continue
-
                 if type == bot.type and origin == target:
                     continue
-
                 if "[%s]" % event.userhost in event.txt:
                     continue
-
                 if "[%s]" % target in event.txt:
                     continue
-
                 if "[%s]" % bot.name in event.txt:
                     continue
-
                 if "[%s]" % botname in event.txt:
                     continue
 
                 # check whether relay is blocked
-
                 if block.data.has_key(origin):
                     if [botname, type, target] in block.data[origin]:
                         continue
 
                 # retrieve the bot from fleet (based on type)
-
                 outbot = fleet.makebot(botname, type)
-                
                 if outbot:
                     logging.debug('relay - outbot found - %s - %s' % (outbot.name, outbot.type))
                     # we got bot .. use it to send the relayed message
-
                     txt = "[%s] %s" % (event.userhost, event.txt)
-
                     if txt.find('] [') != -1:
                         continue
 
                     outbot.say(target, txt)
-
                 else:
                     logging.error("can't find %s bot" % type)
 
@@ -137,6 +115,7 @@ callbacks.add('PRIVMSG', relaycallback, relayprecondition)
 ## triggered the command. Think the code speaks for itself here ;]
 
 def handle_relayclone(bot, event):
+    """ clone relays from one channel to the other. """
     new = event.origin or event.channel
     try:
         old = event.args[0]
@@ -160,9 +139,7 @@ cmnds.add('relay-clone', handle_relayclone, 'OPER')
 examples.add('relay-clone', 'clone relay of old wave to the new', 'relay-clone googlewave.com!w+Pu4YwndxA')
 
 def handle_relay(bot, event):
-
-    """ open a relay to a user. all xmpp input will be relayed. """
-
+    """ [<botname>] <type> <target> .. open a relay to a user. all input from us will be relayed. """
     try:
         (botname, type, target) = event.args
     except ValueError:
@@ -174,11 +151,9 @@ def handle_relay(bot, event):
         return 
 
     origin = event.origin or event.channel
-
     if origin == target:
         event.reply("can't relay to yourself")
         return
-
     if not relay.data.has_key(origin):
         relay.data[origin] = []
 
@@ -196,9 +171,7 @@ cmnds.add('relay', handle_relay, 'USER')
 examples.add('relay', 'open a relay to another user', 'relay bthate@gmail.com')
 
 def handle_relaystop(bot, event):
-
-    """ open a relay to a user. all xmpp input will be relayed. """
-
+    """ stop a relay to a user. all relaying to target will be ignore. """
     try:
         (type, target) = event.args
     except ValueError:
@@ -210,7 +183,6 @@ def handle_relaystop(bot, event):
             target = event.channel
 
     origin = event.origin or event.channel
-
     try:
         logging.debug('trying to remove relay (%s,%s)' % (type, target))
         relay.data[origin].remove([type, target])
@@ -224,10 +196,8 @@ cmnds.add('relay-stop', handle_relaystop, 'USER')
 examples.add('relay-stop', 'close a relay to another user', 'relay-stop bthate@gmail.com')
 
 def handle_askrelaylist(bot, event):
-
-    """ show all relay of a user. """
-
-    origin = event.origin or event.channe;
+    """ show all relay's of a user. """
+    origin = event.origin or event.channel
 
     try:
         event.reply('relays for %s: ' % origin, relay.data[origin])
@@ -235,11 +205,10 @@ def handle_askrelaylist(bot, event):
         event.reply('no relays for %s' % origin)
 
 cmnds.add('relay-list', handle_askrelaylist, 'OPER')
+examples.add('relay-list', 'show all relays of user/channel/wave.', 'relay-list')
 
 def handle_relayblock(bot, event):
-
-    """ open a relay to a user. all xmpp input will be relayed. """
-
+    """ <type> <target> .. block a user/channel/wave from relaying to us. """
     try:
         (type, target) = event.args
     except ValueError:
@@ -247,14 +216,11 @@ def handle_relayblock(bot, event):
         return 
 
     origin = event.origin or event.channel
-
     if bot.type == type and origin == target:
         event.reply("can't relay to yourself")
         return
-
     if not block.data.has_key(origin):
         block.data[origin] = []
-
     if not [type, origin] in block.data[target]:
         block.data[target].append([type, origin])
         block.save()
@@ -265,9 +231,7 @@ cmnds.add('relay-block', handle_relayblock, 'USER')
 examples.add('relay-block', 'block a relay from another user', 'relay-block bthate@gmail.com')
 
 def handle_relayunblock(bot, event):
-
-    """ remove a relay block from a user. """
-
+    """ <target> .. remove a relay block of an user. """
     try:
         target = event.args[0]
     except IndexError:
@@ -275,7 +239,6 @@ def handle_relayunblock(bot, event):
         return 
 
     origin = event.origin or event.channel
- 
     try:
         block.data[origin].remove([bot.name, target])
         block.save()
@@ -288,9 +251,7 @@ cmnds.add('relay-unblock', handle_relaystop, 'USER')
 examples.add('relay-unblock', 'remove a block of another user', 'relay-unblock bthate@gmail.com')
 
 def handle_relayblocklist(bot, event):
-
-    """ show all blocks of a user. """
-
+    """ show all blocks of a user/channel.wave. """
     origin = event.origin or event.channel
 
     try:
@@ -299,3 +260,4 @@ def handle_relayblocklist(bot, event):
         event.reply('no blocks for %s' % origin)
 
 cmnds.add('relay-blocklist', handle_relayblocklist, 'OPER')
+examples.add('relay-blocklist', 'show blocked relays to us'. 'relay-blocklist')

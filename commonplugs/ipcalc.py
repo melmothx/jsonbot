@@ -5,6 +5,10 @@
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
+""" IP subnet calculator. this module allows you to perform network 
+    calculations.
+"""
+
 """
 # IP subnet calculator
 # (C) 2007 Wijnand 'tehmaze' Modderman - http://tehmaze.com
@@ -414,6 +418,7 @@ class Network(IP):
         return 2 ** ((self.version() == 4 and 32 or 128) - self.mask)
 
 def handle_ipcalc(bot, ievent):
+    """ <ip>[</size>] .. calculate IP subnets. """
     if not ievent.args:
         ievent.missing('<ip>[/<size>]')
         return

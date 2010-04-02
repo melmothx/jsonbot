@@ -1,4 +1,4 @@
-# plugs/tinyurl.py
+# commonplugs/tinyurl.py
 #
 #
 
@@ -36,8 +36,12 @@ import urlparse
 import re
 import logging
 
+## defines
+
 re_url_match  = re.compile(u'((?:http|https)://\S+)')
 urlcache = {}
+
+## functions
 
 def valid_url(url):
     """ check if url is valid """
@@ -71,7 +75,7 @@ def privmsgcb(bot, ievent):
 #callbacks.add('PRIVMSG', privmsgcb, precb)
 
 def get_tinyurl(url):
-    """ grab a tinyurl """
+    """ grab a tinyurl. """
     res = get(url, namespace='tinyurl')
     logging.debug('tinyurl - cache - %s' % unicode(res))
 
@@ -108,7 +112,7 @@ def get_tinyurl(url):
     return urls
 
 def handle_tinyurl(bot, ievent):
-    """ get tinyurl from argument or last url in log """
+    """ get tinyurl from provided url. """
     if not ievent.rest and (not urlcache.has_key(bot.name) or not \
 urlcache[bot.name].has_key(ievent.target)):
         ievent.missing('<url>')
@@ -128,4 +132,4 @@ urlcache[bot.name].has_key(ievent.target)):
         ievent.reply('failed to create tinyurl')
 
 cmnds.add('tinyurl', handle_tinyurl, ['USER', 'GUEST'], threaded=True)
-examples.add('tinyurl', 'show a tinyurl', 'tinyurl http://gozerbot.org')
+examples.add('tinyurl', 'show a tinyurl', 'tinyurl http://jsonbot.googlecode.com')

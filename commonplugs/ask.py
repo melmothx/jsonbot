@@ -16,15 +16,18 @@ from gozerlib.fleet import fleet
 
 import logging
 
-questions = PlugPersist('questions')
-experts = PlugPersist('experts')
-subjects = PlugPersist('subjects')
+## defines
 
 # EDIT THIS
 
 defaultJID = 'bthate@gmail.com' 
 
 # END EDIT
+
+questions = PlugPersist('questions')
+experts = PlugPersist('experts')
+subjects = PlugPersist('subjects')
+
 
 ## CALLBACKS
 

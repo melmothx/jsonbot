@@ -2,12 +2,11 @@
 #
 #
 
-"""
-     query wikipedia .. use -<countrycode> to select a country 
+""" query wikipedia .. use -<countrycode> to select a country 
     specific wikipedia. 
-
 """
 
+## gozerlib imports
 
 from gozerlib.utils.url import geturl, striphtml
 from gozerlib.utils.generic import splittxt, handle_exception, fromenc
@@ -15,10 +14,16 @@ from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.utils.rsslist import rsslist
 
+## generic imports
+
 from urllib import quote
 import re
 
+## defines
+
 wikire = re.compile('start content(.*?)end content', re.M)
+
+## functions
 
 def searchwiki(txt, lang='en'):
     for i in txt.split():
@@ -75,8 +80,10 @@ def getwikidata(url):
     txt = re.sub('\s+', ' ', txt)
     return txt
 
+## commands
+
 def handle_wikipedia(bot, ievent):
-    """ wikipedia <what> .. search wikipedia for <what> """
+    """ <what> .. search wikipedia. """
     if not ievent.rest:
         ievent.missing('<what>')
         return
@@ -87,7 +94,7 @@ def handle_wikipedia(bot, ievent):
     txt, url = res
     prefix = '%s ===> ' % url
     result = splittxt(striphtml(txt).strip())
-    ievent.reply(prefix, result)
+    ievent.reply(prefix, result. raw=True)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
 examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search \

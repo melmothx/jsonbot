@@ -3,7 +3,7 @@
 #
 #
 
-""" use google to calculate .. !gcalc 1 + 1 """
+""" use google to calculate e.g. !gcalc 1 + 1 """
 
 ## gozerlib imports
 
@@ -13,6 +13,8 @@ from gozerlib.examples import examples
 ## basic imports
 
 import urllib2
+
+## commands
 
 def handle_gcalc(bot, ievent):
     if len(ievent.args) > 0:
@@ -35,5 +37,4 @@ def handle_gcalc(bot, ievent):
     return
     
 cmnds.add('gcalc', handle_gcalc, ['USER', 'GUEST'])
-examples.add('gcalc', 'Calculate an expression using the google calculator', 'gcalc 1 + 1')
-#tests.add('gcalc 1 + 1')
+examples.add('gcalc', 'calculate an expression using the google calculator', 'gcalc 1 + 1')

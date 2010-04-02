@@ -2,7 +2,7 @@
 #
 #
 
-""" eight ball """
+""" run the eight ball. """
 
 ## gozerlib imports
 
@@ -13,6 +13,8 @@ from gozerlib.examples import examples
 ## basic imports
 
 import re, random
+
+## defines
 
 balltxt=[
     "Signs point to yes.",
@@ -37,8 +39,10 @@ balltxt=[
     "Don't count on it."
     ]
 
+## commands
+
 def handle_8b(bot, ievent):
     ievent.reply(random.choice(balltxt))
 
 cmnds.add('8b', handle_8b, ['USER', 'GUEST'])
-examples.add('8b', 'show what the magic 8 ball has to say', '8b')
+examples.add('8b', 'show what the magic 8 ball has to say.', '8b')
