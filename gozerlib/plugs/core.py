@@ -226,7 +226,7 @@ def handle_helpplug(bot, ievent):
     try:
         what = ievent.args[0]
     except IndexError:
-        pluginslist = Persist('pluginlist').data
+        pluginslist = Persist('run' + os.sep + 'pluginlist').data
         ievent.reply("available plugins: ", pluginslist)
         ievent.reply('see commmands <plugin> for list of commands.')
         ievent.reply('see help <command> for help on the command.')
@@ -265,16 +265,31 @@ def handle_helpplug(bot, ievent):
     except (KeyError, AttributeError):
         ievent.reply('no description of %s plugin available' % what)
         return
-      
-    cmndresult = []
 
+    cmndresult = []
+      
     if phelp:
         ievent.reply('%s - %s' % (what, phelp))
 
+        if bot.users:
+            perms = list(bot.users.getperms(ievent.userhost))
+        else:
+            perms = ['GUEST', ]
+
+        for i, j in cmnds.iteritems():
+            if what == j.plugname:
+                for perm in j.perms:
+                    if perm in perms:
+                        if i not in cmndresult:
+                            try:
+                                descr = j.func.__doc__
+                                cmndresult.append("    !%s - %s" % (i,descr))
+                            except AttributeError:
+                                cmndresult.append(i)
+
     if cmndresult:
         cmndresult.sort()
-        ievent.reply('commands: ', cmndresult, nritems=True, dot="<br>", raw=True)
-
+        ievent.reply('commands: \n', cmndresult, dot="\n", raw=True)
     else:
         ievent.reply('no commands available')
 

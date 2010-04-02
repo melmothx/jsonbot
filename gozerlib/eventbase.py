@@ -135,11 +135,11 @@ class EventBase(LazyDict):
             return True
         return False
 
-    def makeresponse(self, txt, result, *args, **kwargs):
+    def makeresponse(self, txt, result, nritems=False, dot="\n", *args, **kwargs):
         if txt:
-            return txt + u' .. '.join(result)
+            return txt + dot.join(result)
         elif result:
-            return u" .. ".join(result)
+            return dot.join(result)
         return ""
             
     def less(self, what):
