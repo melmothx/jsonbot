@@ -904,7 +904,7 @@ realname))
         try:
             self.outputlock.acquire()
             now = time.time()
-            timetosleep = 5 - (now - self.lastoutput)
+            timetosleep = 4 - (now - self.lastoutput)
             if timetosleep > 0 and not self.nolimiter:
                 logging.warn('irc - flood protect')
                 time.sleep(timetosleep)
@@ -915,7 +915,6 @@ realname))
                 self.outputlock.release()
             except:
                 pass
-            self.lastoutput = time.time()
         except Exception, ex:
             try:
                 self.outputlock.release()
