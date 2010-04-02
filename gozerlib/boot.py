@@ -68,7 +68,7 @@ def savecmndtable():
     for cmndname, c in cmnds.iteritems():
         admin.cmndtable.data[cmndname] = c.modname   
 
-    logging.warn("saving command table")
+    logging.debug("saving command table")
     admin.cmndtable.save()
 
 def getcmndtable():
@@ -90,7 +90,7 @@ def savecallbacktable():
                 admin.callbacktable.data[type] = []
             admin.callbacktable.data[type].append(c.plugname)
 
-    logging.warn("saving callback table")
+    logging.debug("saving callback table")
     admin.callbacktable.save()
 
 def getcallbacktable():
@@ -113,7 +113,7 @@ def savepluginlist():
             admin.pluginlist.data.append(c.plugname)
 
     admin.pluginlist.data.sort()
-    logging.warn("saving plugin list")
+    logging.debug("saving plugin list")
     admin.pluginlist.save()
 
 def getpluginlist():
