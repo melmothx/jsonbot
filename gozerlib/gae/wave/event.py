@@ -144,14 +144,14 @@ class WaveEvent(EventBase):
         self.result.append(unicode(item))
         return self.rootblip
 
-    def reply(self, txt, resultlist=[], nritems=False, *args, **kwargs):
+    def reply(self, txt, resultlist=[], nritems=False, dot=", ", *args, **kwargs):
 
         """ reply to blip. """
 
         if self.checkqueues(resultlist):
             return
 
-        outtxt = self.makeresponse(txt, resultlist, nritems, *args, **kwargs)
+        outtxt = self.makeresponse(txt, resultlist, nritems, dot, *args, **kwargs)
 
         if not outtxt:
             return

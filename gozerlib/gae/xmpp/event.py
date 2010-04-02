@@ -81,7 +81,7 @@ class XMPPEvent(EventBase):
         logging.warn(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 
-    def reply(self, txt, resultlist=[], nritems=False, dot="\n", *args, **kwargs):
+    def reply(self, txt, resultlist=[], nritems=False, dot=", ", *args, **kwargs):
 
         """ reply with txt and optional resultlist. result lists can be 
             passed on onto the events queues. 

@@ -112,7 +112,7 @@ class WebEvent(EventBase):
             dot = "<br>"
         return EventBase.makeresponse(self, txt, resultlist, nritems, dot, *args, **kwargs)
 
-    def reply(self, txt, resultlist=[], nritems=False, dot="<br>", raw=False, *args, **kwargs):
+    def reply(self, txt, resultlist=[], nritems=False, dot=", ", raw=False, *args, **kwargs):
 
         """ send reply to the web user. """
 

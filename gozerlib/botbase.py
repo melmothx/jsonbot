@@ -159,7 +159,7 @@ class BotBase(LazyDict):
 
     def say(self, channel, txt, result=[], event=None, *args, **kwargs):
         """ override this. """ 
-        print u"> " + txt + u' .. '.join(result)
+        print u"> " + txt + u', '.join(result)
 
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """

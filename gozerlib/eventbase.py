@@ -67,7 +67,7 @@ class EventBase(LazyDict):
         if self.checkqueues(result):
             return
 
-        resp = self.makeresponse(txt, result)
+        resp = self.makeresponse(txt, result, *args, **kwargs)
 
         if self.bot:
             self.bot.say(self.channel, resp)
@@ -135,7 +135,7 @@ class EventBase(LazyDict):
             return True
         return False
 
-    def makeresponse(self, txt, result, nritems=False, dot="\n", *args, **kwargs):
+    def makeresponse(self, txt, result, nritems=False, dot=", ", *args, **kwargs):
         if txt:
             return txt + dot.join(result)
         elif result:
