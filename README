@@ -15,10 +15,10 @@ jsonbot provides the following programs:
 
 * jsb - console version of jsonbot
 * jsb-irc - IRC version of jsonbot  
-* jsb-run - run a release in the GAE appserver
 * jsb-release - create a new release directory
+* jsb-run - run a release in the GAE appserver
 * jsb-upload - upload a release to the GAE
 
-see docs/INSTALL on how to upload your own bot.
+see docs/UPLOAD on how to upload your own bot.
 
 JSONBOT is free code (MIT)
