@@ -24,6 +24,7 @@ import sys
 import re
 import os
 import copy
+import cgi
 
 ## define
 
@@ -210,14 +211,6 @@ def handle_helpplug(bot, ievent):
         ievent.reply('see commmands <plugin> for list of commands.')
         return
 
-    cmndhelp = cmnds.gethelp(what)
-
-    if cmndhelp:
-        try:
-            ievent.reply("examples: " + examples[what].example)
-        except KeyError:
-            pass
-
     plugin = None
     modname = ""
 
@@ -243,7 +236,6 @@ def handle_helpplug(bot, ievent):
     cmndresult = []
       
     if phelp:
-        ievent.reply('%s - %s' % (what, phelp))
 
         if bot.users:
             perms = list(bot.users.getperms(ievent.userhost))
@@ -254,18 +246,36 @@ def handle_helpplug(bot, ievent):
             if what == j.plugname:
                 for perm in j.perms:
                     if perm in perms:
-                        if i not in cmndresult:
+                        if True:
                             try:
                                 descr = j.func.__doc__
-                                cmndresult.append("    !%s - %s" % (i,descr))
+                                cmndhelp = cmnds.gethelp(i)
+                                try:
+                                    cmndresult.append(u"    !%s %s - examples: %s" % (i, descr, examples[i].example))
+                                except KeyError:
+                                    cmndresult.append(u"    !%s %s - no examples" % (i, descr))
+
                             except AttributeError:
                                 cmndresult.append(i)
 
-    if cmndresult:
-        cmndresult.sort()
-        ievent.reply('commands: \n', cmndresult, dot="\n", raw=True)
+    if cmndresult and phelp:
+        res = []
+        for r in cmndresult:
+            if bot.type in ['web', ]:
+                res.append("<code>%s</code>" % cgi.escape(r))
+            else:
+                res.append(r)
+
+        res.sort()
+        if bot.type in ['web', ]:
+            res.insert(0, u'%s - %s<br>' % (what, phelp.strip()))
+            ievent.reply('HELP ON %s<br><br>' % what, res, dot="<br>", raw=True)
+        else:
+            res.insert(0, u'%s - %s\n' % (what, phelp.strip()))
+            ievent.reply('HELP ON %s\n\n' % what, res, dot="\n", raw=True)
     else:
         ievent.reply('no commands available')
+
 
 cmnds.add('help-plug', handle_helpplug, ['USER', 'GUEST'])
 examples.add('help-plug', 'get help on <cmnd> or <plugin>', '1) help-plug test 2) help-plug misc')

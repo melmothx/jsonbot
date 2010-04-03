@@ -2,11 +2,9 @@
 #
 #
 
-"""
-    the hubbub mantra is of the following:
+""" the hubbub mantra is of the following:
 
-    use the hb-register <feedname> <url> command to register url and start 
-    a feed in in one pass.
+    use the hb-register <feedname> <url> command to register url and start a feed in in one pass.
 
 """
 

@@ -81,7 +81,7 @@ class WebEvent(EventBase):
         logging.warn(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 
-    def _raw(self, txt, end=""):
+    def _raw(self, txt, end="<br>"):
 
         """ 
             put txt onto the reponse object .. adding end string if provided. 
@@ -108,9 +108,7 @@ class WebEvent(EventBase):
             self._raw(start + txt + end)
 
     def makeresponse(self, txt, resultlist, nritems, dot, *args, **kwargs):
-        if dot == "\n":
-            dot = "<br>"
-        return EventBase.makeresponse(self, txt, resultlist, nritems, dot, *args, **kwargs)
+        return EventBase.makeresponse(self, txt, resultlist, nritems, dot=dot, *args, **kwargs)
 
     def reply(self, txt, resultlist=[], nritems=False, dot=", ", raw=False, *args, **kwargs):
 

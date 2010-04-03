@@ -81,7 +81,7 @@ class XMPPEvent(EventBase):
         logging.warn(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 
-    def reply(self, txt, resultlist=[], nritems=False, dot=", ", *args, **kwargs):
+    def reply(self, txt, resultlist=[], nritems=False, dot=", ", raw=False, *args, **kwargs):
 
         """ reply with txt and optional resultlist. result lists can be 
             passed on onto the events queues. 
@@ -93,17 +93,20 @@ class XMPPEvent(EventBase):
         result = self.makeresponse(txt, resultlist, nritems, dot, *args, **kwargs)
 
         (res1, res2) = self.less(result)
-        self.write(res1)
+        self.write(res1, raw)
 
         if res2:
-            self.write(res2)
+            self.write(res2, raw)
 
-    def write(self, txt):
+    def write(self, txt, raw=False):
 
         """ output txt to the user .. output IS escaped. """
 
         if txt:
             txt = unicode(txt)
             logging.warn(u"xmpp - out - %s - %s" % (self.userhost, txt))
-            xmpp.send_message([self.userhost, ], cgi.escape(txt))
+            if not raw:
+                xmpp.send_message([self.userhost, ], cgi.escape(txt))
+            else:
+                xmpp.send_message([self.userhost, ], txt)
             self.bot.outmonitor(self.origin, self.userhost, txt, self)

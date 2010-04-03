@@ -53,9 +53,9 @@ class Plugins(LazyDict):
                     try:
                         self.load("%s.%s" % (module,plug))
                     except KeyError:
-                        logging.warn("failed to load plugin package %s" % module)
+                        logging.debug("failed to load plugin package %s" % module)
             except AttributeError:
-                logging.warn("no plugins in %s" % mod)
+                logging.warn("no plugins in %s .. define __plugs__ in __init__.py" % mod)
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
@@ -86,7 +86,7 @@ class Plugins(LazyDict):
         try:
             mod = _import(modname)
         except ImportError, ex:
-            logging.error("can't import %s - %s" % (modname, str(ex)))
+            logging.info("can't import %s - %s" % (modname, str(ex)))
             return
         try:
             self[modname] = mod

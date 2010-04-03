@@ -35,7 +35,7 @@ def handle_less(bot, ievent):
 (who, index1, index2))
         return
 
-    ievent.reply(txt)
+    ievent.reply(txt, raw=True)
 
 #cmnds.add('less', handle_less, ['USER', 'CLOUD'])
 #examples.add('less', "less [<who>] [<index1>] <index2> .. get txt from bots output cache", '1) less 0 2) less 0 2 3) less bart 1 0')
@@ -70,9 +70,9 @@ def handle_more(bot, ievent):
     #ievent.reply(what)
 
     if size:
-        ievent.reply("%s (+%s)" % (what.strip(), size))
+        ievent.reply("%s (+%s)" % (what.strip(), size), raw=True)
     else:
-        ievent.reply(what.strip())
+        ievent.reply(what.strip(), raw=True)
      
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('more', 'return txt from output cache', '1) more 2) more test')
