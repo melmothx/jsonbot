@@ -7,6 +7,7 @@
 from gozerlib.commands import cmnds
 from gozerlib.outputcache import get, set
 from gozerlib.callbacks import callbacks
+from gozerlib.examples import examples
 
 ## callbacks
 
