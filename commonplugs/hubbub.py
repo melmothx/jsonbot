@@ -351,7 +351,7 @@ class HubbubWatcher(PlugPersist):
         """ check if userhost is the owner of feed. """
         try:
             return self.byname(name).ownercheck(userhost)
-        except KeyError:
+        except (KeyError, AttributeError):
             pass
 
         return False
@@ -804,7 +804,7 @@ def handle_hubbubchannels(bot, ievent):
     for i in item.data.watchchannels:
         result.append(str(i))
 
-    ievent.reply("channels of %s: " % name, result, dot=True)
+    ievent.reply("channels of %s: " % name, result)
 
 cmnds.add('hb-channels', handle_hubbubchannels, ['OPER', ])
 examples.add('hb-channels', 'hb-channels <name> .. show channels', 'hb-channels gozerbot')
@@ -934,7 +934,7 @@ examples.add('hb-delitem', 'remove a token from the itemslist (per user/channel)
 
 def handle_hubbubmarkuplist(bot, ievent):
     """ show possible markups that can be used. """
-    ievent.reply('possible markups ==> ' , possiblemarkup, dot=True)
+    ievent.reply('possible markups ==> ' , possiblemarkup)
 
 cmnds.add('hb-markuplist', handle_hubbubmarkuplist, ['USER', 'GUEST'])
 examples.add('hb-markuplist', 'show possible markup entries', 'hb-markuplist')
@@ -1140,7 +1140,7 @@ def handle_hubbublist(bot, ievent):
     result.sort()
 
     if result:
-        ievent.reply("hubbub items: ", result, dot=True)
+        ievent.reply("hubbub items: ", result)
     else:
         ievent.reply('no hubbub items yet')
 
@@ -1243,7 +1243,7 @@ def handle_hubbubfeeds(bot, ievent):
     try:
         result = watcher.getfeeds(channel)
         if result:
-            ievent.reply("feeds running: ", result, dot=True)
+            ievent.reply("feeds running: ", result)
         else:
             ievent.reply('no feeds running')
 

@@ -40,9 +40,9 @@ def handle_reload(bot, ievent):
                 errors.append(str(ex))
 
     if reloaded:
-        ievent.reply('reloaded: ', reloaded, dot=True)
+        ievent.reply('reloaded: ', reloaded)
     if errors:
-        ievent.reply('errors: ', errors, dot=True)
+        ievent.reply('errors: ', errors)
 
 cmnds.add('reload', handle_reload, 'OPER')
 examples.add('reload', 'reload <plugin>', 'reload core')

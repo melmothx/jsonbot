@@ -255,7 +255,7 @@ def handle_relayblocklist(bot, event):
     origin = event.origin or event.channel
 
     try:
-        event.reply('blocks for %s: ' % origin, blocks.data[origin])
+        event.reply('blocks for %s: ' % origin, block.data[origin])
     except KeyError:
         event.reply('no blocks for %s' % origin)
 

@@ -160,11 +160,12 @@ def handle_delete(bot, ievent):
     result = 0
     name = stripname(name.lower())
     name = name.lower()
-    result = bot.users.delete(name)
-    if result:
-        ievent.reply('%s deleted' % name)
-    else:
-        ievent.reply('delete of %s failed' % name)
+    try:
+        result = bot.users.delete(name)
+        if result:
+            ievent.reply('%s deleted' % name)
+    except KeyError:
+        ievent.reply('no %s item in database' % name)
 
 cmnds.add('user-del', handle_delete, 'OPER')
 examples.add('user-del', 'user-del <name> .. delete user with <username>' , 'user-del dunker')
@@ -272,7 +273,7 @@ def handle_getperms(bot, ievent):
 
     perms = bot.users.getuserperms(name)
     if perms:
-        ievent.reply("permissions of %s: " % name, perms, dot=True)
+        ievent.reply("permissions of %s: " % name, perms)
     else:
         ievent.reply('%s has no permissions set' % name)
 
@@ -292,7 +293,7 @@ def handle_perms(bot, ievent):
 
     perms = bot.users.getuserperms(name)
     if perms:
-        ievent.reply("you have permissions: ", perms, dot=True)
+        ievent.reply("you have permissions: ", perms)
 
 cmnds.add('user-perms', handle_perms, 'USER')
 examples.add('user-perms', 'get permissions', 'user-perms')
@@ -360,7 +361,7 @@ def handle_getstatus(bot, ievent):
 
     status = bot.users.getuserstatuses(name)
     if status:
-        ievent.reply("status of %s: " % name, status, dot=True)
+        ievent.reply("status of %s: " % name, status)
     else:
         ievent.reply('%s has no status set' % name)
 
@@ -371,7 +372,7 @@ def handle_status(bot, ievent):
     """ get status of user given the command. """
     status = bot.users.getstatuses(ievent.userhost)
     if status:
-        ievent.reply("you have status: ", status, dot=True)
+        ievent.reply("you have status: ", status)
     else:
         ievent.reply('you have no status set')
 
@@ -463,7 +464,7 @@ def handle_getuserhosts(bot, ievent):
     who = who.lower()
     userhosts = bot.users.getuserhosts(who)
     if userhosts:
-        ievent.reply("userhosts of %s: " % who, userhosts, dot=True)
+        ievent.reply("userhosts of %s: " % who, userhosts)
     else:
         ievent.reply("can't find user %s" % who)
 
@@ -474,7 +475,7 @@ def handle_userhosts(bot, ievent):
     """ get userhosts of user giving the command. """
     userhosts = bot.users.gethosts(ievent.userhost)
     if userhosts:
-        ievent.reply("you have userhosts: ", userhosts, dot=True)
+        ievent.reply("you have userhosts: ", userhosts)
 
 cmnds.add('user-userhosts', handle_userhosts, 'USER')
 examples.add('user-userhosts', 'get userhosts', 'user-userhosts')
@@ -712,7 +713,7 @@ def handle_getuserstatus(bot, ievent):
 
     result = bot.users.getstatususers(status)
     if result:
-        ievent.reply("users with %s status: " % status, result, dot=True)
+        ievent.reply("users with %s status: " % status, result)
     else:
         ievent.reply("no users with %s status found" % status)
     return
@@ -731,7 +732,7 @@ def handle_getuserperm(bot, ievent):
     result = bot.users.getpermusers(perm)
 
     if result:
-        ievent.reply('users with %s permission: ' % perm, result, dot=True)
+        ievent.reply('users with %s permission: ' % perm, result)
     else:
         ievent.reply("no users with %s permission found" % perm)
     return
@@ -750,7 +751,7 @@ def handle_usersearch(bot, ievent):
     result = bot.users.usersearch(what)
     if result:
         res = ["(%s) %s" % u for u in result]
-        ievent.reply('users matching %s: ' % what, res, dot=True)
+        ievent.reply('users matching %s: ' % what, res)
     else:
         ievent.reply('no userhost matching %s found' % what)
 

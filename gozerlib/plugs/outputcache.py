@@ -42,7 +42,7 @@ def handle_outputcache(bot, event):
         event.reply('no data in cache')
 
 cmnds.add('outputcache', handle_outputcache, 'USER')
-examples.add('outputcache', 'forward the outputcache to the user.', 'output-cache')
+examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache')
 
 def handle_outputcacheflush(bot, event):
     """ <channel or JID> .. flush outputcache of a user. """

@@ -124,11 +124,12 @@ class WaveEvent(EventBase):
 
         if not self.target and self.blip:
             self.target = self.blip.reply()
+        else:
+            self.target = self.root.reply()
 
         self.result.append(unicode(item))
-
         self.target.append(item)
-        return self.target
+        return self
 
     def append_root(self, item):
 
