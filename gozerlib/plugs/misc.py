@@ -1,4 +1,4 @@
-# plugs/misc.py
+# gozerlib/plugs/misc.py
 #
 #
 
@@ -12,42 +12,37 @@ from gozerlib.persiststate import UserState
 
 ## basic imports
 
-import time, os, threading, thread
+import time
+import os
+import threading
+import thread
 
 def handle_test(bot, ievent):
-
-    """ test .. give test response which is a string of the ircevent. """
-
+    """ give test response. """
     ievent.reply("%s .. it works!" % ievent.userhost)
 
 cmnds.add('test', handle_test, ['USER', 'GUEST', ])
 examples.add('test', 'give test response',' test')
 
 def handle_source(bot, ievent):
-
-    """ source .. show where to fetch the bot source. """ 
-
+    """ show where to fetch the bot source. """ 
     ievent.reply('see http://jsonbot.googlecode.com')
 
 cmnds.add('source', handle_source, ['USER', 'GUEST'])
 examples.add('source', 'show source url', 'source')
 
 def handle_time(bot, ievent):
-
     """ show current time """
-
     authuser = username = ievent.userhost
-
     if authuser:
         userstate = UserState(username)
-
         try:
             tz = userstate['TZ']
         except KeyError:
             ievent.reply("%s doesn't have a timezone set .. use !set TZ " % username)
             return
-        ievent.reply(get_time(tz, username, authuser))
 
+        ievent.reply(get_time(tz, username, authuser))
     else:
         ievent.reply(get_time('UTC', '', ''))
 
@@ -55,11 +50,8 @@ cmnds.add('time', handle_time, ['USER', 'CLOUD'], threaded=True)
 examples.add('time', 'show current time (of a user)', 'time test')
 
 def handle_timezone(bot, ievent):
-
-    """ timezone .. set current timezone. """
-
+    """ <timezone> (integer) .. set users timezone in the userstate. """
     username = ievent.userhost
-
     if not ievent.rest:
         ievent.missing('<timezone> (integer)')
         return
@@ -79,12 +71,9 @@ def handle_timezone(bot, ievent):
 
 cmnds.add('timezone', handle_timezone, ['USER'], threaded=True)
 examples.add('timezone', 'set current timezone', 'timezone +1')
-#tests.add('timezone')
 
 def handle_ask_timezone(bot, ievent):
-
     """ ask for a users timezone. """
-
     ievent.reply('what is your timezone ? for example -1 or +4')
     response = waitforuser(bot, ievent.userhost)
 
@@ -95,9 +84,7 @@ def handle_ask_timezone(bot, ievent):
         return
 
 def set_timezone(bot, ievent, userstate, timezone):
-
     """ set a users timezone. """
-
     # check for timezone validity and return False, if necessary
     try:
         tz = int(timezone)
@@ -111,9 +98,7 @@ def set_timezone(bot, ievent, userstate, timezone):
     return True
 
 def get_time(zone, username, authuser):
-
     """ get the time of a user. """
-
     try:
         zone = int(zone)
     except ValueError:

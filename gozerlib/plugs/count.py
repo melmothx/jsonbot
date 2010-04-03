@@ -1,4 +1,4 @@
-# plugs/count.py
+# gozerlib/plugs/count.py
 #
 #
 
@@ -11,9 +11,7 @@ from gozerlib.utils.generic import waitforqueue
 from gozerlib.examples import examples
 
 def handle_count(bot, ievent):
-
     """ show nr of elements in result list. """
-
     if not ievent.inqueue:
         ievent.reply("use count in a pipeline")
         return

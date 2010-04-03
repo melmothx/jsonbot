@@ -18,9 +18,7 @@ from gozerlib.boot import savecmndtable, savepluginlist
 import os
 
 def handle_reload(bot, ievent):
-
-    """ reload a plugin. """
-
+    """ <list of plugins> .. reload plugins. """
     try:
         pluglist = ievent.args
     except IndexError:
@@ -50,9 +48,7 @@ cmnds.add('reload', handle_reload, 'OPER')
 examples.add('reload', 'reload <plugin>', 'reload core')
 
 def handle_unload(bot, ievent):
-
     """ unload a plugin. """
-
     try:
         what = ievent.args[0].lower()
     except IndexError:
@@ -64,9 +60,7 @@ def handle_unload(bot, ievent):
         return
 
     got = plugs.unload(what)
-
-    ievent.reply("unloaded and disabled: ", got, dot=True)
+    ievent.reply("unloaded and disabled: ", got)
 
 cmnds.add('unload', handle_unload, 'OPER')
 examples.add('unload', 'unload <plugin>', 'unload relay')
-#tests.add('reload country').add('unload country', 'country')

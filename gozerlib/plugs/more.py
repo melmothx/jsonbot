@@ -8,9 +8,7 @@ from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
 def handle_less(bot, ievent):
-
     """ get entry from the output cache. """
-
     try:
         if len(ievent.args) == 3:
             (who, index1, index2) = ievent.args
@@ -53,13 +51,11 @@ def handle_lesssize(bot, ievent):
 
     ievent.reply("outputcache for %s: %s" % (who, str(bot.outcache.size(who))))
 
-cmnds.add('less-size', handle_lesssize, ['USER', ])
-examples.add('less-size', "show sizes of data in bot's ouput cache", 'less-size')
+#cmnds.add('less-size', handle_lesssize, ['USER', ])
+#examples.add('less-size', "show sizes of data in bot's ouput cache", 'less-size')
 
 def handle_more(bot, ievent):
-
     """ pop message from the output cache. """
-
     try:
         who = ievent.args[0]
     except IndexError:

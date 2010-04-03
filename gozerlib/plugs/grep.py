@@ -1,4 +1,4 @@
-# plugs/grep.py
+# gozerlib/plugs/grep.py
 #
 #
 
@@ -16,13 +16,10 @@ import getopt
 import re
 
 def handle_grep(bot, ievent):
-
-    """ grep the result list. """
-
+    """ <txt> .. grep the result list. """
     if not ievent.inqueue:
         ievent.reply('use grep in a pipeline')
         return
-
     if not ievent.rest:
         ievent.reply('grep <txt>')
         return
@@ -51,9 +48,7 @@ def handle_grep(bot, ievent):
             doinvert = True
 
     res = []
-
     if doregex:
-
         try:
             if docasein:
                 reg = re.compile(' '.join(rest), re.I)
@@ -72,7 +67,6 @@ def handle_grep(bot, ievent):
                 if re.search(reg, i):
                     res.append(i)
     else:
-
         if docasein:
             what = ' '.join(rest).lower()
         elif doinvert:
@@ -98,4 +92,3 @@ def handle_grep(bot, ievent):
 
 cmnds.add('grep', handle_grep, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('grep', 'grep the output of a command', 'list | grep core')
-#tests.add('list | grep core', 'core')

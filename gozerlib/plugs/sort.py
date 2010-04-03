@@ -1,4 +1,4 @@
-# plugs/sort.py
+# gozerlib/plugs/sort.py
 #
 # Sorting
 
@@ -13,8 +13,11 @@ from gozerlib.commands import cmnds
 from gozerlib.utils.generic import waitforqueue
 from gozerlib.examples import examples
 
-# basic imports
+## basic imports
+
 import optparse
+
+## classes
 
 class SortError(Exception): pass
 
@@ -53,6 +56,8 @@ class SortOptionParser(optparse.OptionParser):
         else:
             raise SortError
 
+## functions
+
 def numeric_compare(x, y):
     try: a = int(x)
     except: return cmp(x, y)
@@ -60,10 +65,10 @@ def numeric_compare(x, y):
     except: return cmp(x, y)
     return a - b
 
+## commands
+
 def handle_sort(bot, ievent):
-
     """ sort the result list. """
-
     parser = SortOptionParser()
 
     if not ievent.inqueue:
@@ -89,20 +94,16 @@ def handle_sort(bot, ievent):
 
     if options.unique:
         result = list(set(result))
-
     if options.numeric:
         result.sort(numeric_compare)
     else:
         result.sort()
-
     if options.ignorecase:
         result.sort(lambda a, b: cmp(a.upper(), b.upper()))
-
     if options.reverse:
         result.reverse()
     
-    ievent.reply("results: ", result, dot=True)
+    ievent.reply("results: ", result)
 
 cmnds.add('sort', handle_sort, ['USER', 'GUEST'], threaded=True)
 examples.add('sort', 'sort the output of a command', 'list | sort')
-#tests.add('list | sort')

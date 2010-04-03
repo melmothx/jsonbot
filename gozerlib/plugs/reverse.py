@@ -1,4 +1,4 @@
-# gozerbot/plugs/reverse.py
+# gozerlib/plugs/reverse.py
 #
 # 
 
@@ -16,9 +16,7 @@ from gozerlib.examples import examples
 import types
 
 def handle_reverse(bot, ievent):
-
     """ reverse string or pipelined list. """
-
     if ievent.inqueue:
         result = waitforqueue(ievent.inqueue, 5)
     elif not ievent.rest:
@@ -34,4 +32,3 @@ def handle_reverse(bot, ievent):
 
 cmnds.add('reverse', handle_reverse, ['USER', 'CLOUD'], threaded=True)
 examples.add('reverse', 'reverse text or pipeline', '1) reverse gozerbot 2) list | reverse')
-#tests.add('reverse gozerbot', 'tobrezog').add('list | reverse', 'misc')

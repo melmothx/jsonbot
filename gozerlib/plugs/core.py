@@ -1,4 +1,4 @@
-# commonplugs/core.py
+# gozerlib/plugs/core.py
 #
 #
 

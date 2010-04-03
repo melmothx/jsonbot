@@ -1,4 +1,4 @@
-# plugs/tail.py
+# gozerlib/plugs/tail.py
 #
 #
 
@@ -10,22 +10,20 @@ from gozerlib.utils.generic import waitforqueue
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
+## commands
+
 def handle_tail(bot, ievent):
-
     """ used in a pipeline .. show last <nr> elements. """
-
     if not ievent.inqueue:
         ievent.reply("use tail in a pipeline")
         return
-
     try:
         nr = int(ievent.args[0])
     except (ValueError, IndexError):
         ievent.reply('tail <nr>')
         return
 
-    result = waitforqueue(ievent.inqueue, 30)
-
+    result = waitforqueue(ievent.inqueue, 5)
     if not result:
         ievent.reply('no data to tail')
         return
@@ -34,4 +32,3 @@ def handle_tail(bot, ievent):
     
 cmnds.add('tail', handle_tail, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('tail', 'show last <nr> lines of pipeline output', 'list | tail 5')
-#tests.add('list | tail 5')

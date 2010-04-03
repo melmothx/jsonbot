@@ -1,20 +1,20 @@
-# gozerbot/plugs/userstate.py
+# gozerlib/plugs/userstate.py
 #
 #
 
 """ userstate is stored in gozerdata/userstates. """
 
-# gozerlib imports
+## gozerlib imports
 
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.persiststate import UserState
 from gozerlib.errors import NoSuchUser
 
+## commands
+
 def handle_userstate(bot, ievent):
-
-    """ let the user manage its own state. """
-
+    """ <item> <value> .. let the user manage its own state. """
     try:
         (item, value) = ievent.args
     except ValueError:
@@ -34,7 +34,7 @@ def handle_userstate(bot, ievent):
         result.append("%s=%s" % (i, j))
 
     if result:
-        ievent.reply("userstate of %s: " % username, result, dot=True)
+        ievent.reply("userstate of %s: " % username, result)
     else:
         ievent.reply('no userstate of %s known' % username)
 
@@ -42,9 +42,7 @@ cmnds.add('userstate', handle_userstate, 'USER')
 examples.add('userstate', 'get or set userstate', '1) userstate 2) userstate TZ -1')
 
 def handle_userstateget(bot, ievent):
-
-    """ get state of a user. """
-
+    """ <username> .. get state of a user. """
     if not ievent.rest:
         ievent.missing('<username>')
         return
@@ -53,7 +51,6 @@ def handle_userstateget(bot, ievent):
     result = []
     for i, j in userstate.data.iteritems():
         result.append("%s=%s" % (i, j))
-
     if result:
         ievent.reply("userstate of %s: " % ievent.rest, result, dot=True)
     else:
@@ -63,9 +60,7 @@ cmnds.add('userstate-get', handle_userstateget, 'OPER')
 examples.add('userstate-get', 'get the userstate of another user', 'userstate-get dunker')
 
 def handle_userstateset(bot, ievent):
-
-    """ set the userstate of a user. """
-
+    """ <username> <item> <value> .. set the userstate of a user. """
     try:
         (username, item, value) = ievent.args
     except ValueError:
@@ -81,9 +76,7 @@ cmnds.add('userstate-set', handle_userstateset, 'OPER')
 examples.add('userstate-set', 'set userstate variable of another user', 'userstate-set dunker TZ -1')
 
 def handle_userstatedel(bot, ievent):
-
-    """ remove value from user state. """
-
+    """ [username] <item> .. remove value from user state. """
     username = None
     try:
         (username, item)  = ievent.args
@@ -98,9 +91,7 @@ def handle_userstatedel(bot, ievent):
     if not username:
         ievent.reply("i dont have any state for %s" % ievent.userhost)
         return
- 
     userstate = UserState(username)
-
     try:
         del userstate.data[item]
     except KeyError:
@@ -114,9 +105,7 @@ cmnds.add('userstate-del', handle_userstatedel, 'OPER')
 examples.add('userstate-del', 'delete userstate variable', '1) userstate-del TZ 2) userstate-del dunker TZ')
 
 def handle_unset(bot, ievent):
-
-    """ remove value from user state of the user giving the command. """
-
+    """ <item> .. remove value from user state of the user giving the command. """
     try:
         item = ievent.args[0]
     except IndexError:

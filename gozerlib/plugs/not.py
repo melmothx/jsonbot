@@ -1,4 +1,4 @@
-# gozerbot/plugs/not.py
+# gozerlib/plugs/not.py
 #
 #
 
@@ -16,13 +16,10 @@ import getopt
 import re
 
 def handle_not(bot, ievent):
-
     """ negative grep. """
-
     if not ievent.inqueue:
         ievent.reply('use not in a pipeline')
         return
-
     if not ievent.rest:
         ievent.reply('not <txt>')
         return
@@ -34,19 +31,16 @@ def handle_not(bot, ievent):
         return
 
     result = waitforqueue(ievent.inqueue, 10)
-
     if not result:
         ievent.reply('no data to grep on')
         return
 
     doregex = False
-
     for i, j in options:
         if i == '-r':
             doregex = True
 
     res = []
-
     if doregex:
         try:
             reg = re.compile(' '.join(rest))
@@ -68,4 +62,3 @@ def handle_not(bot, ievent):
 
 cmnds.add('not', handle_not, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('not', 'reverse grep used in pipelines', 'list | not todo')
-#tests.add('list | not core')
