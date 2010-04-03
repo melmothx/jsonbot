@@ -1,4 +1,4 @@
-# plugs/8b.py
+# commonplugs/8b.py
 #
 #
 
@@ -12,7 +12,8 @@ from gozerlib.examples import examples
 
 ## basic imports
 
-import re, random
+import re
+import random
 
 ## defines
 
@@ -42,6 +43,7 @@ balltxt=[
 ## commands
 
 def handle_8b(bot, ievent):
+    """ throw the eight ball. """
     ievent.reply(random.choice(balltxt))
 
 cmnds.add('8b', handle_8b, ['USER', 'GUEST'])

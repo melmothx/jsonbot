@@ -1,11 +1,11 @@
-# plugs/core.py
+# commonplugs/core.py
 #
 #
 
 """ core bot commands. """
 
+## gozerbot imports
 
-# gozerbot imports
 from gozerlib.utils.timeutils import elapsedstring
 from gozerlib.utils.generic import getversion
 from gozerlib.utils.exception import handle_exception
@@ -16,7 +16,7 @@ from gozerlib.admin import plugin_packages
 from gozerlib.boot import getpluginlist, boot
 from gozerlib.persist import Persist
 
-# basic imports
+## basic imports
 
 import time
 import threading
@@ -28,11 +28,15 @@ import copy
 ## define
 
 def handle_ccadd(bot, event):
+    """ add a control character (bot wide). """
     if bot.cfg:
         if not bot.cfg.cc:
             bot.cfg.cc = event.rest
-        else:
+        elif event.rest not in bof.cfg.cc:
             bot.cfg.cc += event.rest
+        else:
+            event.reply("%s is already in cc list" % event.rest)
+            return
         bot.cfg.save()
         event.done()
     else:
@@ -42,7 +46,7 @@ cmnds.add('cc-add', handle_ccadd, 'OPER')
 examples.add('cc-add', 'add a control charater (bot wide)', 'cc-add @')
 
 def handle_ccremove(bot, event):
-
+    """ remove a control character from the bot's cc list. """
     try:
         bot.cfg.cc.remove(event.rest)
         bot.cfg.save()
@@ -54,38 +58,27 @@ cmnds.add('cc-add', handle_ccadd, 'OPER')
 examples.add('cc-add', 'add a control charater (bot wide)', 'cc-add @')
 
 def handle_encoding(bot, ievent):
-
     """ show default encoding. """
-
     ievent.reply('default encoding is %s' % sys.getdefaultencoding())
 
 cmnds.add('encoding', handle_encoding, ['USER', 'OPER'])
 examples.add('encoding', 'show default encoding', 'encoding')
-#tests.add('encoding')
 
 def handle_uptime(bot, ievent):
-
     """ show uptime. """
-
     ievent.reply("uptime is %s" % elapsedstring(time.time()-bot.starttime))
 
 cmnds.add('uptime', handle_uptime, ['USER', 'WEB', 'GUEST'])
 examples.add('uptime', 'show uptime of the bot', 'uptime')
 
 def handle_list(bot, ievent):
-
-    """ list [<plugin>] .. list loaded plugins or list commands provided by \
-        plugin.
-    """
-
+    """ [<plugin>] .. list loaded plugins or list commands provided by plugin. """
     try:
         what = ievent.args[0]
     except:
         # no arguments given .. show plugins
         result = []
-
         for plug in plugs:
-
             if '__init__' in plug:
                 continue
 
@@ -96,7 +89,6 @@ def handle_list(bot, ievent):
 
     # show commands of <what> plugin
     result = []
-
     for i, j in cmnds.iteritems():
         if what == j.plugname:
             txt = i
@@ -110,32 +102,27 @@ def handle_list(bot, ievent):
         ievent.reply('no commands found for plugin %s' % what)
 
 #cmnds.add('list', handle_list, ['USER', 'WEB', 'CLOUD'], threaded=True)
-#tests.add('list', 'core')
 
 def handle_available(bot, ievent):
+    """ show available plugins .. to enable use !reload. """
     ievent.reply("available plugins: ", getpluginlist())
 
 cmnds.add('list', handle_available, ['USER', 'GUEST'])
 examples.add('list', 'list available plugins', 'list')
 
 def handle_commands(bot, ievent):
-
-    """ commands <plugin> .. show commands of <plugin>. """
-
+    """ <plugin> .. show commands of <plugin>. """
     try:
         plugin = ievent.args[0].lower()
     except IndexError:
-        ievent.missing('<plugin> .. see the list command for available \
-plugins')
+        ievent.missing('<plugin> .. see the list command for available plugins')
         return
 
     if not plugs.has_key(plugin):
-        ievent.reply('no %s plugin is loaded .. see the available command for \
-available plugins (reload to enable)' % plugin)
+        ievent.reply('no %s plugin is loaded .. see the available command for available plugins (reload to enable)' % plugin)
         return
 
     result = []
-
     cp = dict(cmnds)
     for i, j in cp.iteritems():
         if plugin == j.plugname:
@@ -145,18 +132,16 @@ available plugins (reload to enable)' % plugin)
 
     if result:
         result.sort()
-        ievent.reply('%s has the following commands: ' % plugin, result, \
-dot=True)
+        ievent.reply('%s has the following commands: ' % plugin, result)
     else:
         ievent.reply('no commands found for plugin %s' % plugin)
 
 cmnds.add('commands', handle_commands, ['USER', 'GUEST', 'CLOUD'])
 examples.add('commands', 'show commands of <plugin>', '1) commands core')
-#tests.add('commands core', 'uptime')
 
 def handle_perm(bot, ievent):
 
-    """ perm <command> .. get permission of command. """
+    """ <command> .. get permission of command. """
 
     try:
         cmnd = ievent.args[0]
@@ -178,21 +163,16 @@ def handle_perm(bot, ievent):
 
 cmnds.add('perm', handle_perm, ['USER', 'GUEST', 'WEB'])
 examples.add('perm', 'show permission of command', 'perm quit')
-#tests.add('perm version', 'USER')
 
 def handle_version(bot, ievent):
-
     """ show bot's version. """
-
     ievent.reply(getversion(bot.type.upper()))
 
 cmnds.add('version', handle_version, ['USER', 'GUEST'])
 examples.add('version', 'show version of the bot', 'version')
 
 def handle_whereis(bot, ievent):
-
-    """ whereis <cmnd> .. locate a command. """
-
+    """ <cmnd> .. locate a command. """
     try:
         cmnd = ievent.args[0]
     except IndexError:
@@ -200,7 +180,6 @@ def handle_whereis(bot, ievent):
         return
 
     plugin = cmnds.whereis(cmnd)
-
     if plugin:
         ievent.reply("%s command is in: %s" %  (cmnd, plugin))
     else:
@@ -208,9 +187,9 @@ def handle_whereis(bot, ievent):
 
 cmnds.add('whereis', handle_whereis, ['USER', 'GUEST'])
 examples.add('whereis', 'whereis <cmnd> .. show in which plugins <what> is', 'whereis test')
-#tests.add('whereis version', 'core')
 
 def handle_help(bot, event):
+    """ help [<cmnd>|<plugin>]. """
     if event.rest:
         event.txt = 'help ' + event.rest
         handle_helpplug(bot, event)
@@ -221,7 +200,7 @@ cmnds.add('help', handle_help, ['USER', 'GUEST'])
 
 def handle_helpplug(bot, ievent):
 
-    """ help [<cmnd>|<plugin>] .. show help on plugin/command or show basic help msg. """
+    """ help [<plugin>] .. show help on plugin/command or show basic help msg. """
 
     try:
         what = ievent.args[0]
@@ -229,20 +208,15 @@ def handle_helpplug(bot, ievent):
         pluginslist = Persist('run' + os.sep + 'pluginlist').data
         ievent.reply("available plugins: ", pluginslist)
         ievent.reply('see commmands <plugin> for list of commands.')
-        ievent.reply('see help <command> for help on the command.')
         return
 
     cmndhelp = cmnds.gethelp(what)
 
     if cmndhelp:
-        ievent.reply(cmndhelp)
-
         try:
             ievent.reply("examples: " + examples[what].example)
         except KeyError:
             pass
-
-        return
 
     plugin = None
     modname = ""
@@ -295,12 +269,9 @@ def handle_helpplug(bot, ievent):
 
 cmnds.add('help-plug', handle_helpplug, ['USER', 'GUEST'])
 examples.add('help-plug', 'get help on <cmnd> or <plugin>', '1) help-plug test 2) help-plug misc')
-#tests.add('help core', 'version')
 
 def handle_apro(bot, ievent):
-
-    """ apro <cmnd> .. apropos for command. """
-
+    """ <cmnd> .. apropos for command. """
     try:
         what = ievent.args[0]
     except IndexError:
@@ -322,9 +293,7 @@ cmnds.add('apro', handle_apro, ['USER', 'GUEST'])
 examples.add('apro', 'apro <what> .. search for commands that contain <what>', 'apro com')
 
 def handle_whatcommands(bot, ievent):
-
     """ show all commands with permission. """
-
     if not ievent.rest:
         ievent.missing('<perm>')
         return
@@ -336,20 +305,16 @@ def handle_whatcommands(bot, ievent):
             res.append(cmnd.cmnd)
 
     res.sort()
-
-    if not result:
+    if not res:
         ievent.reply('no commands known for permission %s' % ievent.rest)
     else:
         ievent.reply('commands known for permission %s: ' % ievent.rest, res)
 
 cmnds.add('whatcommands', handle_whatcommands, ['USER', 'GUEST'])
 examples.add('whatcommands', 'show commands with permission <perm>', 'whatcommands USER')
-#tests.add('whatcommands USER', 'version')
 
 def handle_versions(bot, ievent):
-
     """ show versions of all loaded modules (if available). """
-
     versions = {}
     for mod in copy.copy(sys.modules):
         try:
@@ -360,6 +325,7 @@ def handle_versions(bot, ievent):
             versions['python'] = sys.version
         except AttributeError, ex:
             pass
+
     ievent.reply("versions ==> %s" % str(versions))
     
 
