@@ -6,27 +6,28 @@
 
 __copyright__ = 'this file is in the public domain'
 
-## IMPORT SECTION
+## gozerlib imports
 
-# gozerbot imports
 from gozerlib.threads import getname, start_new_thread
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
 from gozerlib.threadloop import RunnerLoop
 from gozerlib.periodical import minutely
 
-# basic imports
-import Queue, time, thread, random
+## basic imports
 
-## END IMPORT
+import Queue
+import time
+import thread
+import random
 
-## LOCK SECTION
+## define
 
 # locks
 runlock = thread.allocate_lock()
 locked = lockdec(runlock)
 
-## END LOCK
+## classes
 
 class Runner(RunnerLoop):
 
@@ -57,9 +58,6 @@ class Runner(RunnerLoop):
             :param func: function to call 
             :type func: function 
 
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: Runner.handle
- 
         """
 
         self.working = True
@@ -96,9 +94,6 @@ class CommandRunner(Runner):
             :type bot: gozerbot.botbase.BotBase
             :param ievent: event that triggered this command
             :type ievent: gozerbot.eventbase.EventBase
-
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: CommandRunner.handle
 
         """
 
@@ -151,9 +146,6 @@ class Runners(object):
 
             :rtype: list .. list of runner queue sizes
 
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: Runners.runnersizes
-
         """
 
         result = []
@@ -167,9 +159,6 @@ class Runners(object):
 
         """
             stop runners.
-
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: Runners.stop
 
         """
 
@@ -192,9 +181,6 @@ class Runners(object):
         """
             put a job on a free runner.
 
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: Runners.put
-
         """
 
         for runner in self.runners:
@@ -212,9 +198,6 @@ class Runners(object):
 
             :rtype: list
 
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: Runners.running
-
         """
 
         result = []
@@ -231,9 +214,6 @@ class Runners(object):
             create a new runner.
 
             :rtype: Runner or None
-
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: Runners.makenew
 
         """
 
@@ -253,9 +233,6 @@ class Runners(object):
 
         """
             clean up idle runners.
-
-            .. literalinclude:: ../../gozerbot/runner.py
-                :pyobject: Runners.cleanup
 
         """
 

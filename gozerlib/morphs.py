@@ -35,8 +35,6 @@ class Morph(object):
         """
             do the morphing.
 
-            .. literalinclude:: ../../gozerbot/morphs.py
-                :pyobject: Morph.do
         """
         if not self.activate:
             return
@@ -61,9 +59,6 @@ class MorphList(list):
             :type index: integer
             :rtype: self
 
-            .. literalinclude:: ../../gozerbot/morphs.py
-                :pyobject: MorphList.add
-
         """
 
         if not index:
@@ -81,9 +76,6 @@ class MorphList(list):
             :param input: data to do the morphing on
             :type input: string
 
-            .. literalinclude:: ../../gozerbot/morphs.py
-                :pyobject: MorphList.do
-
         """
 
         for morph in self:
@@ -99,9 +91,6 @@ class MorphList(list):
             :param plugname: the plugname to unload the morphs from
             :type plugname: string
 
-            .. literalinclude:: ../../gozerbot/morphs.py
-                :pyobject: MorphList.unload
-
         """
 
         for index in range(len(self)-1, -1, -1):
@@ -116,9 +105,6 @@ class MorphList(list):
             :param plugname: the plugname to unload the morphs from
             :type plugname: string
 
-            .. literalinclude:: ../../gozerbot/morphs.py
-                :pyobject: MorphList.disable
-
         """
 
         for index in range(len(self)-1, -1, -1):
@@ -132,9 +118,6 @@ class MorphList(list):
 
             :param plugname: the plugname to unload the morphs from
             :type plugname: string
-
-            .. literalinclude:: ../../gozerbot/morphs.py
-                :pyobject: MorphList.activate
 
         """
 

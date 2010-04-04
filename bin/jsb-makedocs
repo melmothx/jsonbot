@@ -23,7 +23,7 @@ import os
 
 ## defines
 
-plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs'])
+plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs'], force=True)
 users = Users()
 
 try:
@@ -43,13 +43,6 @@ def gendoc(f, output):
     output.write('=' * (len(base)+2) + '\n')
     output.write(' %s ' % base.upper() + '\n')
     output.write('=' * (len(base)+2) + '\n')
-    try:
-        plugs.reload('gozerlib.plugs', base)
-    except:
-        try:
-            plugs.reload('waveplugs', base)
-        except:
-            pass
     if not plugs.has_key(base):
         output.write("\nERROR: no %s plugin found\n\n" % base)
         output.flush()
@@ -211,9 +204,9 @@ def gendoc(f, output):
     output.close()
     print "DONE %s" % f 
 
-def doindexfile(dir, mod):
+def doindexfile(mod):
     return """
-%s.%s
+%s
 %s
 
 .. toctree::
@@ -221,39 +214,42 @@ def doindexfile(dir, mod):
     :glob:
 
     *
-""" % (dir, mod, "=" * (len('%s.%s' % (dir, mod)) + 1))
+""" % (mod, "=" * (len(mod)))
 
 def domodfile(module, dir):
     if not os.path.isdir('docs' + os.sep + dir):
         os.mkdir('docs' + os.sep + dir)
-    mdir = dir.split(os.sep)[-1]
+    plugin = dir.split(os.sep)[-1]
     if True:
-        for mm in os.listdir(dir):
-            m = mm.split(os.sep)[-1]
-            z = m[:-3]
-            thedir = dir + os.sep + mm
-            if os.path.isdir(mm):
-                domodile(mdir, mm)
+        for mod in os.listdir(dir):
+            if '__init__' in mod or mod.endswith('.pyc') or mod.endswith('~'):
                 continue
-            if not mm.endswith('.py') or '__init__' in mm:
+            print "in dir %s file %s" % (dir, mod)
+            m = mod.split(os.sep)[-1]
+            z = mod[:-3]
+            f = open('docs' + os.sep + dir + os.sep + 'index.txt', 'w')
+            f.write(doindexfile(module))
+            f.flush()
+            f.close()
+            thedir = dir + os.sep + mod
+            if os.path.isdir(thedir):
+                print "RECURSE !! " + thedir
+                domodfile(module + "." + m, thedir)
                 continue
             else:
-                n = mm[:-3]
-                p = '%s.%s' % (module, n)
-                mfile = '..' + os.sep + '..' + os.sep +'..' + os.sep + mdir + os.sep + z + os.sep + n + '.py'
+                n = mod[:-3]
+                p = module + '.' + n
+                predir = '..' + os.sep
+                mfile = '..' + os.sep + predir * p.count('.') + thedir 
                 print "writing %s.txt - %s (%s)" % (n, mfile, p)
-                if not os.path.isdir('docs' + os.sep + module):
-                    os.mkdir('docs' + os.sep + module)
-                f = open('docs' + os.sep + module + os.sep + z + '.txt', 'w')
+                if not os.path.isdir('docs' + os.sep + dir):
+                    os.mkdir('docs' + os.sep + dir)
+                f = open('docs' + os.sep + thedir[:-3] + '.txt', 'w')
                 f.write("%s\n%s\n\n" % (p, '=' * len(p)))
                 f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
-                f.write("code\n~~~~\n\n.. literalinclude:: ../../../waveplugs/%s/%s.py\n    :linenos:\n\n" % (m, n))
+                f.write("code\n~~~~\n\n.. literalinclude::  %s\n    :linenos:\n\n" % mfile)
                 f.flush()
                 f.close() 
-        f = open('docs' + os.sep + dir + os.sep + os.sep + 'index.txt', 'w')
-        f.write(doindexfile(dir, z))
-        f.flush()
-        f.close()
 
 def domods(dir):
     try:
@@ -276,8 +272,9 @@ def domods(dir):
         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'commonplugs')
     except:
         pass
-
-    domodfile(dir, dir)
+    d = dir 
+    d.replace(os.sep, '.')
+    domodfile(d, dir)
 
 if __name__ == '__main__':
     threads = []

@@ -51,9 +51,6 @@ class Channels(Pdod):
         """
             return channels.
 
-        .. literalinclude:: ../../gozerbot/channels.py
-            :pyobject: Channels.getchannels
-
         """
 
         result = [] # list of channels found
@@ -70,9 +67,6 @@ class Channels(Pdod):
 
         """
             return channels with keys.
-
-            .. literalinclude:: ../../gozerbot/channels.py
-                :pyobject: Channels.getchannelswithkeys
 
         """
 
@@ -99,9 +93,6 @@ class Channels(Pdod):
             :param channel: channel to get key from
             :type channel: string
 
-            .. literalinclude:: ../../gozerbot/channels.py
-                :pyobject: Channels.getkey
-
         """
 
         try:
@@ -118,9 +109,6 @@ class Channels(Pdod):
 
             :param channel: channel to get key from
             :type channel: string
-
-            .. literalinclude:: ../../gozerbot/channels.py
-                :pyobject: Channels.getnick
 
         """
 

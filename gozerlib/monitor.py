@@ -1,20 +1,10 @@
-# gozerbot/monitor.py
+# gozerlib/monitor.py
 #
 #
 
-""" `gozerbot.monitor` .. monitor the bots output
+""" monitor the bots output. """
 
-This module contains the Monitor base class use to implement callbacks for 
-the bot's output. Used in logging plugins. The actual monitor objects live
-irc and xmpp submodules.
-
-"""
-
-__copyright__ = 'this file is in the public domain'
-
-## IMPORT SECTION
-
-# gozerlib imports
+## gozerlib imports
 
 from gozerlib.config import cfg as config
 from utils.exception import handle_exception
@@ -28,6 +18,8 @@ import threads as thr
 
 import Queue
 import sys
+
+## classes
 
 class Monitor(ThreadLoop):
 

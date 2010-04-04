@@ -2,7 +2,7 @@
 #
 #
 
-""" gozerbot exceptions. """
+""" gozerlib exceptions. """
 
 from gozerlib.utils.trace import calledfrom
 import sys

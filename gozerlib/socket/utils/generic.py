@@ -1,4 +1,4 @@
-# gozerbot/utils/generic.py
+# gozerlib/sockets/utils/generic.py
 #
 #
 
@@ -448,24 +448,6 @@ def gethighest(ddir, ffile):
                 pass
     ffile += '.' + str(highest + 1)
     return ffile
-
-def copyfile(src, target):
-    try:
-        pdir = os.sep.join(target.split(os.sep)[:-1])
-        if not pdir:
-            print "can't determine parent dir of %s" % src
-            return
-        if not os.path.isdir(pdir):
-            print "making %s dir" % pdir
-            os.mkdir(pdir)
-        print "copying %s to %s" % (src, target)
-        shutil.copy(src, target)
-        dosed(target, 's/gozerbot\.compat\./gozerplugs\./')
-    except IOError, ex:
-        return
-        #print "%s -> %s: %s" % (src, target, str(ex))
-    except Exception, ex:
-        handle_exception()
 
 def dosed(filename, sedstring):
     try:

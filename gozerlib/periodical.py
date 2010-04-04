@@ -138,9 +138,6 @@ class JobAt(Job):
         """
             run check to see if job needs to be scheduled.
 
-            .. literalinclude:: ../../gozerbot/periodical.py
-                :pyobject: JobAt.check
-
         """
 
         if self.next <= time.time():
@@ -188,8 +185,6 @@ str(self.func))
         """
             run check to see if job needs to be scheduled.
 
-            .. literalinclude:: ../../gozerbot/periodical.py
-                :pyobject: JobInterval.check
         """
 
         if self.next <= time.time():
@@ -221,8 +216,6 @@ class Periodical(object):
         """
             start the periodical scheduler.
 
-            .. literalinclude:: ../../gozerbot/periodical.py
-                :pyobject: Periodical.start
         """
 
         thr.start_new_thread(self.checkloop, ())
@@ -240,9 +233,6 @@ class Periodical(object):
             :type function: function
             :param description: description of the periodical job
             :type description: string
-
-            .. literalinclude:: ../../gozerbot/periodical.py
-                 :pyobject: Periodical.addjob
 
         """
 
@@ -262,8 +252,6 @@ class Periodical(object):
              :param interval: interval to set 
              :type interval: integer
 
-             .. literalinclude:: ../../gozerbot/periodical.py
-                 :pyobject: Periodical.changeinterval
         """
 
         for i in periodical.jobs:
@@ -282,9 +270,6 @@ class Periodical(object):
 
         """
             main loop of the periodical scheduler.
-
-            .. literalinclude:: ../../gozerbot/periodical.py
-                :pyobject: Periodical.checkloop
 
         """
 
@@ -305,9 +290,6 @@ class Periodical(object):
             :param job: the job to be runned 
             :type job: Job
 
-            .. literalinclude:: ../../gozerbot/periodical.py
-                :pyobject: Periodical.runjob
-
         """
 
         if not job.check():
@@ -320,8 +302,6 @@ class Periodical(object):
         '''
             kill all jobs invoked by another module.
 
-            .. literalinclude:: ../../gozerbot/periodical.py
-               :pyobject: Periodical.kill
         '''
 
         group = calledfrom(sys._getframe())
@@ -334,9 +314,6 @@ class Periodical(object):
 
             :param group: the group of jobs to kill
             :type group: string
-
-            .. literalinclude:: ../../gozerbot/periodical.py
-                :pyobject: Periodical.killgroup
 
         '''
 
@@ -369,8 +346,6 @@ class Periodical(object):
             :type jobId: integer
             :rtype: integer .. number of jobs killed
 
-            .. literalinclude:: ../../gozerbot/periodical.py
-                :pyobject: Periodical.killjob
         '''
 
         def shoot():
@@ -399,9 +374,6 @@ def interval(sleeptime, repeat=0):
         :type sleeptime: integer
         :param repeat: number of times to repeat the job
         :type repeat: integet
-
-        .. literalinclude:: ../../gozerbot/periodical.py
-            :pyobject: interval
 
     """
 
@@ -432,9 +404,6 @@ def at(start, interval=1, repeat=1):
         :param repeat: number of times to repeat the job
         :type repeat: integet
 
-        .. literalinclude:: ../../gozerbot/periodical.py
-            :pyobject: at
-
     """
 
     group = calledfrom(sys._getframe())
@@ -461,8 +430,6 @@ def persecond(function):
         :param function: function to execute every second
         :type function: function
 
-        .. literalinclude:: ../../gozerbot/periodical.py
-            :pyobject: persecond
     """
 
     minutely.func_dict = function.func_dict
@@ -483,9 +450,6 @@ def minutely(function):
 
         :param function: function to execute every minute
         :type function: function
-
-        .. literalinclude:: ../../gozerbot/periodical.py
-            :pyobject: minutely
 
     """
 
@@ -508,9 +472,6 @@ def hourly(function):
         :param function: function to execute every hour
         :type function: function
 
-        .. literalinclude:: ../../gozerbot/periodical.py
-            :pyobject: hourly
-
     """
 
     hourly.func_dict = function.func_dict
@@ -531,9 +492,6 @@ def daily(function):
 
         :param function: function to execute every hour
         :type function: function
-
-        .. literalinclude:: ../../gozerbot/periodical.py
-            :pyobject: daily
 
     """
 

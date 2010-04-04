@@ -36,9 +36,6 @@ def init(eggdir, log=False):
         :param log: whether to log the registration of the setuptools egg
         :type log: True or False
 
-        .. literalinclude:: ../../gozerbot/eggs.py
-            :pyobject: init
-
     """
 
     try:
@@ -65,9 +62,6 @@ def enable_egg(env, egg, log=True):
         :type env: pkg_resources.Environment
         :param egg: egg to load or find a newer version for
         :param log: determine if we should log the enabling of the egg
-
-        .. literalinclude:: ../../gozerbot/eggs.py
-            :pyobject: enable_egg
 
     """
 
@@ -118,9 +112,6 @@ def loadegg(name, eggdirs=['gozernest',], log=True):
         :param log: boolean which indicates whether loading should be logged
         :type log: boolean
 
-        .. literalinclude:: ../../gozerbot/eggs.py
-            :pyobject: loadegg
-
     """
 
     try:
@@ -149,9 +140,6 @@ def loadeggs(eggdir, log=True):
 
         :param eggdir: directory to load eggs from
         :type eggdir: string
-
-        .. literalinclude:: ../../gozerbot/eggs.py
-            :pyobject: loadeggs
 
     """
 

@@ -47,9 +47,6 @@ class PartyLine(object):
             :param reto: nick of user to reply to
             :type reto: string
 
-            .. literalinclude:: ../../gozerbot/partyline.py
-               :pyobject PartyLine._doresume
-
         """
 
         for i in data['partyline']:
@@ -77,8 +74,6 @@ class PartyLine(object):
 
              :rtype: list .. list of resumedata (dicts)
 
-             .. literalinclude:: ../../gozerbot/partyline.py
-                 :pyobject: PartyLine._resumedata
         """
 
         result = []
@@ -96,8 +91,6 @@ class PartyLine(object):
              :param sessionfile: path to resume file
              :type sessionfile: string
 
-             .. literalinclude:: ../../gozerbot/partyline.py
-                 :pyobject PartyLine.resume
         """
 
         session = load(open(sessionfile, 'r'))
@@ -117,8 +110,6 @@ class PartyLine(object):
             :param bot: bot to stop users on
             :type bot: gozerbot.eventbase.EventBase
             
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.stop
         """
 
         for i in self.socks:
@@ -134,9 +125,6 @@ class PartyLine(object):
 
         """
              stop every user on partyline.
-
-             .. literalinclude:: ../../gozerbot/partyline.py
-                 :pyobject: PartyLine.stop_all
 
         """
 
@@ -155,9 +143,6 @@ class PartyLine(object):
             :param nick: nick to put into loud mode
             :type nick: string
 
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.loud
-
         """
 
         for i in self.socks:
@@ -172,9 +157,6 @@ class PartyLine(object):
 
             :param nick: nick to put into silent mode
             :type nick: string
-
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.disable
 
         """
 
@@ -199,9 +181,6 @@ class PartyLine(object):
             :param channel: channel of party to add
             :type channel: string
 
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.add_party
-
         '''
 
         for i in self.socks:
@@ -222,9 +201,6 @@ class PartyLine(object):
             :param nick: nick to remove
             :type nick: string
 
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.del_party
- 
         '''
 
         nick = nick.lower()
@@ -249,9 +225,6 @@ class PartyLine(object):
 
             :rtype: list
 
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.list_nicks
-
         '''
 
         result = []
@@ -269,9 +242,6 @@ class PartyLine(object):
             :param txt: txt to broadcast
             :type txt: string
 
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.say_broadcast
-
         '''
 
         for item in self.socks:
@@ -288,9 +258,6 @@ class PartyLine(object):
             :type nick: string
             :param txt: text to broadcast
             :type txt: string
-
-            .. literalinclude:: ../../gozerbot/partyline.py
-               :pyobject: PartyLine.say_broadcast_notself
 
         '''
 
@@ -314,9 +281,6 @@ class PartyLine(object):
             :param msg: msg to send
             :type msg: string
 
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.say_nick
-
         '''
 
         nickto = nickto.lower()
@@ -339,9 +303,6 @@ class PartyLine(object):
             :param nick: nick to check
             :type nick: string
             :rtype: boolean
-
-            .. literalinclude:: ../../gozerbot/partyline.py
-                :pyobject: PartyLine.is_on
 
         '''
 

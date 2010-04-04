@@ -1,4 +1,4 @@
-# gozerbot/irc.py
+# gozerlib/socket/irc/irc.py
 #
 #
 
@@ -951,7 +951,7 @@ realname))
             return
         self._raw('MODE %s -o %s' % (channel, who))
 
-    def quit(self, reason='http://gozerbot.org'):
+    def quit(self, reason='http://jsonbot.googlecode.com'):
 
         """ send quit message. """
 

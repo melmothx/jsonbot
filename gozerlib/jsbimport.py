@@ -38,9 +38,6 @@ def __import(name, path=None):
         :type path: string
         :rtype: module
 
-        .. literalinclude:: ../../gozerbot/gozerimport.py
-            :pyobject: gozer_import
-
     """
 
     logging.debug('import - importing %s' % name)
@@ -70,9 +67,6 @@ def force_import(name):
         :param name: name of module to import
         :type name: string
         :rtype: module
-
-        .. literalinclude:: ../../gozerbot/gozerimport.py
-            :pyobject: force_import
 
     """
 
