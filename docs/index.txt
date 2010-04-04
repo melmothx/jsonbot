@@ -21,44 +21,32 @@ jsonbot provides the following programs:
 
 see docs/UPLOAD on how to upload your own bot.
 
-.. toctree::
-    :numbered:
-    
 running a development version of the bot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    first checkout the main bot from the mercurial repository
+first checkout the main bot from the mercurial repository
 
-        ``hg clone http://jsonbot.googlecode.com/hg``
+``hg clone http://jsonbot.googlecode.com/hg``
 
-    now you can run the programs in the bin directory with the
-    ``./bin/<program>`` command. try ./bin/jsb for the console app
+now you can run the programs in the bin directory with the ``./bin/<program>``  command. try ./bin/jsb for the console app
 
 
 contact the developers
 ~~~~~~~~~~~~~~~~~~~~~~
 
-    You can reach the developers by joining #dunkbots on FreeNode or IRCNet if we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
+You can reach the developers by joining #dunkbots on FreeNode or IRCNet if we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
 
-indices and tables
-~~~~~~~~~~~~~~~~~~
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 documentation
 ~~~~~~~~~~~~~~
 
-
-    .. toctree::
-        :maxdepth: 2
-        :glob:
-
-        README
-        LICENSE
-        docs/UPLOAD
-        docs/PLUGINLIST
+.. toctree::
+    :maxdepth: 2
+        
+    README
+    LICENSE
+    docs/UPLOAD
+    docs/PLUGINLIST
 
 plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
@@ -67,8 +55,7 @@ plugins documentation
         :maxdepth: 2
         :glob:
 
-        commonplugs/index
-        waveplugs/index
+        plugins <plugins/index>
 
 gozerlib code
 ~~~~~~~~~~~~~
@@ -77,3 +64,12 @@ gozerlib code
         :maxdepth: 2
 
         gozerlib <gozerlib/index>
+        commonplugs/index
+        waveplugs/index
+
+indices and tables
+~~~~~~~~~~~~~~~~~~
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

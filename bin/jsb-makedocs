@@ -312,7 +312,7 @@ if __name__ == '__main__':
     for thread in threads:
         thread.join()
 
-    #import shutil
-    #shutil.copyfile('mindex.txt', 'modsdoc' + os.sep + 'index.txt')
+    import shutil
+    shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'mindex.txt', 'docs' + os.sep + 'gozerlib' + os.sep + 'index.txt')
     #shutil.copyfile('pindex.txt', 'plugdoc' + os.sep + 'index.txt')
-    #shutil.copyfile('plugsdocindex.txt', 'plugsdoc' + os.sep + 'index.txt')
+    shutil.copyfile('docs' + os.sep + 'plugsdocindex.txt', 'docs' + os.sep + 'plugins' + os.sep + 'index.txt')
