@@ -1,0 +1,10 @@
+plugin documentation
+====================
+
+
+.. toctree::
+    :glob:
+
+    plugs/*
+    commonplugs/*
+    waveplugs/*

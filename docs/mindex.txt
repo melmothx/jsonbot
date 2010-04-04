@@ -1,0 +1,18 @@
+gozerlib
+========
+
+.. toctree::
+    :maxdepth: 3
+    :glob:
+
+    contrib/index
+    gae/index
+    gae/wave/index
+    gae/web/index
+    gae/xmpp/index
+    gozernet/index
+    plugs/index
+    socket/index
+    socket/irc/index
+    utils/index
+    *
