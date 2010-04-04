@@ -4,22 +4,27 @@
 
 """ jsonbot documentation generator. """
 
-import boot
+## gozerlib imports
 
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.generic import toascii, splittxt, strippedtxt
 from gozerlib.plugins import plugs
 from gozerlib.examples import examples
-from gozerlib.users import GozerUsers
+from gozerlib.users import Users
 from gozerlib.commands import cmnds
-from gozerlib.aliases import aliasreverse
+#from gozerlib.aliases import aliasreverse
 from gozerlib.config import Config
-from gozerlib.threads.thr import start_new_thread
+from gozerlib.threads import start_new_thread
+from gozerlib.boot import boot
+
+## basic imports
 
 import os
 
-plugs.loadall(force=True)
-users = GozerUsers()
+## defines
+
+plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs'])
+users = Users()
 
 try:
     users.add('test', ['test@test', ], ['OPER', 'USER', 'QUOTE', 'MAIL'])
@@ -31,19 +36,21 @@ try:
 except Exception, ex:
     pass
 
+## functions
+
 def gendoc(f, output):
     base = os.path.basename(f).replace('.py', '')
     output.write('=' * (len(base)+2) + '\n')
     output.write(' %s ' % base.upper() + '\n')
     output.write('=' * (len(base)+2) + '\n')
     try:
-        plugins.reload('gozerlib.plugs', base)
+        plugs.reload('gozerlib.plugs', base)
     except:
         try:
-            plugins.reload('waveplugs', base)
+            plugs.reload('waveplugs', base)
         except:
             pass
-    if not plugins.plugs.has_key(base):
+    if not plugs.has_key(base):
         output.write("\nERROR: no %s plugin found\n\n" % base)
         output.flush()
         output.close()
@@ -53,20 +60,20 @@ def gendoc(f, output):
     output.write("-----" + '\n')
     output.write("| \n" + '\n')
     try:
-        author = plugins.plugs[base].__author__
+        author = plugs.plugs[base].__author__
         output.write(":author:  %s" % author.strip() + '\n')
     except AttributeError:
         output.write(":author:  Bart Thate <bthate@gmail.com>" + '\n')
     output.write(":contact: IRCNET/#dunkbots" + '\n')
     output.write(':distribution: core' + '\n')
     try:
-        license = plugins.plugs[base].__license__
+        license = plugs.plugs[base].__license__
         output.write(":license:  %s" % license.strip() + '\n\n')
     except AttributeError:
-        output.write(":license: Public Domain" + '\n\n')
+        output.write(":license: MIT" + '\n\n')
     output.write("| \n" + '\n')
     data = {'author': 'unknown', 'description': '', 'commands': [], 'examples': {}, 'descriptions': {}, 'callbacks': {}, 'aliases': {}, 'permissions': {}, 'options': {}}
-    data['description'] = plugins.plugs[base].__doc__
+    data['description'] = plugs.plugs[base].__doc__
     cmndlist = []
     for j, z in cmnds.iteritems():
         if j in donot:
@@ -82,7 +89,7 @@ def gendoc(f, output):
             relist.append(reitem)
     cmndlist.sort()
     try:
-        first = plugins.plugs[base].__gendocfirst__
+        first = plugs.plugs[base].__gendocfirst__
         for i in first[::-1]: 
             try:
                 cmndlist.remove(i)
@@ -92,7 +99,7 @@ def gendoc(f, output):
     except AttributeError:
         pass
     try:
-        first = plugins.plugs[base].__gendoclast__
+        first = plugs.plugs[base].__gendoclast__
         for i in first[::-1]: 
             try:
                 cmndlist.remove(i)
@@ -102,7 +109,7 @@ def gendoc(f, output):
     except AttributeError:
         pass
     try:
-        skip = plugins.plugs[base].__gendocskip__
+        skip = plugs.plugs[base].__gendocskip__
         for i in skip[::-1]: 
             try:
                 cmndlist.remove(i)
@@ -112,10 +119,10 @@ def gendoc(f, output):
         pass
     for command in cmndlist:
         data['commands'].append(command)
-        alias = aliasreverse(command)
+        #alias = aliasreverse(command)
         data['options'][command] = cmnds.options(command)
-        if alias:
-            data['aliases'][command] = alias
+        #if alias:
+        #    data['aliases'][command] = alias
         try:
             ex = examples[command]
         except Exception, exx:
@@ -204,17 +211,29 @@ def gendoc(f, output):
     output.close()
     print "DONE %s" % f 
 
-#config['loglevel'] = oldlevel
-
 def domods(dir):
     try:
-        os.mkdir('doc' + os.sep +'gozerlib')
+        os.mkdir('docs' + os.sep +'gozerlib')
     except:
         pass
     try:
-        os.mkdir('doc' + os.sep + 'waveplugs')
+        os.mkdir('docs' + os.sep + 'plugins')
     except:
         pass
+    try:
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs')
+    except:
+        pass
+    try:
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'plugs')
+    except:
+        pass
+    try:
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'commonplugs')
+    except:
+        pass
+
+
     mdir = dir.split(os.sep)[-1]
     for mod in os.listdir(dir):
         m = mod.split(os.sep)[-1]
@@ -224,9 +243,9 @@ def domods(dir):
             mfile = '..' + os.sep + '..' + os.sep + mdir + os.sep + mod
             print "writing %s" % m + '.txt'
             if 'waveplugs' in dir:
-                f = open('doc' + os.sep + 'waveplugs' + os.sep + z + '.txt', 'w')
+                f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + z + '.txt', 'w')
             else:
-                f = open('doc' + os.sep + 'gozerlib' + os.sep + z + '.txt', 'w')
+                f = open('docs' + os.sep + 'gozerlib' + os.sep + z + '.txt', 'w')
             f.write("%s\n%s\n\n" % (z, '=' * len(z)))
             f.write("description\n~~~~~~~~~~~\n")
             if 'waveplugs' in dir:
@@ -240,12 +259,12 @@ def domods(dir):
         elif os.path.isdir(thedir) and not thedir.endswith('.hg'):
             if 'waveplugs' in dir:
                 try:
-                    os.mkdir('doc' + os.sep + 'waveplugs' + os.sep + m)
+                    os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + m)
                 except:
                     pass
             else:
                 try:
-                    os.mkdir('doc' + os.sep + 'gozerlib' + os.sep + m)
+                    os.mkdir('docs' + os.sep + 'gozerlib' + os.sep + m)
                 except:
                     pass
             inthedir = []
@@ -255,13 +274,13 @@ def domods(dir):
                     mfile = '..' + os.sep + '..' + os.sep +'..' + os.sep + mdir + os.sep + m + os.sep + n + '.py'
                     print "writing %s" % n + '.txt'
                     if 'waveplugs' in dir:
-                        f = open('doc' + os.sep + 'waveplugs' + os.sep + m + os.sep + n + '.txt', 'w')
+                        f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + m + os.sep + n + '.txt', 'w')
                         p = 'waveplugs.%s.%s' % (m, n)
                         f.write("%s\n%s\n\n" % (p, '=' * len(p)))
                         f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
                         f.write("code\n~~~~\n\n.. literalinclude:: ../../../waveplugs/%s/%s.py\n    :linenos:\n\n" % (m, n))
                     else:
-                        f = open('doc' + os.sep + 'gozerlib' + os.sep + m + os.sep + n + '.txt', 'w')
+                        f = open('docs' + os.sep + 'gozerlib' + os.sep + m + os.sep + n + '.txt', 'w')
                         p = 'gozerlib.%s.%s' % (m, n)
                         f.write("%s\n%s\n\n" % (p, '=' * len(p)))
                         f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
@@ -270,10 +289,10 @@ def domods(dir):
                     f.close()
             if 'waveplugs' in dir:
                 try:
-                    os.mkdir('doc' + os.sep + 'waveplugs' + os.sep + mod)
+                    os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + mod)
                 except:
                     pass
-                f = open('doc' + os.sep + 'waveplugs' + os.sep + mod + os.sep + 'index.txt', 'w')
+                f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + mod + os.sep + 'index.txt', 'w')
                 f.write("""
 %s.%s
 %s
@@ -288,11 +307,11 @@ def domods(dir):
                 f.close()
             else:
                 try:
-                    os.mkdir('doc' +os.sep + 'gozerlib' + os.sep + mod)
+                    os.mkdir('docs' + os.sep + 'gozerlib' + os.sep + mod)
                 except:
                     pass
 
-                f = open('doc' + os.sep + 'gozerlib' + os.sep + mod + os.sep + 'index.txt', 'w')
+                f = open('docs' + os.sep + 'gozerlib' + os.sep + mod + os.sep + 'index.txt', 'w')
                 f.write("""
 %s.%s
 %s
@@ -312,31 +331,32 @@ if __name__ == '__main__':
     domods('waveplugs')
 
     try:
-        os.mkdir('doc' + os.sep + 'plugins')
+        os.mkdir('docs' + os.sep + 'plugins')
     except:
         pass
 
     try:
-        os.mkdir('doc' + os.sep + 'plugins' + os.sep + 'plugs')
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'plugs')
     except:
         pass
 
     try:
-        os.mkdir('doc' + os.sep + 'plugins' + os.sep + 'waveplugs')
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'commonplugs')
     except:
         pass
   
-    if False:
-        for file in os.listdir(os.getcwd() + os.sep + '..' + os.sep +'gozerbot' + os.sep + 'plugs'):
+    if True:
+        for file in os.listdir('gozerlib' + os.sep + 'plugs'):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open('plugsdoc' + os.sep + 'baseplugs' + os.sep + file[:-3] + '.txt', 'w')
+            f = open('docs' + os.sep + 'plugins' + os.sep + 'plugs' + os.sep + file[:-3] + '.txt', 'w')
             threads.append(start_new_thread(gendoc, (file, f)))
-        for file in os.listdir(os.getcwd() + os.sep + '..' + os.sep +'gozerplugs'):
+        for file in os.listdir('commonplugs'):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open('plugsdoc' + os.sep + 'gozerplugs' + os.sep + file[:-3] + '.txt', 'w')
+            f = open('docs' + os.sep + 'plugins' + os.sep + 'commonplugs' + os.sep + file[:-3] + '.txt', 'w')
             threads.append(start_new_thread(gendoc, (file, f)))
+
     for thread in threads:
         thread.join()
 
