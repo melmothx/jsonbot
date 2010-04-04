@@ -1,6 +1,6 @@
-# JSONBOT README
-#
-#
+README
+======
+
 
 JSONBOT is a bot that stores all its data in json format. It runs on the
 Google Application Engine and can thus support wave, web and xmpp. Standalone 
