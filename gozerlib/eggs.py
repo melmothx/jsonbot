@@ -4,10 +4,10 @@
 
 """ 
 
-    :mod: `gozerbot.eggs` -- eggs related functions
+    eggs related functions
 
-    this module is used to load the eggs on which gozerbot depends from 
-    specified dir .. most of the time this is the gozernest dir.
+    this module is used to load the eggs on which gozerlib depends from 
+    specified dir .. most of the time this is the jsbnest dir.
 
 """
 

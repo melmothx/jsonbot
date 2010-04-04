@@ -49,9 +49,6 @@ class Monitor(ThreadLoop):
             :type threaded: boolean
             :rtype: boolean
 
-            .. literalinclude:: ../../gozerbot/monitor.py
-                :pyobject: Monitor.add
-
         """
 
         name = name or calledfrom(sys._getframe(0))
@@ -85,9 +82,6 @@ class Monitor(ThreadLoop):
             :type name: string
             :rtype: integer .. number of monitors removed
 
-            .. literalinclude:: ../../gozerbot/monitor.py
-                :pyobject: Monitor.unload
-
         """
 
         name = name.lower()
@@ -109,9 +103,6 @@ class Monitor(ThreadLoop):
            :param kwargs: quoted arguments passed to the callback
            :type kwargs: dict
            :rtype: number of callbacks called 
-
-           .. literalinclude:: ../../gozerbot/monitor.py
-               :pyobject: Monitor.handle
 
         """
 

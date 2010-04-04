@@ -2,9 +2,7 @@
 #
 #
 
-""" query wikipedia .. use -<countrycode> to select a country 
-    specific wikipedia. 
-"""
+""" query wikipedia .. use countrycode to select a country specific wikipedia. """
 
 ## gozerlib imports
 

@@ -3,6 +3,7 @@ plugin documentation
 
 
 .. toctree::
+    :maxdepth: 3
     :glob:
 
     plugs/*

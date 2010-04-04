@@ -308,6 +308,11 @@ if __name__ == '__main__':
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'commonplugs' + os.sep + file[:-3] + '.txt', 'w')
             threads.append(start_new_thread(gendoc, (file, f)))
+        for file in os.listdir('waveplugs'):
+            if not file.endswith('.py') or '__init__' in file:
+                continue
+            f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + file[:-3] + '.txt', 'w')
+            threads.append(start_new_thread(gendoc, (file, f)))
 
     for thread in threads:
         thread.join()

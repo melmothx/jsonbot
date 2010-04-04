@@ -40,13 +40,10 @@ You can reach the developers by joining #dunkbots on FreeNode or IRCNet if we ar
 documentation
 ~~~~~~~~~~~~~~
 
-.. toctree::
-    :maxdepth: 2
+    .. toctree::
+        :maxdepth: 2
         
-    README
-    LICENSE
-    docs/UPLOAD
-    docs/PLUGINLIST
+        handbook/index
 
 plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
@@ -55,7 +52,7 @@ plugins documentation
         :maxdepth: 2
         :glob:
 
-        plugins <plugins/index>
+        plugins/index
 
 gozerlib code
 ~~~~~~~~~~~~~
@@ -63,7 +60,7 @@ gozerlib code
     .. toctree::
         :maxdepth: 2
 
-        gozerlib <gozerlib/index>
+        gozerlib/index
         commonplugs/index
         waveplugs/index
 
