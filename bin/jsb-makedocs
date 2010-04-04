@@ -211,6 +211,50 @@ def gendoc(f, output):
     output.close()
     print "DONE %s" % f 
 
+def doindexfile(dir, mod):
+    return """
+%s.%s
+%s
+
+.. toctree::
+    :maxdepth: 1
+    :glob:
+
+    *
+""" % (dir, mod, "=" * (len('%s.%s' % (dir, mod)) + 1))
+
+def domodfile(module, dir):
+    if not os.path.isdir('docs' + os.sep + dir):
+        os.mkdir('docs' + os.sep + dir)
+    mdir = dir.split(os.sep)[-1]
+    if True:
+        for mm in os.listdir(dir):
+            m = mm.split(os.sep)[-1]
+            z = m[:-3]
+            thedir = dir + os.sep + mm
+            if os.path.isdir(mm):
+                domodile(mdir, mm)
+                continue
+            if not mm.endswith('.py') or '__init__' in mm:
+                continue
+            else:
+                n = mm[:-3]
+                p = '%s.%s' % (module, n)
+                mfile = '..' + os.sep + '..' + os.sep +'..' + os.sep + mdir + os.sep + z + os.sep + n + '.py'
+                print "writing %s.txt - %s (%s)" % (n, mfile, p)
+                if not os.path.isdir('docs' + os.sep + module):
+                    os.mkdir('docs' + os.sep + module)
+                f = open('docs' + os.sep + module + os.sep + z + '.txt', 'w')
+                f.write("%s\n%s\n\n" % (p, '=' * len(p)))
+                f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
+                f.write("code\n~~~~\n\n.. literalinclude:: ../../../waveplugs/%s/%s.py\n    :linenos:\n\n" % (m, n))
+                f.flush()
+                f.close() 
+        f = open('docs' + os.sep + dir + os.sep + os.sep + 'index.txt', 'w')
+        f.write(doindexfile(dir, z))
+        f.flush()
+        f.close()
+
 def domods(dir):
     try:
         os.mkdir('docs' + os.sep +'gozerlib')
@@ -233,101 +277,12 @@ def domods(dir):
     except:
         pass
 
-
-    mdir = dir.split(os.sep)[-1]
-    for mod in os.listdir(dir):
-        m = mod.split(os.sep)[-1]
-        z = m[:-3]
-        thedir = dir + os.sep + mod
-        if mod.endswith('.py') and not '__init__' in mod:
-            mfile = '..' + os.sep + '..' + os.sep + mdir + os.sep + mod
-            print "writing %s" % m + '.txt'
-            if 'waveplugs' in dir:
-                f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + z + '.txt', 'w')
-            else:
-                f = open('docs' + os.sep + 'gozerlib' + os.sep + z + '.txt', 'w')
-            f.write("%s\n%s\n\n" % (z, '=' * len(z)))
-            f.write("description\n~~~~~~~~~~~\n")
-            if 'waveplugs' in dir:
-                f.write(".. automodule:: waveplugs.%s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % z)
-                f.write("code\n~~~~\n\n.. literalinclude:: ../../%s\n    :linenos:\n\n" % thedir)
-            else:
-                f.write(".. automodule:: gozerlib.%s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % z)
-                f.write("code\n~~~~\n\n.. literalinclude:: ../../%s\n    :linenos:\n\n" % thedir)
-            f.flush()
-            f.close()
-        elif os.path.isdir(thedir) and not thedir.endswith('.hg'):
-            if 'waveplugs' in dir:
-                try:
-                    os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + m)
-                except:
-                    pass
-            else:
-                try:
-                    os.mkdir('docs' + os.sep + 'gozerlib' + os.sep + m)
-                except:
-                    pass
-            inthedir = []
-            for mm in os.listdir(thedir):
-                if mm.endswith('.py') and not '__init__' in mm:
-                    n = mm[:-3]
-                    mfile = '..' + os.sep + '..' + os.sep +'..' + os.sep + mdir + os.sep + m + os.sep + n + '.py'
-                    print "writing %s" % n + '.txt'
-                    if 'waveplugs' in dir:
-                        f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + m + os.sep + n + '.txt', 'w')
-                        p = 'waveplugs.%s.%s' % (m, n)
-                        f.write("%s\n%s\n\n" % (p, '=' * len(p)))
-                        f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
-                        f.write("code\n~~~~\n\n.. literalinclude:: ../../../waveplugs/%s/%s.py\n    :linenos:\n\n" % (m, n))
-                    else:
-                        f = open('docs' + os.sep + 'gozerlib' + os.sep + m + os.sep + n + '.txt', 'w')
-                        p = 'gozerlib.%s.%s' % (m, n)
-                        f.write("%s\n%s\n\n" % (p, '=' * len(p)))
-                        f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
-                        f.write("code\n~~~~\n\n.. literalinclude:: ../../../gozerlib/%s/%s.py\n    :linenos:\n\n" % (m, n))
-                    f.flush()
-                    f.close()
-            if 'waveplugs' in dir:
-                try:
-                    os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + mod)
-                except:
-                    pass
-                f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + mod + os.sep + 'index.txt', 'w')
-                f.write("""
-%s.%s
-%s
-
-.. toctree::
-    :maxdepth: 1
-    :glob:
-
-    *
-""" % ('waveplugs', mod, "=" * (len('waveplugs.' + mod) + 1)))
-                f.flush()
-                f.close()
-            else:
-                try:
-                    os.mkdir('docs' + os.sep + 'gozerlib' + os.sep + mod)
-                except:
-                    pass
-
-                f = open('docs' + os.sep + 'gozerlib' + os.sep + mod + os.sep + 'index.txt', 'w')
-                f.write("""
-%s.%s
-%s
-
-.. toctree::
-    :maxdepth: 1
-    :glob:
-
-    *
-""" % ('gozerlib', mod, "=" * (len('gozerlib.' + mod) + 1)))
-                f.flush()
-                f.close()
+    domodfile(dir, dir)
 
 if __name__ == '__main__':
     threads = []
     domods('gozerlib')
+    domods('commonplugs')
     domods('waveplugs')
 
     try:

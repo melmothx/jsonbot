@@ -67,9 +67,8 @@ plugins documentation
         :maxdepth: 2
         :glob:
 
-        plugins/plugs/index
-        plugins/commonplugs/index
-        plugins/waveplugs/index
+        commonplugs/index
+        waveplugs/index
 
 gozerlib code
 ~~~~~~~~~~~~~
