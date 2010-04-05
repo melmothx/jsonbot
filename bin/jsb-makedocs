@@ -8,7 +8,7 @@
 
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.generic import toascii, splittxt, strippedtxt
-from gozerlib.plugins import plugs
+from gozerlib.plugins import plugs, Plugins
 from gozerlib.examples import examples
 from gozerlib.users import Users
 from gozerlib.commands import cmnds
@@ -23,7 +23,11 @@ import os
 
 ## defines
 
+donot = []
+
+plugs = Plugins()
 plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs'], force=True)
+print plugs
 users = Users()
 
 try:
@@ -38,12 +42,14 @@ except Exception, ex:
 
 ## functions
 
-def gendoc(f, output):
-    base = os.path.basename(f).replace('.py', '')
+def gendoc(mod, f, output):
+    base = os.path.abspath(f).split(os.sep)[-1].replace('.py','')
+    plugin = mod + '.' + base
     output.write('=' * (len(base)+2) + '\n')
     output.write(' %s ' % base.upper() + '\n')
     output.write('=' * (len(base)+2) + '\n')
-    if not plugs.has_key(base):
+    print "USING %s" % base
+    if not plugin in plugs:
         output.write("\nERROR: no %s plugin found\n\n" % base)
         output.flush()
         output.close()
@@ -53,36 +59,30 @@ def gendoc(f, output):
     output.write("-----" + '\n')
     output.write("| \n" + '\n')
     try:
-        author = plugs.plugs[base].__author__
+        author = plugs[plugin].__author__
         output.write(":author:  %s" % author.strip() + '\n')
     except AttributeError:
         output.write(":author:  Bart Thate <bthate@gmail.com>" + '\n')
     output.write(":contact: IRCNET/#dunkbots" + '\n')
     output.write(':distribution: core' + '\n')
     try:
-        license = plugs.plugs[base].__license__
+        license = plugs[plugin].__license__
         output.write(":license:  %s" % license.strip() + '\n\n')
     except AttributeError:
         output.write(":license: MIT" + '\n\n')
     output.write("| \n" + '\n')
     data = {'author': 'unknown', 'description': '', 'commands': [], 'examples': {}, 'descriptions': {}, 'callbacks': {}, 'aliases': {}, 'permissions': {}, 'options': {}}
-    data['description'] = plugs.plugs[base].__doc__
+    data['description'] = plugs[plugin].__doc__
     cmndlist = []
     for j, z in cmnds.iteritems():
         if j in donot:
             continue
-        if z.plugname == base:
+        if z and z.plugname == plugin:
             cmndlist.append(j)
     relist = []
-    for reitem in rebefore.relist:
-        if reitem.plugname == base:
-            relist.append(reitem)
-    for reitem in reafter.relist:
-        if reitem.plugname == base:
-            relist.append(reitem)
     cmndlist.sort()
     try:
-        first = plugs.plugs[base].__gendocfirst__
+        first = plugs[plugin].__gendocfirst__
         for i in first[::-1]: 
             try:
                 cmndlist.remove(i)
@@ -92,7 +92,7 @@ def gendoc(f, output):
     except AttributeError:
         pass
     try:
-        first = plugs.plugs[base].__gendoclast__
+        first = plugs[plugin].__gendoclast__
         for i in first[::-1]: 
             try:
                 cmndlist.remove(i)
@@ -102,7 +102,7 @@ def gendoc(f, output):
     except AttributeError:
         pass
     try:
-        skip = plugs.plugs[base].__gendocskip__
+        skip = plugs[plugin].__gendocskip__
         for i in skip[::-1]: 
             try:
                 cmndlist.remove(i)
@@ -138,7 +138,7 @@ def gendoc(f, output):
     output.write('commands' + '\n')
     output.write("--------" + '\n')
     output.write("| \n" + '\n')
-    output.write("\n    :commands in this plugin: %s\n\n" % ' .. '.join(cmnds.getcommands(base)))
+    output.write("\n    :commands in this plugin: %s\n\n" % ' .. '.join(cmnds.apropos(base)))
     output.write("| \n" + '\n')
     teller = 1
     for command in data['commands']:
@@ -196,9 +196,6 @@ def gendoc(f, output):
             except AttributeError:
                 pass
             teller += 1
-    output.write('\nfunctions\n')
-    output.write('---------\n')
-    output.write("\n    :functions implemented in this plugin: %s\n\n\n" % ' .. '.join(cmnds.getfuncnames(base)))
 
     output.flush()
     output.close()
@@ -302,17 +299,17 @@ if __name__ == '__main__':
             if not file.endswith('.py') or '__init__' in file:
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'plugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, (file, f)))
+            threads.append(start_new_thread(gendoc, ('gozerlib.plugs', file, f)))
         for file in os.listdir('commonplugs'):
             if not file.endswith('.py') or '__init__' in file:
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'commonplugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, (file, f)))
+            threads.append(start_new_thread(gendoc, ('commonplugs', file, f)))
         for file in os.listdir('waveplugs'):
             if not file.endswith('.py') or '__init__' in file:
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, (file, f)))
+            threads.append(start_new_thread(gendoc, ('waveplugs', file, f)))
 
     for thread in threads:
         thread.join()

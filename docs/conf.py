@@ -19,7 +19,8 @@ import sys, os
 # If your extensions (or modules documented by autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.append(os.path.abspath(os.getcwd()))
+sys.path.append(os.path.abspath(".."))
+sys.path.append(os.path.abspath('..' + os.sep + 'gozerlib'))
 
 # General configuration
 # ---------------------
@@ -68,7 +69,7 @@ unused_docs = ['pindex', 'mindex', 'plugsdocindex']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['.build', 'gozernest', 'man', 'gozerdata', '.hg', 'files']
+exclude_trees = ['.build', 'gozernest', 'docs', 'man', 'gozerdata', 'run', '.hg', 'files']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None

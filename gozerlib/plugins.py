@@ -51,7 +51,7 @@ class Plugins(LazyDict):
             try:
                 for plug in imp.__plugs__:
                     try:
-                        self.load("%s.%s" % (module,plug))
+                        self.load("%s.%s" % (module,plug), replace=True)
                     except KeyError:
                         logging.debug("failed to load plugin package %s" % module)
             except AttributeError:
@@ -82,7 +82,7 @@ class Plugins(LazyDict):
                 logging.debug("plugins - %s is already loaded" % modname)
                 return
 
-        logging.info("plugins - loading %s" % modname)
+        logging.warn("plugins - loading %s" % modname)
         try:
             mod = _import(modname)
         except ImportError, ex:
