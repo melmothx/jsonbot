@@ -1,0 +1,5 @@
+cd docs
+rm -fR gozerlib plugins commonplugs/ waveplugs/
+cd ..
+./bin/jsb-makedocs
+sphinx-build docs docs/html

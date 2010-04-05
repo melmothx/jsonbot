@@ -118,3 +118,6 @@ except IOError:
         shutil.copy(release + os.sep + 'config' + os.sep + 'mainconfig.example', release + os.sep + 'config' + os.sep + 'mainconfig')
     except IOError:
         print "mainconfig is missing in %s. see mainconfig.example" % (homedir + os.sep + 'regs'  + os.sep + targetin, )
+
+if os.path.isdir('docs'):
+    copyover('docs', release + os.sep + 'docs')

@@ -68,6 +68,23 @@ handlers:
 - url: /feeds/
   script: handler_web.py
 
+- url: /docs
+  static_files: docs/html/index.html
+  upload: docs/html/index.html
+
+- url: /docs/
+  static_files: docs/html/index.html
+  upload: docs/html/index.html
+
+- url: /docs/html/(.*)
+  static_files: docs/html/\1
+  upload: docs/html/(.*)
+
+- url: /docs/(.*)
+  static_files: docs/html/\1
+  upload: docs/html/(.*)
+
+
 - url: /(.*\.(gif|png|jpg|ico|css|js))
   static_files: assets/\1
   upload: assets/(.*\.(gif|png|jpg|ico|css|js))
