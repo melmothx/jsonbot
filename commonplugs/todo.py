@@ -142,6 +142,7 @@ def handle_tododone(bot, ievent):
         nrs = []
         for i in ievent.args:
             nrs.append(int(i))
+        nrs.sort()
     except ValueError:
         ievent.reply('%s is not an integer' % i)
         return
@@ -152,20 +153,24 @@ def handle_tododone(bot, ievent):
     nrdone = 0
     failed = []
     todo = TodoList(name)
-    for i in nrs:
+    for i in nrs[::-1]:
         try:
-            todo.delete(name, i)
+            del todo.data.list[i]
             nrdone += 1
+        except IndexError:
+            continue
         except Exception, ex:
-            failed.append(i)
+            failed.append(str(i))
             handle_exception()
     if failed:
         ievent.reply('failed to delete %s' % ' .. '.join(failed))
     if nrdone == 1:
+        todo.save()
         ievent.reply('%s item deleted' % nrdone)
     elif nrdone == 0:
         ievent.reply('no items deleted')
     else:
+        todo.save()
         ievent.reply('%s items deleted' % nrdone)
 
 cmnds.add('todo-done', handle_tododone, 'USER')
@@ -252,7 +257,7 @@ def handle_todotime(bot, ievent):
         ievent.reply("can't find username for %s" % ievent.userhost)
         return
     todo = TodoList(name)
-    todoos = todo.timetodo(name)
+    todoos = todo.timetodo()
     saytodo(bot, ievent, todoos)
 
 cmnds.add('todo-time', handle_todotime, 'USER')
@@ -266,7 +271,7 @@ def handle_todoweek(bot, ievent):
         ievent.reply("can't find username for %s" % ievent.userhost)
         return
     todo = TodoList(name)
-    todoos = todo.withintime(name, today(), today()+7*24*60*60)
+    todoos = todo.withintime(today(), today()+7*24*60*60)
     saytodo(bot, ievent, todoos)
 
 cmnds.add('todo-week', handle_todoweek, 'USER')
@@ -279,7 +284,8 @@ def handle_today(bot, ievent):
         ievent.reply("can't find username for %s" % ievent.userhost)
         return
     todo = TodoList(name)
-    todoos = todo.withintime(now(), now()+3600*24)
+    now = time.time()
+    todoos = todo.withintime(now, now+3600*24)
     saytodo(bot, ievent, todoos)
 
 cmnds.add('todo-today', handle_today, 'USER')
@@ -287,7 +293,7 @@ examples.add('todo-today', 'todo-today .. todo items for today', 'todo-today')
 
 def handle_tomorrow(bot, ievent):
     """ todo-tomorrow .. show time related todo items for tomorrow """
-    username = byname(ievent.userhost)
+    username = bot.users.getname(ievent.userhost)
     if not username:
         ievent.reply("can't find username for %s" % ievent.userhost)
         return
@@ -297,8 +303,7 @@ def handle_tomorrow(bot, ievent):
         ttime = strtotime(what)
         if ttime != None:
             if ttime < today() or ttime > today() + 24*60*60:
-                ievent.reply("%s is not tomorrow" % \
-time.ctime(ttime + 24*60*60))
+                ievent.reply("%s is not tomorrow" % time.ctime(ttime + 24*60*60))
                 return
             ttime += 24*60*60
             ievent.reply('time detected ' + time.ctime(ttime))
@@ -308,7 +313,7 @@ time.ctime(ttime + 24*60*60))
         todo.add(what, ttime)   
         ievent.reply('todo added')    
         return
-    todoos = todo.withintime(username, today()+24*60*60, today()+2*24*60*60)
+    todoos = todo.withintime(today()+24*60*60, today()+2*24*60*60)
     saytodo(bot, ievent, todoos)
 
 cmnds.add('todo-tomorrow', handle_tomorrow, 'USER')
@@ -337,9 +342,12 @@ def handle_setpriority(bot, ievent):
         ievent.missing('[<channel|name>] <itemnr> <priority>')
         return
     todo = TodoList(who)
-    todo.data.list[itemnr].priority = prio
-    todo.save()
-    ievent.reply('priority set')
+    try:
+        todo.data.list[itemnr].priority = prio
+        todo.save()
+        ievent.reply('priority set')
+    except IndexError:
+        ievent.reply("no %s item in todolist" % str(itemnr))
 
 cmnds.add('todo-setprio', handle_setpriority, 'USER')
 examples.add('todo-setprio', 'todo-setprio [<channel|name>] <itemnr> <prio> \
@@ -372,9 +380,12 @@ def handle_todosettime(bot, ievent):
         ievent.missing('[<channel|name>] <itemnr> <timestring>')
         return
     todo = TodoList(who)
-    todo.data.list[itemnr].time = ttime
-    todo.save()
-    ievent.reply('time of todo %s set to %s' % (itemnr, time.ctime(ttime)))
+    try:
+        todo.data.list[itemnr].time = ttime
+        todo.save()
+        ievent.reply('time of todo %s set to %s' % (itemnr, time.ctime(ttime)))
+    except IndexError:
+        ievent.reply("%s item in todolist" % str(itemnr))
 
 cmnds.add('todo-settime', handle_todosettime, 'USER')
 examples.add('todo-settime', 'todo-settime [<channel|name>] <itemnr> \
@@ -403,8 +414,12 @@ def handle_getpriority(bot, ievent):
         return
     
     todo = TodoList(who)
-    prio = todo.data.list[itemnr].priority
-    ievent.reply('priority is %s' % prio)
+    try:
+        prio = todo.data.list[itemnr].priority
+        ievent.reply('priority is %s' % prio)
+    except IndexError:
+        ievent.reply("%s item in todolist" % str(itemnr))
+
 
 cmnds.add('todo-getprio', handle_getpriority, 'USER')
 examples.add('todo-getprio', 'todo-getprio [<channel|name>] <itemnr> .. get \
