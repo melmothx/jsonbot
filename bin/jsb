@@ -60,7 +60,6 @@ import logging
 
 makedirs()
 plugs = Plugins()
-plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'])
 users = Users()
 users.make_owner(getpass.getuser())
 cfg = Config()
