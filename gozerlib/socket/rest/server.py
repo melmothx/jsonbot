@@ -257,7 +257,7 @@ class SecureAuthRestServer(SecureRestServer):
         logging.info('rest.server - creating SSL socket on %s' % str(server_address))
         callback = lambda conn,cert,errno,depth,retcode: retcode
         ctx.set_verify(SSL.VERIFY_FAIL_IF_NO_PEER_CERT | SSL.VERIFY_PEER, callback)
-        ctx.set_session_id('gozerbot')
+        ctx.set_session_id('jsonbot')
         self.socket = SSL.Connection(ctx, socket.socket(self.address_family,
                                                         self.socket_type))
         self.server_bind()  

@@ -4,6 +4,12 @@
 
 """ a lazydict allows dotted access to a dict .. dict.key. """
 
+## simplejson imports
+
+from simplejson import loads, dumps
+
+## classes
+
 class LazyDict(dict):
 
     """ lazy dict allows dotted access to a dict """
@@ -28,3 +34,29 @@ class LazyDict(dict):
             res += "%r=%r " % (item, value)
 
         return res
+
+    def dump(self):
+        """ serialize this event to json. """
+        new = cpy(self)
+        for name, property in self.iteritems():
+            try:
+                dumps(property)
+                setattr(new, name, property)
+            except TypeError:
+                del new[name]
+        logging.debug('lazydict - tojson - %s' % str(new))
+        return dumps(new)
+
+    def load(self, input):
+        """ load from json string. """  
+        instr = unescape(input)
+        try:   
+            temp = loads(instr)
+        except ValueError:
+            logging.error("lazydict - can't decode %s" % input)
+            return self
+        if type(temp) != dict:
+            logging.error("lazydict - %s is not a dict" % str(temp))
+            return self
+        self.update(temp)
+        return self

@@ -18,6 +18,7 @@ import threads as thr
 
 import Queue
 import sys
+import logging
 
 ## classes
 

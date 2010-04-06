@@ -89,32 +89,6 @@ class EventBase(LazyDict):
 
         return self
 
-    def dump(self):
-        """ serialize this event to json. """
-        new = cpy(self)
-        for name, property in self.iteritems():
-            try:
-                dumps(property)
-                setattr(new, name, property)
-            except TypeError:
-                del new[name]
-        logging.debug('eventbase - tojson - %s' % str(new))
-        return dumps(new)
-
-    def load(self, input):
-        """ load from json string. """  
-        instr = unescape(input)
-        try:
-            temp = loads(instr)
-        except ValueError:
-            logging.error("eventbase - can't decode %s" % input)
-            return self
-        if type(temp) != dict:
-            logging.error("eventbase - %s is not a dict" % str(temp))
-            return self
-        self.update(temp)
-        return self
-
     def makeargs(self):
 
         """ make arguments and rest attributes from self.txt. """
