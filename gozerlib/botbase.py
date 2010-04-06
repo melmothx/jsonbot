@@ -51,6 +51,7 @@ class BotBase(LazyDict):
             logging.warn("owner is not set in %s" % self.cfg.cfile)
 
         self.setusers(usersin)
+        logging.warn("botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
 

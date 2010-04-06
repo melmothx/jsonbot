@@ -19,7 +19,7 @@ def handle_whoami(bot, ievent):
     """ get your username. """
     ievent.reply('%s' % bot.users.getname(ievent.auth))
 
-cmnds.add('user-whoami', handle_whoami, 'USER')
+cmnds.add('user-whoami', handle_whoami, ['USER', 'GUEST'])
 examples.add('user-whoami', 'get your username', 'user-whoami')
 
 def handle_meet(bot, ievent):
@@ -205,7 +205,7 @@ def handle_name(bot, ievent):
     """ user-name .. show name of user giving the command. """
     ievent.reply('your name is %s' % bot.users.getname(ievent.userhost))
 
-cmnds.add('user-name', handle_name, 'USER')
+cmnds.add('user-name', handle_name, ['USER', 'GUEST'])
 examples.add('user-name', 'show name of user giving the commands', 'user-name')
 
 def handle_getname(bot, ievent):
@@ -228,7 +228,7 @@ def handle_getname(bot, ievent):
 
     ievent.reply(name)
 
-cmnds.add('user-getname', handle_getname, 'USER')
+cmnds.add('user-getname', handle_getname, ['USER', ])
 examples.add('user-getname', 'user-getname <nick> .. get the name of <nick>', 'user-getname dunker')
 
 def handle_addperm(bot, ievent):
@@ -295,7 +295,7 @@ def handle_perms(bot, ievent):
     if perms:
         ievent.reply("you have permissions: ", perms)
 
-cmnds.add('user-perms', handle_perms, 'USER')
+cmnds.add('user-perms', handle_perms, ['USER', 'GUEST'])
 examples.add('user-perms', 'get permissions', 'user-perms')
 
 def handle_delperm(bot, ievent):
@@ -376,7 +376,7 @@ def handle_status(bot, ievent):
     else:
         ievent.reply('you have no status set')
 
-cmnds.add('user-status', handle_status, 'USER')
+cmnds.add('user-status', handle_status, ['USER', 'GUEST'])
 examples.add('user-status', 'get status', 'user-status')
 
 def handle_delstatus(bot, ievent):
@@ -477,7 +477,7 @@ def handle_userhosts(bot, ievent):
     if userhosts:
         ievent.reply("you have userhosts: ", userhosts)
 
-cmnds.add('user-userhosts', handle_userhosts, 'USER')
+cmnds.add('user-userhosts', handle_userhosts, ['USER', 'GUEST'])
 examples.add('user-userhosts', 'get userhosts', 'user-userhosts')
 
 def handle_getemail(bot, ievent):
@@ -498,7 +498,7 @@ def handle_getemail(bot, ievent):
     else:
         ievent.reply('no email set')
 
-cmnds.add('user-getemail', handle_getemail, 'USER')
+cmnds.add('user-getemail', handle_getemail, ['USER', ])
 examples.add('user-getemail', 'user-getemail <name> .. get email from user <name>', 'user-getemail dunker')
 
 def handle_setemail(bot, ievent):
@@ -531,7 +531,7 @@ def handle_email(bot, ievent):
     else:
         ievent.reply('no email set')
 
-cmnds.add('user-email', handle_email, 'USER')
+cmnds.add('user-email', handle_email, ['USER', 'GUEST'])
 examples.add('user-email', 'get email', 'user-email')
 
 def handle_delemail(bot, ievent):
@@ -575,7 +575,7 @@ def handle_addpermit(bot, ievent):
     else:
         ievent.reply('add failed')
 
-cmnds.add('user-addpermit', handle_addpermit, 'USER')
+cmnds.add('user-addpermit', handle_addpermit, ['USER', 'GUEST'])
 examples.add('user-addpermit', 'user-addpermit <nick> <what> .. permit nick access to <what> .. use setperms to add permissions', 'user-addpermit dunker todo')
 
 def handle_permit(bot, ievent):
@@ -595,7 +595,7 @@ def handle_permit(bot, ievent):
     else:
         ievent.reply("you don't have any permits")
 
-cmnds.add('user-permit', handle_permit, 'USER')
+cmnds.add('user-permit', handle_permit, ['USER', 'GUEST'])
 examples.add('user-permit', 'show permit of user giving the command', 'user-permit')
 
 def handle_userdelpermit(bot, ievent):
@@ -624,7 +624,7 @@ def handle_userdelpermit(bot, ievent):
     else:
         ievent.reply('delete failed')
 
-cmnds.add('user-delpermit', handle_userdelpermit, 'USER')
+cmnds.add('user-delpermit', handle_userdelpermit, ['USER', 'GUEST'])
 examples.add('user-delpermit', 'user-delpermit <name> <permit>', 'user-delpermit dunker todo')
 
 def handle_check(bot, ievent):
@@ -700,7 +700,7 @@ def handle_match(bot, ievent):
     status = str(user.data.status)
     ievent.reply('userrecord of %s = userhosts: %s perms: %s email: %s permits: %s status: %s' % (userhost, userhosts, perms, email, permits, status))
 
-cmnds.add('user-match', handle_match, ['USER', 'OPER'])
+cmnds.add('user-match', handle_match, ['OPER', ])
 examples.add('user-match', 'user-match <userhost>', 'user-match test@test')
 
 def handle_getuserstatus(bot, ievent):

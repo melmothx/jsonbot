@@ -543,7 +543,7 @@ class Users(Persist):
         for userhost in owner:
             username = self.getname(unicode(userhost))
 
-            if not username:
+            if not username or username != 'owner':
                 if not self.merge('owner', unicode(userhost)):
                     self.add('owner', [unicode(userhost), ], ['USER', 'OPER'])
 
