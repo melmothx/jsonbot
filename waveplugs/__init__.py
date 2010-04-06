@@ -2,7 +2,7 @@
 #
 #
 
-""" register all .py files """
+""" this package contains all wave related plugins. """
 
 import os
 

@@ -10,7 +10,7 @@ from gozerlib.persist import Persist
 
 ## defines
 
-plugin_packages = ['gozerlib.plugs', 'commonplugs', 'myplugs', 'waveplugs']
+plugin_packages = ['gozerlib.plugs', 'commonplugs', 'myplugs', 'waveplugs', 'socketplugs']
 default_plugins = ['gozerlib.plugs.admin', ]
 
 loaded = False

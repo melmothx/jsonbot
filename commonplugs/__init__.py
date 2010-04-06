@@ -2,7 +2,7 @@
 #
 #
 
-""" register all .py files """
+""" this package contains all the plugins common to all drivers. """
 
 import os
 
