@@ -7,9 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.eventbase import EventBase
-
-## gaelib imports
-
+from gozerlib.utils.exception import handle_exception
 from gozerlib.gae.utils.auth import finduser
 
 ## basic imports
