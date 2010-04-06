@@ -126,9 +126,10 @@ class WaveEvent(EventBase):
             self.target = self.blip.reply()
         
         self.result.append(unicode(item))
-
-        if self.target:
+        try:
             self.target.append(item)
+        except Exception, ex:
+            handle_exception()
 
         return self
 
