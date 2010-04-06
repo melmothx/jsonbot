@@ -141,7 +141,7 @@ class Users(Persist):
             intersection = sperms.intersection(uperms)
             res = list(intersection) or None
         if not res and log:
-            logging.warn("users - %s perm %s denied" % (userhost, str(perms)))
+            logging.warn("users - %s perm %s denied (%s)" % (userhost, str(perms), str(uperms)))
         return res
 
     def permitted(self, userhost, who, what):

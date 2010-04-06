@@ -129,7 +129,7 @@ def handle_todo2(bot, ievent):
         nr = todo.add(what)
     ievent.reply('todo item %s added' % nr)
 
-cmnds.add('todo', handle_todo, 'USER')
+cmnds.add('todo', handle_todo, ['USER', 'GUEST'])
 examples.add('todo', 'todo [<item>] .. show todo items or add a todo item', \
 '1) todo 2) todo program the bot 3) todo 22:00 sleep')
 
@@ -173,7 +173,7 @@ def handle_tododone(bot, ievent):
         todo.save()
         ievent.reply('%s items deleted' % nrdone)
 
-cmnds.add('todo-done', handle_tododone, 'USER')
+cmnds.add('todo-done', handle_tododone, ['USER', 'GUEST'])
 examples.add('todo-done', 'todo-done <listofnrs> .. remove items from \
 todo list', '1) todo-done 1 2) todo-done 3 5 8')
 
@@ -246,7 +246,7 @@ def handle_gettodo(bot, ievent):
     todoos = todo.get(whouser)
     saytodo(bot, ievent, todoos)
 
-cmnds.add('todo-get', handle_gettodo, ['USER', 'WEB'])
+cmnds.add('todo-get', handle_gettodo, ['USER', 'GUEST'])
 examples.add('todo-get', 'todo-get <nick> .. get the todo list of \
 <nick>', 'todo-get dunker')
 
@@ -260,7 +260,7 @@ def handle_todotime(bot, ievent):
     todoos = todo.timetodo()
     saytodo(bot, ievent, todoos)
 
-cmnds.add('todo-time', handle_todotime, 'USER')
+cmnds.add('todo-time', handle_todotime, ['USER', 'GUEST'])
 examples.add('todo-time', 'todo-time .. show todo items with time fields', \
 'todo-time')
 
@@ -274,7 +274,7 @@ def handle_todoweek(bot, ievent):
     todoos = todo.withintime(today(), today()+7*24*60*60)
     saytodo(bot, ievent, todoos)
 
-cmnds.add('todo-week', handle_todoweek, 'USER')
+cmnds.add('todo-week', handle_todoweek, ['USER', 'GUEST'])
 examples.add('todo-week', 'todo-week .. todo items for this week', 'todo-week')
 
 def handle_today(bot, ievent):
@@ -288,7 +288,7 @@ def handle_today(bot, ievent):
     todoos = todo.withintime(now, now+3600*24)
     saytodo(bot, ievent, todoos)
 
-cmnds.add('todo-today', handle_today, 'USER')
+cmnds.add('todo-today', handle_today, ['USER', 'GUEST'])
 examples.add('todo-today', 'todo-today .. todo items for today', 'todo-today')
 
 def handle_tomorrow(bot, ievent):
@@ -316,7 +316,7 @@ def handle_tomorrow(bot, ievent):
     todoos = todo.withintime(today()+24*60*60, today()+2*24*60*60)
     saytodo(bot, ievent, todoos)
 
-cmnds.add('todo-tomorrow', handle_tomorrow, 'USER')
+cmnds.add('todo-tomorrow', handle_tomorrow, ['USER', 'GUEST'])
 examples.add('todo-tomorrow', 'todo-tomorrow .. todo items for tomorrow', \
 'todo-tomorrow')
 
@@ -349,7 +349,7 @@ def handle_setpriority(bot, ievent):
     except IndexError:
         ievent.reply("no %s item in todolist" % str(itemnr))
 
-cmnds.add('todo-setprio', handle_setpriority, 'USER')
+cmnds.add('todo-setprio', handle_setpriority, ['USER', 'GUEST'])
 examples.add('todo-setprio', 'todo-setprio [<channel|name>] <itemnr> <prio> \
 .. set todo priority', '1) todo-setprio #dunkbots 2 5 2) todo-setprio owner \
 3 10 3) todo-setprio 2 10')
@@ -387,7 +387,7 @@ def handle_todosettime(bot, ievent):
     except IndexError:
         ievent.reply("%s item in todolist" % str(itemnr))
 
-cmnds.add('todo-settime', handle_todosettime, 'USER')
+cmnds.add('todo-settime', handle_todosettime, ['USER', 'GUEST'])
 examples.add('todo-settime', 'todo-settime [<channel|name>] <itemnr> \
 <timestring> .. set todo time', '1) todo-settime #dunkbots 2 13:00 2) \
 todo-settime owner 3 2-2-2010 3) todo-settime 2 22:00')
@@ -421,7 +421,7 @@ def handle_getpriority(bot, ievent):
         ievent.reply("%s item in todolist" % str(itemnr))
 
 
-cmnds.add('todo-getprio', handle_getpriority, 'USER')
+cmnds.add('todo-getprio', handle_getpriority, ['USER', 'GUEST'])
 examples.add('todo-getprio', 'todo-getprio [<channel|name>] <itemnr> .. get \
 todo priority', '1) todo-getprio #dunkbots 5 2) todo-getprio 3')
 
@@ -447,4 +447,4 @@ def saytodo(bot, ievent, todoos):
             res += "%s " % i.txt
         result.append(res.strip())
     if result:
-        ievent.reply("todolist of %s: " % ievent.nick, result, dot=" ")
+        ievent.reply("todo: ", result, dot=" ")

@@ -158,7 +158,7 @@ def handle_ask(bot, event):
             newwave = bot.newwave(event.context, participants=['ask-bot@appspot.com', event.userhost])
             newwave.SetTitle("ask-bot wave: %s" % question)
 
-cmnds.add('ask', handle_ask, 'USER', options={'-w': False})
+cmnds.add('ask', handle_ask, ['USER', 'GUEST'], options={'-w': False})
 examples.add('ask', 'ask [group|JID] question .. ask a groups of users a question or use a specific JID', 'ask ask-bot what is the mercurial repository')
 
 def handle_askstop(bot, event):
@@ -170,7 +170,7 @@ def handle_askstop(bot, event):
     except KeyError:
         event.reply('no question running')
 
-cmnds.add('ask-stop', handle_askstop, 'USER')
+cmnds.add('ask-stop', handle_askstop, ['USER', 'GUEST'])
 examples.add('ask-stop', 'stop listening to answers', 'ask-stop')
 
 def handle_askjoin(bot, event):
@@ -205,7 +205,7 @@ def handle_askjoin(bot, event):
 
     event.done()
 
-cmnds.add('ask-join', handle_askjoin, 'USER')
+cmnds.add('ask-join', handle_askjoin, ['USER', 'GUEST'])
 examples.add('ask-join', 'ask-join <subject> .. join a subject as an expert', 'ask-join ask-bot')
 
 def handle_askpart(bot, event):
@@ -233,7 +233,7 @@ def handle_askpart(bot, event):
 
     event.done()
 
-cmnds.add('ask-part', handle_askpart, 'USER')
+cmnds.add('ask-part', handle_askpart, ['USER', 'GUEST'])
 examples.add('ask-part', 'leave the subject expert list', 'ask-part ask-bot')
 
 def handle_asklist(bot, event):
@@ -242,7 +242,7 @@ def handle_asklist(bot, event):
 
     event.reply('available subjects: ', experts.data.keys())
 
-cmnds.add('ask-list', handle_asklist, 'USER')
+cmnds.add('ask-list', handle_asklist, ['USER', 'GUEST'])
 examples.add('ask-list', 'list available subjects', 'ask-list')
 
 def handle_askexperts(bot, event):
@@ -260,7 +260,7 @@ def handle_askexperts(bot, event):
     except KeyError:
         event.reply('we dont know any experts on this subject yet')
 
-cmnds.add('ask-experts', handle_askexperts, 'USER')
+cmnds.add('ask-experts', handle_askexperts, ['USER', 'GUEST'])
 examples.add('ask-experts', 'list all experts on a subject', 'ask-experts ask-bot')
 
 def handle_asksubjects(bot, event):
@@ -278,5 +278,5 @@ def handle_asksubjects(bot, event):
     except KeyError:
         event.reply('%s doesnt handle any subjects' % expert)
 
-cmnds.add('ask-subjects', handle_asksubjects, 'USER')
+cmnds.add('ask-subjects', handle_asksubjects, ['USER', 'GUEST'])
 examples.add('ask-subjects', 'list all the subjects an expert handles', 'ask-subjects bthate@gmail.com')
