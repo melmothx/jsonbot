@@ -25,6 +25,10 @@ dest='owner',
                   help="owner of the bot")
     parser.add_option('-l', '--loglevel', type='string', default="error",
 dest='loglevel', help="set loglevel")
+    parser.add_option('-c', '--channel', type='string', default="",
+dest='channel', help="channel to operate on")
+    parser.add_option('-x', '--exec', type='string', default="",
+dest='command', help="give a command to execute")
 
     opts, args = parser.parse_args()
     opts.args = args
@@ -67,4 +71,8 @@ try:
 except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
-bot.start()
+
+if opts.command:
+    bot.docmnd(cfg.owner, opts.channel or "console", opts.command)
+else:
+    bot.start()
