@@ -72,6 +72,7 @@ class Commands(LazyDict):
             target.func(bot, event)
             result = event.result
         except Exception, ex:
+            logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))
             handle_exception(event)
 
         if event.queues:

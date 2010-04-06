@@ -8,6 +8,15 @@
 
 from simplejson import loads, dumps
 
+## basic imports
+
+import copy
+import logging
+
+## defines
+
+cpy = copy.deepcopy
+
 ## classes
 
 class LazyDict(dict):
