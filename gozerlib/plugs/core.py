@@ -33,7 +33,7 @@ def handle_ccadd(bot, event):
     if bot.cfg:
         if not bot.cfg.cc:
             bot.cfg.cc = event.rest
-        elif event.rest not in bof.cfg.cc:
+        elif event.rest not in bot.cfg.cc:
             bot.cfg.cc += event.rest
         else:
             event.reply("%s is already in cc list" % event.rest)

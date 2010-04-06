@@ -13,6 +13,7 @@ from gozerlib.gozernet.bot import GozerNetBot
 from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
+from gozerlib.gae.wave.waves import Wave
 
 ## basic imports
 
