@@ -55,7 +55,7 @@ class Plugins(LazyDict):
                     except KeyError:
                         logging.debug("failed to load plugin package %s" % module)
             except AttributeError:
-                logging.warn("no plugins in %s .. define __plugs__ in __init__.py" % mod)
+                logging.warn("no plugins in %s .. define __plugs__ in __init__.py" % module)
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
