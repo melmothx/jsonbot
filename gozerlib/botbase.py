@@ -186,6 +186,7 @@ class BotBase(LazyDict):
         e.userhost = origin
         e.channel = channel
         e.txt = txt
+        e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
         e.cbtype = 'DOCMND'
         e.makeargs()

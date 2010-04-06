@@ -21,7 +21,7 @@ class PersistState(Persist):
     """ base persitent state class. """
 
     def __init__(self, filename):
-        Persist.__init__(self, filename, {})
+        Persist.__init__(self, filename)
         self.types = dict((i, type(j)) for i, j in self.data.iteritems())
 
     def __getitem__(self, key):
@@ -57,20 +57,20 @@ class PlugState(PersistState):
     def __init__(self):
         self.plugname = calledfrom(sys._getframe())
         logging.debug('persiststate - initialising %s' % self.plugname)
-        PersistState.__init__(self, 'gozerstore' + os.sep + 'plugs' + os.sep + self.plugname + os.sep + 'state')
+        PersistState.__init__(self, 'gozerdata' + os.sep + 'state' + os.sep + 'plugs' + os.sep + self.plugname + os.sep + 'state')
 
 class ObjectState(PersistState):
 
     """ state for usage in constructors. """
 
     def __init__(self):
-        PersistState.__init__(self, 'gozerstore' + os.sep + calledfrom(sys._getframe(1))+'.state')
+        PersistState.__init__(self, 'gozerdata' + os.sep + 'state' + os.sep + calledfrom(sys._getframe(1))+'.state')
 
 class UserState(PersistState):
 
     """ state for users. """
 
-    def __init__(self, username):
+    def __init__(self, username, filename="state"):
         assert username
-        datadir = 'gozerstore' + os.sep + 'users' + os.sep + username
-        PersistState.__init__(self,  datadir + os.sep + 'state')
+        datadir = 'gozerdata' + os.sep + 'state' + os.sep + 'users' + os.sep + username
+        PersistState.__init__(self,  datadir + os.sep + filename)

@@ -73,6 +73,6 @@ except NoOwnerSet:
     os._exit(1)
 
 if opts.command:
-    bot.docmnd(cfg.owner, opts.channel or "console", opts.command)
+    bot.docmnd(cfg.owner, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
 else:
     bot.start()
