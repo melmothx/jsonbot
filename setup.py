@@ -52,7 +52,7 @@ setup(
               'gozerlib.socket.irc',
               'gozerlib.socket.utils',
               'gozerlib.socket.rest',
-              'gozerlib.gozernet',
+              'gozerlib.remote',
               'gozerlib.contrib',
               'gozerlib.plugs',
               'waveplugs',

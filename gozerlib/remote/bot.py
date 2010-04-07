@@ -1,4 +1,4 @@
-# gozerlib/gozernet/bot.py
+# gozerlib/remote/bot.py
 #
 #
 
@@ -6,26 +6,34 @@
 
 ## gozerlib imports
 
+from gozerlib.utils.url import posturl, getpostdata
 from gozerlib.botbase import BotBase
 from event import RemoteEvent
 
 import logging
 
-class GozerNetBot(BotBase):
+class RemoteBot(BotBase):
 
     """ gozernet bot just inherits from xmpp bot for now. """
 
     def __init__(self, target=None, cfg=None, users=None, plugs=None, jid=None, outs=[], *args, **kwargs):
         BotBase.__init__(self, cfg, users, plugs, jid, *args, **kwargs)
         if self.cfg:
-            self.cfg['type'] = 'gozernet'
-        self.type = "gozernet"
+            self.cfg['type'] = 'remote'
+        self.type = "remote"
         self.outs = outs or []
         self.target = target or BotBase()
 
     def addouts(self, outs):
         self.outs = self.outs.append(outs)
         return self
+
+    def _raw(self, url, data, *args, **kwargs):
+        posturl(url, {}, data)
+
+    def broadcast(self, data, *args, **kwargs)):
+        for url in self.outs:
+            self._raw(url, data, *args, **kwargs)
 
     def say(self, channel, txt, event={}, *args, **kwargs):
         logging.warn('gozernet - out - %s - %s' % (channel, txt))
@@ -46,19 +54,18 @@ class GozerNetBot(BotBase):
         re.isresponse = True
         re.remotecmnd = False
         re.bot = self.target
-        self.target.say(channel, re.dump(), *args, **kwargs)
+        self.broadcast(re.dump(), *args, **kwargs)
 
     def cmnd(self, event, txt, *args, **kwargs):
         logging.warn('gozernet - cmnd - %s - %s - %s' % (str(self.target), self.outs, txt))
-        for jid in self.outs:
-            re = RemoteEvent()
-            re.copyin(event)
-            re.isreply = True
-            re.printto = jid
-            re.target = jid
-            re.txt = re.origtxt = txt
-            re.iscmnd = True
-            re.remotecmnd = True
-            re.remoteout = self.jid
-            re.bot = self.target
-            self.target.say(jid, re.dump(), *args, **kwargs)
+        re = RemoteEvent()
+        re.copyin(event)
+        re.isreply = True
+        re.printto = jid
+        re.target = jid
+        re.txt = re.origtxt = txt
+        re.iscmnd = True
+        re.remotecmnd = True
+        re.remoteout = self.jid
+        re.bot = self.target
+        self.broadcast(jid, re.dump(), *args, **kwargs)

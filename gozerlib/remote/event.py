@@ -1,8 +1,8 @@
-# gozerlib/gozernet/event.py
+# gozerlib/remote/event.py
 #
 #
 
-""" gozernet remote event. """
+""" gozerlib remote event. """
 
 ## gozerlib imports
 
@@ -35,7 +35,7 @@ class RemoteEvent(EventBase):
 
         #logging.warn('%s %s' % (dir(request), dir(response)))
         #logging.warn(str(request.environ))
-        eventin = request.get('event')
+        eventin = request.get('payload')
 
         if not eventin: 
             eventin = request.environ.get('QUERY_STRING')
@@ -45,7 +45,7 @@ class RemoteEvent(EventBase):
         self.isremote = True
         self.response = response
         self.request = request
-        logging.info(u'gozernet - in - %s - %s' % (self.userhost, self.txt)) 
+        logging.info(u'remote.event - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 
     def _raw(self, txt, end=""):
@@ -57,7 +57,7 @@ class RemoteEvent(EventBase):
         """
 
         txt = unicode(txt)
-        logging.info(u'gozernet - out - %s - %s' % (self.userhost, txt))
+        logging.info(u'remove.event - out - %s - %s' % (self.userhost, txt))
         self.bot.say(self.remoteout, txt, self)
 
     def write(self, txt, start=u"", end=u"<br>", raw=False):
