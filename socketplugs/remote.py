@@ -125,10 +125,10 @@ def handle_remote_init(bot, event):
 cmnds.add('remote-init', handle_remote_init, 'OPER')
 examples.add('remote-init', 'initialize the JSONBOT remote event network server', 'remote-init')
 
-def handle_soup_disable(bot, event):
+def handle_remote_disable(bot, event):
     """ remove the /remote/ mountpoints from the REST server. """
     shutdown()
     event.done()
 
-cmnds.add('remote-disable', handle_soup_disable, 'OPER')
+cmnds.add('remote-disable', handle_remote_disable, 'OPER')
 examples.add('remote-disable', 'stop the JSONBOT remote event network server', 'remote-disable')
