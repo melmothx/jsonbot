@@ -7,16 +7,48 @@
 ## gozerlib imports
 
 from gozerlib.eventbase import EventBase
+from gozerlib.remote import Container
 from gozerlib.utils.generic import splittxt
 from gozerlib.utils.xmpp import stripped
+from gozerlib.utils.lazydict import LazyDict
 
 ## basic imports
 
 import cgi
 import logging
 import copy
+import time
+
+## defines
 
 cpy = copy.deepcopy
+idattributes = ['origin', 'type', 'payload', 'idtime']
+
+## functions
+
+def getid(container):
+    name = ""
+    for attr in idattributes:
+        try:
+            name += unicode(container[attr])
+        except KeyError:
+            pass
+    return uuid.uuid3(uuid.NAMESPACE_URL, name).hex
+
+## classes
+
+class Container(LazyDict):
+
+    def __init__(self, origin, payload, type="event"):
+        LazyDict.__init__(self)
+        self.createtime = time.time()
+        self.origin = origing
+        self.payload = payload
+        self.type = type
+
+    def makeid(self):
+        self.idtime = time.time()
+        self.id = getid(self)
 
 class RemoteEvent(EventBase):
 
@@ -36,15 +68,18 @@ class RemoteEvent(EventBase):
         #logging.warn('%s %s' % (dir(request), dir(response)))
         #logging.warn(str(request.environ))
         eventin = request.get('payload')
-
         if not eventin: 
             eventin = request.environ.get('QUERY_STRING')
-
+        origin = request.get('origin')
+        if not origin:
+            origin = str(request.addr)
         #logging.info(eventin)
+
         self.fromstring(eventin)
         self.isremote = True
         self.response = response
         self.request = request
+        self.remoteout = origin
         logging.info(u'remote.event - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 

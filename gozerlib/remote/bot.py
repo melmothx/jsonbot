@@ -2,7 +2,7 @@
 #
 #
 
-""" gozernet bot. handlers incoming nodes. """
+""" remote bot. handlers incoming nodes. """
 
 ## gozerlib imports
 
@@ -14,7 +14,7 @@ import logging
 
 class RemoteBot(BotBase):
 
-    """ gozernet bot just inherits from xmpp bot for now. """
+    """ RemoteBot broadcasts events through HTTP POST calls. """
 
     def __init__(self, target=None, cfg=None, users=None, plugs=None, jid=None, outs=[], *args, **kwargs):
         BotBase.__init__(self, cfg, users, plugs, jid, *args, **kwargs)
@@ -36,7 +36,7 @@ class RemoteBot(BotBase):
             self._raw(url, data, *args, **kwargs)
 
     def say(self, channel, txt, event={}, *args, **kwargs):
-        logging.warn('gozernet - out - %s - %s' % (channel, txt))
+        logging.warn('remote - out - %s - %s' % (channel, txt))
         re = RemoteEvent()
 
         if event:
@@ -57,7 +57,7 @@ class RemoteBot(BotBase):
         self.broadcast(re.dump(), *args, **kwargs)
 
     def cmnd(self, event, txt, *args, **kwargs):
-        logging.warn('gozernet - cmnd - %s - %s - %s' % (str(self.target), self.outs, txt))
+        logging.warn('remote - cmnd - %s - %s - %s' % (str(self.target), self.outs, txt))
         re = RemoteEvent()
         re.copyin(event)
         re.isreply = True
@@ -68,4 +68,4 @@ class RemoteBot(BotBase):
         re.remotecmnd = True
         re.remoteout = self.jid
         re.bot = self.target
-        self.broadcast(jid, re.dump(), *args, **kwargs)
+        self.broadcast(re.dump(), *args, **kwargs)

@@ -172,9 +172,9 @@ class Fleet(Persist):
             dom = cfg.domain or domain
             bot = WaveBot(cfg, domain=dom)
 
-        elif type == 'gozernet':
-            from gozerlib.gozernet.bot import GozerNetBot
-            bot = GozerNetBot(cfg)
+        elif type == 'remote':
+            from gozerlib.remote.bot import RemoteBot
+            bot = RemoteBot(cfg)
         else:
             raise NoSuchBotType('%s bot .. unproper type %s' % (name, type))
 
