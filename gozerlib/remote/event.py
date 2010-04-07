@@ -8,7 +8,6 @@
 
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt
-from gozerlib.utils.xmpp import stripped
 from gozerlib.utils.lazydict import LazyDict
 
 ## basic imports
@@ -71,10 +70,10 @@ class RemoteEvent(EventBase):
             eventin = request.environ.get('QUERY_STRING')
         origin = request.get('origin')
         if not origin:
-            origin = str(request.addr)
+            origin = str(request.remote_addr)
         #logging.info(eventin)
 
-        self.fromstring(eventin)
+        self.load(eventin)
         self.isremote = True
         self.response = response
         self.request = request

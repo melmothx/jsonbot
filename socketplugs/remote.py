@@ -100,6 +100,8 @@ def remote_GET(server, request):
 def start():
     global server 
     server = startserver()
+    if not server:
+        return
     try:
         server.addhandler('/remote/', 'POST', remote_POST)
         server.addhandler('/remote/', 'GET', remote_GET)

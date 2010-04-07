@@ -23,6 +23,12 @@ handlers:
 - url: /_ah/xmpp/.*
   script: handler_xmpp.py
 
+- url: /remote?(.*)
+  script: handler_remote.py
+
+- url: /remote(.*)
+  script: handler_remote.py
+
 - url: /hubbub?(.*)
   script: handler_hubbub.py
 
