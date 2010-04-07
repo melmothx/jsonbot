@@ -22,7 +22,6 @@ class RemoteBot(BotBase):
             self.cfg['type'] = 'remote'
         self.type = "remote"
         self.outs = outs or []
-        self.target = target or BotBase()
 
     def addouts(self, outs):
         self.outs = self.outs.append(outs)
@@ -61,8 +60,8 @@ class RemoteBot(BotBase):
         re = RemoteEvent()
         re.copyin(event)
         re.isreply = True
-        re.printto = jid
-        re.target = jid
+        re.printto = event.userhost
+        re.target = event.userhost
         re.txt = re.origtxt = txt
         re.iscmnd = True
         re.remotecmnd = True

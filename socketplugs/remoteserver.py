@@ -1,4 +1,4 @@
-# commonplugs/remoteserver.py
+# socketplugs/remoteserver.py
 #
 #
 
@@ -38,7 +38,7 @@ outurl = "http://jsonbot.appspot.com/remote/"
 
 def preremote(bot, event):
 
-    if event.channel in state.data.relay:
+    if state.data.relay and event.channel in state.data.relay:
         return True
 
 def handle_doremote(bot, event):

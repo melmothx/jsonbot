@@ -23,7 +23,6 @@ from simplejson import dump
 def handle_adminboot(bot, ievent):
     """ boot the bot .. do some initialisation. """
     boot(force=True)
-    cfg['ondemand'] = True
     ievent.done()
 
 cmnds.add('admin-boot', handle_adminboot, 'OPER')

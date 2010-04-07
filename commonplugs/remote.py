@@ -1,4 +1,4 @@
-# gozerlib/plugs/gozernet.py
+# commonplugs/remote.py
 #
 #
 
@@ -12,7 +12,7 @@ from gozerlib.persist import PlugPersist
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.utils.exception import handle_exception
-from gozerlib.gozernet.bot import GozerNetBot
+from gozerlib.remote.bot import RemoteBot
 from gozerlib.config import cfg, Config
 
 ## simplejson imports
@@ -28,9 +28,6 @@ import re
 
 outurl = "http://jsonbot.appspot.com/remote"
 state = PlugPersist('remote')
-
-if not state.data:
-    state.data = {}
 
 if not state.data.has_key('out'):
     state.data['out'] = [outurl, ]
@@ -90,7 +87,7 @@ def handle_remoteforward(bot, event):
     state.save()
     event.done()
 
-cmnds.add('remote-forward', handle_gozernetforward, 'OPER')
+cmnds.add('remote-forward', handle_remoteforward, 'OPER')
 examples.add('remote-forward', 'add a forward item so that channels matching this get send over the remotenet', 'remote-forward #dunkbots')
 
 def handle_remotedelforward(bot, event):
@@ -128,5 +125,5 @@ def handle_remotecmnd(bot, event):
     gnbot.cmnd(event, "!%s" % cmndstring)
     event.reply("sent to: ", gnbot.outs)
 
-cmnds.add('cmnd', handle_gozernetcmnd, 'OPER') 
+cmnds.add('cmnd', handle_remotecmnd, 'OPER') 
 examples.add('cmnd', 'execute a command on the remotenet', 'cmnd version')
