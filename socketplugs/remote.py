@@ -1,4 +1,4 @@
-# commonplugs/jsonsoup.py
+# commonplugs/remote.py
 #
 #
 
@@ -10,7 +10,8 @@ from gozerlib.persiststate import PlugState
 from gozerlib.commands import cmnds
 from gozerlib.socket.irc.monitor import outmonitor
 from gozerlib.socket.rest.server import RestServer, RestRequestHandler
-from gozerlib.eventbase import EventBase
+from gozerlib.remote.event import RemoteEvent
+from gozerlib.remote.bot import RemoteBot
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
 
@@ -30,7 +31,7 @@ import logging
 
 ## VARS
 
-outurl = "http://jsonsoup.appspot.com/soup/"
+outurl = "http://jsonbot.appspot.com/remote/"
 
 state = PlugState()
 
@@ -54,27 +55,26 @@ def handle_doremote(bot, event):
 
     e = RemoteEvent(bot.server, event.tojson())
     e.makeid()
-
-    for url in state.data.outs:
-        posturl(url, {}, e.tojson())
+    bot = RemoteBot(state.data.outs)
+    bot.broadcast(e)
 
 callbacks.add('PRIVMSG', handle_doremote, preremote, threaded=True)
 callbacks.add('OUTPUT', handle_doremote, preremote, threaded=True)
 callbacks.add('MESSAGE', handle_doremote, preremote, threaded=True)
 callbacks.add('BLIP_SUBMITTED', handle_doremote, preremote, threaded=True)
-outmonitor.add('soup', handle_doremote, preremote, threaded=True)
+outmonitor.add('remote', handle_doremote, preremote, threaded=True)
 
 ## server part
 
 server = None
 
-def soup_POST(server, request):
+def remote_POST(server, request):
 
     try:
         input = getpostdata(request)
         container = input['container']
     except KeyError, AttributeError:
-        logging.warn("soup - %s - can't determine eventin" % request.ip)
+        logging.warn("remote - %s - can't determine eventin" % request.ip)
         return dumps(["can't determine eventin"])
 
     event = EventBase()
@@ -82,11 +82,11 @@ def soup_POST(server, request):
     callbacks.check(event)
     return dumps(['ok',])
 
-def soup_GET(server, request):
+def remote_GET(server, request):
     try:
         path, container = request.path.split('#', 1)
     except ValueError:
-        logging.warn("soup - %s - can't determine eventin" % request.ip)
+        logging.warn("remote - %s - can't determine eventin" % request.ip)
         return dumps(["can't determine eventin", ])
 
     try:
@@ -101,8 +101,8 @@ def start():
     global server 
     server = startserver()
     try:
-        server.addhandler('/soup/', 'POST', soup_POST)
-        server.addhandler('/soup/', 'GET', soup_GET)
+        server.addhandler('/remote/', 'POST', soup_POST)
+        server.addhandler('/remote/', 'GET', soup_GET)
     except Exception, ex:
         handle_exception()
 
@@ -114,21 +114,21 @@ def init():
 def shutdown():
     global server
     if server:
-        server.delhandler('/soup/', 'POST', soup_POST)
-        server.delhandler('/soup/', 'GET', soup_GET)
+        server.delhandler('/remote/', 'POST', soup_POST)
+        server.delhandler('/remote/', 'GET', soup_GET)
 
-def handle_soup_init(bot, event):
-    """ add the /soup/ mountpoints to the REST server. """
+def handle_remote_init(bot, event):
+    """ add the /remote/ mountpoints to the REST server. """
     init()
     event.done()
 
-cmnds.add('soup-init', handle_soup_init, 'OPER')
-examples.add('soup-init', 'initialize the JSONBOT event network server', 'soup-init')
+cmnds.add('remote-init', handle_remote_init, 'OPER')
+examples.add('remote-init', 'initialize the JSONBOT remote event network server', 'remote-init')
 
 def handle_soup_disable(bot, event):
-    """ remove the /soup/ mountpoints from the REST server. """
+    """ remove the /remote/ mountpoints from the REST server. """
     shutdown()
     event.done()
 
-cmnds.add('soup-disable', handle_soup_disable, 'OPER')
-examples.add('soup-disable', 'stop the JSONBOT event network server', 'soup-disable')
+cmnds.add('remote-disable', handle_soup_disable, 'OPER')
+examples.add('remote-disable', 'stop the JSONBOT remote event network server', 'remote-disable')
