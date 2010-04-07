@@ -22,6 +22,7 @@ from simplejson import dumps
 
 import socket
 import re
+import logging
 
 ## VARS
 
@@ -117,7 +118,7 @@ def startserver():
             logging.error('soup - failed to start server at %s:%s' % (cfg.get('host'), cfg.get('port')))
 
     except socket.error, ex:
-        logging.warn('soup - start - socket error: %s', (request.ip, str(ex)))
+        logging.warn('soup - start - socket error: %s' % str(ex))
 
     except Exception, ex:
         handle_exception()

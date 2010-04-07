@@ -22,6 +22,7 @@ import sys
 import select
 import types
 import socket
+import logging
 
 class RestServerBase(HTTPServer):
 

@@ -28,6 +28,7 @@ import thread
 import re
 import asyncore
 import time
+import logging
 
 ## defines
 
