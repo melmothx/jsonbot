@@ -52,7 +52,7 @@ class PersistConfig(Config):
         self.hide = []
         self.modname = whichplugin()
         self.plugname = self.modname.split('.')[-1]
-        Config.__init__(self, datadir + os.sep + 'plugs' + os.sep + self.plugname, "config")
+        Config.__init__(self, 'plugs' + os.sep + self.plugname, "config")
         cmndname = "%s-cfg" % self.plugname
         logging.debug('persistconfig - added command %s (%s)' % (cmndname, self.plugname))
         cmnds[cmndname] = Command(self.plugname, cmndname, self.cmnd_cfg, ['OPER', ])

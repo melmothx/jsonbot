@@ -99,13 +99,6 @@ def soup_GET(server, request):
     return dumps(['ok', ])
 
 def startserver():
-
-    try:
-        import google
-        return
-    except ImportError:
-        pass
-
     global server 
 
     try:
