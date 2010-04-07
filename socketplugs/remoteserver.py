@@ -1,4 +1,4 @@
-# commonplugs/remote.py
+# commonplugs/remoteserver.py
 #
 #
 
@@ -18,6 +18,7 @@ from gozerlib.examples import examples
 ## socketplugs imports
 
 from socketplugs.restserver import startserver, stopserver
+from commonplugs.remote import state 
 
 ## simplejson imports
 
@@ -32,14 +33,6 @@ import logging
 ## VARS
 
 outurl = "http://jsonbot.appspot.com/remote/"
-
-state = PlugState()
-
-if not state.data.relay:
-    state.data.relay = []
-
-if not state.data.outs:
-    state.data.outs = [outurl, ]
 
 ## callbacks
 
@@ -119,18 +112,18 @@ def shutdown():
         server.delhandler('/remote/', 'POST', soup_POST)
         server.delhandler('/remote/', 'GET', soup_GET)
 
-def handle_remote_init(bot, event):
+def handle_remoteserver_start(bot, event):
     """ add the /remote/ mountpoints to the REST server. """
     init()
     event.done()
 
-cmnds.add('remote-init', handle_remote_init, 'OPER')
-examples.add('remote-init', 'initialize the JSONBOT remote event network server', 'remote-init')
+cmnds.add('remoteserver-start', handle_remoteserver_start, 'OPER')
+examples.add('remoteserver-start', 'initialize the JSONBOT remote event network server', 'remoteserver-start')
 
-def handle_remote_disable(bot, event):
+def handle_remoteserver_stop(bot, event):
     """ remove the /remote/ mountpoints from the REST server. """
     shutdown()
     event.done()
 
-cmnds.add('remote-disable', handle_remote_disable, 'OPER')
-examples.add('remote-disable', 'stop the JSONBOT remote event network server', 'remote-disable')
+cmnds.add('remoteserver-stop', handle_remoteserver_stop, 'OPER')
+examples.add('remoteserver-stop', 'stop the JSONBOT remote event network server', 'remoteserver-stop')
