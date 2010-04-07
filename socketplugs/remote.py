@@ -101,8 +101,8 @@ def start():
     global server 
     server = startserver()
     try:
-        server.addhandler('/remote/', 'POST', soup_POST)
-        server.addhandler('/remote/', 'GET', soup_GET)
+        server.addhandler('/remote/', 'POST', remote_POST)
+        server.addhandler('/remote/', 'GET', remote_GET)
     except Exception, ex:
         handle_exception()
 

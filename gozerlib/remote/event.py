@@ -7,7 +7,6 @@
 ## gozerlib imports
 
 from gozerlib.eventbase import EventBase
-from gozerlib.remote import Container
 from gozerlib.utils.generic import splittxt
 from gozerlib.utils.xmpp import stripped
 from gozerlib.utils.lazydict import LazyDict

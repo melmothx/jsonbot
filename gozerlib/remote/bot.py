@@ -31,7 +31,7 @@ class RemoteBot(BotBase):
     def _raw(self, url, data, *args, **kwargs):
         posturl(url, {}, data)
 
-    def broadcast(self, data, *args, **kwargs)):
+    def broadcast(self, data, *args, **kwargs):
         for url in self.outs:
             self._raw(url, data, *args, **kwargs)
 

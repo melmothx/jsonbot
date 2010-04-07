@@ -9,6 +9,10 @@
 import sys
 import os
 
+## define
+
+stopmarkers = ['gozerlib', 'commonplugs', 'waveplugs', 'socketplugs', 'waveapi', 'jsonbot']
+
 ## functions
 
 def calledfrom(frame):
@@ -22,7 +26,7 @@ def calledfrom(frame):
 
             for i in plugfile[::-1]:
                 mod.append(i)
-                if i in ['gozerlib', 'commonplugs', 'waveplugs', 'waveapi', 'jsonbot']:
+                if i in stopmarkers:
                     break
 
 
@@ -64,7 +68,7 @@ def whichmodule(depth=1):
         for i in plugfile[::-1]:
              mod.append(i)
 
-             if i in ['gozerlib', 'commonplugs', 'waveplugs', 'waveapi', 'jsonbot']:
+             if i in stopmarkers:
                  break
 
         modstr = '.'.join(mod[::-1]) + ':' + str(lineno)
@@ -89,7 +93,7 @@ def whichplugin(depth=1):
         for i in plugfile[::-1]:
              mod.append(i)
 
-             if i in ['gozerlib', 'commonplugs', 'waveplugs', 'waveapi', 'jsonbot']:
+             if i in stopmarkers:
                  break
 
         modstr = '.'.join(mod[::-1])
