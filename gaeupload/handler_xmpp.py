@@ -17,9 +17,9 @@ from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.exception import handle_exception
 from gozerlib.plugins import plugs
 from gozerlib.boot import boot
-from gozerlib.gozernet.event import RemoteEvent
-from gozerlib.gozernet.bot import GozerNetBot
 from gozerlib.admin import plugin_packages
+from gozerlib.remote.event import RemoteEvent
+from gozerlib.remote.bot import RemoteBot
 
 ## gaelib imports
 
@@ -50,7 +50,6 @@ logging.warn(getversion('XMPP'))
 ## define
 
 bot = XMPPBot()
-gnbot = GozerNetBot()
 
 ## functions
 
@@ -94,10 +93,10 @@ class XMPPHandler(webapp.RequestHandler):
             remote.fromstring(event.txt)
             remote.isremote = True
             remote.remoteout = event.userhost
-            remote.bot = gnbot
+            remote.bot = RemoteBot()
             remote.title = event.channel
             logging.warn('gozernet - in - %s - %s' % (remote.userhost, remote.txt))
-            gnbot.doevent(remote)
+            remote.bot.doevent(remote)
         else:
             bot.doevent(event)
 
