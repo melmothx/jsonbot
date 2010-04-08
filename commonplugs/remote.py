@@ -26,14 +26,14 @@ import re
 
 ## defines
 
-outurl = "http://jsonbot.appspot.com/remote"
+outurl = "http://jsbbot.appspot.com/remote"
 state = PlugPersist('remote')
 
-if not state.data.has_key('out'):
-    state.data['out'] = [outurl, ]
+if not state.data.outs:
+    state.data.outs = [outurl, ]
 
-if not state.data.has_key('forward'):
-    state.data['forward'] = []
+if not state.data.forward:
+    state.data.forward = []
 
 ## commands
 
@@ -42,11 +42,11 @@ def handle_remote_addout(bot, event):
     global state
 
     if not event.rest:
-        event.missing('<JID>')
+        event.missing('<url>')
         return
 
-    if not event.rest in state.data['out']:
-        state.data['out'].append(event.rest)
+    if not event.rest in state.data['outs']:
+        state.data['outs'].append(event.rest)
         state.save()
 
     event.done()
@@ -58,11 +58,11 @@ def handle_remote_delout(bot, event):
     global state
 
     if not event.rest:
-        event.missing('<JID>')
+        event.missing('<url>')
         return
 
     try:
-        state.data['out'].remove(event.rest)
+        state.data['outs'].remove(event.rest)
         state.save()
     except ValueError:
         pass
@@ -73,7 +73,7 @@ cmnds.add('remote-delout', handle_remote_delout, 'OPER')
 
 def handle_remote_outs(bot, event):
     """ show to which other bots we are sending. """
-    event.reply(state.data['out'])
+    event.reply(state.data['outs'])
 
 cmnds.add('remote-outs', handle_remote_outs, 'OPER')
 
@@ -121,9 +121,10 @@ def handle_remotecmnd(bot, event):
         event.missing("<cmnd>")
         return
 
-    gnbot = RemoteBot(state.data['out'])
+    gnbot = RemoteBot(outs=state.data.outs)
+    gnbot.addouts(state.data.outs)
+    event.reply("sending to: ", gnbot.outs)
     gnbot.cmnd(event, "!%s" % cmndstring)
-    event.reply("sent to: ", gnbot.outs)
 
 cmnds.add('cmnd', handle_remotecmnd, 'OPER') 
 examples.add('cmnd', 'execute a command on the remotenet', 'cmnd version')

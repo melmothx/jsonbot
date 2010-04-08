@@ -10,12 +10,17 @@ from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt
 from gozerlib.utils.lazydict import LazyDict
 
+## simplejson imports
+
+from simplejson import loads
+
 ## basic imports
 
 import cgi
 import logging
 import copy
 import time
+import uuid
 
 ## defines
 
@@ -28,7 +33,7 @@ def getid(container):
     name = ""
     for attr in idattributes:
         try:
-            name += unicode(container[attr])
+            name += str(container[attr])
         except KeyError:
             pass
     return uuid.uuid3(uuid.NAMESPACE_URL, name).hex
@@ -40,9 +45,9 @@ class Container(LazyDict):
     def __init__(self, origin, payload, type="event"):
         LazyDict.__init__(self)
         self.createtime = time.time()
-        self.origin = origing
-        self.payload = payload
-        self.type = type
+        self.origin = origin
+        self.payload = unicode(payload)
+        self.type = str(type)
 
     def makeid(self):
         self.idtime = time.time()
@@ -63,17 +68,20 @@ class RemoteEvent(EventBase):
 
         """ parse request/response into a RemoteEvent. """
 
-        #logging.warn('%s %s' % (dir(request), dir(response)))
-        #logging.warn(str(request.environ))
-        eventin = request.get('payload')
+        logging.warn(u'%s %s' % (dir(request), dir(response)))
+        logging.warn(str(request))
+        eventin = request.get('container')
         if not eventin: 
             eventin = request.environ.get('QUERY_STRING')
+            if not eventin:
+                return ["can't determine eventin", ]
         origin = request.get('origin')
         if not origin:
             origin = str(request.remote_addr)
         #logging.info(eventin)
-
-        self.load(eventin)
+        logging.warn(u"remote.event - %s - parsing %s" % (origin, unicode(eventin)))
+        container = LazyDict(loads(eventin))
+        self.load(container.payload)
         self.isremote = True
         self.response = response
         self.request = request

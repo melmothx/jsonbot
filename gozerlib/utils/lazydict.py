@@ -46,13 +46,14 @@ class LazyDict(dict):
 
     def dump(self):
         """ serialize this event to json. """
-        new = cpy(self)
-        for name, property in self.iteritems():
+        new = {}
+        for name in self:
             try:
-                dumps(property)
-                setattr(new, name, property)
+                prop = getattr(self, name)
+                dumps(prop)
+                new[name] = prop
             except TypeError:
-                del new[name]
+                pass
         logging.debug('lazydict - tojson - %s' % str(new))
         return dumps(new)
 

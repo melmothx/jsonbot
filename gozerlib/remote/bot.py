@@ -8,7 +8,7 @@
 
 from gozerlib.utils.url import posturl, getpostdata
 from gozerlib.botbase import BotBase
-from event import RemoteEvent
+from event import RemoteEvent, Container
 
 import logging
 
@@ -16,19 +16,23 @@ class RemoteBot(BotBase):
 
     """ RemoteBot broadcasts events through HTTP POST calls. """
 
-    def __init__(self, target=None, cfg=None, users=None, plugs=None, jid=None, outs=[], *args, **kwargs):
+    def __init__(self, cfg=None, users=None, plugs=None, jid=None, *args, **kwargs):
         BotBase.__init__(self, cfg, users, plugs, jid, *args, **kwargs)
         if self.cfg:
             self.cfg['type'] = 'remote'
         self.type = "remote"
-        self.outs = outs or []
+        self.outs = []
 
     def addouts(self, outs):
-        self.outs = self.outs.append(outs)
+        for out in outs:
+            if out not in self.outs:
+                self.outs.append(out)
         return self
 
     def _raw(self, url, data, *args, **kwargs):
-        posturl(url, {}, data)
+        container = Container(self.jid, data)
+        container.makeid()
+        posturl(url, {}, {"container": container.dump()})
 
     def broadcast(self, data, *args, **kwargs):
         for url in self.outs:
