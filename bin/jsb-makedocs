@@ -4,6 +4,12 @@
 
 """ jsonbot documentation generator. """
 
+## boot
+
+import os
+import sys
+sys.path.insert(0, os.getcwd())
+
 ## gozerlib imports
 
 from gozerlib.utils.exception import handle_exception
@@ -12,11 +18,11 @@ from gozerlib.plugins import plugs, Plugins
 from gozerlib.examples import examples
 from gozerlib.users import Users
 from gozerlib.commands import cmnds
-#from gozerlib.aliases import aliasreverse
 from gozerlib.config import Config
 from gozerlib.threads import start_new_thread
 from gozerlib.boot import boot
 from gozerlib.botbase import BotBase
+
 ## basic imports
 
 import os
@@ -26,7 +32,7 @@ import re
 
 donot = []
 bot = BotBase()
-plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs'], force=True)
+plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs', 'scoketplugs'], force=True)
 print plugs
 users = Users()
 

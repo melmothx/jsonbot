@@ -54,7 +54,7 @@ class PlugState(PersistState):
 
     """ state for plugins. """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.plugname = calledfrom(sys._getframe())
         logging.debug('persiststate - initialising %s' % self.plugname)
         PersistState.__init__(self, 'gozerdata' + os.sep + 'state' + os.sep + 'plugs' + os.sep + self.plugname + os.sep + 'state')
@@ -63,14 +63,14 @@ class ObjectState(PersistState):
 
     """ state for usage in constructors. """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         PersistState.__init__(self, 'gozerdata' + os.sep + 'state' + os.sep + calledfrom(sys._getframe(1))+'.state')
 
 class UserState(PersistState):
 
     """ state for users. """
 
-    def __init__(self, username, filename="state"):
+    def __init__(self, username, filename="state", *args, **kwargs):
         assert username
         datadir = 'gozerdata' + os.sep + 'state' + os.sep + 'users' + os.sep + username
         PersistState.__init__(self,  datadir + os.sep + filename)
