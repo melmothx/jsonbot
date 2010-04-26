@@ -34,7 +34,7 @@ setup(
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
     author_email='bthate@gmail.com',
-    description='The hubbub bot of the future!',
+    description='The JSON everywhere bot!',
     license='MIT',
     scripts = ['bin/jsb', 
                'bin/jsb-irc', 

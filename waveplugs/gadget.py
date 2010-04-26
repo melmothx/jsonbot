@@ -131,3 +131,24 @@ def handle_gadgetlist(bot, event):
 
 cmnds.add("gadget-list", handle_gadgetlist, 'USER')
 examples.add("gadget-list", "list known gadget urls", "gadget-list")
+
+
+def handle_gadgetconsole(bot, event):
+    if event.type != "wave":
+        event.reply("this command only works in google wave.");
+        return
+
+    wave = event.chan
+    if wave.data.feeds:
+        event.set_title("JSONBOT - %s #%s" % (" - ".join(wave.data.feeds), str(wave.data.nrcloned)))
+    else:
+        event.set_title("JSONBOT - no feeds running - #%s" % str(wave.data.nrcloned))
+
+    from waveapi import element
+
+    event.insert_root("\n")
+    event.insert_root(
+        element.Gadget('http://jsonbot.appspot.com/feedform.xml'))
+
+cmnds.add("gadget-console", handle_gadgetconsole, 'OPER')
+examples.add("gadget-console", "load the console gadget", "gadget-console")

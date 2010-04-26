@@ -122,19 +122,7 @@ class WaveBot(BotBase, robot.Robot):
         wevent.parse(self, event, wavelet)
         wevent.chan.save()
 
-        wave = wevent.chan
-
-        if wave.data.feeds:
-            wevent.set_title("JSONBOT - %s #%s" % (" - ".join(wave.data.feeds), str(wave.data.nrcloned)))
-        else:
-            wevent.set_title("JSONBOT - no feeds running - #%s" % str(wave.data.nrcloned))
-
-        wevent.insert_root("\n")
-        wevent.insert_root(
-            element.Gadget('http://jsonbot.appspot.com/feedform.xml'))
-
-        #wevent.append(
-        #    element.Installer('http://jsonbot.appspot.com/feeder.xml'))
+        wevent.reply("Welcome to JSONBOT. (see !help)")
 
         callbacks.check(self, wevent)
 
