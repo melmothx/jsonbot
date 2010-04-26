@@ -1,29 +1,23 @@
 README
 ======
 
-FeedProvider is a wave and xmpp bot for pushing pubsubhubbub feeds to Google
-Wave and Jabber. Combined with a feed fetching service like superfeedr.com it can
-deliver your feeds on multiple platforms (wave and xmpp are suported now though xmpp conferences are not yet supported), IRC support is being
-provided by a seperate standalone program (under development right now).
-
-FeedProvider is free code (MIT) and can be cloned where needed. Source code
-is at http://jsonbot.googlecode.com. 
+JSONBOT is a bot that stores all its data in json format. It runs on the
+Google Application Engine and can thus support wave, web and xmpp.
+Standalone programms are provided for IRC and console, the goal is to let both
+clientside and GAE side communicate through JSON either over XMPP or HTTP POST.
 
 * Live demo: http://jsonbot.appspot.com (web) 
 * Wave/Jabber: jsonbot@appspot.com
-
-To register a feed use !hb-register <feedname> <url> or !hb-start <feedname>
-if the feed is already added.
 
 this bot needs google_appengine installed in your home dir
 
 jsonbot provides the following programs:
 
-* fpr - console version of jsonbot
-* fpr-irc - IRC version of jsonbot
-* fpr-release - create a new release directory
-* fpr-run - run a release in the GAE dev_appserver
-* fpr-upload - upload a release to the GAE
+* jsb - console version of jsonbot
+* jsb-irc - IRC version of jsonbot
+* jsb-release - create a new release directory
+* jsb-run - run a release in the GAE dev_appserver
+* jsb-upload - upload a release to the GAE
 
 see docs/UPLOAD on how to upload your own bot.
 
@@ -45,3 +39,5 @@ contact the developer
 * sandbox: bthate@wavesandbox.com
 
 You can reach me by joining #dunkbots on FreeNode or IRCNet. If we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
+
+JSONBOT is free open source code (MIT).
