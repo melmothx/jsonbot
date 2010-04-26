@@ -32,6 +32,7 @@ import re
 
 donot = []
 bot = BotBase()
+bot.allowall = True
 plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs', 'scoketplugs'], force=True)
 print plugs
 users = Users()
