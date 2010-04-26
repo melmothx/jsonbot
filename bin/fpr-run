@@ -1,1 +1,0 @@
-~/google_appengine/dev_appserver.py -c releases/$1

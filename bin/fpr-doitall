@@ -1,3 +1,0 @@
-export PATH="./bin:.:$PATH"
-fpr-release $1
-fpr-upload $1
