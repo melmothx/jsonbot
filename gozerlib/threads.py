@@ -90,15 +90,28 @@ def getname(func):
 
     return name
 
-def start_new_thread(func, arglist, kwargs=None):
+def start_new_thread(func, arglist, kwargs={}):
     """ start a new thread .. set name to function/method name."""
     if not kwargs:
         kwargs = {}
 
-    try:
+    if not 'name' in kwargs:
         name = getname(func)
         if not name:
-            name = 'noname'
+            name = str(func)
+    else:
+        name = kwargs['name']
+
+    logging.warn("new thread: %s - %s" % (name, str(arglist)))
+
+    try:
+        from google.appengine.ext.deferred import defer
+        defer(func, *arglist, **kwargs)
+        return
+    except ImportError: 
+        pass
+
+    try:
 
         thread = Thr(None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()

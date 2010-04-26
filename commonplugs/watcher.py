@@ -9,7 +9,6 @@
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks, gn_callbacks
 from gozerlib.persist import PlugPersist
-from gozerlib.gozernet.bot import GozerNetBot
 from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples

@@ -6,6 +6,7 @@
 
 ## gozerbot imports
 
+from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.persiststate import UserState
@@ -16,13 +17,30 @@ import time
 import os
 import threading
 import thread
+import copy
+
+cpy = copy.deepcopy
 
 def handle_test(bot, ievent):
     """ give test response. """
     ievent.reply("%s .. it works!" % ievent.userhost)
-
+    
 cmnds.add('test', handle_test, ['USER', 'GUEST', ])
 examples.add('test', 'give test response',' test')
+
+def handle_testevent(bot, ievent):
+    """ give dump of event. """
+    event = cpy(ievent)
+    try:
+        del event.cfg
+        del event.plugs
+        del event.bot
+    except Exception, ex:
+        handle_exception()
+    ievent.reply(str(event))
+    
+cmnds.add('test-event', handle_testevent, ['USER', 'GUEST', ])
+examples.add('test-event', 'dump the event',' test-event')
 
 def handle_source(bot, ievent):
     """ show where to fetch the bot source. """ 

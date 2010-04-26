@@ -17,6 +17,7 @@ from config import cfg as mainconfig
 from utils.pdod import Pdod
 from less import Less
 from boot import boot
+from utils.locking import lockdec
 
 ## basic imports
 
@@ -26,10 +27,14 @@ import copy
 import sys
 import getpass
 import os
+import thread
 
 ## define
 
 cpy = copy.deepcopy
+
+eventlock = thread.allocate_lock()
+eventlocked = lockdec(eventlock)
 
 ## classes
 
@@ -118,18 +123,25 @@ class BotBase(LazyDict):
                 except NoSuchCommand:
                     print "no such command: %s" % event.usercmnd
 
-
+    @eventlocked
     def doevent(self, event):
         """  dispatch an event. """
         self.curevent = event
+        go = False
         if self.cfg:
             cc = self.cfg.cc or "!"
         else:
             cc = "!"
-        if event.txt and event.txt.startswith(cc):
+        logging.warn("cc for %s is %s" % (event.title or event.channel, cc))
+        if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
-            event.usercmnd = event.txt.split()[0]
-
+            if event.txt:
+                event.usercmnd = event.txt.split()[0]
+            else:
+                event.usercmnd = None
+            event.makeargs()
+            go = True
+        starttime = time.time()
         e = cpy(event)
         if event.isremote:
             logging.debug('doing REMOTE callback')
@@ -142,9 +154,19 @@ class BotBase(LazyDict):
             return
 
         try:
-            return self.plugs.dispatch(self, event)
+            if go or event.type in ['web', 'xmpp', 'irc']:
+                result = self.plugs.dispatch(self, event)
+            else:
+                result =  []
         except NoSuchCommand:
             event.reply("no such command: %s" % event.usercmnd)
+            result = []
+
+        if event.chan:
+            if event.chan.data.lastedited > starttime:
+                event.chan.save()
+
+        return result
 
     def ownercheck(self, userhost):
         """ check if provided userhost belongs to an owner. """

@@ -98,6 +98,7 @@ def start():
     try:
         server.addhandler('/remote/', 'POST', remote_POST)
         server.addhandler('/remote/', 'GET', remote_GET)
+        server.enable('/remote/')
     except Exception, ex:
         handle_exception()
 
@@ -109,8 +110,8 @@ def init():
 def shutdown():
     global server
     if server:
-        server.delhandler('/remote/', 'POST', soup_POST)
-        server.delhandler('/remote/', 'GET', soup_GET)
+        server.disable('/remote/')
+        server.disable('/remote/')
 
 def handle_remoteserver_start(bot, event):
     """ add the /remote/ mountpoints to the REST server. """

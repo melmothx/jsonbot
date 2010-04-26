@@ -26,6 +26,8 @@ from gozerlib.config import Config, cfg
 from gozerlib.channelbase import ChannelBase
 from gozerlib.utils.url import posturl
 from gozerlib.errors import NoSuchBotType
+from gozerlib.gae.wave.waves import Wave
+from gozerlib.threads import start_new_thread
 
 ## basic imports
 
@@ -35,6 +37,7 @@ import urllib
 import urlparse
 import uuid
 import os
+import time
 
 ## subscribe function
 
@@ -182,17 +185,18 @@ class HubbubWatcher(PlugPersist):
 
     def add(self, name, url, owner):
         """ add a feed to the database. """
-        item = HubbubItem(name, url, owner)
-        item.save()
-        self.feeds[name] = item
 
         if not name in self.data['names']:
             self.data['names'].append(name)
-        else:
+            self.data['urls'][url] = name
+            self.save()
+
+        item = HubbubItem(name, url, owner)
+        if item.data.url != url:
             return False
 
-        self.data['urls'][url] = name
-        self.save()
+        item.save()
+        self.feeds[name] = item
         return True
 
     def byname(self, name):
@@ -250,6 +254,53 @@ class HubbubWatcher(PlugPersist):
 
         logging.info('hubbub - started %s watch' % name)
 
+    def work(self, botname, type, channel, entries, url, *args, **kwargs):
+        try:
+            item = self.byurl(url)
+            name = item.data.name
+            try:
+                bot = fleet.byname(botname)
+                if not bot and type == 'wave' and 'wave' in botname:
+                    bot = fleet.makewavebot(botname)
+                if not bot and type:
+                    bot = fleet.makebot(type=type)
+                if not bot:
+                    bot = fleet.makebot('xmpp')
+            except NoSuchBotType, ex:
+                logging.warn("hubbub - %s" % str(ex))
+                return
+
+            if not bot:
+                logging.error("hubbub - can't find %s bot in fleet" % type)
+                return
+
+            res2 = entries
+
+            if not res2:
+                logging.info("no updates for %s (%s) feed available" % (item.data.name, channel))
+                return
+
+            if item.markup.get(jsonstring([name, channel]), 'reverse-order'):
+                res2 = res2[::-1]
+
+            if item.markup.get(jsonstring([name, channel]), 'all-lines'):
+                for i in res2:
+                    response = self.makeresponse(name, [i, ], channel)
+                    try:
+                        bot.say(channel, response)
+                    except Exception, ex:
+                        handle_exception()
+            else:
+                sep =  item.markup.get(jsonstring([name, channel]), 'separator')
+                if sep:
+                    response = self.makeresponse(name, res2, channel, sep=sep)
+                else:
+                    response = self.makeresponse(name, res2, channel)
+
+                bot.say(channel, response)
+        except Exception, ex:
+            handle_exception()
+
     def incoming(self, data):
         """ process incoming hubbub data. """
         result = feedparser.parse(data)
@@ -276,7 +327,7 @@ class HubbubWatcher(PlugPersist):
                 return
 
             logging.debug("loopover in %s peek is: %s" % (name, loopover))
-
+            counter = 1
             for i in loopover:
                 if len(i) == 3:
                     try:
@@ -291,49 +342,16 @@ class HubbubWatcher(PlugPersist):
                     logging.debug('hubbub - %s is not in the format (botname, bottype, channel)' % item.data.url)
                     continue
 
-                try:
-                    bot = fleet.byname(botname)
-                    if not bot and type == 'wave' and 'wave' in botname:
-                        bot = fleet.makewavebot(botname)
-                    if not bot and type:
-                        bot = fleet.makebot(type=type)
-                    if not bot:
-                        bot = fleet.makebot('xmpp')
-                except NoSuchBotType, ex:
-                    logging.warn("hubbub - %s" % str(ex))
-                    continue
-
-                if not bot:
-                    logging.error("hubbub - can't find %s bot in fleet" % type)
-                    continue
-
-                res2 = result.entries
-
-                if not res2:
-                    logging.info("no updates for %s (%s) feed available" % (item.data.name, channel))
-                    continue
-
-                if item.markup.get(jsonstring([name, channel]), 'reverse-order'):
-                    res2 = res2[::-1]
-
-                if item.markup.get(jsonstring([name, channel]), 'all-lines'):
-                    for i in res2:
-                        response = self.makeresponse(name, [i, ], channel)
-                        try:
-                            bot.say(channel, response)
-                        except Exception, ex:
-                            handle_exception()
-                else:
-                    sep =  item.markup.get(jsonstring([name, channel]), 'separator')
-                    if sep:
-                        response = self.makeresponse(name, res2, channel, sep=sep)
+                if type == 'wave':
+                    wave = Wave(channel)
+                    if wave and wave.data.json_data:
+                        start_new_thread(work, (botname, type, channel, result.entries, url), {"_countdown": counter})
                     else:
-                        response = self.makeresponse(name, res2, channel)
+                        logging.warn("hubbub - skipping %s - not joined" % channel)
+                else:
+                    start_new_thread(work, (botname, type, channel, result.entries, url), {"_countdown": counter})
 
-                    try:
-                        bot.say(channel, response)
-                    except Exception, ex:
-                        handle_exception()
+                counter += 1
 
         except Exception, ex:
             handle_exception(txt=name)
@@ -460,7 +478,7 @@ class HubbubWatcher(PlugPersist):
 
         return result
 
-    def listfeeds(self, botname, name, type, channel):
+    def listfeeds(self, botname, type, channel):
         """ show names/channels of running watcher. """
         result = []
         for name in self.data['names']:
@@ -472,10 +490,13 @@ class HubbubWatcher(PlugPersist):
 
         return result
 
-    def getfeeds(self, channel):
+    def getfeeds(self, channel, type=None):
         """ get all feeds running in a channel. """
-        channel = ChannelBase(channel)
-        return channel.data.feeds
+        if type and type == "wave":
+            chan = Wave(channel)
+        else:
+            chan = ChannelBase(channel)
+        return chan.data.feeds
 
     def url(self, name):
         """ return url of a feed. """
@@ -533,11 +554,15 @@ class HubbubWatcher(PlugPersist):
         item.data.stoprunning = 0
         item.save()
         watcher.watch(name)
-        chan = ChannelBase(target)
+        logging.debug("putting feedname %s in target: %s" % (name, target)) 
+        if type == "wave":
+            chan = Wave(target)
+        else:
+            chan = ChannelBase(target)
 
         if not name in chan.data.feeds:
             chan.data.feeds.append(name)
-            chan.save()
+        chan.save()
 
         logging.debug("hubbub - started %s feed in %s channel" % (name, channel))
         return True
@@ -551,7 +576,10 @@ class HubbubWatcher(PlugPersist):
 
         try:
             logging.warn("trying to remove %s from %s feed list" % (name, channel))
-            chan = ChannelBase(channel)
+            if type == "wave":
+                chan = Wave(channel)
+            else:
+                chan = ChannelBase(channel)
             chan.data.feeds.remove(name)
             chan.save()
         except ValueError:
@@ -568,7 +596,8 @@ class HubbubWatcher(PlugPersist):
 
     def clone(self, botname, type, newchannel, oldchannel):
         """ clone feeds over to a new wave. """
-        feeds = self.getfeeds(oldchannel)
+        feeds = self.getfeeds(oldchannel, type)
+        logging.debug("hubbub - clone - %s - %s - %s - %s - %s" % (botname, type, newchannel, oldchannel, feeds))
         for feed in feeds:
             self.stop(botname, type, feed, oldchannel)
             self.start(botname, type, feed, newchannel)
@@ -576,6 +605,9 @@ class HubbubWatcher(PlugPersist):
         return feeds
 
 ## defines
+
+def work(botname, type, channel, result, item, *args, **kwargs):
+    watcher.work(botname, type, channel, result, item, *args, **kwargs)
 
 # the watcher object 
 watcher = HubbubWatcher('hubbub')
@@ -666,9 +698,9 @@ def handle_hubbubadd(bot, ievent):
 
     if int(result.status) > 200 and int(result.status) < 300:
        watcher.add(name, url, ievent.userhost)
-       ievent.reply('hubbub item added. status code is %s' % result.status)
+       ievent.reply('%s feed added' % name)
     else:
-       ievent.reply('hubbub item NOT added. status code is %s' % result.status)
+       ievent.reply('%s feed NOT added. status code is %s' % (name, result.status))
 
 cmnds.add('hb-add', handle_hubbubadd, 'USER')
 examples.add('hb-add', 'hubbub-add <name> <url> to the watcher', 'hb-add gozerbot http://core.gozerbot.org/hg/dev/0.9/rss-log')
@@ -727,6 +759,14 @@ def handle_hubbubstart(bot, ievent):
         else:
             cantstart.append(name)
 
+    if bot.type == "wave":
+        wave = Wave(ievent.channel)
+        if wave and wave.data:
+            logging.debug("feed running in %s: %s" % (ievent.title, wave.data.feeds))
+            try:
+                ievent.set_title("JSONBOT - %s - #%s" % (' - '.join(wave.data.feeds), str(wave.data.nrcloned)))
+            except Exception, ex:
+                handle_exception()
     if started:
         ievent.reply('started: ', started)
     else:
@@ -1241,7 +1281,7 @@ def handle_hubbubfeeds(bot, ievent):
         channel = ievent.channel
 
     try:
-        result = watcher.getfeeds(channel)
+        result = watcher.getfeeds(channel, type=bot.type)
         if result:
             ievent.reply("feeds running: ", result)
         else:
@@ -1262,35 +1302,65 @@ examples.add('hb-welcome', 'hb-welcome .. show welcome message', 'hb-welcome')
 
 def handle_hubbubregister(bot, ievent):
     """ <name> <url> .. register a url and start the feed in one pass. """
-    if len(ievent.args) != 2:
-        ievent.reply("<name> <url> .. i need a feed name and a feed url to work with")
-        return
-
-    (name, url) = ievent.args
-
-    if not url.startswith("http"):
-        ievent.reply("url needs to start with http(s)://")
-        return
     if not ievent.waveid:
         target = ievent.channel
     else:
         target = ievent.waveid
+
+    if len(ievent.args) > 2:
+        ievent.reply("feed name needs to be 1 word.")
+        return
+
+    try:
+        (name, url) = ievent.args
+    except ValueError:
+        try:
+            name = ievent.args[0]
+        except IndexError:
+            ievent.reply("i need a feed name and a feed url to work with")
+            return
+        item = watcher.byname(name)
+        if item:
+            if not name in watcher.getfeeds(ievent.channel):
+                watcher.start(bot.name, bot.type, name, target)
+                ievent.reply('started %s feed. entries will show up when the feed is updated.' % name)
+                if bot.type == "wave":
+                    wave = Wave(ievent.waveid)
+                    logging.debug("feed running in %s: %s" % (ievent.title, wave.data.feeds))
+                    if name not in ievent.title:
+                        ievent.set_title("JSONBOT - %s - #%s" % (' - '.join(wave.data.feeds), str(wave.data.nrcloned)))
+            else:
+                ievent.reply("feed %s is already running." % name)
+        else:
+            ievent.reply("i don't know a %s feed. please enter name and url." % name)
+            return
+        return
+          
+    if not url.startswith("http"):
+        ievent.reply("the feedurl needs to start with http(s)://")
+        return
 
     try:
         result = subscribe(url)
         if int(result.status) > 200 and int(result.status) < 300:
             if watcher.add(name, url, ievent.userhost):
                 watcher.start(bot.name, bot.type, name, target)
-                ievent.reply('%s started. status code is %s' % (url, result.status))
+                ievent.reply('started %s feed. entries will show up when the feed is updated.' % name)
+                if bot.type == "wave":
+                    wave = Wave(ievent.waveid)
+                    logging.debug("feed running in %s: %s" % (ievent.title, wave.data.feeds))
+                    if name not in ievent.title:
+                        ievent.set_title("JSONBOT - %s - #%s" % (' - '.join(wave.data.feeds), str(wave.data.nrcloned)))
+                return
             else:
-                ievent.reply("there already exists a %s feed" % name)
+                ievent.reply("there already exists a %s feed. please choose a different name" % name)
                 return
         else:
-            ievent.reply('hubbub item NOT added. status code is %s. Check if %s is working properly' % (result.status, url))
+            ievent.reply('feed %s NOT added. Status code is %s. please check if the feed is valid.' % (name, result.status))
         
     except Exception, ex:
         handle_exception()
-        ievent.reply("oops something went wrong: %s" % str(ex))
+        ievent.reply("Oops something went wrong: %s" % str(ex))
 
 cmnds.add('hb-register', handle_hubbubregister, ['USER', 'GUEST'])
 examples.add('hb-register', 'hb-register .. register url and start it in one pass', 'hb-register hgrepo http://code.google.com/feeds/p/jsonbot/hgchanges/basic')

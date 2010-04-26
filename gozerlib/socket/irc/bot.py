@@ -437,28 +437,30 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
             self.privwait.check(ievent)
             if ievent.isresponse:
                 return
-            if not self.cfg['noccinmsg']:
+            if self.cfg['noccinmsg'] and self.msg:
                 self.doevent(ievent)
             elif ievent.txt[0] in ccs: 
-                ievent.txt = ievent.txt[1:]
+                
                 self.doevent(ievent)
             return
 
         ievent.printto = chan
 
         # see if we can get channel control character
+
         try:
-            cchar = self.channels[chan]['cc']
-        except LookupError:
-            cchar = self.cfg['defaultcc'] or '!'
-        except TypeError:
-            cchar = self.cfg['defaultcc'] or '!'
+            channel = ChannelBase(chan)
+            cchar = channel.data.cc
+        except Exception, ex:
+            handle_exception()
+            cchar = "!"
+        if not cchar:
+            cchar = "!"
 
         # see if cchar matches, if so dispatch
         ievent.speed = 5
         if ievent.txt[0] in cchar:
             ievent.cc = ievent.txt[0]
-            ievent.txt = ievent.txt[1:]
             ievent.usercmnd = ievent.txt.split()[0]
             try:
                 self.doevent(ievent)

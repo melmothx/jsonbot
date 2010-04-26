@@ -1,4 +1,4 @@
-# waveplugs/relay.py
+# commonplugs/relay.py
 #
 #
 
@@ -12,7 +12,6 @@ from gozerlib.persist import PlugPersist
 from gozerlib.examples import examples
 from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
-from gozerlib.gozernet.event import RemoteEvent
 from gozerlib.errors import NoSuchWave
 
 ## basic imports

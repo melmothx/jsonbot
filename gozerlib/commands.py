@@ -16,6 +16,7 @@ from errors import NoSuchCommand
 
 import logging
 import sys
+import types
 
 ## classes
 
@@ -29,6 +30,8 @@ class Command(LazyDict):
         self.plugname = self.modname.split('.')[-1]
         self.cmnd = cmnd
         self.func = func
+        if type(perms) == types.StringType:
+            perms = [perms, ]
         self.perms = perms
         self.plugin = self.plugname
 
@@ -105,11 +108,17 @@ class Commands(LazyDict):
 
     def perms(self, cmnd):
         """ show what permissions are needed to execute cmnd. """
-        return self[cmnd].perms
+        try:
+            return self[cmnd].perms
+        except KeyError:
+            return []
 
     def whereis(self, cmnd):
         """ return plugin name in which command is implemented. """
-        return self[cmnd].plugname
+        try:
+            return self[cmnd].plugname
+        except KeyError:
+            return ""
 
     def gethelp(self, cmnd):
         """ get the docstring of a command. used for help. """

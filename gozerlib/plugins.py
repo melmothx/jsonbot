@@ -80,7 +80,8 @@ class Plugins(LazyDict):
         if not replace:
             if modname in sys.modules:
                 logging.debug("plugins - %s is already loaded" % modname)
-                return
+                self[modname] = sys.modules[modname]
+                return sys.modules[modname]
 
         logging.warn("plugins - loading %s" % modname)
         try:

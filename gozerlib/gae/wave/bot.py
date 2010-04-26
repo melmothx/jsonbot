@@ -13,6 +13,7 @@ from gozerlib.utils.generic import getversion
 from gozerlib.callbacks import callbacks
 from gozerlib.outputcache import add
 from gozerlib.config import Config
+from gozerlib.utils.locking import lockdec
 
 ## gaelib imports
 
@@ -42,10 +43,15 @@ import logging
 import cgi
 import os
 import time
+import thread
 
 ## defines
 
 waves = {}
+saylock = thread.allocate_lock()
+saylocked = lockdec(saylock)
+
+## classes
 
 class WaveBot(BotBase, robot.Robot):
 
@@ -114,16 +120,21 @@ class WaveBot(BotBase, robot.Robot):
 
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
+        wevent.chan.save()
 
-        wave = Wave(wevent.waveid)
-        wave.parse(event, wavelet)
-        wave.save()
+        wave = wevent.chan
 
-        wevent.append(
-            element.Gadget('http://jsonbot.appspot.com/gadget.xml'))
-        wevent.append('\n\nWelcome to JSONBOT\n\n')
-        wevent.append('use the hb-register command to register a feed e.g. "hb-register slashdot http://rss.slashdot.org/Slashdot/slashdot"\n\n')
-        wevent.append('see also the "help hubbub" command')
+        if wave.data.feeds:
+            wevent.set_title("JSONBOT - %s #%s" % (" - ".join(wave.data.feeds), str(wave.data.nrcloned)))
+        else:
+            wevent.set_title("JSONBOT - no feeds running - #%s" % str(wave.data.nrcloned))
+
+        wevent.insert_root("\n")
+        wevent.insert_root(
+            element.Gadget('http://jsonbot.appspot.com/feedform.xml'))
+
+        #wevent.append(
+        #    element.Installer('http://jsonbot.appspot.com/feeder.xml'))
 
         callbacks.check(self, wevent)
 
@@ -135,23 +146,13 @@ class WaveBot(BotBase, robot.Robot):
         wevent.parse(self, event, wavelet)
         wevent.auth = wevent.userhost
 
-        wave = Wave(wevent.waveid)
-
-        if not wave.data.title:
-            wave.parse(event, wavelet)
-            wave.save()
-
-        if len(wevent.txt) >= 2:
-            if self.cfg and self.cfg.cc and (wevent.txt[0] in self.cfg.cc):
-                wevent.txt = wevent.txt[1:]
-            elif wevent.txt[0] != '!':
-                return
-        else:
-            return
+        wave = wevent.chan
+        wave.data.seenblips += 1
+        wave.data.lastedited = time.time()
 
         self.doevent(wevent)
 
-
+    @saylocked
     def say(self, waveid, txt):
 
         """
@@ -168,7 +169,7 @@ class WaveBot(BotBase, robot.Robot):
         if not self.domain in self._server_rpc_base:
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
-            logging.warn("waces - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
+            logging.warn("waves - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
             
         wave = Wave(waveid)
 
@@ -210,7 +211,7 @@ class WaveBot(BotBase, robot.Robot):
 
         logging.warn("wave - new wave on domain %s" % domain)
         newwave = self.new_wave(domain or self.domain, participants=participants, submit=submit)
-
+	
         return newwave
 
     def run(self):

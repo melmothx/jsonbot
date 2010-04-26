@@ -49,7 +49,7 @@ class test_pipeline(unittest.TestCase):
         bot.allowall = True
         event = WaveEvent()
         event.bot = bot
-        event.txt = "list | grep c"
+        event.txt = "!list | grep c"
         event.makeargs()
         result = bot.doevent(event)
         logging.error(str(result))

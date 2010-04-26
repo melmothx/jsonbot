@@ -1,0 +1,5 @@
+cd docs
+rm -fR gozerlib plugins commonplugs/ waveplugs/ socketplugs/
+cd ..
+./bin/fpr-makedocs
+sphinx-build docs docs/html

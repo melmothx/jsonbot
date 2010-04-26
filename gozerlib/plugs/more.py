@@ -59,7 +59,7 @@ def handle_more(bot, ievent):
     try:
         who = ievent.args[0]
     except IndexError:
-        who = ievent.userhost
+        who = ievent.auth
 
     what, size = bot.outcache.more(who, 0)
 

@@ -161,7 +161,11 @@ class Config(LazyDict):
             ddir = os.sep.join(d)
             if not os.path.isdir(ddir):
                 logging.warn("persist - creating %s dir" % ddir)
-                os.mkdir(ddir)
+                try:
+                    os.mkdir(ddir)
+                except OSError, ex:
+                    logging.warn("persist - not saving - failed to make %s - %s" % (ddir, str(ex)))
+                    return
 
         #logging.warn("config - tofile - %s" % ddir)
         written = []
@@ -273,7 +277,7 @@ class Config(LazyDict):
             self.setdefault('auto_register', 1)
             self.setdefault('ondemand', 1)
 
-        self['version'] = "JSONBOT 0.1.3"
+        self['version'] = "JSONBOT 0.2.1"
 
         return self
 

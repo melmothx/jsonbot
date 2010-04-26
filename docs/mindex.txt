@@ -10,9 +10,13 @@ gozerlib
     gae/wave/index
     gae/web/index
     gae/xmpp/index
-    gozernet/index
+    gae/utils
     plugs/index
+    remote/index
     socket/index
     socket/irc/index
+    socket/rest/index
+    socket/utils/index
     utils/index
+
     *

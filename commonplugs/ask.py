@@ -153,9 +153,9 @@ def handle_ask(bot, event):
     if event.options and '-w' in event.options:
         event.reply('wave for this question is created for %s' % event.userhost)
 
-        fleet.makebot('wave')
+        bot = fleet.makebot(type='wave')
         if bot:
-            newwave = bot.newwave(event.context, participants=['ask-bot@appspot.com', event.userhost])
+            newwave = bot.newwave(event.context, participants=['jsonbot@appspot.com', event.userhost])
             newwave.SetTitle("ask-bot wave: %s" % question)
 
 cmnds.add('ask', handle_ask, ['USER', 'GUEST'], options={'-w': False})

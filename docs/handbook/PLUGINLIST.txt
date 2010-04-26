@@ -11,7 +11,6 @@ JSONBOT 0.1 contains the following plugins:
   * count - count the numbers in a resutl .. used in pipelines
   * gadget - wave gadget support
   * gcalc - use google to calculate
-  * gozernet - connect multiple JSONBOTs through xmpp
   * grep - grep the result .. used in pipelines
   * hubbub - pubsubhubbub plugin providing subscribe functionality
   * ipcalc - ipcalculator

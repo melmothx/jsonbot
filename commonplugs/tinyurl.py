@@ -93,7 +93,7 @@ def get_tinyurl(url):
         res = urllib2.urlopen(req).readlines()
         #raise Exception("mekker")
     except google.appengine.api.urlfetch_errors.DownloadError, e:
-        logging.error('tinyurl - %s - DownError: %s' % (url, str(e)))
+        logging.warn('tinyurl - %s - DownloadError: %s' % (url, str(e)))
         return
 
     except urllib2.URLError, e:

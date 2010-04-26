@@ -12,6 +12,7 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.persist import PlugPersist
 from gozerlib.callbacks import callbacks
 from gozerlib.plugins import plugs
+from gozerlib.gae.wave.waves import Wave
 
 ## basic imports
 
@@ -23,52 +24,15 @@ def handle_waveclone(bot, event):
         event.reply("this command only works in google wave.");
         return
 
-    #event.reply("cloning ...")
-    title = event.root.title.strip()
-    parts = list(event.root.participants)
-    logging.warn('wave - clone - %s' % parts)
-    newwave = bot.newwave(bot.domain, parts)
-    newwave._set_title(title)
-    for id in parts:
-        newwave.participants.add(id)
-    txt = event.rootblip.text
-    newwave._root_blip.append(u'\n\n%s\n\n' % txt)
-    blip = newwave.reply()
-    blip.append("\nthis wave is cloned from %s\n" % event.url)
-
-    for element in event.rootblip.elements:
-
-        if element.type == 'GADGET':
-            newwave._root_blip.append(element)
-
-    wavelist = bot.submit(newwave)
-    logging.warn("wave - clone - %s - submit returned %s" % (list(newwave.participants), str(wavelist)))
-
-    if not wavelist:
-        logging.warn("submit of new wave failed")
+    wave = event.chan
+    event.reply("cloning ...")
+    newwave = wave.clone(bot, event, event.root.title.strip())
+    if not newwave:
+        event.reply("can't create new wave")
         return
-
-    try:
-        waveid = None
-        for item in wavelist:
-            try:
-                waveid = item['data']['waveId']
-            except (KeyError, ValueError):
-                continue
-        
-        logging.warn("wave - newwave id is %s" % waveid)
-        if waveid and 'sandbox' in waveid:
-            url = "https://wave.google.com/a/wavesandbox.com/#restored:wave:%s" % waveid.replace('w+','w%252B')
-        else:
-            url = "https://wave.google.com/wave/#restored:wave:%s" % waveid.replace('w+','w%252B')
-    except AttributeError:
-        event.reply("no waveid found")
-        return
-        
     plugs.load('commonplugs.hubbub')
-    feeds = plugs['commonplugs.hubbub'].watcher.clone(bot.name, waveid, event.waveid)
-    event.reply("this wave is continued to %s with the following feeds: %s" % (url, feeds))
-    continue_clone(event.waveid, waveid)
+    feeds = plugs['commonplugs.hubbub'].watcher.clone(bot.name, bot.type, newwave.data.waveid, event.waveid)
+    event.reply("this wave is continued to %s with the following feeds: %s" % (newwave.data.url, feeds))
 
 cmnds.add('wave-clone', handle_waveclone, 'USER')
 examples.add('wave-clone', 'clone the wave', 'wave-clone')
@@ -154,66 +118,56 @@ def handle_wavepart(bot, event):
 cmnds.add('wave-part', handle_wavepart, 'OPER')
 examples.add('wave-part', 'leave the wave', 'wave-part')
 
-continue_count = PlugPersist('continue-count')
-continue_threshold = PlugPersist('continue-threshold')
+def handle_wavetitle(bot, event):
+    if event.type != "wave":
+        event.reply("this command only works in google wave.");
+        return
 
-def continue_clone(oldwave, newwave):
-    try:
-        continue_threshold.data[newwave] = continue_threshold.data[oldwave]
-        continue_count.data[newwave] = 0
-        continue_threshold.save()
-        continue_count.save()
-    except:
-        pass
+    if not event.rest:
+        event.missing("<title>")
+        return
 
-def continue_callback(bot, event):
-    global continue_count
-    global continue_threshold
+    event.set_title(event.rest)
+    event.reply('done')
 
-    try:
-        continue_count.data[event.channel] += 1
-    except KeyError:
-        continue_count.data[event.channel] = 1
+cmnds.add('wave-title', handle_wavetitle, 'OPER')
+examples.add('wave-title', 'set title of the wave', 'wave-title')
 
-    continue_count.save()
+def handle_wavedata(bot, event):
+    if event.type != "wave":
+        event.reply("this command only works in google wave.");
+        return
 
-    try:
+    wave = event.chan
+    if wave:
+        data = dict(wave.data)
+        del data['passwords']
+        del data['json_data']
+        event.reply(str(data))
+    else:
+        event.reply("can't fetch wave data of wave %s" % wave.waveid)
 
-        if continue_count.data[event.channel] >= continue_threshold.data[event.channel]:
-            continue_count.data[event.channel] = 0
-            continue_count.save()
-            event.reply("this wave is being continued (threshold = %s)" % continue_threshold.data[event.channel])
-            event.submit()
-            handle_waveclone(bot, event)
-    except KeyError:
-        pass
-
-callbacks.add('BLIP_SUBMITTED', continue_callback)
-
-def handle_waveblipcount(bot, event):
-    event.reply(continue_count.data[event.channel])
-
-cmnds.add('wave-blipcount', handle_waveblipcount, 'USER')
+cmnds.add('wave-data', handle_wavedata, 'OPER')
+examples.add('wave-data', 'show the waves stored data', 'wave-data')
 
 def handle_wavethreshold(bot, event):
-
     if event.type != "wave":
         event.reply("this command only works in google wave.");
         return
 
     try:
-        count = int(event.args[0])
-    except (IndexError, ValueError):
-        event.reply("threshold of %s is %s" % (event.channel, continue_threshold.data[event.channel]))
-        return
+        nrblips = int(event.rest)
+    except ValueError:
+        nrblips = -1
 
-    if not continue_threshold.data:
-        continue_threshold.data = {}
+    wave = event.chan
+    if wave:
+        if nrblips == -1:
+            event.reply('threshold of "%s" is %s' % (wave.data.title, str(wave.data.threshold)))
+            return
+        wave.data.threshold = nrblips
+        wave.save()
+        event.reply('threshold of "%s" set to %s' % (wave.data.title, str(wave.data.threshold)))
 
-    continue_threshold.data[event.channel] = count
-    continue_threshold.save()
-    event.reply("threshold of %s is now %s" % (event.channel, count))
-
-cmnds.add("wave-threshold", handle_wavethreshold, "OPER")
-examples.add("wave-threshold", "set continue threshold of the wave .. after this many blips a new wave will be cloned.", "wave-threshold 200")
-
+cmnds.add('wave-threshold', handle_wavethreshold, 'OPER')
+examples.add('wave-threshold', 'set nr of blips after which we clone the wave', 'wave-threshold')

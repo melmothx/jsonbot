@@ -44,10 +44,6 @@ class WebEvent(EventBase):
 
         self.isweb = True
         self.origtxt = input.strip()
-
-        if len(input) > 1 and input[0] in '!?' :
-            input = input[1:]
-
         self.txt = input
         self.usercmnd = self.txt and self.txt.split()[0]
         self.groupchat = False
@@ -81,7 +77,7 @@ class WebEvent(EventBase):
         logging.warn(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 
-    def _raw(self, txt, end="<br>"):
+    def _raw(self, txt, end=""):
 
         """ 
             put txt onto the reponse object .. adding end string if provided. 
@@ -94,7 +90,7 @@ class WebEvent(EventBase):
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
-    def write(self, txt, start=u"", end=u"<br><br>", raw=False):
+    def write(self, txt, start=u"", end=u"<br>", raw=False):
 
         """ 
             put txt onto the reponse object .. adding end string if provided. 

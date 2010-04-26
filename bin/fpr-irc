@@ -1,0 +1,148 @@
+#!/usr/bin/env python
+#
+#
+
+## boot
+
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
+## print version
+
+from gozerlib.utils.generic import getversion
+print getversion('IRC')
+
+## gozerlib impors
+
+from gozerlib.socket.irc.bot import Bot
+from gozerlib.datadir import makedirs
+from gozerlib.admin import plugin_packages
+from gozerlib.boot import boot
+from gozerlib.utils.log import setloglevel
+from gozerlib.config import Config
+from gozerlib.config import cfg as mainconfig
+from gozerlib.errors import NoOwnerSet
+import gozerlib.users as users
+import gozerlib
+
+## basic imports
+
+import logging
+import time
+
+## options parser
+
+if True:
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser.add_option('', '-r', type='string', default=False, dest='doresume', 
+                  metavar='PATH', 
+                  help="resume the bot from the folder specified")
+    parser.add_option('-o', '--owner', type='string', default=False,
+dest='owner', 
+                  help="owner of the bot")
+    parser.add_option('-s', '--server', type='string', default=False,
+dest='server', 
+                  help="server to connect to (irc)")
+    parser.add_option('-c', '--channel', type='string', default=False,
+dest='channel', 
+                  help="channel to join")
+    parser.add_option('-l', '--loglevel', type='string', default=False,
+dest='loglevel', 
+                  help="loglevel of the bot .. the lower the more it logs")
+    parser.add_option('-e', '--encoding', type='string', default=False,
+dest='encoding', 
+                  help="set default encoding of the bot")
+    parser.add_option('-p', '--pass', type='string', default=False,
+dest='password', 
+                  help="set password used to connect to the server")
+    parser.add_option('-n', '--name', type='string', default=False,
+dest='name', 
+                  help="bot's name")
+    parser.add_option('', '--port', type='string', default=False,
+dest='port', 
+                  help="set port of server to connect to")
+    parser.add_option('-x', '--ssl', action='store_true', default=False,
+dest='ssl', 
+                  help="use ssl")
+    parser.add_option('-y', '--nossl', action='store_true', default=False,
+dest='nossl', 
+                  help="don't use ssl")
+    parser.add_option('', '--save', action='store_true', default=False,
+dest='save', 
+                  help="save to config file")
+    parser.add_option('-f', '--force', action='store_true', default=False,
+dest='force', 
+                  help="force loading of all plugins")
+
+    opts, args = parser.parse_args()
+    opts.args = args
+
+name = opts.name or 'irc-default'
+cfg = Config('fleet' + os.sep + name + os.sep + 'config')
+
+if not cfg.owner:
+    cfg.owner = []
+
+if opts.owner and opts.owner not in cfg.owner:
+    cfg.owner.append(opts.owner)
+
+if opts.loglevel:
+    cfg.loglevel = opts.loglevel
+else:
+    cfg.loglevel = cfg.loglevel or "warning"
+
+if opts.ssl:
+    cfg.ssl = True
+
+if opts.nossl:
+    cfg.ssl = False
+
+if opts.port:
+    cfg.port = opts.port
+else:
+    cfg.port = 6667
+
+if opts.server:
+    cfg.server = opts.server
+else:
+    cfg.server = cfg.server or "localhost"
+
+if opts.name:
+    cfg.jid = opts.name
+
+cfg.save()
+
+## runtime
+
+setloglevel(cfg.loglevel)
+
+makedirs()
+logging.warn("irc - owner is %s" % cfg.owner)
+boot()
+
+if opts.force: 
+    packages = plugin_packages
+    packages.remove('waveplugs')
+    from gozerlib.plugins import plugs
+    plugs.loadall(packages)
+
+## start bot
+try:
+    bot = Bot(cfg)
+    bot.nick = cfg.nick or 'jsonbot'
+except NoOwnerSet, ex:
+    print "owner is not set in %s - use the -o option" % str(ex)
+    os._exit(1)
+
+if opts.channel and not opts.channel in bot.state['joinedchannels']:
+    bot.state['joinedchannels'].append(opts.channel)
+    bot.state.save()
+
+bot.start()
+
+
+while 1:
+    time.sleep(1)
