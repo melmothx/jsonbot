@@ -62,7 +62,7 @@ try:
             if 'lib' in self.plugname:
                 self.plugname = calledfrom(sys._getframe(1))
 
-            self.fn = unicode(stripname(filename.strip())) # filename to save to
+            self.fn = unicode(filename.strip()) # filename to save to
             self.key = None
             self.obj = None
             jsontxt = get(self.fn)
@@ -274,4 +274,4 @@ class PlugPersist(Persist):
         # retrieve plugname where object is constructed
         plugname = calledfrom(sys._getframe())
         # call base constructor with appropiate filename
-        Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + plugname + os.sep + filename)
+        Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + filename)

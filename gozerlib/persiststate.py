@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from gozerlib.utils.name import stripname
 from gozerlib.utils.trace import calledfrom
 from persist import Persist
 
@@ -72,5 +73,6 @@ class UserState(PersistState):
 
     def __init__(self, username, filename="state", *args, **kwargs):
         assert username
+        username = stripname(username)
         datadir = 'gozerdata' + os.sep + 'state' + os.sep + 'users' + os.sep + username
         PersistState.__init__(self,  datadir + os.sep + filename)

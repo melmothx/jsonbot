@@ -8,6 +8,7 @@
 
 from utils.exception import handle_exception, exceptionmsg
 from utils.generic import stripped
+from utils.name import stripname
 from persist import Persist
 from utils.lazydict import LazyDict
 from datadir import datadir
@@ -30,6 +31,7 @@ class JsonUser(Persist):
 
     def __init__(self, name, userhosts=[], perms=[], permits=[], status=[], email=[]):
         assert name
+        name = stripname(name)
         Persist.__init__(self, datadir + os.sep + 'users' + os.sep + name)
         self.data.datadir = datadir
         self.data.name = self.data.name or name

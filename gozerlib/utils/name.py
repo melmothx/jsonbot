@@ -11,7 +11,7 @@ import os
 
 ## define
 
-allowednamechars = string.ascii_letters + string.digits + '!.@-' + os.sep
+allowednamechars = string.ascii_letters + string.digits + '!.@-'
 
 ## functions
 
@@ -26,6 +26,7 @@ def stripname(name, allowed=""):
         else:
             res += "-"
 
+    res.replace(os.sep, '-')
     return res
 
 def testname(name):
