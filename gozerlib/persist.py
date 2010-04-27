@@ -168,7 +168,7 @@ except ImportError:
 
             """ Persist constructor """
 
-            self.fn = stripname(filename.strip()) # filename to save to
+            self.fn = filename.strip() # filename to save to
             self.lock = thread.allocate_lock() # lock used when saving)
             self.data = LazyDict() # attribute to hold the data
 
