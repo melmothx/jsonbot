@@ -11,7 +11,7 @@ from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
-from admin import cmndtable
+from admin import cmndtable, plugin_packages
 from errors import NoSuchPlugin
 from jsbimport import force_import, _import
 
@@ -34,12 +34,14 @@ class Plugins(LazyDict):
 
     """ the plugins object contains all the plugins. """
 
-    def loadall(self, paths, default=[], force=False):
+    def loadall(self, paths=[], default=[], force=False):
         """
             load all plugins from given paths, if force is true .. 
             otherwise load all plugins for default_plugins list.
 
         """
+        if not paths:
+            paths = plugin_packages
         imp = None
         for module in paths:
             try:

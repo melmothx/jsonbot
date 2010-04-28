@@ -60,6 +60,7 @@ import logging
 
 makedirs()
 plugs = Plugins()
+plugs.loadall()
 users = Users()
 users.make_owner(getpass.getuser())
 cfg = Config()
