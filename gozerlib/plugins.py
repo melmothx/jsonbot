@@ -4,7 +4,7 @@
 
 """ holds all the plugins. plugins are imported modules. """
 
-## lib imports
+## gozerlib imports
 
 from commands import cmnds
 from eventbase import EventBase
@@ -78,7 +78,6 @@ class Plugins(LazyDict):
 
     def load(self, modname, replace=False):
         """ load a plugin. """
-
         if not replace:
             if modname in sys.modules:
                 logging.debug("plugins - %s is already loaded" % modname)
@@ -109,21 +108,18 @@ class Plugins(LazyDict):
 
     def reload(self, modname):
         """ reload a plugin. just load for now. """ 
-        #self.unload(modname)
+        self.unload(modname)
         return self.load(modname, replace=True)
 
     def dispatch(self, bot, event, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
-
         if event.txt and not ' | ' in event.txt:
             self.needreloadcheck(bot, event)
             result = cmnds.dispatch(bot, event, *args, **kwargs)
-
             if event.queues:
                 for queue in event.queues:
                     queue.put_nowait(None)
-
             return result
 
         if event.txt and ' | ' in event.txt:
@@ -171,7 +167,6 @@ class Plugins(LazyDict):
         return events[-1].result
 
     def needreloadcheck(self, bot, event, target=None):
-
         """
             check if event requires a plugin to be reloaded. if so 
             reload the plugin.

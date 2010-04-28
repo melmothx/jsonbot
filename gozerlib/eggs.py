@@ -26,6 +26,8 @@ import logging
 
 mainenv = None
 
+## functions
+
 def init(eggdir, log=False):
 
     """
@@ -37,7 +39,6 @@ def init(eggdir, log=False):
         :type log: True or False
 
     """
-
     try:
         import setuptools
     except ImportError, ex:
@@ -53,7 +54,6 @@ def init(eggdir, log=False):
 latest = {}
     
 def enable_egg(env, egg, log=True):
-
     """
         search for the latest version of an  egg in the enviroment and put 
         it on sys.path.
@@ -64,7 +64,6 @@ def enable_egg(env, egg, log=True):
         :param log: determine if we should log the enabling of the egg
 
     """
-
     try:
         from pkg_resources import DistributionNotFound, VersionConflict, working_set, parse_requirements, require
          
@@ -101,7 +100,6 @@ def enable_egg(env, egg, log=True):
             log and logging.warn('eggs - override %s' % egg)
 
 def loadegg(name, eggdirs=['gozernest',], log=True):
-
     """
         scan eggdir for a egg matching `name`.
 
@@ -113,7 +111,6 @@ def loadegg(name, eggdirs=['gozernest',], log=True):
         :type log: boolean
 
     """
-
     try:
         from pkg_resources import find_distributions, Environment
         global mainenv
@@ -134,7 +131,6 @@ def loadegg(name, eggdirs=['gozernest',], log=True):
         handle_exception()
 
 def loadeggs(eggdir, log=True):
-
     """
         load all eggs in a directory.
 
@@ -142,7 +138,6 @@ def loadeggs(eggdir, log=True):
         :type eggdir: string
 
     """
-
     logging.warn('eggs - scanning %s' % eggdir)
     try:
         from pkg_resources import find_distributions, Environment
@@ -169,14 +164,12 @@ def loadeggs(eggdir, log=True):
     logging.warn('eggs - loaded: %s' % ' .. '.join(res))
 
 
-# INIT SECTION
 
+## initialisation
 
 try:
     import google
 except ImportError:
     # first search for setuptools and load it
     init(os.getcwd())
-    init(os.getcwd() + os.sep + 'gozernest')
-
-# END INIT
+    init(os.getcwd() + os.sep + 'jsbnest')

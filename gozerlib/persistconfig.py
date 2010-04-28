@@ -2,8 +2,7 @@
 #
 #
 
-""" allow data to be pickled to disk .. creating the persisted object
-    restores data.
+""" plugin related config file with commands added to the bot to config a plugin.
     
 usage:
     !plug-cfg			->	shows list of all config
@@ -13,9 +12,6 @@ usage:
     !plug-cfg key remove value	->	removes value from list
     !plug-cfg key clear		-> 	clears entire list
     !plug-cfgsave		->	force save configuration to disk
-    
-todo:
-    - plugin api (more work needed?)
     
 """
 
@@ -81,25 +77,18 @@ class PersistConfig(Config):
         ievent.reply("options: " + ' .. '.join(s))
 
     def cmnd_cfgsave(self, bot, ievent):
-
         """ save config. """
-
         self.save()
         ievent.reply("config saved")
 	
     def cmnd_cfg_edit(self, bot, ievent, args, key, optionvalue):
-
         """ edit config values. """
-
         if not self.has_key(key):
             ievent.reply('option %s is not defined' % key)
             return
-
         if key in self.hide:
             return
-
         if type(optionvalue) == types.ListType:
-
 	    if args[0].startswith("[") and args[-1].endswith("]"):
 		values = []
 
@@ -165,27 +154,22 @@ class PersistConfig(Config):
                 self.set(key, value)
                 self.save()
                 ievent.reply("%s set" % key)
-            elif type(value) == types.LongType and \
-type(option.value) == types.IntType:
+            elif type(value) == types.LongType and type(option.value) == types.IntType:
                 # allow upscaling from int to long
                 self.set(key, value)
                 self.save()
                 ievent.reply("%s set" % key)
             else:
-                ievent.reply("value %s (%s) is not of the same type as %s \
-(%s)" % (value, type(value), optionvalue, type(optionvalue)))
+                ievent.reply("value %s (%s) is not of the same type as %s (%s)" % (value, type(value), optionvalue, type(optionvalue)))
     
     def cmnd_cfg(self, bot, ievent):
-
         """ the config (cfg) command. """
-
         if not ievent.args:
             self.show_cfg(bot, ievent)
             return
 
         argc = len(ievent.args)
         key = ievent.args[0]
-
         try:
             optionvalue = self[key]
         except KeyError:
@@ -194,7 +178,6 @@ type(option.value) == types.IntType:
 
         if key in self.hide:
             return
-
         if argc == 1:
             ievent.reply(str(optionvalue))
             return
@@ -202,11 +185,8 @@ type(option.value) == types.IntType:
         self.cmnd_cfg_edit(bot, ievent, ievent.args[1:], key, optionvalue)
 
     def generic_cmnd(self, key):
-
         """ command for editing config values. """
-
         def func(bot, ievent):
-
             try:
                 optionvalue = self[key]
             except KeyError:
@@ -216,7 +196,6 @@ type(option.value) == types.IntType:
             if not isinstance(option, Option):
                 logging.warn('persistconfig - option %s is not a valid option' % key)
                 return
-
             if ievent.args:
                 value = ' '.join(ievent.args)
                 try:
@@ -231,26 +210,19 @@ type(option.value) == types.IntType:
 
     ### plugin api
 
-    def define(self, key, value=None, desc="plugin option", perm='OPER', \
-example="", name=None, exposed=True):
-
+    def define(self, key, value=None, desc="plugin option", perm='OPER', example="", name=None, exposed=True):
         """ define initial value. """
-
         if name:
             name = name.lower()
-
         if not exposed:
             self.hide.append(key)
-
         if not self.has_key(key):
             if name == None:
                 name = "%s-cfg-%s" % (self.plugname, str(key))
             self[key] = value
 	
     def undefine(self, key, throw=False):
-
         """ remove a key. """
-
         try:
             del self[key]
             return True
@@ -262,33 +234,23 @@ example="", name=None, exposed=True):
         return False
 
     def set(self, key, value, throw=False):
-
         """ set a key's value. """
-
         self[key] = value
 
     def append(self, key, value):
-
         """ append a value. """
-
         self[key].append(value)
 
     def remove(self, key, value):
-
         """ remove a value. """
-
         self[key].remove(value)
 
     def clear(self, key):
-
         """ clear a value. """
-
         self[key] = []
 
     def get(self, key, default=None):
-
         """ get value of key. """
-
         try:
             return self[key]
         except KeyError:

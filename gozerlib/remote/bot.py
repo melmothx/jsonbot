@@ -2,7 +2,7 @@
 #
 #
 
-""" remote bot. handlers incoming nodes. """
+""" remote bot. handles incoming nodes. """
 
 ## gozerlib imports
 

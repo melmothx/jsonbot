@@ -23,6 +23,8 @@ import time
 
 findurl = re.compile(u"(http://.*)?")
 
+## classes
+
 class NotConnected(Exception):
 
     pass
@@ -43,10 +45,7 @@ class WaveEvent(EventBase):
         self.result = []
 
     def parse(self, bot, event, wavelet):
-
         """ parse properties and context into a WaveEvent. """
-
-        #logging.debug("WaveEvent created")
         self.bot = bot
         self.eventin = event
         self.wavelet = wavelet
@@ -116,23 +115,19 @@ class WaveEvent(EventBase):
         logging.warn(u'wave - in - %s - %s - %s' % (self.title, self.userhost, self.txt))
 
     def __deepcopy__(self, a):
-
         """ deepcopy a wave event. """
-
         e = WaveEvent()
         e.copyin(self)
         return e
 
     def _raw(self, outtxt, root=None):
-
         """ send raw text to the server .. creates a blip on the root. """
-
-        pass
-        #logging.info(u"wave - out - %s - %s" % (self.userhost, outtxt))
-        #self.append(outtxt)
-        #self.bot.outmonitor(self.origin, self.channel, outtxt)
+        logging.info(u"wave - out - %s - %s" % (self.userhost, outtxt))
+        self.append(outtxt)
+        self.bot.outmonitor(self.origin, self.channel, outtxt)
 
     def toppost(self, txt):
+        """ append to rootblip. """
         reply = self.rootblip.reply()
         reply.append(txt)
         if self.chan:
@@ -141,6 +136,7 @@ class WaveEvent(EventBase):
         return reply
 
     def insert_root(self, item):
+        """ insert item in rootblip. """
         reply = self.rootblip.append(item)
         if self.chan:
             self.chan.data.seenblips += 1
@@ -148,19 +144,18 @@ class WaveEvent(EventBase):
         return self
 
     def set_title(self, title, cloned=False):
+        """ set title of wave. """
         if cloned and self.chan and self.chan.data.nrcloned:
             title = "#".join(title.split("#")[:-1])
             title += "#%s" % str(self.chan.data.nrcloned)
-
         logging.warn("wave - setting title - %s" % title)
         self.root._set_title(title)
         return self
 
     def append(self, item, annotations=None):
-
+        """ append to new blip, or one if already created. use annotations if provided. """
         if not self.target and self.blip:
             self.target = self.blip.reply()
-        
         self.result.append(unicode(item))
         try:
             self.target.append(item)
@@ -183,7 +178,7 @@ class WaveEvent(EventBase):
         return self
 
     def append_root(self, item , annotations=None):
-
+        """ append to rootblip. use annotations if provided. """
         if not self.roottarget:
             self.roottarget = self.rootblip.reply()
 
@@ -197,6 +192,7 @@ class WaveEvent(EventBase):
         return self.roottarget
 
     def appendtopper(self, item):
+        """ top post. """
         self.rootblip.append(item)
         self.result.append(unicode(item))
 
@@ -207,9 +203,7 @@ class WaveEvent(EventBase):
         return self.rootblip
 
     def reply(self, txt, resultlist=[], nritems=False, dot=", ", *args, **kwargs):
-
-        """ reply to blip. """
-
+        """ reply txt. """
         if self.checkqueues(resultlist):
             return
 
@@ -217,18 +211,15 @@ class WaveEvent(EventBase):
 
         if not outtxt:
             return
-        self.result.append(unicode(outtxt))
 
-        #self.doc.SetText(cgi.escape(outtxt))
+        self.result.append(unicode(outtxt))
         (res1, res2) = self.less(outtxt)
         self.write(res1)
         if res2:
             self.write(res2)
 
     def replyroot(self, txt, resultlist=[], nritems=False, root=None, *args, **kwargs):
-
         """ reply to wave root. """
-
         if self.checkqueues(resultlist):
             return
 
@@ -239,8 +230,8 @@ class WaveEvent(EventBase):
 
         if not outtxt:
             return
-        self.result.append(unicode(outtxt))
 
+        self.result.append(unicode(outtxt))
         logging.debug("wave - reply root - %s - %s" % (self.root, root))
         (res1, res2) = self.less(outtxt)
         self.write_root(res1, root)
@@ -248,11 +239,8 @@ class WaveEvent(EventBase):
             self.write_root(res2, root)
 
     def write(self, outtxt, end="\n"):
-
         """ write outtxt to the server. """
-
         logging.warn(u"wave - out - %s - %s" %  (self.userhost, unicode(outtxt)))
-
         try:
             annotations = []
             for url in re.findall(findurl, outtxt):
@@ -274,13 +262,12 @@ class WaveEvent(EventBase):
         self.bot.outmonitor(self.origin, self.channel, outtxt, self)
 
     def write_root(self, outtxt, end="\n", root=None):
-
         """ write to the root of a wave. """
-
         logging.warn(u"wave - out - %s - %s" %  (self.userhost, unicode(outtxt)))
         self.append_root(outtxt + end)
         self.replied = True
         self.bot.outmonitor(self.origin, self.channel, outtxt, self)
 
     def submit(self):
+        """ submit event to the bot. """
         self.bot.submit(self.wavelet)

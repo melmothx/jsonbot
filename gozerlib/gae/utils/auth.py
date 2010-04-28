@@ -16,19 +16,17 @@ from google.appengine.api import users as gusers
 
 import logging
 
+## functions
+
 def finduser():
-
     """ try to find the email of the current logged in user. """
-
     user = gusers.get_current_user()
-
     if user:
         return user.email()
 
     return "" 
 
 def checkuser(response, request):
-
     """
         check for user based on web response. first try google 
         otherwise return 'notath@IP' 
@@ -36,15 +34,14 @@ def checkuser(response, request):
         :param response: response object
         :param request: request object
         :rtype: tuple of (userhost, gmail user, bot user , nick)
-    """
 
+    """
     userhost = "notauth"
     u = "notauth"
     nick = "notauth"
     user = gusers.get_current_user()
 
     if not user:
-
         try:
             email = request.get('USER_EMAIL')
             if not email:
@@ -61,16 +58,12 @@ def checkuser(response, request):
             userhost = nick = "notauth@%s" % request.remote_addr
     else:
         userhost = user.email() 
-
         if not userhost:
             userhost = nick = "notauth@%s" % request.remote_addr
-
         nick = user.nickname()
-
         u = userhost
 
     cfrom = whichmodule()
-
     if 'gozerlib' in cfrom:
         cfrom = whichmodule(1)
         if 'gozerlib' in cfrom: 

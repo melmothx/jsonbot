@@ -2,6 +2,8 @@
 #
 #
 
+""" outputcache used when reply cannot directly be delivered. """
+
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
@@ -18,7 +20,6 @@ def handle_outputcachepollerwave(bot, event):
          event.reply(result)
 
 callbacks.add('POLLER', handle_outputcachepollerwave)
-#gn_callbacks.add('POLLER', handle_outputcachepollerwave)
 
 def handle_outputcachepollerweb(bot, event):
      """ send outputcache when WEB event is triggered. """
@@ -28,7 +29,6 @@ def handle_outputcachepollerweb(bot, event):
          event.reply(result)
 
 callbacks.add('WEB', handle_outputcachepollerweb)
-#callbacks.add('EXEC', handle_outputcachepollerweb)
 
 ## commands
 

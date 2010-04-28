@@ -2,9 +2,13 @@
 #
 #
 
-""" commands are the first word. """
+""" 
+    the commands module provides the infrastructure to dispatch commands. 
+    commands are the first word of a line. 
 
-## lib imports
+"""
+
+## gozerlib imports
 
 from utils.xmpp import stripped
 from utils.trace import calledfrom, whichmodule
@@ -22,7 +26,19 @@ import types
 
 class Command(LazyDict):
 
-    """  a command object. """
+    """
+        a command object. 
+
+        :param modname: the module name in which this command is registered
+        :type modname: string
+        :param cmnd: the command to dispatch
+        :type cmnd: string
+        :param func: the function handling the command
+        :type func: function
+        :param perms: permissions needed to execute the command
+        :type perms: list of strings
+
+    """
 
     def __init__(self, modname, cmnd, func, perms=[]):
         LazyDict.__init__(self)
@@ -37,7 +53,9 @@ class Command(LazyDict):
 
 class Commands(LazyDict):
 
-    """ the commands object holds all commands of the bot. """
+    """
+        the commands object holds all commands of the bot. 
+    """
 
     def add(self, cmnd, func, perms, threaded=False, *args, **kwargs):
         """ add a command. """
@@ -46,17 +64,20 @@ class Commands(LazyDict):
         return self
 
     def dispatch(self, bot, event):
-        """ dispatch an event if cmnd exists and user is allowed to exec this command. """
+        """ 
+            dispatch an event if cmnd exists and user is allowed to exec this 
+            command.
+        """
         cmnd = event.usercmnd
         try:
             c = self[cmnd]
         except KeyError: 
             raise NoSuchCommand(cmnd)
 
+        # identity of the caller
         id = event.auth or event.userhost
 
-        ## core business
-
+        # core business
         if bot.allowall:
             return self.doit(bot, event, c)
         elif not bot.users or bot.users.allowed(id, c.perms, bot=bot):
@@ -68,6 +89,7 @@ class Commands(LazyDict):
         return []
 
     def doit(self, bot, event, target):
+        """ do the dispatching. """
         id = event.auth or event.userhost
         logging.warn('dispatching %s for %s' % (event.usercmnd, id))
         result = []
@@ -86,7 +108,6 @@ class Commands(LazyDict):
     def unload(self, modname):
         """ remove modname registered commands from store. """
         delete = []
-
         for name, cmnd in self.iteritems():
             if cmnd.modname == modname:
                 delete.append(cmnd)
@@ -99,7 +120,6 @@ class Commands(LazyDict):
     def apropos(self, search):
         """ search existing commands for search term. """
         result = []
-
         for name, cmnd in self.iteritems():
             if search in name:
                 result.append(name)

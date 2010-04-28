@@ -76,18 +76,14 @@ class WaveBot(BotBase, robot.Robot):
         BotBase.__init__(self, cfg, users, plugs, *args, **kwargs)
         self.type = 'wave'
         self.jid = jid
-
         if self.cfg:
             self.cfg['type'] = 'wave'
             self.cfg.save()
-
         self.type = "wave"
-
         if cfg:
             self.domain = cfg['domain'] or 'googlewave.com'
         else:
             self.domain = domain or 'googlewave.com'
-
         if self.cfg and self.cfg['domain'] != self.domain:
                 self.cfg['domain'] = self.domain
                 self.cfg.save()
@@ -100,49 +96,36 @@ class WaveBot(BotBase, robot.Robot):
         self.register_handler(events.WaveletSelfAdded, self.OnSelfAdded)
         self.register_handler(events.WaveletParticipantsChanged, self.OnParticipantsChanged)
         self.iswave = True
-        #self.channels = Persist("gozerstore" + os.sep + "fleet" + os.sep + self.name + os.sep + "channels")
         self.waves = waves
  
     def OnParticipantsChanged(self, event, wavelet):
-
         """ invoked when any participants have been added/removed. """
-
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
         callbacks.check(self, wevent)
 
     def OnSelfAdded(self, event, wavelet):
-
         """ invoked when the robot has been added. """
-
         time.sleep(1)
         logging.warn('wave - joined "%s" (%s) wave' % (wavelet._wave_id, wavelet._title))
-
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
         wevent.chan.save()
-
         wevent.reply("Welcome to JSONBOT. (see !help)")
-
         callbacks.check(self, wevent)
 
     def OnBlipSubmitted(self, event, wavelet):
-
         """ new blip added. here is where the command dispatching takes place. """
-
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
         wevent.auth = wevent.userhost
-
         wave = wevent.chan
         wave.data.seenblips += 1
         wave.data.lastedited = time.time()
-
         self.doevent(wevent)
 
     @saylocked
     def say(self, waveid, txt):
-
         """
             output to the root id. 
 
@@ -150,24 +133,20 @@ class WaveBot(BotBase, robot.Robot):
             :type waveid: string
             :param txt: text to output
             :type txt: string
-            :rtype: None
 
         """
-
         if not self.domain in self._server_rpc_base:
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
             logging.warn("waves - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
             
         wave = Wave(waveid)
-
         if wave and wave.data.waveid:
             wave.say(self, txt)
         else:
             logging.warn("we are not joined into %s" % waveid)
 
     def toppost(self, waveid, txt):
-
         """
             output to the root id. 
 
@@ -175,7 +154,6 @@ class WaveBot(BotBase, robot.Robot):
             :type waveid: string
             :param txt: text to output
             :type txt: string
-            :rtype: None
 
         """
 
@@ -184,23 +162,17 @@ class WaveBot(BotBase, robot.Robot):
             return
             
         wave = Wave(waveid)
-
         if wave and wave.data.waveid:
             wave.toppost(self, txt)
         else:
             logging.warn("we are not joined to %s" % waveid)
 
     def newwave(self, domain=None, participants=None, submit=False):
-
-        """
-            create a new wave. 
-
-        """
-
+        """ create a new wave. """
         logging.warn("wave - new wave on domain %s" % domain)
         newwave = self.new_wave(domain or self.domain, participants=participants, submit=submit)
-	
         return newwave
 
     def run(self):
+        """ start the bot on the runner. """
         appengine_robot_runner.run(self, debug=True, extra_handlers=[])

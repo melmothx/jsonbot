@@ -2,7 +2,7 @@
 #
 #
 
-""" the datadir of the bot. """
+""" the data directory of the bot. """
 
 ## basic imports
 
@@ -16,9 +16,7 @@ datadir = 'gozerdata'
 ## functions
 
 def makedirs(ddir=None):
-
     """ make subdirs in datadir. users, db, fleet, pgp, plugs and old. """
-
     ddir = ddir or datadir
     curdir = os.getcwd()
 

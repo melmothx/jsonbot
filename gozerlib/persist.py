@@ -8,7 +8,7 @@
 
 """
 
-## lib imports
+## gozerlib imports
 
 from utils.trace import whichmodule, calledfrom
 from utils.lazydict import LazyDict
@@ -31,6 +31,7 @@ import copy
 import sys
 
 ## try google first
+
 try:
 
     ## google imports
@@ -165,36 +166,25 @@ except ImportError:
         """ persist data attribute to JSON file. """
 
         def __init__(self, filename, default=None, init=True):
-
             """ Persist constructor """
-
             self.fn = filename.strip() # filename to save to
             self.lock = thread.allocate_lock() # lock used when saving)
             self.data = LazyDict() # attribute to hold the data
-
             if init:
-
                 if default == None:
                     default = LazyDict()
-
                 self.init(default)
 
         @persistlocked
         def init(self, default={}):
-
             """ initialize the data. """
-
             logging.debug('persist - reading %s' % self.fn)
-
             # see if file exists .. if not initialize data to default
             try:
                 datafile = open(self.fn, 'r')
-
             except IOError, ex:
-
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
-
                     self.data = copy.deepcopy(default)
                     raise
                 else:
@@ -204,25 +194,18 @@ except ImportError:
             try:
                 self.data = load(datafile)
                 datafile.close()
-
                 if type(self.data) == types.DictType:
-
                     d = LazyDict()
                     d.update(self.data)
                     self.data = d
-
             except Exception, ex:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
 
         @persistlocked
         def save(self):
-
             """ persist data attribute. """
-
-            # save data
             try:
-                #self.lock.acquire()
                 dirr = []
                 for p in self.fn.split(os.sep)[:-1]:
                     dirr.append(p)
@@ -232,11 +215,9 @@ except ImportError:
                         os.mkdir(pp)
 
                 tmp = self.fn + '.tmp' # tmp file to save to
-
                 # first save to temp file and when done rename
                 try:
                     datafile = open(tmp, 'w')
-
                 except IOError, ex:
                     logging.error("persist - can't save %s: %s" % (self.fn, str(ex)))
                     return
@@ -245,10 +226,8 @@ except ImportError:
                 #cp = copy.copy(self.data)
                 dump(self.data, datafile)
                 datafile.close()
-
                 try:
                     os.rename(tmp, self.fn)
-
                 except OSError:
                     handle_exception()
                     # no atomic operation supported on windows! error is thrown when destination exists
@@ -258,17 +237,11 @@ except ImportError:
                 logging.warn('persist - %s saved' % self.fn)
 
             finally:
-                #self.lock.release()
                 pass
-
-## common classes
 
 class PlugPersist(Persist):
 
-    """
-        persist plug related data. data is stored in gozerdata/plugs/{plugname}/{filename}
-
-    """
+    """ persist plug related data. data is stored in gozerdata/plugs/{plugname}/{filename}. """
 
     def __init__(self, filename, default=None):
         # retrieve plugname where object is constructed

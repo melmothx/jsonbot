@@ -43,67 +43,35 @@ class Fleet(Persist):
 
     def __init__(self):
         Persist.__init__(self, 'fleet')
-
         if not self.data.has_key('names'):
             self.data['names'] = []
-
         self.bots = []
 
     def loadall(self):
-
+        """ load all bots. """
         for name in self.data.names:
             self.makebot(None, name)
 
     def avail(self):
-
+        """ return available bots. """
         return self.data['names']
 
     def getfirstbot(self):
-
-        """
-            return the main bot of the fleet.
-
-            :rtype: gozerlib.botbase.BotBase
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.getfirstbot
-
-        """
-
+        """ return the first bot in the fleet. """
         return self.bots[0]
 
     def getfirstjabber(self):
-
-        """
-            return the first jabber bot of the fleet.
-
-            :rtype: gozerlib.botbase.BotBase
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.getfirstjabber
-
-        """
-
+        """ return the first jabber bot of the fleet. """
         for bot in self.bots:
-
             if bot.type == 'xmpp' or bot.type == 'jabber':
                return bot
         
     def size(self):
-
-        """
-             return number of bots in fleet.
-
-             :rtype: integer
-
-             .. literalinclude:: ../../gozerlib/fleet.py
-                 :pyobject: Fleet.size
-
-        """
-
+        """ return number of bots in fleet. """
         return len(self.bots)
 
     def settype(self, name, type):
+        """ set the type of a bot. """
         cfg = Config('fleet' + os.sep + name + os.sep + 'config')
         cfg['name'] = name
         logging.warn("fleet - %s - setting type to %s" % (self.cfile, type))
@@ -111,35 +79,30 @@ class Fleet(Persist):
         cfg.save()
 
     def makebot(self, type=None, name=None, domain="", cfg={}):
+        """ 
+            create a bot .. use configuration if provided. 
 
-        """
-            create a bot .. use configuration if provided.
-
-            :param name: the name of the bot
+            :param type: the type of the bot 
+            :type type: string
+            :param name: name of the bot
             :type name: string
-            :param cfg: configuration file for the bot
+            :param domain: domain to which the bot is connected
+            :type domain: string
+            :param cfg: configuration of the bot
             :type cfg: gozerlib.config.Config
 
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.makebot
-
         """
-
         logging.info('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
         bot = None
         name = name or 'default-%s' % type
-
         if not cfg:
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
             cfg['name'] = name 
-
         if not cfg.type and type:
             logging.warn("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
             cfg.save()
-
         if not cfg['type']:
-
             try:
                 self.data['names'].remove(name)
                 self.save()
@@ -147,14 +110,11 @@ class Fleet(Persist):
                 pass
 
             raise Exception("no bot type specified")
-
         if not cfg.owner:
             cfg.owner = mainconfig.owner
-
         if not cfg['domain'] and domain:
             cfg['domain'] = domain
             cfg.save()
-
         if not cfg:
             raise Exception("can't make config for %s" % name)
 
@@ -171,7 +131,6 @@ class Fleet(Persist):
             from gozerlib.gae.wave.bot import WaveBot
             dom = cfg.domain or domain
             bot = WaveBot(cfg, domain=dom)
-
         elif type == 'remote':
             from gozerlib.remote.bot import RemoteBot
             bot = RemoteBot(cfg)
@@ -180,20 +139,16 @@ class Fleet(Persist):
 
         # set bot name and initialize bot
         if bot:
-
             if name and name not in self.data['names']:
                 self.data['names'].append(name)
                 self.save()
-
             self.addbot(bot)
-
             return bot
 
         # failed to created the bot
         raise Exception("can't make %s bot" % name)
 
     def makewavebot(self, domain, cfg={}):
-
         """
             create a bot .. use configuration if provided.
 
@@ -202,34 +157,24 @@ class Fleet(Persist):
             :param cfg: configuration file for the bot
             :type cfg: gozerlib.config.Config
 
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.makebot
-
         """
-
         logging.info('fleet - making %s (%s) wave bot - %s' % (domain, 'wave', str(cfg)))
         bot = None
         type = 'wave'
         name = domain
-
         if not cfg:
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
             cfg['name'] = domain
-
         if not cfg.owner:
             cfg.owner = mainconfig.owner
-
         if not cfg['domain']:
             cfg['domain'] = domain
             cfg.save()
-
         if not cfg.type:
             logging.warn("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
             cfg.save()
-
         if not cfg['type']:
-
             try:
                 self.data['names'].remove(name)
                 self.save()
@@ -237,7 +182,6 @@ class Fleet(Persist):
                 pass
 
             raise Exception("no bot type specified")
-
         if not cfg:
             raise Exception("can't make config for %s" % name)
 
@@ -249,103 +193,48 @@ class Fleet(Persist):
 
         # set bot name and initialize bot
         if bot:
-
             if name not in self.data['names']:
                 self.data['names'].append(name)
                 self.save()
-
             self.addbot(bot)
-
             return bot
 
         # failed to created the bot
         raise Exception("can't make %s bot" % name)
 
     def save(self):
-
-        """
-            save fleet data and call save on all the bots.
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.save
-
-        """
-
+        """ save fleet data and call save on all the bots. """
         Persist.save(self)
-
         for i in self.bots:
-
             try:
                 i.save()
             except Exception, ex:
                 handle_exception()
 
     def list(self):
-
-        """
-            return list of bot names.
-
-            :rtype: list
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.list
-
-        """
-
+        """ return list of bot names. """
         result = []
-
         for i in self.bots:
             result.append(i.name)
 
         return result
 
     def stopall(self):
-
-        """ 
-            call stop() on all fleet bots.
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.stopall
-
-        """
-
+        """ call stop() on all fleet bots. """
         for i in self.bots:
-
             try:
                 i.stop()
             except:
-                pass
+                handle_exception()
 
     def byname(self, name):
-
-        """
-            return bot by name.
-
-            :param name: name of the bot
-            :type name: string
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.byname
-
-        """
-
+        """ return bot by name. """
         for i in self.bots:
             if name == i.name:
                 return i
 
     def bydomain(self, domain):
-
-        """
-            return bot by name.
-
-            :param name: name of the bot
-            :type name: string
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.byname
-
-        """
-
+        """ return bot by domain. """
         for i in self.bots:
             if domain == i.domain:
                 return i
@@ -353,42 +242,18 @@ class Fleet(Persist):
         return self.makewavebot(domain)
 
     def replace(self, name, bot):
-
-        """
-            replace bot with a new bot.
-
-            :param name: name of the bot to replace
-            :type name: string
-            :param bot: bot to replace old bot with
-            :type bot: gozerlib.botbase.BotBase
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                 :pyobject: Fleet.replace
-
-        """
-
+        """ replace bot with a new bot. """
         for i in range(len(self.bots)):
             if name == self.bots[i].name:
                 self.bots[i] = bot
                 return
 
     def addbot(self, bot):
-
         """
             add a bot to the fleet .. remove all existing bots with the 
             same name.
-
-            :param bot: bot to add
-            :type bot: gozerlib.botbase.BotBase
-            :rtype: boolean
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.addbot
-            
         """
-
         if bot:
-
             for i in range(len(self.bots)-1, -1, -1):
                 if self.bots[i].name == bot.name:
                     logging.debug('fleet - removing %s from fleet' % bot.name)
@@ -401,21 +266,8 @@ class Fleet(Persist):
         return False
 
     def delete(self, name):
-
-        """
-            delete bot with name from fleet.
-
-            :param name: name of bot to delete
-            :type name: string
-            :rtype: boolean
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.delete
-
-        """
-
+        """ delete bot with name from fleet. """
         for i in self.bots:
-
             if i.name == name:
                 i.exit()
                 self.remove(i)
@@ -428,51 +280,22 @@ class Fleet(Persist):
 
 
     def remove(self, bot):
-
-        """
-            delete bot by object.
-
-            :param bot: bot to delete
-            :type bot: gozerlib.botbase.BotBase
-            :rtype: boolean
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                 :pyobject: Fleet.remove
-
-        """
-
+        """ delete bot by object. """
         try:
             self.bots.remove(bot)
             return True
         except ValueError:
             return False
 
-    def exit(self, name=None, jabber=False):
-
-        """
-            call exit on all bots. if jabber=True only jabberbots will exit.
-
-            :param name: name of the bot to exit. if not provided all bots will exit.
-            :type name: string
-            :param jabber: flag to set when only jabberbots should exit
-            :type jabber: boolean
-            :rtype: boolean
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.exit
-
-        """
-        
+    def exit(self, name=None):
+        """ call exit on all bots. """
         if not name:
             threads = []
-
             for i in self.bots:
                 i.exit()
-
             return
 
         for i in self.bots:
-
             if i.name == name:
                 try:
                     i.exit()
@@ -484,7 +307,6 @@ class Fleet(Persist):
         return False
 
     def cmnd(self, event, name, cmnd):
- 
         """
             do command on a bot.
 
@@ -494,17 +316,14 @@ class Fleet(Persist):
             :type name: string
             :param cmnd: command to execute on the fleet bot
             :type cmnd: string
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.cmnd
+            :rtype: list of strings
 
         """
-
         bot = self.byname(name)
-
         if not bot:
             return 0
 
+        # create an event and dispatch it
         from gozerlib.eventbase import EventBase
         j = plugs.clonedevent(bot, event)
         j.onlyqueues = True
@@ -521,9 +340,9 @@ class Fleet(Persist):
         res = ["[%s]" % bot.name, ]
         res += result
         event.reply(res)
+        return res
 
     def cmndall(self, event, cmnd):
-
         """
             do a command on all bots.
 
@@ -532,30 +351,15 @@ class Fleet(Persist):
             :param cmnd: the command string to execute
             :type cmnd: string
 
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.cmndall
-
         """
-
         for i in self.bots:
             self.cmnd(event, i.name, cmnd)
 
     def broadcast(self, txt):
-
-        """
-            broadcast txt to all bots.
-
-            :param txt: text to broadcast on all bots
-            :type txt: string
-
-            .. literalinclude:: ../../gozerlib/fleet.py
-                :pyobject: Fleet.broadcast
-
-        """
-
+        """ broadcast txt to all bots. """
         for i in self.bots:
             i.broadcast(txt)
 
-# main fleet object
+## defines
 
 fleet = Fleet()

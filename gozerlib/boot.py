@@ -72,9 +72,7 @@ def savecmndtable():
     admin.cmndtable.save()
 
 def getcmndtable():
-
     """ save command -> plugin list to db backend. """
-
     if not admin.cmndtable:
         boot()
 
@@ -94,18 +92,14 @@ def savecallbacktable():
     admin.callbacktable.save()
 
 def getcallbacktable():
-
     """ save command -> plugin list to db backend. """
-
     if not admin.callbacktable:
         boot()
 
     return admin.callbacktable.data
 
 def savepluginlist():
-
     """ save a list of available plugins to db backend. """
-
     admin.pluginlist.data = []
 
     for cmndname, c in cmnds.iteritems():
@@ -117,9 +111,7 @@ def savepluginlist():
     admin.pluginlist.save()
 
 def getpluginlist():
-
     """ get the plugin list. """
-
     if not admin.pluginlist:
          boot()
     return admin.pluginlist.data

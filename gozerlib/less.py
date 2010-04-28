@@ -8,6 +8,8 @@
 
 from utils.limlist import Limlist
 
+## classes
+
 class Less(object):
 
     """
@@ -24,7 +26,6 @@ class Less(object):
         self.nr = nr
 
     def add(self, nick, listoftxt):
-
         """
             add listoftxt to nick's output .. set index for used by more 
             commands.
@@ -35,17 +36,12 @@ class Less(object):
             :type listoftxt: list
 
         """
-
-        # see if we already have cached output .. if not create limited list
         if not self.data.has_key(nick):
             self.data[nick] = Limlist(self.nr)
-
-        # add data
         self.data[nick].insert(0, listoftxt)
         self.index[nick] = 1
 
     def get(self, nick, index1, index2):
-
         """
              return less entry.
 
@@ -68,7 +64,6 @@ class Less(object):
         return txt
 
     def more(self, nick, index1):
-
         """
              return more entry pointed to by index .. increase index.
 
@@ -79,7 +74,6 @@ class Less(object):
              :rtype: tuple .. (txt, index)
 
         """
-
         try:
             nr = self.index[nick]
         except KeyError:
@@ -96,7 +90,6 @@ class Less(object):
         return (txt, size-1)
 
     def size(self, nick):
-
         """
              return sizes of cached output.
 
@@ -105,14 +98,10 @@ class Less(object):
              :rtype: list .. list of sizes
 
         """
-
         sizes = []
-
         if not self.data.has_key(nick):
             return sizes
-
         for i in self.data[nick]:
             sizes.append(len(i))
 
         return sizes
-

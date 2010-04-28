@@ -17,6 +17,8 @@ from google.appengine.api import xmpp
 import types
 import logging
 
+## classes
+
 class XMPPBot(BotBase):
 
     """ XMPPBot just inherits from BotBase for now. """
@@ -28,9 +30,7 @@ class XMPPBot(BotBase):
         self.type = "xmpp"
 
     def say(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False):
-
         """ output xmpp message. """
-
         if type(jids) == types.StringType:
             jids = [jids, ]
 

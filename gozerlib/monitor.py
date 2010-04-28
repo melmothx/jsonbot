@@ -37,7 +37,6 @@ class Monitor(ThreadLoop):
         self.outs = []
 
     def add(self, name, callback, pre, threaded=False):
-
         """ add a monitoring callback.
 
             :param name: name of the plugin using this monitor callback
@@ -51,43 +50,32 @@ class Monitor(ThreadLoop):
             :rtype: boolean
 
         """
-
         name = name or calledfrom(sys._getframe(0))
-
         if config['loadlist'] and name not in config['loadlist']:
             return False
-
         self.outs.append([name, callback, pre, threaded, False])
         logging.debug('irc - added monitor %s (%s)' % (name, str(callback)))
+
         return True
 
     def disable(self, name):
+        """ disable a named monitor. """
         name = name.lower()
-
         for i in range(len(self.outs)-1, -1, -1):
             if self.outs[i][0] == name:
                 self.outs[i][4] = False
 
     def activate(self, name):
+        """ activate a named monitor. """
         name = name.lower()
-
         for i in range(len(self.outs)-1, -1, -1):
             if self.outs[i][0] == name:
                 self.outs[i][4] = True
         
     def unload(self, name):
-
-        """ delete monitor callback. 
-
-            :param name: name of the plugin which monitors need to be unloaded
-            :type name: string
-            :rtype: integer .. number of monitors removed
-
-        """
-
+        """ delete monitor callback. """
         name = name.lower()
         nr = 0
-
         for i in range(len(self.outs)-1, -1, -1):
             if self.outs[i][0] == name:
                 del self.outs[i]
@@ -96,7 +84,6 @@ class Monitor(ThreadLoop):
         return nr
    
     def handle(self, *args, **kwargs):
-
         """ check if monitor callbacks need to be fired. 
 
            :param args: arguments passed to the callback
@@ -109,7 +96,6 @@ class Monitor(ThreadLoop):
 
         nr = 0
         for i in self.outs:
-
             if not i[4]:
                 continue
             # check if precondition is met
@@ -118,20 +104,16 @@ class Monitor(ThreadLoop):
                     doit = i[2](*args, **kwargs)
                 else:
                     doit = 1
-
             except Exception, ex:
                 handle_exception()
                 doit = 0
 
             if doit:
                 # run monitor callback in its own thread
-
                 if not i[3]:
                     cbrunners[5].put("monitor-%s" % i[0], i[1], *args)
                 else:
                     thr.start_new_thread(i[1], args, kwargs)
-
                 nr += 1
 
         return nr
-

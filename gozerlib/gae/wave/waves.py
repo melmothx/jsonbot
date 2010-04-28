@@ -10,7 +10,7 @@ from gozerlib.channelbase import ChannelBase
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
 
-## 
+## simplejson imports
 
 from simplejson import dumps
 
@@ -52,9 +52,7 @@ class Wave(ChannelBase):
         logging.debug("created wave with id: %s" % waveid)
 
     def parse(self, event, wavelet):
-
         """ parse event into a Wave. """
-
         self.data.json_data = event.json
         self.data.title = wavelet._title
         self.data.waveletid = wavelet._wavelet_id
@@ -64,9 +62,11 @@ class Wave(ChannelBase):
         return self
 
     def set_title(self, title, cloned=False):
+        """ set title of wave. """
         self.event.set_title(title, cloned)
 
     def clone(self, bot, event, title=None):
+        """ clone the wave into a new one. """
         parts = list(event.root.participants)
         newwave = bot.newwave(event.domain, parts)
         logging.warn("wave - clone - populating wave with %s" % str(parts))
@@ -91,9 +91,9 @@ class Wave(ChannelBase):
             if element.type == 'GADGET':
                 newwave._root_blip.append(element)
 
-        #gadgetblip = newwave.reply()
-        #from waveapi.element import Gadget
-        #gadgetblip.append(Gadget("http://jsonbot.appspot.com/feedform.xml"))
+        gadgetblip = newwave.reply()
+        from waveapi.element import Gadget
+        gadgetblip.append(Gadget("http://jsonbot.appspot.com/feedform.xml"))
 
         blip = newwave.reply()
         blip.append("\nthis wave is cloned from %s\n" % event.url)
@@ -139,22 +139,18 @@ class Wave(ChannelBase):
 
     @saylocked
     def say(self, bot, txt):
-
         """ output some txt to the wave. """
-
         if self.data.json_data:
             logging.debug("wave - say - using BLIND - %s" % self.data.json_data) 
             wavelet = bot.blind_wavelet(self.data.json_data)
         else:
             logging.info("did not join channel %s" % self.id)
             return
-
         if not wavelet:
             logging.error("cant get wavelet")
             return
 
         logging.warn('wave - out - %s - %s' % (self.data.title, txt))
-
         try:
             annotations = []
             for url in txt.split():
@@ -167,7 +163,6 @@ class Wave(ChannelBase):
             handle_exception()
 
         logging.warn("annotations used: %s", annotations)
-
         reply = wavelet.reply(txt)
         if annotations:
             for ann in annotations:
@@ -178,41 +173,34 @@ class Wave(ChannelBase):
                         handle_exception()
 
         logging.warn("submitting to server: %s" % wavelet.serialize())
-
         try:
             bot.submit(wavelet)
         except google.appengine.api.urlfetch_errors.DownloadError:
             handle_exception()
-            #pass
 
         self.data.seenblips += 1
         self.data.lastedited = time.time()
         self.save()
 
     def toppost(self, bot, txt):
-
-        """ output some txt to the wave. """
-
+        """ toppost some txt to the wave. """
         if self.data.json_data:
             logging.debug("wave - say - using BLIND - %s" % self.data.json_data) 
             wavelet = bot.blind_wavelet(self.data.json_data)
         else:
             logging.info("did not join channel %s" % self.id)
             return
-
         if not wavelet:
             logging.error("cant get wavelet")
             return
 
         logging.warn('wave - out - %s - %s' % (self.data.title, txt))
-
         try:
             blip = wavelet._root_blip.reply()
             blip.append(txt)
             bot.submit(wavelet)
         except google.appengine.api.urlfetch_errors.DownloadError:
             handle_exception()
-            #pass
 
         self.data.seenblips += 1
         self.data.lastedited = time.time()

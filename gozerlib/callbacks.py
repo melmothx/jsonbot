@@ -58,14 +58,11 @@ class Callbacks(object):
     """
 
     def __init__(self):
-
-        # self.cbs holds the dict of list. entry value is the event (string)
+        # self.cbs holds the dict of lists. entry value is the event (string).
         self.cbs = Dol()
 
     def size(self):
-
         """ return number of callbacks. """
-
         return len(self.cbs)
 
     def add(self, what, func, prereq=None, kwargs=None, threaded=False, nr=False, speed=5):
@@ -82,14 +79,9 @@ class Callbacks(object):
             :param speed: determines which runnerspool to run this callback on
 
         """
-
         what = what.upper()
-
         # get the plugin this callback was registered from
-        #plugname = calledfrom(sys._getframe(0))
         plugname = whichplugin()
-
-        # see if kwargs is set if not init to {}
         if not kwargs:
             kwargs = {}
 
@@ -100,13 +92,11 @@ class Callbacks(object):
             self.cbs.add(what, Callback(func, prereq, plugname, kwargs, threaded, speed))
 
         logging.debug('callbacks - added %s (%s)' % (what, plugname))
+        return self
 
     def unload(self, plugname):
-
         """ unload all callbacks registered in a plugin. """
-
         unload = []
-
         # look for all callbacks in a plugin
         for name, cblist in self.cbs.iteritems():
             index = 0
@@ -120,12 +110,11 @@ class Callbacks(object):
             self.cbs.delete(callback[0], callback[1])
             logging.debug('callbacks - unloaded %s' % callback[0])
 
+        return self
+
     def disable(self, plugname):
-
         """ disable all callbacks registered in a plugin. """
-
         unload = []
-
         # look for all callbacks in a plugin
         for name, cblist in self.cbs.iteritems():
             index = 0
@@ -133,26 +122,23 @@ class Callbacks(object):
                 if item.plugname == plugname:
                     item.activate = False
 
+        return self
+
     def activate(self, plugname):
-
         """ activate all callbacks registered in a plugin. """
-
         unload = []
-
         # look for all callbacks in a plugin
         for name, cblist in self.cbs.iteritems():
             index = 0
             for item in cblist:
                 if item.plugname == plugname:
                     item.activate = True
+        return self
 
     def whereis(self, cmnd):
-
         """ show where ircevent.CMND callbacks are registered """
-
         result = []
         cmnd = cmnd.upper()
-
         # locate callbacks for CMND
         for c, callback in self.cbs.iteritems():
             if c == cmnd:
@@ -163,11 +149,8 @@ class Callbacks(object):
         return result
 
     def list(self):
-
         """ show all callbacks. """
-
         result = []
-
         # loop over callbacks and collect callback functions
         for cmnd, callbacks in self.cbs.iteritems():
             for cb in callbacks:
@@ -183,11 +166,7 @@ class Callbacks(object):
             :param bot: bot where event originates from
             :param event: event that needs to be checked
 
-            .. literalinclude:: ../../gozerlib/callbacks.py
-                :pyobject: Callbacks.check
-
         """
-
         # check for "ALL" callbacks
         if self.cbs.has_key('ALL'):
             for cb in self.cbs['ALL']:
@@ -195,12 +174,14 @@ class Callbacks(object):
 
         type = event.cbtype or event.cmnd
         self.reloadcheck(event)
-        #logging.info("callbacks - %s - %s" % (event.userhost, type))
+        logging.debug("callbacks - %s - %s" % (event.userhost, type))
  
         # check for CMND callbacks
         if self.cbs.has_key(type):
             for cb in self.cbs[type]:
                 self.callback(cb, bot, event)
+
+        return self
 
     def callback(self, cb, bot, event):
 
@@ -211,11 +192,7 @@ class Callbacks(object):
             :param bot: bot to call the callback on
             :param event: the event that triggered the callback
 
-            .. literalinclude:: ../../gozerlib/callbacks.py
-                :pyobject: Callbacks.callback
-
         """
-
         try:
             # see if the callback pre requirement succeeds
             if cb.prereq:
@@ -223,16 +200,13 @@ class Callbacks(object):
                 if not cb.prereq(bot, event):
                     return
 
-            # check if callback function is there
             if not cb.func:
                 return
 
-            logging.warning('callbacks - excecuting callback %s' % str(cb.func))
-
+            logging.info('callbacks - excecuting callback %s' % str(cb.func)
             event.iscallback = True
 
             # launch the callback
-          
             cb.func(bot, event)
             return True
 
@@ -241,7 +215,8 @@ class Callbacks(object):
 
 
     def reloadcheck(self, event):
-        #logging.debug("callbacks - checking for reload of %s (%s)" % (event.cmnd, event.userhost))
+        """ check if plugin need to be reloaded for callback, """
+        logging.debug("callbacks - checking for reload of %s (%s)" % (event.cmnd, event.userhost))
         plugloaded = []
         target = event.cbtype or event.cmnd
 
@@ -249,10 +224,8 @@ class Callbacks(object):
             from boot import getcallbacktable
             plugins = getcallbacktable()[target]
         except KeyError:
-            #logging.warn("can't find plugin to reload for %s" % event.cmnd)
+            logging.debug("can't find plugin to reload for %s" % event.cmnd)
             return
-
-        logging.info('callback: %s plugin: %s' % (target, plugins))
 
         for name in plugins:
             if name in plugs:

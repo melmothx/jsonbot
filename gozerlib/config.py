@@ -2,7 +2,7 @@
 #
 #
 
-""" config module. """
+""" config module. config is stored as item = JSON pairs. """
 
 ## gozerlib imports
 
@@ -36,6 +36,7 @@ class Config(LazyDict):
         :param verbose: whether loading of config should ne verbose
         :type verbose: boolean
         :rtype: self
+
     """
 
     def __init__(self, filename=None, verbose=False, *args, **kw):
@@ -59,13 +60,13 @@ class Config(LazyDict):
 
 
     def __getitem__(self, item):
+        """ accessor function. """
         if not self.has_key(item):
             return None
         else:
             return dict.__getitem__(self, item)
 
     def set(self, item, value):
-
         """
             set item to value.
 
@@ -75,25 +76,19 @@ class Config(LazyDict):
             :type value: dict, list, string, number or boolean
 
         """
-
         dict.__setitem__(self, item, value)
         return self
 
     def fromdb(self):
-
         """ read config from database. """
         from gozerlib.persist import Persist
         logging.info("config - fromdb - %s" % self.cfile)
-
         tmp = Persist(self.cfile)
         self.update(tmp.data)
         return self
 
     def todb(self):
-
         """ save config to database. """
-
-        
         cp = dict(self)
         del cp['jsondb']
         if not self.jsondb:
@@ -104,7 +99,6 @@ class Config(LazyDict):
         return self
 
     def fromfile(self, filename):
-
         """ 
             read config object from filename. 
 
@@ -113,18 +107,14 @@ class Config(LazyDict):
             :rtype: self
 
         """
-
         curline = ""
-
         # read file and set config values to loaded JSON entries
         fname = filename
         logging.info("config - fromfile - %s" % fname)
- 
         if not os.path.exists(fname):
             return self
  
         # open file
-
         f = open(fname, 'r')
 
         # loop over data in config file            
@@ -141,9 +131,7 @@ class Config(LazyDict):
         return self
 
     def tofile(self, filename=None):
-
         """ save config object to file. """
-
         if not filename:
             filename = self.cfile
 
@@ -155,7 +143,6 @@ class Config(LazyDict):
 
         ddir = "."
         d = []
-
         for p in filename.split(os.sep)[:-1]:
             d.append(p)
             ddir = os.sep.join(d)
@@ -167,10 +154,8 @@ class Config(LazyDict):
                     logging.warn("persist - not saving - failed to make %s - %s" % (ddir, str(ex)))
                     return
 
-        #logging.warn("config - tofile - %s" % ddir)
         written = []
         curitem = None
-
         try:
             # read existing config file if available
             try:
@@ -225,7 +210,6 @@ class Config(LazyDict):
 
             # move temp file to original
             configtmp.close()
-
             try:
                 os.rename(filename + '.tmp', self.cfile)
             except WindowsError:
@@ -241,31 +225,29 @@ class Config(LazyDict):
         return self
 
     def save(self):
+        """ save the config. """
         if self.isdb:
             self.todb()
         else:
             self.tofile()
      
     def load(self, verbose=False):
-
         """
             load the config file.
 
             :param verbose: whether loading should be verbose
+
         """
-
         self.init()
-
         if self.isdb:
             self.fromdb()
-
         if verbose:
             logging.debug('PRE LOAD config %s' % str(self))
 
         return self
 
     def init(self):
-
+        """ initialize the config object. """
         if self.filename == 'mainconfig':
             self.setdefault('owner', [])
             self.setdefault('loglist',  [])
@@ -274,7 +256,7 @@ class Config(LazyDict):
             self.setdefault('plugdeny', [])
             self.setdefault('dotchars',  " .. ")
             self.setdefault('floodallow', 1)
-            self.setdefault('auto_register', 1)
+            self.setdefault('auto_register', 0)
             self.setdefault('ondemand', 1)
 
         self['version'] = "JSONBOT 0.2"
@@ -282,17 +264,11 @@ class Config(LazyDict):
         return self
 
     def reload(self):
-
-        """
-            reload the config file.
-
-        """
-
+        """ reload the config file. """
         self.load()
         return self
 
 def ownercheck(userhost):
-
     """
         check whether userhost is a owner.
  
@@ -301,10 +277,8 @@ def ownercheck(userhost):
         :rtype: boolean
 
     """
-
     if not userhost:
         return False
-
     if userhost in cfg['owner']:
         return True
 

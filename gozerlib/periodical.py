@@ -2,6 +2,8 @@
 #
 #
 
+""" periodic pulse provider. """
+
 __author__ = "Wijnand 'tehmaze' Modderman - http://tehmaze.com"
 __license__ = "BSD License"
 
@@ -40,10 +42,7 @@ class JobError(Exception):
 
 class Job(object):
 
-    """
-        job to be scheduled.
-
-    """
+    """ job to be scheduled. """
 
     group = ''
     pid   = -1
@@ -54,16 +53,10 @@ class Job(object):
         self.pid = pidcount
 
     def id(self):
-
-        """
-            return job id.
-
-        """
-
+        """ return job id. """
         return self.pid
 
     def member(self, group):
-
         """
              check for group membership.
 
@@ -72,11 +65,10 @@ class Job(object):
              :rtype: boolean
 
         """
-
         return self.group == group
 
     def do(self):
-        # try the callback
+        """ try the callback. """
         try:
             self.func(*self.args, **self.kw)
         except Exception, ex:
@@ -124,22 +116,12 @@ class JobAt(Job):
             self.delta = interval
 
     def __repr__(self):
-
-        """
-            return a string representation of the JobAt object.
-
-        """
-
+        """ return a string representation of the JobAt object. """
         return '<JobAt instance next=%s, interval=%s, repeat=%d, function=%s>' % (str(self.next),
             str(self.delta), self.repeat, str(self.func))
 
     def check(self):
-
-        """
-            run check to see if job needs to be scheduled.
-
-        """
-
+        """ run check to see if job needs to be scheduled. """
         if self.next <= time.time():
             logging.debug('periodical - running %s - %s' % (str(self.func), self.description))
             self.func(*self.args, **self.kw)
@@ -147,6 +129,7 @@ class JobAt(Job):
             self.counts += 1
             if self.repeat > 0 and self.counts >= self.repeat:
                 return False # remove this job
+
         return True
 
 class JobInterval(Job):
@@ -181,12 +164,7 @@ function=%s>' % (str(self.next), str(self.interval), self.repeat, self.group,
 str(self.func))
 
     def check(self):
-
-        """
-            run check to see if job needs to be scheduled.
-
-        """
-
+        """ run check to see if job needs to be scheduled. """
         if self.next <= time.time():
             logging.debug('periodical - running %s - %s' % (str(self.func), self.description))
             self.next = time.time() + self.interval
@@ -194,15 +172,13 @@ str(self.func))
             self.counts += 1
             if self.repeat > 0 and self.counts >= self.repeat:
                 return False # remove this job
+
         return True
 
 
 class Periodical(object):
 
-    """
-         periodical scheduler.
-
-    """
+    """ periodical scheduler. """
 
     SLEEPTIME = 1 # smallest interval possible
 
@@ -212,16 +188,10 @@ class Periodical(object):
         self.run = True
 
     def start(self):
-
-        """
-            start the periodical scheduler.
-
-        """
-
+        """ start the periodical scheduler. """
         thr.start_new_thread(self.checkloop, ())
 
     def addjob(self, sleeptime, repeat, function, description="" , *args, **kw): 
-
         """
             add a periodical job.
 
@@ -235,7 +205,6 @@ class Periodical(object):
             :type description: string
 
         """
-
         job = JobInterval(sleeptime, repeat, function, *args, **kw)
         job.group = calledfrom(sys._getframe())
         job.description = str(description) or whichmodule()
@@ -243,7 +212,6 @@ class Periodical(object):
         return job.pid
 
     def changeinterval(self, pid, interval):
- 
         """
              change interval of of peridical job.
 
@@ -253,100 +221,58 @@ class Periodical(object):
              :type interval: integer
 
         """
-
         for i in periodical.jobs:
-
             if i.pid == pid:
                 i.interval = interval
                 i.next = time.time() + interval
 
     def looponce(self):
+        """ do one loop over the jobs. """
         for job in self.jobs:
-
             if job.next <= time.time():
                 self.runjob(job)
 
     def checkloop(self):
-
-        """
-            main loop of the periodical scheduler.
-
-        """
-
+        """ main loop of the periodical scheduler."""
         while self.run:
-
             for job in self.jobs:
-
                 if job.next <= time.time():
                     self.runjob(job)
 
             time.sleep(self.SLEEPTIME)
 
     def runjob(self, job):
-
-        """
-            run a periodical job
-
-            :param job: the job to be runned 
-            :type job: Job
-
-        """
-
+        """ run a periodical job. """
         if not job.check():
             self.killjob(job.id())
         else:
             self.running.append(job)
 
     def kill(self):
-
-        '''
-            kill all jobs invoked by another module.
-
-        '''
-
+        ''' kill all jobs invoked by a modul. '''
         group = calledfrom(sys._getframe())
         self.killgroup(group)
 
     def killgroup(self, group):
-
-        '''
-            kill all jobs with the same group.
-
-            :param group: the group of jobs to kill
-            :type group: string
-
-        '''
+        """ kill all jobs with the same group. """
 
         def shoot():
-
             """ knock down all jobs belonging to group. """
-
             deljobs = [job for job in self.jobs if job.member(group)]
-
             for job in deljobs:
                 self.jobs.remove(job)
-
                 try:
                     self.running.remove(job)
                 except ValueError:
                     pass
 
             logging.debug('periodical - killed %d jobs for %s' % (len(deljobs), group))
-
             del deljobs
 
         shoot() # *pow* you're dead ;)
 
     def killjob(self, jobId):
-
-        '''
-            kill one job by its id.
-
-            :param jobId: the id of the job to kill
-            :type jobId: integer
-            :rtype: integer .. number of jobs killed
-
-        '''
+        """ kill one job by its id. """
 
         def shoot():
             deljobs = [x for x in self.jobs if x.id() == jobId]
@@ -366,7 +292,6 @@ class Periodical(object):
 ## functions
 
 def interval(sleeptime, repeat=0):
-
     """
         interval decorator.
 
@@ -376,7 +301,6 @@ def interval(sleeptime, repeat=0):
         :type repeat: integet
 
     """
-
     group = calledfrom(sys._getframe())
 
     def decorator(function):
@@ -393,7 +317,6 @@ def interval(sleeptime, repeat=0):
     return decorator
 
 def at(start, interval=1, repeat=1):
-
     """
         at decorator.
 
@@ -405,7 +328,6 @@ def at(start, interval=1, repeat=1):
         :type repeat: integet
 
     """
-
     group = calledfrom(sys._getframe())
 
     def decorator(function):
@@ -423,7 +345,6 @@ def at(start, interval=1, repeat=1):
     return decorator
 
 def persecond(function):
-
     """
         per second decorator.
 
@@ -431,7 +352,6 @@ def persecond(function):
         :type function: function
 
     """
-
     minutely.func_dict = function.func_dict
     group = calledfrom(sys._getframe())
 
@@ -444,7 +364,6 @@ def persecond(function):
     return wrapper
 
 def minutely(function):
-
     """
         minute decorator.
 
@@ -452,7 +371,6 @@ def minutely(function):
         :type function: function
 
     """
-
     minutely.func_dict = function.func_dict
     group = calledfrom(sys._getframe())
 
@@ -465,7 +383,6 @@ def minutely(function):
     return wrapper
 
 def hourly(function):
-
     """
         hour decorator.
 
@@ -473,7 +390,6 @@ def hourly(function):
         :type function: function
 
     """
-
     hourly.func_dict = function.func_dict
     group = calledfrom(sys._getframe())
 
@@ -486,7 +402,6 @@ def hourly(function):
     return wrapper
 
 def daily(function):
-
     """
         day decorator.
 
@@ -494,7 +409,6 @@ def daily(function):
         :type function: function
 
     """
-
     daily.func_dict = function.func_dict
     group = calledfrom(sys._getframe())
 
@@ -506,7 +420,7 @@ def daily(function):
 
     return wrapper
 
-## defnine
+## define
 
 # the periodical scheduler
 periodical = Periodical()

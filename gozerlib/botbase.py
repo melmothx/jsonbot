@@ -4,7 +4,7 @@
 
 """ base class for all bots. """
 
-## lib imports
+## gozerlib imports
 
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
@@ -76,20 +76,18 @@ class BotBase(LazyDict):
         except:
             pass
 
-        #if not self.cfg:
-        #    self.cfg = Config(self.fleetdir + os.sep + 'config')
-        #    self.update(self.cfg)
-
-
     def setstate(self, state=None):
+        """ set state on the bot. """
         self.state = state or Pdod(self.datadir + os.sep + 'state')
         if self.state and not 'joinedchannels' in self.state.data:
             self.state.data.joinedchannels = []
 
     def setusers(self, users=None):
+        """ set users on the bot. """
         if users:
             self.users = users
             return
+        # initialize users 
         import gozerlib.users as u
         if not u.users:
             u.users_boot()
@@ -97,11 +95,13 @@ class BotBase(LazyDict):
         else:
             self.users = u.users
 
-    def loadplugs(self, dirlist):
-        self.plugs.loadall(dirlist)
+    def loadplugs(self, packagelist=[]):
+        """ load plugins from packagelist. """
+        self.plugs.loadall(packagelist)
         return self.plugs
 
     def start(self):
+        """ start the mainloop of the bot. BotBase does console. """
         while 1: 
             sys.stdout.write("> ")
             try:
@@ -125,7 +125,7 @@ class BotBase(LazyDict):
 
     @eventlocked
     def doevent(self, event):
-        """  dispatch an event. """
+        """ dispatch an event. """
         self.curevent = event
         go = False
         if self.cfg:
@@ -245,33 +245,43 @@ class BotBase(LazyDict):
 
         return [res, result]
 
-    def join(self, *args, **kwargs):
+    def join(self, channel, password, *args, **kwargs):
+        """ join a channel. """
         pass
 
-    def part(self, *args, **kwargs):
+    def part(self, channel, *args, **kwargs):
+        """ leave a channel. """
         pass
 
-    def action(self, *args, **kwargs):
+    def action(self, channel, txt, *args, **kwargs):
+        """ send action to channel. """
         pass
 
     def reconnect(self, *args, **kwargs):
+        """ do a server reconnect. """
         pass
 
-    def donick(self, *args, **kwargs):
+    def donick(self, nick, *args, **kwargs):
+        """ do a nick change. """
         pass
 
     def shutdown(self, *args, **kwargs):
+        """ shutdown the bot. """
         pass
 
-    def quit(self, *args, **kwargs):
+    def quit(self, reason="", *args, **kwargs):
+        """ close connection with the server. """
         pass
 
-    def connect(self, *args, **kwargs):
+    def connect(self, reconnect=True, *args, **kwargs):
+        """ connect to the server. """
         pass
 
-    def names(self, *args, **kwargs):
+    def names(self, channel, *args, **kwargs):
+        """ request all names of a channel. """
         pass
 
     def save(self, *args, **kwargs):
+        """ save bot state if available. """
         if self.state:
             self.state.save()

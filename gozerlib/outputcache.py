@@ -14,32 +14,27 @@ import os
 ## functions
 
 def add(target, txtlist):
-
+    """ add list of txt to target entry. """
     cache = Persist('outputcache' + os.sep + stripname(target))
     d = cache.data
-
     if not d.has_key('msg'):
         d['msg'] = []
-
     d['msg'].extend(txtlist)
-
     while len(d['msg']) > 30:
         d['msg'].pop(0)
-
     cache.save()
 
 def set(target, txtlist):
+    """ set target entry to list. """
     cache = Persist('outputcache' + os.sep + stripname(target))
-
     if not cache.data.has_key('msg'):
         cache.data['msg'] = []
-
     cache.data['msg'] = txtlist
     cache.save()
 
 def get(target):
+    """ get output for target. """
     cache = Persist('outputcache' + os.sep + stripname(target))
-
     try:
         result = cache.data['msg']
         if result:

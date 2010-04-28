@@ -48,6 +48,7 @@ setup(
               'gozerlib.gae.web',
               'gozerlib.gae.wave',
               'gozerlib.gae.xmpp',
+              'gozerlib.gae.plugs', 
               'gozerlib.socket',
               'gozerlib.socket.irc',
               'gozerlib.socket.utils',

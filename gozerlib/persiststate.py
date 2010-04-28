@@ -17,6 +17,8 @@ import os
 import sys
 import logging
 
+## classes
+
 class PersistState(Persist):
 
     """ base persitent state class. """
@@ -26,29 +28,20 @@ class PersistState(Persist):
         self.types = dict((i, type(j)) for i, j in self.data.iteritems())
 
     def __getitem__(self, key):
-
         """ get state item. """
-
         return self.data[key]
 
     def __setitem__(self, key, value):
-
         """ set state item. """
-
         self.data[key] = value
 
     def define(self, key, value):
-
         """ define a state item. """
-
         if not self.data.has_key(key) or type(value) != self.types[key]:
-
             if type(value) == types.StringType:
                 value = unicode(value)
-
             if type(value) == types.IntType:
                 value = long(value)
-
             self.data[key] = value
 
 class PlugState(PersistState):

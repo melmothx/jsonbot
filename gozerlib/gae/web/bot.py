@@ -9,6 +9,8 @@
 from gozerlib.botbase import BotBase
 from gozerlib.outputcache import add
 
+## classes
+
 class WebBot(BotBase):
 
     """ webbot just inherits from botbase for now. """
@@ -20,7 +22,9 @@ class WebBot(BotBase):
         self.type = "web"
 
     def say(self, channel, txt, *args, **kwargs):
+        """ saying on a webbot add it to the output cache. """
         add(channel, [txt, ])
 
     def sayroot(self, channel, txt, *args, **kwargs):
+        """ say root also add the txt to the output cache. """ 
         add(channel, [txt, ])

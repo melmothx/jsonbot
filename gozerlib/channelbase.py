@@ -13,13 +13,15 @@ from gozerlib.persist import Persist
 
 import time
 
+## classes
+
 class ChannelBase(Persist):
 
     """
         Base class for all channel objects. 
 
-        :param name: name of the channel
-        :type name: string
+        :param id: id of the channel
+        :type id: string
         :param type: type of channel
         :type type: string
 
@@ -33,19 +35,22 @@ class ChannelBase(Persist):
         self.data.feeds = self.data.feeds or []
         self.data.passwords = self.data.passwords or {}
 
-    def setpass(self, name, key):
-        self.data.passwords[name] = key
+    def setpass(self, type, key):
+        """ set channel password based on type. """
+        self.data.passwords[type] = key
         self.save()
 
-    def getpass(self, name='IRC'):
+    def getpass(self, type='IRC'):
+        """ get password based of type. """
         try:
-            return self.data.passwords[name]
+            return self.data.passwords[type]
         except KeyError:
             return
 
-    def delpass(self, name='IRC'):
+    def delpass(self, type='IRC'):
+        """ delete password. """
         try:
-            del self.data.passwords[name]
+            del self.data.passwords[type]
             self.save()
             return True
         except KeyError:
@@ -59,9 +64,9 @@ class ChannelBase(Persist):
 
             :param event: event to parse
             :type event: gozerlib.eventbase.EventBase
+            :param wavelet: wavelet to parse with
+            :type wavelet: waveap.wavelet.Wavelet
             :rtype: self
 
         """
-
         pass
-

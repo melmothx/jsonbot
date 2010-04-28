@@ -32,16 +32,12 @@ class WebEvent(EventBase):
         return e
 
     def parse(self, response, request):
-
         """ parse request/response into a WebEvent. """
-
         #logging.warn('%s %s' % (dir(request), dir(response)))
         #logging.warn(str(request.environ))
         input = request.get('content')
-
         if not input:
             input = request.get('QUERY_STRING')
-
         self.isweb = True
         self.origtxt = input.strip()
         self.txt = input
@@ -61,7 +57,6 @@ class WebEvent(EventBase):
         if self.waveid:
             self.isgadget = True
             wave = Wave(self.waveid)
-            
             if wave:
                 logging.warn('web - setting channel to %s - %s' % (self.waveid, wave.data.title))
             else:
@@ -78,38 +73,33 @@ class WebEvent(EventBase):
         return self
 
     def _raw(self, txt, end=""):
-
         """ 
             put txt onto the reponse object .. adding end string if provided. 
             output is NOT escaped.
 
         """
-
         txt = unicode(txt)
         logging.info(u'web - out - %s - %s' % (self.userhost, txt))
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
     def write(self, txt, start=u"", end=u"<br>", raw=False):
-
         """ 
             put txt onto the reponse object .. adding end string if provided. 
             output IS escaped.
 
         """
-         
         if not raw:
             self._raw(start + cgi.escape(txt) + end)
         else:
             self._raw(start + txt + end)
 
     def makeresponse(self, txt, resultlist, nritems, dot, *args, **kwargs):
+        """ create a response based of response string and result list. """
         return EventBase.makeresponse(self, txt, resultlist, nritems, dot=dot, *args, **kwargs)
 
     def reply(self, txt, resultlist=[], nritems=False, dot=", ", raw=False, *args, **kwargs):
-
         """ send reply to the web user. """
-
         if self.checkqueues(resultlist):
             return
 
