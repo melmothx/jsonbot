@@ -10,10 +10,10 @@
 
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.trace import whichmodule
-from gozerlib.utils.generic import toenc, fromenc, jabberstrip, makeargrest
+from gozerlib.utils.generic import toenc, fromenc, jabberstrip
 from gozerlib.utils.locking import lockdec
 from gozerlib.eventbase import EventBase
-from gozerlib.config import config
+from gozerlib.config import cfg
 
 ## xmpp imports
 
@@ -30,8 +30,8 @@ import logging
 replylock = thread.allocate_lock()
 replylocked = lockdec(replylock)
 
-if config['dotchars']:
-    dotchars = config['dotchars']
+if cfg['dotchars']:
+    dotchars = cfg['dotchars']
 else:
     dotchars = ' .. '
 
@@ -39,11 +39,10 @@ class Message(EventBase):
 
     """ jabber message object. """
 
-    def __init__(self, nodedict={}, bot=None):
-        EventBase.__init__(self, nodedict, bot)
+    def __init__(self, nodedict={}):
+        EventBase.__init__(self, nodedict)
         self.element = "message"
         self.jabber = True
-        rlog(2, whichmodule(1), 'MESSAGE: ' + str(self))
 
     def __copy__(self):
         return Message(self, self.bot)

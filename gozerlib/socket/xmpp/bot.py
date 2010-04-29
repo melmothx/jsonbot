@@ -10,21 +10,18 @@ from gozerlib.users import users
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.trace import whichmodule
 from gozerlib.utils.locking import lockdec
-from gozerlib.config import config
 from gozerlib.utils.pdod import Pdod
 from gozerlib.utils.dol import Dol
 from gozerlib.datadir import datadir
-from gozerlib.channels import Channels
 from gozerlib.less import Less
-from gozerlib.ignore import shouldignore
-from gozerlib.callbacks import jcallbacks
-from gozerlib.threads.thr import start_new_thread
+from gozerlib.callbacks import callbacks
+from gozerlib.threads import start_new_thread
 from gozerlib.fleet import fleet
 from gozerlib.botbase import BotBase
 
 ## gozerlib.socket imports
 
-from gozerlib.sockets.utils.generic import waitforqueue, toenc, fromenc, jabberstrip, getrandomnick
+from gozerlib.socket.utils.generic import waitforqueue, toenc, fromenc, jabberstrip, getrandomnick
 
 ## xmpp imports
 
@@ -65,21 +62,15 @@ class SXMPPBot(XMLStream, BotBase):
     """
         xmpp bot class.
 
-        :param name: name of the xmpp bot
-        :type name: string
-        :param cfg: config file for the bot
-        :type config: gozerbot.config.Config
-
     """
 
-    def __init__(self, name, cfg={}):
-        BotBase.__init__(self, name, cfg)
-
-        if not self.port:
-            self.port = 5222
-
+    def __init__(self, cfg=None, usersin=None, plugs=None, jid=None, *args, **kwargs):
+        BotBase.__init__(self, cfg, usersin, plugs, jid, *args, **kwargs)
+        self.port = 5222
         if not self.host:
-            raise Exception("host not set in %s xmpp bot" % self.name)
+            self.host = self.cfg.host
+            if not self.host:
+                raise Exception("host not set in sxmpp bot")
 
         self.username = self.user.split('@')[0]
         XMLStream.__init__(self, self.host, self.port, self.name)   
@@ -102,8 +93,8 @@ class SXMPPBot(XMLStream, BotBase):
         self.timejoined = {}
         self.channels409 = []
 
-        if not self.state.has_key('ratelimit'):
-            self.state['ratelimit'] = 0.05
+        if self.state and not self.state.data.ratelimit:
+            self.state.data.ratelimit = 0.05
 
         if self.port == 0:
             self.port = 5222
@@ -148,7 +139,7 @@ class SXMPPBot(XMLStream, BotBase):
                     continue
 
                 charssend = 0
-                sleeptime = self.cfg['jabberoutsleep'] or config['jabberoutsleep']
+                sleeptime = self.cfg['jabberoutsleep']
 
                 if not sleeptime:
                     sleeptime = 1
@@ -244,6 +235,9 @@ class SXMPPBot(XMLStream, BotBase):
             if reconnect:
                 self.reconnect()
 
+    def start(self):
+        self.connect()
+
     def logon(self, user, password):
         """ logon on the xmpp server. """
         iq = self.initstream()
@@ -304,7 +298,7 @@ class SXMPPBot(XMLStream, BotBase):
         """ auth against the xmpp server. """
         logging.warn('sxmpp - authing %s' % jid)
         name = jid.split('@')[0]
-        rsrc = self.cfg['resource'] or config['resource'] or 'gozerbot';
+        rsrc = self.cfg['resource'] or self.cfg['resource'] or 'gozerbot';
         self._raw("""<iq type='get'><query xmlns='jabber:iq:auth'></query></iq>""")
         result = self.connection.read()
         iq = self.loop_one(result)
@@ -380,7 +374,7 @@ class SXMPPBot(XMLStream, BotBase):
         if data.type == 'groupchat' and data.subject:
             self.topiccheck(m)
             nm = Message(m, bot=self)
-            jcallbacks.check(self, nm)
+            callbacks.check(self, nm)
             return
 
         if data.get('x').xmlns == 'jabber:x:delay':
@@ -408,14 +402,14 @@ class SXMPPBot(XMLStream, BotBase):
         try:
             cc = self.channels[m.channel]['cc']
         except (TypeError, KeyError):
-            cc = config['defaultcc'] or '!'
+            cc = self.cfg['defaultcc'] or '!'
 
         try:
             channick = self.channels[m.channel]['nick']
         except (TypeError, KeyError):
             channick = self.nick
 
-        if m.msg and not config['noccinmsg']:
+        if m.msg and not self.cfg['noccinmsg']:
             go = 1
         if not m.txt:
             go = 0
@@ -450,7 +444,7 @@ class SXMPPBot(XMLStream, BotBase):
             handle_exception()
 
         mm = Message(m, self)
-        jcallbacks.check(self, mm)
+        callbacks.check(self, mm)
 
     def errorHandler(self, event):
         """ error handler .. calls the errorhandler set in the event. """
@@ -515,7 +509,7 @@ class SXMPPBot(XMLStream, BotBase):
                 pass
 
         pp = Presence(p, self)
-        jcallbacks.check(self, pp)
+        callbacks.check(self, pp)
 
         if p.type == 'error':
             for node in p.subelements:
@@ -552,7 +546,7 @@ class SXMPPBot(XMLStream, BotBase):
         logging.warn('sxmpp -reconnecting .. sleeping 15 seconds')
         self.exit()
         time.sleep(15)
-        newbot = Bot(self.name, self.cfg)
+        newbot = SXMPPBot(self.name, self.cfg)
 
         if newbot.connect():
             self.name += '.old'
@@ -565,6 +559,9 @@ class SXMPPBot(XMLStream, BotBase):
 
     def send(self, what):
         """ send stanza to the server. """
+        if not what:
+            logging.debug("sxmpp - can't send empty message")
+            return
         try:
             to = what['to']
         except (KeyError, TypeError):
@@ -663,13 +660,14 @@ class SXMPPBot(XMLStream, BotBase):
 
     def quit(self):
         """ send unavailable presence. """
-        presence = Presence({'type': 'unavailable'}, self)
+        presence = Presence({'type': 'unavailable' ,'to': self.jid})
 
-        for i in self.state['joinedchannels']:
-            presence.to = i
-            self.send(presence)
+        if self.state:
+            for i in self.state.data.joinedchannels:
+                presence.to = i
+                self.send(presence)
 
-        presence = Presence({'type': 'unavailable'}, self)
+        presence = Presence({'type': 'unavailable', 'to': self.jid})
         presence['from'] = self.me
         self.send(presence)
         time.sleep(1)
@@ -730,7 +728,7 @@ class SXMPPBot(XMLStream, BotBase):
 
         # check for control char .. if its not there init to !
         if not chan.has_key('cc'):
-            chan['cc'] = config['defaultcc'] or '!'
+            chan['cc'] = self.cfg['defaultcc'] or '!'
 
         if not chan.has_key('perms'):
             chan['perms'] = []
@@ -763,7 +761,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def outputnolog(self, printto, what, how, who=None, fromm=None):
         """ do output but don't log it. """
-        if fromm and shouldignore(fromm):
+        if fromm:
             return
 
         self.saynocb(printto, what)

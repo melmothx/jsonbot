@@ -10,9 +10,8 @@
 ## gozerlib imports
 
 from gozerlib.datadir import datadir
-from gozerlib.config import Config, config
+from gozerlib.config import Config
 from gozerlib.utils.generic import toenc, jabberstrip
-from gozerlib.utils.log import rlog
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
@@ -412,7 +411,7 @@ class XMLStream(NodeBuilder):
         logging.debug("sxmpp.core - " + str(result))
         self.sock.send('<starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"/>\r\n')
         time.sleep(3)
-        rlog(3, self.name, self.sock.recv(1500))
+        logging.debug("sxmpp.core - " + self.sock.recv(1500))
         self.sock.settimeout(60)
         return self.dossl()
 
@@ -427,6 +426,7 @@ class XMLStream(NodeBuilder):
             return True
         else:
             return False
+
 
     def logon(self):
         """ called upon logon on the server. """

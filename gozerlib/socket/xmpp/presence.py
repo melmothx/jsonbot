@@ -22,8 +22,8 @@ import logging
 
 class Presence(EventBase):
 
-    def __init__(self, nodedict={}, bot=None):
-        EventBase.__init__(self, nodedict, bot)
+    def __init__(self, nodedict={}):
+        EventBase.__init__(self, nodedict)
         self.element = 'presence'
 
     def toirc(self):

@@ -7,11 +7,8 @@
 ## gozerlib imports
 
 from gozerlib.utils.locking import lockdec
+from gozerlib.socket.wait import Wait
 import gozerlib.threads as thr
-
-## xmpp imports
-
-from wait import Wait
 
 ## basic imports
 

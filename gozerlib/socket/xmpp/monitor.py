@@ -6,10 +6,9 @@
 
 ## gozerlib imports
 
-from gozerbot.utils.exception import handle_exception
-from gozerbot.monitor import Monitor
-from gozerbot.config import config
-from gozerbot.eventbase import EventBase
+from gozerlib.utils.exception import handle_exception
+from gozerlib.monitor import Monitor
+from gozerlib.eventbase import EventBase
 
 ## xmpp imports
 
