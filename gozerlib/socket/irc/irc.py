@@ -26,7 +26,7 @@ from gozerlib.morphs import inputmorphs, outputmorphs
 
 from ircevent import Ircevent
 from monitor import saymonitor
-from wait import Wait
+from gozerlib.socket.wait import Wait
 
 ## basic imports
 
