@@ -242,7 +242,8 @@ class TestGetCapabilitiesXml(unittest.TestCase):
 
   def testCapsAndEvents(self):
     self.robot.register_handler(events.BlipSubmitted, None,
-                                context=[events.Context.SELF, events.Context.ROOT])
+                                context=[events.Context.SELF,
+                                         events.Context.ROOT])
     expected = (
         '<?xml version="1.0"?>\n'
         '<w:robot xmlns:w="http://wave.google.com/extensions/robots/1.0">\n'

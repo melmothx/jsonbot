@@ -50,17 +50,20 @@ class Element(object):
           and
           e = Element(atype, properties={prop1:val1, prop2:prop2..})
     """
-    #TODO: don't use setattr
     if len(properties) == 1 and 'properties' in properties:
       properties = properties['properties']
-    self.type = element_type
+    self._type = element_type
     # as long as the operation_queue of an element in None, it is
     # unattached. After an element is acquired by a blip, the blip
     # will set the operation_queue to make sure all changes to the
     # element are properly send to the server.
     self._operation_queue = None
-    for key, val in properties.items():
-      setattr(self, key, val)
+    self._properties = properties.copy()
+  
+  @property
+  def type(self):
+    """The type of this element."""
+    return self._type
 
   @classmethod
   def from_json(cls, json):
@@ -77,144 +80,129 @@ class Element(object):
 
   def get(self, key, default=None):
     """Standard get interface."""
-    return getattr(self, key, default)
+    return self._properties.get(key, default)
+
+  def __getattr__(self, key):
+    return self._properties[key]
 
   def serialize(self):
-    """Custom serializer for Elements.
-
-    Element need their non standard attributes returned in a dict named
-    properties.
-    """
-    props = {}
-    data = {}
-    for attr in dir(self):
-      if attr.startswith('_'):
-        continue
-      val = getattr(self, attr)
-      if val is None or callable(val):
-        continue
-      val = util.serialize(val)
-      if attr == 'type':
-        data[attr] = val
-      else:
-        props[attr] = val
-    data['properties'] = util.serialize(props)
-    return data
+    """Custom serializer for Elements."""
+    return util.serialize({'properties': util.non_none_dict(self._properties),
+                           'type': self._type})
 
 
 class Input(Element):
   """A single-line input element."""
 
-  type = 'INPUT'
+  class_type = 'INPUT'
 
-  def __init__(self, name, value='', label=''):
-    super(Input, self).__init__(Input.type,
+  def __init__(self, name, value=''):
+    super(Input, self).__init__(Input.class_type,
                                 name=name,
                                 value=value,
-                                default_value=value,
-                                label=label)
+                                default_value=value)
 
   @classmethod
   def from_props(cls, props):
-    return Input(name=props['name'], value=props['value'], label=props['label'])
+    return Input(name=props.get('name'), value=props.get('value'))
 
 
 class Check(Element):
   """A checkbox element."""
 
-  type = 'CHECK'
+  class_type = 'CHECK'
 
   def __init__(self, name, value=''):
-    super(Check, self).__init__(Check.type,
+    super(Check, self).__init__(Check.class_type,
                                 name=name, value=value, default_value=value)
 
   @classmethod
   def from_props(cls, props):
-    return Check(name=props['name'], value=props['value'])
+    return Check(name=props.get('name'), value=props.get('value'))
 
 
 class Button(Element):
   """A button element."""
 
-  type = 'BUTTON'
+  class_type = 'BUTTON'
 
-  def __init__(self, name, caption):
-    super(Button, self).__init__(Button.type,
-                                 name=name, value=caption)
+  def __init__(self, name, value):
+    super(Button, self).__init__(Button.class_type,
+                                 name=name, value=value)
 
   @classmethod
   def from_props(cls, props):
-    return Button(name=props['name'], caption=props['value'])
+    return Button(name=props.get('name'), value=props.get('value'))
 
 
 class Label(Element):
   """A label element."""
 
-  type = 'LABEL'
+  class_type = 'LABEL'
 
   def __init__(self, label_for, caption):
-    super(Label, self).__init__(Label.type,
+    super(Label, self).__init__(Label.class_type,
                                 name=label_for, value=caption)
 
   @classmethod
   def from_props(cls, props):
-    return Label(label_for=props['name'], caption=props['value'])
+    return Label(label_for=props.get('name'), caption=props.get('value'))
 
 
 class RadioButton(Element):
   """A radio button element."""
 
-  type = 'RADIO_BUTTON'
+  class_type = 'RADIO_BUTTON'
 
   def __init__(self, name, group):
-    super(RadioButton, self).__init__(RadioButton.type,
+    super(RadioButton, self).__init__(RadioButton.class_type,
                                       name=name, value=group)
 
   @classmethod
   def from_props(cls, props):
-    return RadioButton(name=props['name'], group=props['value'])
+    return RadioButton(name=props.get('name'), group=props.get('value'))
 
 
 class RadioButtonGroup(Element):
   """A group of radio buttons."""
 
-  type = 'RADIO_BUTTON_GROUP'
+  class_type = 'RADIO_BUTTON_GROUP'
 
   def __init__(self, name, value):
-    super(RadioButtonGroup, self).__init__(RadioButtonGroup.type,
+    super(RadioButtonGroup, self).__init__(RadioButtonGroup.class_type,
                                            name=name, value=value)
 
   @classmethod
   def from_props(cls, props):
-    return RadioButtonGroup(name=props['name'], value=props['value'])
+    return RadioButtonGroup(name=props.get('name'), value=props.get('value'))
 
 
 class Password(Element):
   """A password element."""
 
-  type = 'PASSWORD'
+  class_type = 'PASSWORD'
 
   def __init__(self, name, value):
-    super(Password, self).__init__(Password.type,
+    super(Password, self).__init__(Password.class_type,
                                    name=name, value=value)
 
   @classmethod
   def from_props(cls, props):
-    return Password(name=props['name'], value=props['value'])
+    return Password(name=props.get('name'), value=props.get('value'))
 
 
 class TextArea(Element):
   """A text area element."""
 
-  type = 'TEXTAREA'
+  class_type = 'TEXTAREA'
 
   def __init__(self, name, value):
-    super(TextArea, self).__init__(TextArea.type,
+    super(TextArea, self).__init__(TextArea.class_type,
                                    name=name, value=value)
 
   @classmethod
   def from_props(cls, props):
-    return TextArea(name=props['name'], value=props['value'])
+    return TextArea(name=props.get('name'), value=props.get('value'))
 
 
 class Line(Element):
@@ -223,14 +211,38 @@ class Line(Element):
   Note that Lines are represented in the text as newlines.
   """
 
-  type = 'LINE'
+  class_type = 'LINE'
+
+  # Possible line types:
+  #: Designates line as H1, largest heading.
+  TYPE_H1 = 'h1'
+  #: Designates line as H2 heading.
+  TYPE_H2 = 'h2'
+  #: Designates line as H3 heading.
+  TYPE_H3 = 'h3'
+  #: Designates line as H4 heading.
+  TYPE_H4 = 'h4'
+  #: Designates line as H5, smallest heading.
+  TYPE_H5 = 'h5'
+  #: Designates line as a bulleted list item.
+  TYPE_LI = 'li'
+
+  # Possible values for align
+  #: Sets line alignment to left.
+  ALIGN_LEFT = 'l'
+  #: Sets line alignment to right.
+  ALIGN_RIGHT = 'r'
+  #: Sets line alignment to centered.
+  ALIGN_CENTER = 'c'
+  #: Sets line alignment to justified.
+  ALIGN_JUSTIFIED = 'j'
 
   def __init__(self,
                line_type=None,
                indent=None,
                alignment=None,
                direction=None):
-    super(Line, self).__init__(Line.type,
+    super(Line, self).__init__(Line.class_type,
                                lineType=line_type,
                                indent=indent,
                                alignment=alignment,
@@ -247,25 +259,34 @@ class Line(Element):
 class Gadget(Element):
   """A gadget element."""
 
-  type = 'GADGET'
+  class_type = 'GADGET'
 
   def __init__(self, url, props=None):
     if props is None:
       props = {}
     props['url'] = url
-    super(Gadget, self).__init__(Gadget.type, properties=props)
+    super(Gadget, self).__init__(Gadget.class_type, properties=props)
 
   @classmethod
   def from_props(cls, props):
     return Gadget(props.get('url'), props)
 
+  def serialize(self):
+    """Gadgets allow for None values."""
+    return {'properties': self._properties, 'type': self._type}
+  
+  def keys(self):
+    """Get the valid keys for this gadget."""
+    return [x for x in self._properties.keys() if x != 'url']
+
+
 class Installer(Element):
   """An installer element."""
 
-  type = 'INSTALLER'
+  class_type = 'INSTALLER'
 
   def __init__(self, manifest):
-    super(Installer, self).__init__(Installer.type, manifest=manifest)
+    super(Installer, self).__init__(Installer.class_type, manifest=manifest)
 
   @classmethod
   def from_props(cls, props):
@@ -276,18 +297,17 @@ class Installer(Element):
 class Image(Element):
   """An image element."""
 
-  type = 'IMAGE'
+  class_type = 'IMAGE'
 
   def __init__(self, url='', width=None, height=None,
                attachmentId=None, caption=None):
-    super(Image, self).__init__(Image.type, url=url, width=width,
+    super(Image, self).__init__(Image.class_type, url=url, width=width,
           height=height, attachmentId=attachmentId, caption=caption)
 
   @classmethod
   def from_props(cls, props):
     props = dict([(key.encode('utf-8'), value)
                   for key, value in props.items()])
-    logging.info('from_props=' + str(props))
     return apply(Image, [], props)
 
 
@@ -296,9 +316,10 @@ def is_element(cls):
   try:
     if not issubclass(cls, Element):
       return False
-    return hasattr(cls, 'type')
+    h = hasattr(cls, 'class_type')
+    return hasattr(cls, 'class_type')
   except TypeError:
     return False
 
-ALL = dict([(item.type, item) for item in globals().copy().values()
+ALL = dict([(item.class_type, item) for item in globals().copy().values()
             if is_element(item)])

@@ -61,7 +61,7 @@ class WaveEvent(EventBase):
             logging.warn("can't get blip id: %s" % self.blipid)
             self.contributors = []
             self.txt = ""
-            self.cmnd = ""
+            self.usercmnd = ""
             self.userhost = ""
             self.ispoller = False
         else:
@@ -104,8 +104,8 @@ class WaveEvent(EventBase):
         self.channel = self.waveid
         self.origin = self.channel
         self.title = self.root._title or self.channel 
-        self.cbtype = event.type
-
+        self.cmnd = self.cbtype = event.type
+        
         if 'sandbox' in self.waveid:
             self.url = "https://wave.google.com/a/wavesandbox.com/#restored:wave:%s" % self.waveid.replace('w+','w%252B')
         else:

@@ -271,9 +271,9 @@ class Robot(object):
       for payload in payloads:
         handler, event_class, context, filter = payload
         line = '  <w:capability name="%s"' % capability
-        if context and type(context) == list:
-          line += ' context="%s"' % (',').join(context)
-        elif context:
+        if context: 
+          if type(context) == list:
+            context = ','.join(context)
           line += ' context="%s"' % context
         if filter:
           line += ' filter="%s"' % filter
@@ -328,7 +328,7 @@ class Robot(object):
       json = simplejson.loads(json)
 
     blips = {}
-    for blip_id, raw_blip_data in json['blips'].iteritems():
+    for blip_id, raw_blip_data in json['blips'].items():
       blips[blip_id] = blip.Blip(raw_blip_data, blips, pending_ops)
 
     if 'wavelet' in json:
@@ -359,7 +359,6 @@ class Robot(object):
       for payload in self._handlers.get(event_data['type'], []):
         handler, event_class, context, filter = payload
         event = event_class(event_data, event_wavelet)
-        event.json = json
         handler(event, event_wavelet)
 
     pending_ops.set_capability_hash(self.capabilities_hash())

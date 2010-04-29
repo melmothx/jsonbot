@@ -45,7 +45,6 @@ def is_iterable(inst):
   """
   return hasattr(inst, '__iter__')
 
-
 def is_dict(inst):
   """Returns whether or not the specified instance is a dict."""
   return hasattr(inst, 'iteritems')
@@ -54,7 +53,6 @@ def is_dict(inst):
 def is_user_defined_new_style_class(obj):
   """Returns whether or not the specified instance is a user-defined type."""
   return type(obj).__module__ != '__builtin__'
-
 
 def lower_camel_case(s):
   """Converts a string to lower camel case.
@@ -73,40 +71,18 @@ def lower_camel_case(s):
   """
   return reduce(lambda a, b: a + (a and b.capitalize() or b), s.split('_'))
 
+def non_none_dict(d):
+  """return a copy of the dictionary without none values."""
+  return dict([a for a in d.items() if not a[1] is None])
 
-def upper_camel_case(s):
-  """Converts a string to upper camel case.
+def force_string(item):
+  """force into a string if it is not already a string or unicode."""
+  if not isinstance(item, basestring):
+    return str(item)
+  else:
+    return item
 
-  Examples:
-    foo => Foo
-    foo_bar => FooBar
-    foo__bar => FooBar
-    foo_bar_baz => FooBarBaz
-
-  Args:
-    s: The string to convert to upper camel case.
-
-  Returns:
-    The upper camel cased string.
-  """
-  return ''.join(fragment.capitalize() for fragment in s.split('_'))
-
-
-def default_keywriter(key_name):
-  """This key writer rewrites keys as lower camel case.
-
-  Expects that the input is formed by '_' delimited words.
-
-  Args:
-    key_name: Name of the key to serialize.
-
-  Returns:
-    Key name in lower camel-cased form.
-  """
-  return lower_camel_case(key_name)
-
-
-def _serialize_attributes(obj, key_writer=default_keywriter):
+def _serialize_attributes(obj):
   """Serializes attributes of an instance.
 
   Iterates all attributes of an object and invokes serialize if they are
@@ -114,11 +90,6 @@ def _serialize_attributes(obj, key_writer=default_keywriter):
 
   Args:
     obj: The instance to serialize.
-    key_writer: Optional function that takes a string key and optionally mutates
-        it before serialization. For example:
-
-        def randomize(key_name):
-          return key_name += str(random.random())
 
   Returns:
     The serialized object.
@@ -131,27 +102,26 @@ def _serialize_attributes(obj, key_writer=default_keywriter):
     if attr is None or callable(attr):
       continue
     # Looks okay, serialize it.
-    data[key_writer(attr_name)] = serialize(attr)
+    data[lower_camel_case(attr_name)] = serialize(attr)
   return data
 
 
-def _serialize_dict(d, key_writer=default_keywriter):
+def _serialize_dict(d):
   """Invokes serialize on all of its key/value pairs.
 
   Args:
     d: The dict instance to serialize.
-    key_writer: Optional key writer function.
 
   Returns:
     The serialized dict.
   """
   data = {}
   for k, v in d.items():
-    data[key_writer(k)] = serialize(v)
+    data[lower_camel_case(k)] = serialize(v)
   return data
 
 
-def serialize(obj, key_writer=default_keywriter):
+def serialize(obj):
   """Serializes any instance.
 
   If this is a user-defined instance
@@ -161,7 +131,6 @@ def serialize(obj, key_writer=default_keywriter):
 
   Args:
     obj: The instance to serialize.
-    key_writer: Optional key writer function.
 
   Returns:
     The serialized object.
@@ -171,9 +140,9 @@ def serialize(obj, key_writer=default_keywriter):
       method = getattr(obj, CUSTOM_SERIALIZE_METHOD_NAME)
       if callable(method):
         return method()
-    return _serialize_attributes(obj, key_writer)
+    return _serialize_attributes(obj)
   elif is_dict(obj):
-    return _serialize_dict(obj, key_writer)
+    return _serialize_dict(obj)
   elif is_iterable(obj):
     return [serialize(v) for v in obj]
   return obj

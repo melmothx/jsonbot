@@ -18,6 +18,28 @@ from gozerlib.gae.wave.waves import Wave
 
 import logging
 
+def handle_wavestart(bot, event):
+
+    if event.type != "wave":
+        event.reply("this command only works in google wave.");
+        return
+
+    wave = event.chan
+    event.reply("cloning ...")
+    newwave = wave.clone(bot, event, participants=["jsonbot@appspot.com", event.userhost])
+
+    if not newwave:
+        event.reply("can't create new wave")
+        return
+
+    newwave.data.protected = True
+    newwave.data.owner = event.userhost
+    newwave.save()
+    event.reply("done")
+
+cmnds.add('wave-start', handle_wavestart, 'USER')
+examples.add('wave-start', 'start a new wave', 'wave-start')
+
 def handle_waveclone(bot, event):
 
     if event.type != "wave":
@@ -26,7 +48,7 @@ def handle_waveclone(bot, event):
 
     wave = event.chan
     event.reply("cloning ...")
-    newwave = wave.clone(bot, event, event.root.title.strip())
+    newwave = wave.clone(bot, event, event.root.title.strip(), True)
     if not newwave:
         event.reply("can't create new wave")
         return
@@ -171,3 +193,35 @@ def handle_wavethreshold(bot, event):
 
 cmnds.add('wave-threshold', handle_wavethreshold, 'OPER')
 examples.add('wave-threshold', 'set nr of blips after which we clone the wave', 'wave-threshold')
+
+def handle_wavewhitelistadd(bot, event):
+    if not event.rest:
+        event.missing("<id>")
+        return
+
+    target = event.rest
+    if not event.chan.whitelist:
+        event.chan.whitelist = []
+    if target not in event.chan.whitelist:
+        event.chan.whitelist.append(target)
+        event.chan.save()
+    event.reply("done")
+
+cmnds.add("wave-whitelistadd", handle_wavewhitelistadd, "OPER")
+examples.add("wave-whitelistadd", "add a user to the waves whitelist", "wave-whitelistadd bthate@googlewave.com")
+
+def handle_wavewhitelistdel(bot, event):
+    if not event.rest:
+        event.missing("<id>")
+        return
+
+    target = event.rest
+    if not event.chan.whitelist:
+        event.chan.whitelist = []
+    if target in event.chan.whitelist:
+        event.chan.whitelist.remove(target)
+        event.chan.save()
+    event.reply("done")
+
+cmnds.add("wave-whitelistdel", handle_wavewhitelistdel, "OPER")
+examples.add("wave-whitelistdel", "delete a user from the waves whitelist", "wave-whitelistdel bthate@googlewave.com")

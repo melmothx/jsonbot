@@ -240,7 +240,7 @@ class OperationError(Event):
   def __init__(self, json, wavelet):
     super(OperationError, self).__init__(json, wavelet)
     self.operation_id = self.properties['operationId']
-    self.error_message = self.properties['errorMessage']
+    self.error_message = self.properties['message']
 
 
 class WaveletCreated(Event):

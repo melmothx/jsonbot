@@ -29,6 +29,9 @@ class DataDocs(object):
     self._wavelet_id = wavelet_id
     self._operation_queue = operation_queue
 
+  def __iter__(self):
+    return self._docs.__iter__()
+
   def __contains__(self, key):
     return key in self._docs
 
@@ -53,6 +56,9 @@ class DataDocs(object):
   def __len__(self):
     return len(self._docs)
 
+  def keys(self):
+    return self._docs.keys()
+
   def serialize(self):
     """Returns a dictionary of the data documents."""
     return self._docs
@@ -60,8 +66,13 @@ class DataDocs(object):
 
 class Participants(object):
   """Class modelling a set of participants in pythonic way."""
-  def __init__(self, participants, wave_id, wavelet_id, operation_queue):
+  
+  ROLE_FULL = "FULL"
+  ROLE_READ_ONLY = "READ_ONLY"
+
+  def __init__(self, participants, roles, wave_id, wavelet_id, operation_queue):
     self._participants = set(participants)
+    self._roles = roles.copy()
     self._wave_id = wave_id
     self._wavelet_id = wavelet_id
     self._operation_queue = operation_queue
@@ -80,6 +91,18 @@ class Participants(object):
     self._operation_queue.wavelet_add_participant(
         self._wave_id, self._wavelet_id, participant_id)
     self._participants.add(participant_id)
+
+  def get_role(self, participant_id):
+    """Return the role for the given participant_id"""
+    return self._roles.get(participant_id, Participants.ROLE_FULL)
+
+  def set_role(self, participant_id, role):
+    """Return the role for the given participant_id"""
+    if role != Participants.ROLE_FULL and role != Participants.ROLE_READ_ONLY:
+      raise ValueError(role + ' is not a valid role')
+    self._operation_queue.wavelet_modify_participant_role(
+        self._wave_id, self._wavelet_id, participant_id, role)
+    self._roles[participant_id] = role
 
   def serialize(self):
     """Returns a list of the participants."""
@@ -153,6 +176,7 @@ class Wavelet(object):
                                     operation_queue)
     self._last_modified_time = json.get('lastModifiedTime')
     self._participants = Participants(json.get('participants', []),
+                                      json.get('participantRoles', {}),
                                       self._wave_id,
                                       self._wavelet_id,
                                       operation_queue)
@@ -239,14 +263,15 @@ class Wavelet(object):
 
     # Adjust the content of the root blip, if it is available in the context.
     if self._root_blip:
-      content = ''
+      content = '\n'
       splits = self._root_blip._content.split('\n', 2)
       if len(splits) == 3:
-        content = '\n' + splits[2]
+        content += splits[2]
       self._root_blip._content = '\n' + title + content
 
   #: Returns or sets the wavelet's title.
-  title = property(_get_title, _set_title)
+  title = property(_get_title, _set_title,
+                   doc='Get or set the title of the wavelet.')
 
   def _get_robot_address(self):
     return self._robot_address
@@ -256,8 +281,8 @@ class Wavelet(object):
       raise errors.Error('robot address already set')
     self._robot_address = address
 
-  """The address of the current robot."""
-  robot_address = property(_get_robot_address, _set_robot_address)
+  robot_address = property(_get_robot_address, _set_robot_address,
+                           doc='Get or set the address of the current robot.')
 
   @property
   def root_blip(self):

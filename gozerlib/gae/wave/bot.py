@@ -102,14 +102,27 @@ class WaveBot(BotBase, robot.Robot):
         """ invoked when any participants have been added/removed. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
+
+        whitelist = wevent.chan.data.whitelist
+        if not whitelist:
+            whitelist = wevent.chan.data.whitelist = []
+        participants = event.participants_added
+        logging.warning("wave - %s - %s joined - owner is %s" % (wevent.chan.data.title, participants, wevent.chan.data.owner))
+
+        if wevent.chan.data.protected:
+            for target in participants:
+                if target not in whitelist and target != 'jsonbot@appspot.com' and target != wevent.chan.data.owner:
+                    logging.warn("waves - %s - setting %s to read-only" % (wevent.chan.data.title, target))
+                    wevent.root.participants.set_role(target, waveapi.wavelet.Participants.ROLE_READ_ONLY)
+
         callbacks.check(self, wevent)
 
     def OnSelfAdded(self, event, wavelet):
         """ invoked when the robot has been added. """
-        time.sleep(1)
         logging.warn('wave - joined "%s" (%s) wave' % (wavelet._wave_id, wavelet._title))
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
+        logging.warn("wave - owner is %s" % wevent.chan.data.owner)
         wevent.chan.save()
         wevent.reply("Welcome to JSONBOT. (see !help)")
         callbacks.check(self, wevent)

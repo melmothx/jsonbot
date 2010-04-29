@@ -53,7 +53,7 @@ class Wave(ChannelBase):
 
     def parse(self, event, wavelet):
         """ parse event into a Wave. """
-        self.data.json_data = event.json
+        self.data.json_data = wavelet.serialize()
         self.data.title = wavelet._title
         self.data.waveletid = wavelet._wavelet_id
         self.wavelet = wavelet
@@ -65,9 +65,12 @@ class Wave(ChannelBase):
         """ set title of wave. """
         self.event.set_title(title, cloned)
 
-    def clone(self, bot, event, title=None):
+    def clone(self, bot, event, title=None, report=False, participants=[]):
         """ clone the wave into a new one. """
-        parts = list(event.root.participants)
+        if participants:
+            parts = participants
+        else:
+            parts = list(event.root.participants)
         newwave = bot.newwave(event.domain, parts)
         logging.warn("wave - clone - populating wave with %s" % str(parts))
         for id in parts:
@@ -77,26 +80,26 @@ class Wave(ChannelBase):
                 title = "#".join(title.split("#")[:-1])
                 title += "#%s" % str(self.data.nrcloned + 1)
             else:
-                title += " - #s" % str(self.data.nrcloned + 1)
+                title += " - #%s" % str(self.data.nrcloned + 1)
             newwave._set_title(title)
 
-        try:
-            txt = '\n'.join(event.rootblip.text.split('\n')[2:])
-        except IndexError:
-            txt = event.rootblip.text
+        if report:
+            try:
+                txt = '\n'.join(event.rootblip.text.split('\n')[2:])
+            except IndexError:
+                txt = event.rootblip.text
 
-        newwave._root_blip.append(u'%s\n' % txt)
+            newwave._root_blip.append(u'%s\n' % txt)
 
-        for element in event.rootblip.elements:
-            if element.type == 'GADGET':
-                newwave._root_blip.append(element)
+            for element in event.rootblip.elements:
+                if element.type == 'GADGET':
+                    newwave._root_blip.append(element)
 
-        gadgetblip = newwave.reply()
-        from waveapi.element import Gadget
-        gadgetblip.append(Gadget("http://jsonbot.appspot.com/feedform.xml"))
+            blip = newwave.reply()
+            blip.append("\nthis wave is cloned from %s\n" % event.url)
+        else:
+            newwave._root_blip.append("PROTECTED WAVE")
 
-        blip = newwave.reply()
-        blip.append("\nthis wave is cloned from %s\n" % event.url)
         wavelist = bot.submit(newwave)
         logging.warn("wave - clone - %s - submit returned %s" % (list(newwave.participants), str(wavelist)))
 
@@ -113,6 +116,10 @@ class Wave(ChannelBase):
                     continue
         
             logging.warn("wave - newwave id is %s" % waveid)
+            if not waveid:
+                logging.error("can't extract waveid from submit data")
+                return
+
             if waveid and 'sandbox' in waveid:
                 url = "https://wave.google.com/a/wavesandbox.com/#restored:wave:%s" % waveid.replace('w+','w%252B')
             else:

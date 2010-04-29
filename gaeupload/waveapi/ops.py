@@ -34,6 +34,7 @@ WAVELET_SET_TITLE = 'wavelet.setTitle'
 WAVELET_ADD_PARTICIPANT = 'wavelet.participant.add'
 WAVELET_DATADOC_SET = 'wavelet.datadoc.set'
 WAVELET_MODIFY_TAG = 'wavelet.modifyTag'
+WAVELET_MODIFY_PARTICIPANT_ROLE = 'wavelet.modifyParticipantRole'
 BLIP_CREATE_CHILD = 'blip.createChild'
 BLIP_DELETE = 'blip.delete'
 DOCUMENT_APPEND_MARKUP = 'document.appendMarkup'
@@ -301,6 +302,23 @@ class OperationQueue(object):
     """
     return self.new_operation(WAVELET_SET_TITLE, wave_id, wavelet_id,
                               waveletTitle=title)
+
+  def wavelet_modify_participant_role(
+      self, wave_id, wavelet_id, participant_id, role):
+    """Modify the role of a participant on a wavelet.
+
+    Args:
+      wave_id: The wave id owning that this operation is applied to.
+      wavelet_id: The wavelet id that this operation is applied to.
+      participant_id: Id of the participant to add.
+      role: the new roles
+
+    Returns:
+      data for the root_blip, wavelet
+    """
+    return self.new_operation(WAVELET_MODIFY_PARTICIPANT_ROLE, wave_id, 
+                              wavelet_id, participantId=participant_id,
+                              participantRole=role)
 
   def wavelet_modify_tag(self, wave_id, wavelet_id, tag, modify_how=None):
     """Modifies a tag in a wavelet.

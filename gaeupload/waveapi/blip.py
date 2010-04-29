@@ -289,7 +289,7 @@ class BlipRefs(object):
       if isinstance(findwhat, basestring):
         query['textMatch'] = findwhat
       else:
-        query['elementMatch'] = findwhat.type
+        query['elementMatch'] = findwhat.class_type
         query['restrictions'] = restrictions
       obj._params = {'modifyQuery': query}
     return obj
@@ -353,7 +353,7 @@ class BlipRefs(object):
           if count == maxres:
             raise StopIteration
 
-  def _execute(self, modify_how, what):
+  def _execute(self, modify_how, what, bundled_annotations=None):
     """Executes this BlipRefs object.
 
     Args:
@@ -364,6 +364,7 @@ class BlipRefs(object):
             either string or elements.
             If what is a function, it takes three parameters, the content of
             the blip, the beginning of the matching range and the end.
+      bundled_annotations: Annotations to apply immediately.
     Raises:
       IndexError when trying to access content outside of the blip.
       ValueError when called with the wrong values.
@@ -384,8 +385,10 @@ class BlipRefs(object):
     
     # For now, if we find one markup, we'll use it everywhere.
     next = None
+    hit_found = False
 
     for start, end in self._hits():
+      hit_found = True
       if start < 0:
         start += len(blip)
         if end == 0:
@@ -423,7 +426,8 @@ class BlipRefs(object):
           if not element:
             raise ValueError('No element found at index %s' % start)
           # the passing around of types this way feels a bit dirty:
-          updated_elements.append(element.Element(el.type, properties=next))
+          updated_elements.append(element.Element.from_json({'type': el.type,
+              'properties': next}))
           for k, b in next.items():
             setattr(el, k, b)
         else:
@@ -448,9 +452,18 @@ class BlipRefs(object):
 
           blip._shift(end, len(text) + start - end)
           blip._content = blip._content[:start] + text + blip._content[end:]
+          if bundled_annotations:
+            end_annotation = start + len(text)
+            blip._delete_annotations(start, end_annotation)
+            for key, value in bundled_annotations:
+              blip.annotations._add_internal(key, value, start, end_annotation)
 
           if isinstance(next, element.Element):
             blip._elements[start] = next
+
+    # No match found, return immediately without generating op.
+    if not hit_found:
+      return
 
     operation = blip._operation_queue.document_modify(blip.wave_id,
                                                       blip.wavelet_id,
@@ -470,7 +483,7 @@ class BlipRefs(object):
         what = matched
       if what:
         if not isinstance(next, element.Element):
-          modify_action['values'] = [str(value) for value in what]
+          modify_action['values'] = [util.force_string(value) for value in what]
         else:
           modify_action['elements'] = what
     elif modify_how == BlipRefs.ANNOTATE:
@@ -478,21 +491,27 @@ class BlipRefs(object):
       modify_action['annotationKey'] = what[0][0]
     elif modify_how == BlipRefs.CLEAR_ANNOTATION:
       modify_action['annotationKey'] = what[0]
+    if bundled_annotations:
+      modify_action['bundledAnnotations'] = [
+          {'key': key, 'value': value} for key, value in bundled_annotations]
     operation.set_param('modifyAction', modify_action)
 
     return self
 
-  def insert(self, what):
+  def insert(self, what, bundled_annotations=None):
     """Inserts what at the matched positions."""
-    return self._execute(BlipRefs.INSERT, what)
+    return self._execute(
+        BlipRefs.INSERT, what, bundled_annotations=bundled_annotations)
 
-  def insert_after(self, what):
+  def insert_after(self, what, bundled_annotations=None):
     """Inserts what just after the matched positions."""
-    return self._execute(BlipRefs.INSERT_AFTER, what)
+    return self._execute(
+        BlipRefs.INSERT_AFTER, what, bundled_annotations=bundled_annotations)
 
-  def replace(self, what):
+  def replace(self, what, bundled_annotations=None):
     """Replaces the matched positions with what."""
-    return self._execute(BlipRefs.REPLACE, what)
+    return self._execute(
+        BlipRefs.REPLACE, what, bundled_annotations=bundled_annotations)
 
   def delete(self):
     """Deletes the content at the matched positions."""
@@ -553,6 +572,10 @@ class BlipRefs(object):
   def __cmp__(self, other):
     """Support comparision with target."""
     return cmp(self.value(), other)
+
+  def __iter__(self):
+    for start_end in self._hits():
+      yield start_end
 
 
 class Blip(object):
@@ -764,8 +787,7 @@ class Blip(object):
     proxy_for_id, i.e. the robot+<proxy_for_id>@appspot.com address will
     be used.
     """
-    self.wavel
-    operation_queue = self._operation_queue().proxy_for(proxy_for_id)
+    operation_queue = self._operation_queue.proxy_for(proxy_for_id)
     res = Blip(json={},
                other_blips={},
                operation_queue=operation_queue)
@@ -803,9 +825,10 @@ class Blip(object):
         yield self._content[start:end]
     raise StopIteration
 
-  def append(self, what):
+  def append(self, what, bundled_annotations=None):
     """Convenience method covering a common pattern."""
-    return BlipRefs.all(self, findwhat=None).insert_after(what)
+    return BlipRefs.all(self, findwhat=None).insert_after(
+        what, bundled_annotations=bundled_annotations)
 
   def reply(self):
     """Create and return a reply to this blip."""
@@ -826,8 +849,7 @@ class Blip(object):
                                                  self.wavelet_id,
                                                  self.blip_id,
                                                  markup)
-    #TODO: at least strip the html out
-    self._content += markup
+    self._content += util.parse_markup(markup)
 
   def insert_inline_blip(self, position):
     """Inserts an inline blip into this blip at a specific position.

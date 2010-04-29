@@ -27,7 +27,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 
-class GetHandler(webapp.RequestHandler):
+class CapabilitiesHandler(webapp.RequestHandler):
   """Handler to forward a request ot a handler of a robot."""
 
   def __init__(self, method, contenttype):
@@ -40,6 +40,22 @@ class GetHandler(webapp.RequestHandler):
     self.response.headers['Content-Type'] = self._contenttype
     self.response.out.write(self._method())
 
+class ProfileHandler(webapp.RequestHandler):
+  """Handler to forward a request ot a handler of a robot."""
+
+  def __init__(self, method, contenttype):
+    """Initializes this handler with a specific robot."""
+    self._method = method
+    self._contenttype = contenttype
+
+  def get(self):
+    """Handles HTTP GET request."""
+    self.response.headers['Content-Type'] = self._contenttype
+    # Respond with proxied profile if name specified
+    if self.request.get('name'):
+      self.response.out.write(self._method(self.request.get('name')))
+    else:
+      self.response.out.write(self._method())
 
 class RobotEventHandler(webapp.RequestHandler):
   """Handler for the dispatching of events to various handlers to a robot.
@@ -133,10 +149,12 @@ def create_robot_webapp(robot, debug=False, extra_handlers=None):
   if not extra_handlers:
     extra_handlers = []
   return webapp.WSGIApplication([('/_wave/capabilities.xml',
-                                  lambda: GetHandler(robot.capabilities_xml,
+                                  lambda: CapabilitiesHandler(
+                                                     robot.capabilities_xml,
                                                      'application/xml')),
                                  ('/_wave/robot/profile',
-                                  lambda: GetHandler(robot.profile_json,
+                                  lambda: ProfileHandler(
+                                                     robot.profile_json,
                                                      'application/json')),
                                  ('/_wave/robot/jsonrpc',
                                   lambda: RobotEventHandler(robot)),

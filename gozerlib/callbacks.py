@@ -216,9 +216,9 @@ class Callbacks(object):
 
     def reloadcheck(self, event):
         """ check if plugin need to be reloaded for callback, """
-        logging.debug("callbacks - checking for reload of %s (%s)" % (event.cmnd, event.userhost))
         plugloaded = []
         target = event.cbtype or event.cmnd
+        logging.debug("callbacks - checking for reload of %s (%s)" % (target, event.userhost))
 
         try:
             from boot import getcallbacktable

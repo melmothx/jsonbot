@@ -27,32 +27,31 @@ class TestElement(unittest.TestCase):
   """Tests for the element.Element class."""
 
   def testProperties(self):
-    el = element.Element(element.Gadget.type,
+    el = element.Element(element.Gadget.class_type,
                          key='value')
     self.assertEquals('value', el.key)
 
   def testFormElement(self):
-    el = element.Input('input', label='label')
-    self.assertEquals(element.Input.type, el.type)
+    el = element.Input('input')
+    self.assertEquals(element.Input.class_type, el.type)
     self.assertEquals(el.value, '')
     self.assertEquals(el.name, 'input')
-    self.assertEquals(el.label, 'label')
 
   def testImage(self):
     image = element.Image('http://test.com/image.png', width=100, height=100)
-    self.assertEquals(element.Image.type, image.type)
+    self.assertEquals(element.Image.class_type, image.type)
     self.assertEquals(image.url, 'http://test.com/image.png')
     self.assertEquals(image.width, 100)
     self.assertEquals(image.height, 100)
 
   def testGadget(self):
     gadget = element.Gadget('http://test.com/gadget.xml')
-    self.assertEquals(element.Gadget.type, gadget.type)
+    self.assertEquals(element.Gadget.class_type, gadget.type)
     self.assertEquals(gadget.url, 'http://test.com/gadget.xml')
 
   def testInstaller(self):
     installer = element.Installer('http://test.com/installer.xml')
-    self.assertEquals(element.Installer.type, installer.type)
+    self.assertEquals(element.Installer.class_type, installer.type)
     self.assertEquals(installer.manifest, 'http://test.com/installer.xml')
 
   def testSerialize(self):
@@ -67,16 +66,39 @@ class TestElement(unittest.TestCase):
     self.assertEquals(props['width'], 100)
     self.assertEquals(props['height'], 100)
 
+  def testSerializeLine(self):
+    line = element.Line(element.Line.TYPE_H1, alignment=element.Line.ALIGN_LEFT)
+    s = util.serialize(line)
+    k = s.keys()
+    k.sort()
+    # we should really only have three things to serialize
+    props = s['properties']
+    self.assertEquals(len(props), 2)
+    self.assertEquals(props['alignment'], 'l')
+    self.assertEquals(props['lineType'], 'h1')
+
+  def testSerializeGadget(self):
+    gadget = element.Gadget('http://test.com', {'prop1': 'a', 'prop_cap': None}) 
+    s = util.serialize(gadget)
+    k = s.keys()
+    k.sort()
+    # we should really only have three things to serialize
+    props = s['properties']
+    self.assertEquals(len(props), 3)
+    self.assertEquals(props['url'], 'http://test.com')
+    self.assertEquals(props['prop1'], 'a')
+    self.assertEquals(props['prop_cap'], None)
+
   def testGadgetElementFromJson(self):
     url = 'http://www.foo.com/gadget.xml'
     json = {
-      'type': element.Gadget.type,
+      'type': element.Gadget.class_type,
       'properties': {
         'url': url,
       }
     }
     gadget = element.Element.from_json(json)
-    self.assertEquals(element.Gadget.type, gadget.type)
+    self.assertEquals(element.Gadget.class_type, gadget.type)
     self.assertEquals(url, gadget.url)
 
   def testImageElementFromJson(self):
@@ -86,7 +108,7 @@ class TestElement(unittest.TestCase):
     attachment_id = '2'
     caption = 'Test Image'
     json = {
-      'type': element.Image.type,
+      'type': element.Image.class_type,
       'properties': {
         'url': url,
         'width': width,
@@ -96,7 +118,7 @@ class TestElement(unittest.TestCase):
       }
     }
     image = element.Element.from_json(json)
-    self.assertEquals(element.Image.type, image.type)
+    self.assertEquals(element.Image.class_type, image.type)
     self.assertEquals(url, image.url)
     self.assertEquals(width, image.width)
     self.assertEquals(height, image.height)
@@ -108,7 +130,7 @@ class TestElement(unittest.TestCase):
     value = 'value'
     default_value = 'foo'
     json = {
-      'type': element.Label.type,
+      'type': element.Label.class_type,
       'properties': {
         'name': name,
         'value': value,
@@ -116,13 +138,13 @@ class TestElement(unittest.TestCase):
       }
     }
     el = element.Element.from_json(json)
-    self.assertEquals(element.Label.type, el.type)
+    self.assertEquals(element.Label.class_type, el.type)
     self.assertEquals(name, el.name)
     self.assertEquals(value, el.value)
 
   def testCanInstantiate(self):
     bag = [element.Check(name='check', value='value'),
-           element.Button(name='button', caption='caption'),
+           element.Button(name='button', value='caption'),
            element.Input(name='input', value='caption'),
            element.Label(label_for='button', caption='caption'),
            element.RadioButton(name='name', group='group'),
@@ -139,7 +161,10 @@ class TestElement(unittest.TestCase):
            element.Image(url='test.com/image.png', width=100, height=200)]
     types_constructed = set([type(x) for x in bag])
     types_required = set(element.ALL.values())
-    self.assertEquals(types_required, types_constructed)
+    missing_required = types_constructed.difference(types_required)
+    self.assertEquals(missing_required, set())
+    missing_constructed = types_required.difference(types_constructed)
+    self.assertEquals(missing_constructed, set())
 
 
 if __name__ == '__main__':
