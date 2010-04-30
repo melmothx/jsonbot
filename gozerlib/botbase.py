@@ -18,6 +18,7 @@ from utils.pdod import Pdod
 from less import Less
 from boot import boot
 from utils.locking import lockdec
+from exit import globalshutdown
 
 ## basic imports
 
@@ -103,14 +104,14 @@ class BotBase(LazyDict):
     def start(self):
         """ start the mainloop of the bot. BotBase does console. """
         while 1: 
+            time.sleep(1)
             sys.stdout.write("> ")
             try:
                 input = sys.stdin.readline()
             except KeyboardInterrupt:
-                print "\nbye!"
-                os._exit(0)
+                globalshutdown()
 
-            if input:
+            if len(input) > 1:
                 event = EventBase()
                 event.auth = getpass.getuser()
                 event.userhost = event.auth

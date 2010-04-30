@@ -6,6 +6,7 @@
 
 ## gozerbot imports
 
+from gozerlib.utils.log import setloglevel
 from gozerlib.utils.timeutils import elapsedstring
 from gozerlib.utils.generic import getversion
 from gozerlib.utils.exception import handle_exception
@@ -311,3 +312,13 @@ def handle_versions(bot, ievent):
 
 cmnds.add('versions', handle_versions, 'OPER')
 examples.add('versions', 'show versions of all loaded modules', 'versions')
+
+def handle_loglevel(bot, event):
+    if not event.rest:
+        event.missing("<loglevel> (string)")
+        return
+    setloglevel(event.rest)
+    event.done()
+
+cmnds.add("loglevel", handle_loglevel, "OPER")
+examples.add("logleve;", "set loglevel ot on of debug, info, warning or error", "loglevel debug")
