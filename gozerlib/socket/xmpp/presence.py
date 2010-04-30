@@ -20,10 +20,10 @@ import logging
 
 ## classes
 
-class Presence(EventBase):
+class Presence(XMLDict):
 
     def __init__(self, nodedict={}):
-        EventBase.__init__(self, nodedict)
+        XMLDict.__init__(self, nodedict)
         self.element = 'presence'
 
     def toirc(self):

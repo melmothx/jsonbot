@@ -9,6 +9,7 @@
 
 ## gozerlib imports
 
+from gozerlib.eventbase import EventBase
 from gozerlib.datadir import datadir
 from gozerlib.config import Config
 from gozerlib.utils.generic import toenc, jabberstrip
@@ -50,7 +51,7 @@ connectlocked = lockdec(connectlock)
 
 ## classes
 
-class XMLDict(LazyDict):
+class XMLDict(EventBase):
 
 
     """
@@ -63,9 +64,9 @@ class XMLDict(LazyDict):
 
     def __init__(self, input={}):
         if input == None:
-            LazyDict.__init__(self)
+            EventBase.__init__(self)
         else:
-            LazyDict.__init__(self, input)
+            EventBase.__init__(self, input)
         try:
             self['fromm'] = self['from']
         except (KeyError, TypeError):
@@ -210,6 +211,7 @@ class XMLStream(NodeBuilder):
         self.name = name
         # the connection
         self.connection = None
+        self.encoding = "utf-8"
         self.stop = False
         # parse state
         self.result = LazyDict()
@@ -361,20 +363,24 @@ class XMLStream(NodeBuilder):
     def _raw(self, stanza):
         """ output a xml stanza to the socket. """
         try:
+            stanza = stanza.strip()
+            if not stanza:
+                logging.debug("sxmpp - no stanze provided. called from: %s" % whichmodule())
+                return
             if self.stopped:
-                rlog(10, self.name, 'bot is stopped .. not sending')
+                logging.debug('sxmpp - bot is stopped .. not sending')
                 return
 
-            what = toenc(jabberstrip(stanza.strip()), self.encoding)
+            what = toenc(jabberstrip(stanza), self.encoding)
             if not what.endswith('>') or not what.startswith('<'):
-                rlog(100, self.name, 'invalid stanza: %s' % what)
+                logging.error('sxmpp - invalid stanza: %s' % what)
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
                 try:
                     self.connection.send(what + u"\r\n")
                 except AttributeError:
                     self.connection.write(what)
-                rlog(5, self.name, "_raw: %s" % what)
+                logging.debug("_raw: %s" % what)
             else:
                 logging.error('sxmpp - invalid stanza: %s' % what)
 
@@ -444,7 +450,7 @@ class XMLStream(NodeBuilder):
         self.final['subelements'] = self.subelements
         if self.tags:
             element = self.tags[0]
-            rlog(3, self.name, "setting element: %s" % element)
+            logging.debug("setting element: %s" % element)
         else:
             element = 'presence'
 

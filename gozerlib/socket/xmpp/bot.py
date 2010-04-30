@@ -81,6 +81,7 @@ class SXMPPBot(XMLStream, BotBase):
         self.jid = self.me
         self.lastin = None
         self.test = 0
+        self.password = ""
         self.connecttime = 0
         self.connection = None
         self.privwait = XMPPWait()
@@ -546,7 +547,7 @@ class SXMPPBot(XMLStream, BotBase):
         logging.warn('sxmpp -reconnecting .. sleeping 15 seconds')
         self.exit()
         time.sleep(15)
-        newbot = SXMPPBot(self.name, self.cfg)
+        newbot = SXMPPBot(self.cfg, self.users, self.plugs, self.jid)
 
         if newbot.connect():
             self.name += '.old'

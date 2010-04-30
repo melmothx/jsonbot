@@ -18,10 +18,10 @@ from core import XMLDict
 import logging
 import time
  
-class Iq(EventBase):
+class Iq(XMLDict):
 
-    def __init__(self, nodedict={}, bot=None):
-        EventBase.__init__(self, nodedict, bot)
+    def __init__(self, nodedict={}):
+        XMLDict.__init__(self, nodedict)
         self['element'] = 'iq'
  
     def toirc(self):

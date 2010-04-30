@@ -35,12 +35,12 @@ if cfg['dotchars']:
 else:
     dotchars = ' .. '
 
-class Message(EventBase):
+class Message(XMLDict):
 
     """ jabber message object. """
 
     def __init__(self, nodedict={}):
-        EventBase.__init__(self, nodedict)
+        XMLDict.__init__(self, nodedict)
         self.element = "message"
         self.jabber = True
 
