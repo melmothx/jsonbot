@@ -15,7 +15,11 @@ LEVELS = {'debug': logging.DEBUG,
 
 def setloglevel(level_name):
     level = LEVELS.get(level_name, logging.NOTSET)
-    logging.info("setting loglevel to %s (%s)" % (str(level), level_name))
     logger = logging.getLogger()
     logger.setLevel(level)
-
+    ch = logging.StreamHandler()
+    ch.setLevel(level)
+    formatter = logging.Formatter("[%(asctime)s] (%(levelname)s) %(message)s")
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    logging.info("loglevel is %s (%s)" % (str(level), level_name))

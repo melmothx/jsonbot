@@ -203,7 +203,7 @@ class Message(XMLDict):
         elif not repl.type:
             repl.type = 'chat'
 
-        self['bot'].send(repl)
+        self.bot.send(repl)
 
     def parse(self, bot=None):
         """ set ircevent compat attributes. """
