@@ -49,7 +49,7 @@ class Plugins(LazyDict):
             except ImportError:
                 logging.warn("plugins - no %s plugin package found" % module)
                 continue
-            logging.warn("plugins - got plugin package %s" % module)
+            logging.debug("plugins - got plugin package %s" % module)
             try:
                 for plug in imp.__plugs__:
                     try:
@@ -84,7 +84,7 @@ class Plugins(LazyDict):
                 self[modname] = sys.modules[modname]
                 return sys.modules[modname]
 
-        logging.warn("plugins - loading %s" % modname)
+        logging.debug("plugins - loading %s" % modname)
         try:
             mod = _import(modname)
         except ImportError, ex:

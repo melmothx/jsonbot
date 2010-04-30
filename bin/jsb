@@ -38,7 +38,6 @@ dest='command', help="give a command to execute")
 from gozerlib.utils.log import setloglevel
 setloglevel(opts.loglevel)
 
-
 # gozerlib imports
 
 from gozerlib.plugins import Plugins

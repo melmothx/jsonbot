@@ -244,6 +244,12 @@ class SXMPPBot(XMLStream, BotBase):
 
     def start(self):
         self.connect()
+        while 1:
+            try:
+                time.sleep(1)
+            except KeyboardInterrupt:
+                print "bye!"
+                os._exit(0)
 
     def logon(self, user, password):
         """ logon on the xmpp server. """
