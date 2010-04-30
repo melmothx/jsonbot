@@ -54,9 +54,13 @@ class EventBase(LazyDict):
 
     def copyin(self, eventin):
         """ copy in an event. """
+        if not eventin:
+            logging.error("no event given in copyin")
+            return self
         self.update(eventin)
         if eventin.has_key('queues'):
-            self.queues = list(eventin['queues'])
+            if eventin['queues']:
+                self.queues = list(eventin['queues'])
         #if eventin.inqueue:
         #    self.inqueue = cpy(eventin.inqueue)
 
