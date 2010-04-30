@@ -45,10 +45,10 @@ class Message(XMLDict):
         self.jabber = True
 
     def __copy__(self):
-        return Message(self, self.bot)
+        return Message(self)
 
     def __deepcopy__(self, bla):
-        return Message(self, self.bot)
+        return Message(self)
 
                  
     #@replylocked
@@ -159,7 +159,7 @@ class Message(XMLDict):
 
         # see if we need to store output in less cache
         if len(txtlist) > 1:
-            self.bot.less.add(self.userhost, txtlist)
+            self.less.add(self.userhost, txtlist)
             size = len(txtlist) - 1
             result = txtlist[:1][0]
             if size:
@@ -177,10 +177,10 @@ class Message(XMLDict):
 
         outtype = self.type
 
-        if to and to in self.bot.state['joinedchannels']:
-            outtype = 'groupchat' 
-            self.groupchat = True
-            self.msg = False
+        #if to and to in self.bot.state['joinedchannels']:
+        #    outtype = 'groupchat' 
+        #    self.groupchat = True
+        #    self.msg = False
 
         repl = Message({'from': self.me, 'to': to or self.jid, 'type': outtype, 'txt': result})
 
@@ -217,15 +217,7 @@ class Message(XMLDict):
         self.channel = self['fromm'].split('/')[0]
         self.origchannel = self.channel
         self.nick = self.resource
-        try:
-            if self.bot:
-                self.jid = self.bot.jids[self.channel][self.resource]
-                self.jidchange = True
-            else:
-                self.jid = self.fromm
-        except KeyError:
-            self.jid = self.fromm
-
+        self.jid = self.fromm
         self.ruserhost = self.jid
         self.userhost = self.jid
         self.stripped = self.jid.split('/')[0]

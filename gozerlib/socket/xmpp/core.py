@@ -311,7 +311,7 @@ class XMLStream(NodeBuilder):
             if 'not well-formed' in str(ex):  
                 rlog(10, self.name, "data is not well formed: %s" % str(data))
                 return {}
-            rlog(10, self.name, "ALERT: %s - %s" % (str(ex), data))
+            logging.debug("sxmpp.core - ALERT: %s - %s" % (str(ex), data))
         except Exception, ex:
             handle_exception()
             return {}
@@ -321,14 +321,14 @@ class XMLStream(NodeBuilder):
     @inlocked
     def _doprocess(self):
         """ proces all incoming data. """
-        rlog(10, self.name, 'starting readloop')
+        logging.debug('starting readloop')
         self.buffer = ""
 
         while not self.stopped:
             try:
                 data = self.connection.read()
                 if data == "":
-                    rlog(10, self.name, 'remote disconnected')
+                    logging.warn('remote disconnected')
                     self.error = 'disconnected'
                     self.disconnectHandler(Exception('remote %s disconnected' %  self.host))
                     break
@@ -341,7 +341,7 @@ class XMLStream(NodeBuilder):
 
                 logging.debug('sxmpp.core - trying: %s' % self.buffer)
                 if not self.loop_one(self.buffer):
-                    rlog(10, self.name, 'failed to process %s' % self.buffer)
+                    logging.error('failed to process %s' % self.buffer)
                 else:
                     self.buffer = ""
 
@@ -543,9 +543,9 @@ class XMLStream(NodeBuilder):
 
     def reconnect(self):
         """ reconnect to the server. """
-        rlog(10, self.name, 'reconnect')
+        logging.warn('reconnect')
         self.exit()
-        rlog(10, self.name, 'sleeping 15 seconds')
+        logging.warn('sleeping 15 seconds')
         time.sleep(15)
         return self.connect()
 
@@ -558,6 +558,6 @@ class XMLStream(NodeBuilder):
 
         """
         self.stop = True
-        rlog(10, self.name, 'disconnected: %s' % str(ex))
+        logging.warn('disconnected: %s' % str(ex))
         self.reconnect()
 

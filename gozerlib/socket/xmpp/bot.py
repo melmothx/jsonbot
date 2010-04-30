@@ -32,7 +32,7 @@ from core import XMLStream
 from monitor import xmppmonitor
 from wait import XMPPWait, XMPPErrorWait
 from jid import JID, InvalidJID
-
+from errors import xmpperrors
 ## basic imports
 
 import time
@@ -166,29 +166,35 @@ class SXMPPBot(XMLStream, BotBase):
                 continue
             else:
                 nrsec = 0
+
             self.sendpresence()
 
     def sendpresence(self):
         """ send presence based on status and status text set by user. """
-        if self.state.has_key('status') and self.state['status']:
-            status = self.state['status']
+
+        if self.state:
+            if self.state.has_key('status') and self.state['status']:
+                status = self.state['status']
+            else:
+                status = ""
+            if self.state.has_key('show') and self.state['show']:
+                show = self.state['show']
+            else:
+                show = ""
         else:
             status = ""
-        if self.state.has_key('show') and self.state['show']:
-            show = self.state['show']
-        else:
             show = ""
 
         logging.debug('sxmpp - keepalive: %s - %s' % (show, status))
 
         if show and status:
-            p = Presence({'to': self.me, 'show': show, 'status': status}, self)
+            p = Presence({'to': self.me, 'show': show, 'status': status})
         elif show:
-            p = Presence({'to': self.me, 'show': show }, self)
+            p = Presence({'to': self.me, 'show': show })
         elif status:
-            p = Presence({'to': self.me, 'status': status}, self)
+            p = Presence({'to': self.me, 'status': status})
         else:
-            p = Presence({'to': self.me }, self)
+            p = Presence({'to': self.me })
 
         self.send(p)
 
@@ -196,7 +202,7 @@ class SXMPPBot(XMLStream, BotBase):
 
         """ channels keep alive method. """
         nrsec = 0
-        p = Presence({'to': self.me, 'txt': '' }, self)
+        p = Presence({'to': self.me, 'txt': '' })
         while not self.stopped:
             time.sleep(1)
             nrsec += 1
@@ -207,7 +213,7 @@ class SXMPPBot(XMLStream, BotBase):
 
             for chan in self.state['joinedchannels']:
                 if chan not in self.channels409:
-                    p = Presence({'to': chan}, self)
+                    p = Presence({'to': chan})
                     self.send(p)
 
     def connect(self, reconnect=True):
@@ -289,7 +295,7 @@ class SXMPPBot(XMLStream, BotBase):
             if iq.error.code == "405":
                 logging.warn("sxmpp - this server doesn't allow registration by the bot, you need to create an account for it yourself")
             else:
-                logging.warn("sxmpp - %s" % result)
+                logging.warn("sxmpp - %s" % xmpperrors[iq.error.code])
             self.error = iq.error
             return False
         logging.warn('sxmpp - register ok')
@@ -371,7 +377,7 @@ class SXMPPBot(XMLStream, BotBase):
         if self.test:
             return
  
-        m = Message(data, self)
+        m = Message(data)
         if data.type == 'groupchat' and data.subject:
             self.topiccheck(m)
             nm = Message(m, bot=self)
@@ -444,7 +450,7 @@ class SXMPPBot(XMLStream, BotBase):
         except Exception, ex:
             handle_exception()
 
-        mm = Message(m, self)
+        mm = Message(m)
         callbacks.check(self, mm)
 
     def errorHandler(self, event):
@@ -456,7 +462,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def handle_presence(self, data):
         """ presence handler. """
-        p = Presence(data, self)
+        p = Presence(data)
         frm = p.fromm
         nickk = ""
         nick = p.nick
@@ -485,15 +491,15 @@ class SXMPPBot(XMLStream, BotBase):
             logging.debug('sxmpp - setting jid of %s (%s) to %s' % (nickk, channel, jid))
 
         if p.type == 'subscribe':
-            pres = Presence({'to': p.fromm, 'type': 'subscribed'}, self)
+            pres = Presence({'to': p.fromm, 'type': 'subscribed'})
             self.send(pres)
-            pres = Presence({'to': p.fromm, 'type': 'subscribe'}, self)
+            pres = Presence({'to': p.fromm, 'type': 'subscribe'})
             self.send(pres)
 
         nick = p.resource
 
         if p.type != 'unavailable':
-            self.userchannels.adduniq(nick, p.channel)
+            #self.userchannels.adduniq(nick, p.channel)
             p.joined = True
             p.type = 'available'
         elif self.me in p.userhost:
@@ -509,7 +515,7 @@ class SXMPPBot(XMLStream, BotBase):
             except KeyError:
                 pass
 
-        pp = Presence(p, self)
+        pp = Presence(p)
         callbacks.check(self, pp)
 
         if p.type == 'error':
@@ -607,9 +613,9 @@ class SXMPPBot(XMLStream, BotBase):
         if self.google:
             fromm = self.me
         if printto in self.state['joinedchannels'] and groupchat:
-            message = Message({'to': printto, 'txt': txt, 'type': 'groupchat'}, self)
+            message = Message({'to': printto, 'txt': txt, 'type': 'groupchat'})
         else:
-            message = Message({'to': printto, 'txt': txt}, self)
+            message = Message({'to': printto, 'txt': txt})
         if fromm:
             message.fromm = fromm
 
@@ -621,9 +627,9 @@ class SXMPPBot(XMLStream, BotBase):
         if self.google:
             fromm = self.me
         if printto in self.state['joinedchannels'] and groupchat:
-            message = Message({'to': printto, 'body': txt, 'type': 'groupchat'}, self)
+            message = Message({'to': printto, 'body': txt, 'type': 'groupchat'})
         else:
-            message = Message({'to': printto, 'body': txt, 'type': 'chat'}, self)
+            message = Message({'to': printto, 'body': txt, 'type': 'chat'})
         if fromm:
             message.fromm = fromm
         else:
@@ -635,9 +641,9 @@ class SXMPPBot(XMLStream, BotBase):
         """ say txt to channel/JID without calling callbacks/monitors. """
         txt = jabberstrip(txt)
         if printto in self.state['joinedchannels'] and groupchat:
-            message = Message({'to': printto, 'body': txt, 'type': 'groupchat'}, self)
+            message = Message({'to': printto, 'body': txt, 'type': 'groupchat'})
         else:
-            message = Message({'to': printto, 'body': txt}, self)
+            message = Message({'to': printto, 'body': txt})
         if fromm:
             message.fromm = fromm
         else:
@@ -703,7 +709,7 @@ class SXMPPBot(XMLStream, BotBase):
         self.errorwait.register("400", q, 3)
 
         # do the actual join
-        presence = Presence({'to': channel + '/' + nick}, self)
+        presence = Presence({'to': channel + '/' + nick})
 
         if password:
              presence.x.password = password             
@@ -750,7 +756,7 @@ class SXMPPBot(XMLStream, BotBase):
         if channel.startswith("#"):
             return
 
-        presence = Presence({'to': channel}, self)
+        presence = Presence({'to': channel})
         presence.type = 'unavailable'
         self.send(presence)
 
@@ -781,7 +787,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def settopic(self, channel, txt):
         """ set topic. """
-        pres = Message({'to': channel, 'subject': txt}, self)
+        pres = Message({'to': channel, 'subject': txt})
         pres.type = 'groupchat'
         self.send(pres)
 

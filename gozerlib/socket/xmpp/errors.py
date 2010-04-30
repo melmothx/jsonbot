@@ -4,7 +4,7 @@
 
 """ xmpp error codes. """
 
-errors = {'400': 'Bad Request',
+xmpperrors = {'400': 'Bad Request',
           '401': 'Unauthorized',
           '402': 'Payment Required',
           '403': 'Forbidden',
