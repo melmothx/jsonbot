@@ -128,11 +128,10 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         self.curevent = event
         go = False
-        if self.cfg:
-            cc = self.cfg.cc or "!"
-        else:
-            cc = "!"
+        cc = event.chan.data.cc
         logging.warn("cc for %s is %s" % (event.title or event.channel, cc))
+        if not cc:
+            cc = "!"
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
             if event.txt:

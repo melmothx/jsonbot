@@ -28,36 +28,6 @@ import cgi
 
 ## define
 
-def handle_ccadd(bot, event):
-    """ add a control character (bot wide). """
-    if bot.cfg:
-        if not bot.cfg.cc:
-            bot.cfg.cc = event.rest
-        elif event.rest not in bot.cfg.cc:
-            bot.cfg.cc += event.rest
-        else:
-            event.reply("%s is already in cc list" % event.rest)
-            return
-        bot.cfg.save()
-        event.done()
-    else:
-        event.reply("bot.cfg is not set.")
-
-cmnds.add('cc-add', handle_ccadd, 'OPER')
-examples.add('cc-add', 'add a control charater (bot wide)', 'cc-add @')
-
-def handle_ccremove(bot, event):
-    """ remove a control character from the bot's cc list. """
-    try:
-        bot.cfg.cc.remove(event.rest)
-        bot.cfg.save()
-        event.done()
-    except ValueError:
-        event.reply("can't remove %s from %s" % (event.rest, bot.cfg.cc))
-
-cmnds.add('cc-add', handle_ccadd, 'OPER')
-examples.add('cc-add', 'add a control charater (bot wide)', 'cc-add @')
-
 def handle_encoding(bot, ievent):
     """ show default encoding. """
     ievent.reply('default encoding is %s' % sys.getdefaultencoding())

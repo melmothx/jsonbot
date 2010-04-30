@@ -21,6 +21,7 @@ from gozerlib.threads import start_new_thread, threaded
 from gozerlib.utils.pdod import Pdod
 from gozerlib.channelbase import ChannelBase
 from gozerlib.morphs import inputmorphs, outputmorphs
+from gozerlib.exit import globalshutdown
 
 ## gozerlib.irc imports
 
@@ -239,7 +240,6 @@ class Irc(BotBase):
         saymonitor.start()
         self.connectok.wait()
         logging.warn("irc - logged on!")
-        return 1
 
     def _readloop(self):
 

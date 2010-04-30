@@ -14,6 +14,7 @@ from gozerlib.utils.generic import toenc, fromenc, jabberstrip
 from gozerlib.utils.locking import lockdec
 from gozerlib.eventbase import EventBase
 from gozerlib.config import cfg
+from gozerlib.channelbase import ChannelBase
 
 ## xmpp imports
 
@@ -216,6 +217,7 @@ class Message(XMLDict):
             pass
 
         self.channel = self['fromm'].split('/')[0]
+        self.chan = ChannelBase(self.channel)
         self.origchannel = self.channel
         self.nick = self.resource
         self.jid = self.fromm

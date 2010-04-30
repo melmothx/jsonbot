@@ -34,6 +34,10 @@ class Plugins(LazyDict):
 
     """ the plugins object contains all the plugins. """
 
+    def exit(self):
+        for plugname in self:
+            self.unload(plugname)         
+
     def loadall(self, paths=[], default=[], force=False):
         """
             load all plugins from given paths, if force is true .. 

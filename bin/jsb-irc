@@ -123,11 +123,10 @@ makedirs()
 logging.warn("irc - owner is %s" % cfg.owner)
 boot()
 
-if opts.force: 
-    packages = plugin_packages
-    packages.remove('waveplugs')
-    from gozerlib.plugins import plugs
-    plugs.loadall(packages)
+packages = plugin_packages
+packages.remove('waveplugs')
+from gozerlib.plugins import plugs
+plugs.loadall(packages)
 
 ## start bot
 try:
@@ -142,7 +141,3 @@ if opts.channel and not opts.channel in bot.state['joinedchannels']:
     bot.state.save()
 
 bot.start()
-
-
-while 1:
-    time.sleep(1)

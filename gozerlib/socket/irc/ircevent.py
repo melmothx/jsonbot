@@ -13,6 +13,7 @@ from gozerlib.socket.utils.generic import fix_format, toenc, fromenc, stripident
 from gozerlib.eventbase import EventBase
 #from gozerlib.utils.generic import makeargrest
 from gozerlib.config import cfg as config
+from gozerlib.channelbase import ChannelBase
 
 ## basic imports
 
@@ -153,6 +154,7 @@ class Ircevent(EventBase):
         if self.channel:
             self.channel = self.channel.strip()
             self.origchannel = self.channel
+            self.chan = ChannelBase(self.channel)
 
         # show error
         try:

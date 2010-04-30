@@ -4,10 +4,12 @@
 
 """ own threading wrapper. """
 
-## lib imports
+## gozerlib imports
+
 from utils.exception import handle_exception
 
 ## basic imports
+
 import threading
 import re
 import time
@@ -102,7 +104,7 @@ def start_new_thread(func, arglist, kwargs={}):
     else:
         name = kwargs['name']
 
-    logging.warn("new thread: %s - %s" % (name, str(arglist)))
+    logging.debug("threads - %s - %s" % (name, str(arglist)))
 
     try:
         from google.appengine.ext.deferred import defer
@@ -112,11 +114,9 @@ def start_new_thread(func, arglist, kwargs={}):
         pass
 
     try:
-
         thread = Thr(None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()
         return thread
-
     except:
         handle_exception()
         time.sleep(1)

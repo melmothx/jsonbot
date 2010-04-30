@@ -25,6 +25,7 @@ from gozerlib.persiststate import PersistState
 from gozerlib.runner import runners_start
 from gozerlib.errors import NoSuchCommand
 from gozerlib.channelbase import ChannelBase
+from gozerlib.exit import globalshutdown
 
 ## gozerlib.socket.irc imports
 
@@ -263,10 +264,16 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         # were connected .. start dcc loop
         self._dodcc(sock, nick, userhost)
 
-    @threaded
     def start(self):
+        """ start the bot. """
         Irc.start(self)
         self.joinchannels()
+
+        while 1:
+            try:
+                time.sleep(1)
+            except KeyboardInterrupt:
+                globalshutdown() 
 
 
     @threaded

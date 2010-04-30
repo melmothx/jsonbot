@@ -18,6 +18,7 @@ from gozerlib.callbacks import callbacks
 from gozerlib.threads import start_new_thread
 from gozerlib.fleet import fleet
 from gozerlib.botbase import BotBase
+from gozerlib.exit import globalshutdown
 
 ## gozerlib.socket imports
 
@@ -243,13 +244,16 @@ class SXMPPBot(XMLStream, BotBase):
                 self.reconnect()
 
     def start(self):
-        self.connect()
+        try:
+            self.connect()
+        except KeyboardInterrupt:
+            globalshutdown()
+
         while 1:
             try:
                 time.sleep(1)
             except KeyboardInterrupt:
-                print "bye!"
-                os._exit(0)
+                globalshutdown()
 
     def logon(self, user, password):
         """ logon on the xmpp server. """

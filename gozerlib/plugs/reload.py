@@ -32,7 +32,7 @@ def handle_reload(bot, ievent):
         for package in plugin_packages:
             modname = "%s.%s" % (package, plug)
             try:
-                if plugs.reload(modname):
+                if plugs.reload(modname, force=True):
                     reloaded.append(modname)
             except Exception, ex:
                 if 'No module named' in str(ex):

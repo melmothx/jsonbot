@@ -5,7 +5,7 @@
 """ base class of all events. """
 
 ## imports
-
+from channelbase import ChannelBase
 from utils.lazydict import LazyDict
 from utils.generic import splittxt
 
@@ -50,7 +50,6 @@ class EventBase(LazyDict):
 
     def parse(self, *args, **kwargs):
         """ overload this. """
-        pass
 
     def copyin(self, eventin):
         """ copy in an event. """
