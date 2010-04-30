@@ -43,7 +43,10 @@ class Message(XMLDict):
         XMLDict.__init__(self, nodedict)
         self.element = "message"
         self.jabber = True
-
+        self.type = "xmpp"
+        self.cmnd = "MESSAGE"
+        self.cbtype = "MESSAGE"
+  
     def __copy__(self):
         return Message(self)
 
@@ -167,14 +170,11 @@ class Message(XMLDict):
         else:
             result = txtlist[0]
 
-        if self.filtered(result):
-            return
-
-        try:
-            to = self.options['--to']
-        except KeyError:
-            to = None
-
+        #try:
+        #    to = self.options['--to']
+        #except KeyError:
+        #    to = None
+        to = None
         outtype = self.type
 
         #if to and to in self.bot.state['joinedchannels']:
@@ -205,8 +205,9 @@ class Message(XMLDict):
 
         self['bot'].send(repl)
 
-    def toirc(self):
+    def parse(self, bot=None):
         """ set ircevent compat attributes. """
+        self.bot = bot
         self.jidchange = False
         self.cmnd = 'Message'
         try:
@@ -228,6 +229,11 @@ class Message(XMLDict):
                 self.txt = node.body.data
             except (AttributeError, ValueError):
                 continue
+
+        if self.txt:
+            self.usercmnd = self.txt.split()[0]
+        else:
+            self.usercmnd = ""
         self.origtxt = self.txt
         self.time = time.time()
 
@@ -240,6 +246,7 @@ class Message(XMLDict):
             self.userhost = self.stripped
 
         self.msg = not self.groupchat
+        self.makeargs()
 
     def errorHandler(self):
         """ dispatch errors to their handlers. """

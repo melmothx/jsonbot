@@ -271,7 +271,7 @@ class SXMPPBot(XMLStream, BotBase):
         try:
             resource = jid.split("/")[1]
         except IndexError:
-            resource = "gozerbot"
+            resource = "jsonbot"
         logging.warn('sxmpp - registering %s' % jid)
         self._raw("""<iq type='get'><query xmlns='jabber:iq:register'/></iq>""")
         result = self.connection.read()
@@ -305,7 +305,7 @@ class SXMPPBot(XMLStream, BotBase):
         """ auth against the xmpp server. """
         logging.warn('sxmpp - authing %s' % jid)
         name = jid.split('@')[0]
-        rsrc = self.cfg['resource'] or self.cfg['resource'] or 'gozerbot';
+        rsrc = self.cfg['resource'] or self.cfg['resource'] or 'jsonbot';
         self._raw("""<iq type='get'><query xmlns='jabber:iq:auth'></query></iq>""")
         result = self.connection.read()
         iq = self.loop_one(result)
@@ -374,13 +374,14 @@ class SXMPPBot(XMLStream, BotBase):
 
     def handle_message(self, data):
         """ message handler. """
-        if self.test:
-            return
- 
         m = Message(data)
+        m.parse(self)
+        logging.debug("sxmpp - handling message - %s" % str(m))
+
         if data.type == 'groupchat' and data.subject:
+            logging.debug("checking topic")
             self.topiccheck(m)
-            nm = Message(m, bot=self)
+            nm = Message(m)
             callbacks.check(self, nm)
             return
 
@@ -390,9 +391,12 @@ class SXMPPBot(XMLStream, BotBase):
 
         self.privwait.check(m)
         if m.isresponse:
+            logging.debug("sxmpp - message is a response")
             return
+
         if m.groupchat:
             m.msg = False
+
         jid = None
         m.origjid = m.jid
 
@@ -403,6 +407,7 @@ class SXMPPBot(XMLStream, BotBase):
                 continue
 
         if self.me in m.fromm:
+            logging.debug("message to self .. ignoring")
             return 0
         go = 0
 
@@ -418,7 +423,7 @@ class SXMPPBot(XMLStream, BotBase):
 
         if m.msg and not self.cfg['noccinmsg']:
             go = 1
-        if not m.txt:
+        elif not m.txt:
             go = 0
         elif m.txt[0] in cc:
             go = 1
@@ -434,12 +439,11 @@ class SXMPPBot(XMLStream, BotBase):
 
         if go:
             try:
-                from gozerbot.plugins import plugins
-                if plugins.woulddispatch(self, m):
-                    m.usercmnd = True
-                plugins.trydispatch(self, m)
+                self.doevent(m)
             except:
                 handle_exception()
+        else:
+            logging.debug("no command in %s" % m.txt)
 
         try:
             if m.type == 'error':
@@ -802,5 +806,4 @@ class SXMPPBot(XMLStream, BotBase):
     def domsg(self, msg):
         """ dispatch an msg on the bot. """
 
-        from gozerbot.plugins import plugins
-        plugins.trydispatch(self, msg)
+        self.doevent(msg)
