@@ -105,7 +105,7 @@ class BotBase(LazyDict):
         """ start the mainloop of the bot. BotBase does console. """
         while 1: 
             try:
-                time.sleep(1)
+                time.sleep(0.1)
                 #sys.stdout.write("> ")
                 input = raw_input("> ")
 
