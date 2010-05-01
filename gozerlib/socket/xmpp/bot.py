@@ -246,13 +246,13 @@ class SXMPPBot(XMLStream, BotBase):
     def start(self):
         try:
             self.connect()
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, EOFError):
             globalshutdown()
 
         while 1:
             try:
                 time.sleep(1)
-            except KeyboardInterrupt:
+            except (KeyboardInterrupt, EOFError):
                 globalshutdown()
 
     def logon(self, user, password):

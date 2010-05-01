@@ -23,6 +23,7 @@ import logging
 
 def globalshutdown():
     """ shutdown the bot. """
+    sys.stdout.write("\n\n")
     logging.warning('shutting down')
 
     try:

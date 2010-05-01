@@ -266,13 +266,16 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
 
     def start(self):
         """ start the bot. """
-        Irc.start(self)
-        self.joinchannels()
+        try:
+            Irc.start(self)
+            self.joinchannels()
+        except (KeyboardInterrupt, EOFError):
+            globalshutdown() 
 
         while 1:
             try:
                 time.sleep(1)
-            except KeyboardInterrupt:
+            except (KeyboardInterrupt, EOFError):
                 globalshutdown() 
 
 

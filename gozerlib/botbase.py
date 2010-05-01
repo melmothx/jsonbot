@@ -104,25 +104,26 @@ class BotBase(LazyDict):
     def start(self):
         """ start the mainloop of the bot. BotBase does console. """
         while 1: 
-            time.sleep(1)
-            sys.stdout.write("> ")
             try:
-                input = sys.stdin.readline()
-            except KeyboardInterrupt:
+                time.sleep(1)
+                #sys.stdout.write("> ")
+                input = raw_input("> ")
+
+                if len(input) > 1:
+                    event = EventBase()
+                    event.auth = getpass.getuser()
+                    event.userhost = event.auth
+                    event.txt = input
+                    event.usercmnd = input.split()[0]
+                    event.makeargs()
+
+                    try:
+                        result = self.plugs.dispatch(self, event)
+                    except NoSuchCommand:
+                        print "no such command: %s" % event.usercmnd
+
+            except (KeyboardInterrupt, EOFError):
                 globalshutdown()
-
-            if len(input) > 1:
-                event = EventBase()
-                event.auth = getpass.getuser()
-                event.userhost = event.auth
-                event.txt = input
-                event.usercmnd = input.split()[0]
-                event.makeargs()
-
-                try:
-                    result = self.plugs.dispatch(self, event)
-                except NoSuchCommand:
-                    print "no such command: %s" % event.usercmnd
 
     @eventlocked
     def doevent(self, event):
