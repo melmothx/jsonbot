@@ -24,7 +24,7 @@ class WebEvent(EventBase):
 
     def __init__(self): 
         EventBase.__init__(self)
-        self.type = "web"
+        self.bottype = "web"
 
     def __deepcopy__(self, a):
         e = WebEvent()

@@ -70,6 +70,7 @@ class Ircevent(EventBase):
 
         """ parse raw string into ircevent. """
 
+        self.bottype = "irc"
         self.bot = bot
         bot.nrevents += 1 
         rawstr = rawstr.rstrip()

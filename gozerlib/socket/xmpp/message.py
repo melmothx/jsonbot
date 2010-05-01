@@ -15,6 +15,7 @@ from gozerlib.utils.locking import lockdec
 from gozerlib.eventbase import EventBase
 from gozerlib.config import cfg
 from gozerlib.channelbase import ChannelBase
+from gozerlib.errors import BotNotSetInEvent
 
 ## xmpp imports
 
@@ -44,9 +45,9 @@ class Message(XMLDict):
         XMLDict.__init__(self, nodedict)
         self.element = "message"
         self.jabber = True
-        self.type = "xmpp"
         self.cmnd = "MESSAGE"
         self.cbtype = "MESSAGE"
+        self.bottype = "xmpp"
   
     def __copy__(self):
         return Message(self)
@@ -178,10 +179,13 @@ class Message(XMLDict):
         to = None
         outtype = self.type
 
-        #if to and to in self.bot.state['joinedchannels']:
-        #    outtype = 'groupchat' 
-        #    self.groupchat = True
-        #    self.msg = False
+        if not self.bot:
+            raise BotNotSetInEvent("xmpp.message")
+
+        if to and to in self.bot.state['joinedchannels']:
+            outtype = 'groupchat' 
+            self.groupchat = True
+            self.msg = False
 
         repl = Message({'from': self.me, 'to': to or self.jid, 'type': outtype, 'txt': result})
 

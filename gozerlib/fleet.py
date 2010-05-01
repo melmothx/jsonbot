@@ -94,7 +94,7 @@ class Fleet(Persist):
         """
         logging.info('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
         bot = None
-        name = name or 'default-%s' % type
+        bot.name = name = name or 'default-%s' % type
         if not cfg:
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
             cfg['name'] = name 

@@ -25,6 +25,7 @@ class Presence(XMLDict):
     def __init__(self, nodedict={}):
         XMLDict.__init__(self, nodedict)
         self.element = 'presence'
+        self.type = 'presence'
 
     def toirc(self):
         """ set ircevent compatible attributes """

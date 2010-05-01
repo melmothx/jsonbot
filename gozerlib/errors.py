@@ -7,6 +7,9 @@
 from gozerlib.utils.trace import calledfrom
 import sys
 
+class BotNotSetInEvent(Exception):
+    pass
+
 class FeedProviderError(Exception):
     pass
 

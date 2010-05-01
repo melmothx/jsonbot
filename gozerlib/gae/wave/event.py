@@ -36,7 +36,7 @@ class WaveEvent(EventBase):
 
     def __init__(self):
         EventBase.__init__(self)
-        self.type = "wave"
+        self.bottype = "wave"
         self.msg = False
         self.target = None
         self.roottarget = None

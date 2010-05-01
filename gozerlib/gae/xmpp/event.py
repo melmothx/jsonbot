@@ -29,7 +29,7 @@ class XMPPEvent(EventBase):
 
     def __init__(self): 
         EventBase.__init__(self)
-        self.type = "xmpp"
+        self.bottype = "xmpp"
         self.cbtype = 'MESSAGE'
 
     def __deepcopy__(self, a):

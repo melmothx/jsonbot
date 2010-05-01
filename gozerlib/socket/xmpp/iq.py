@@ -23,6 +23,7 @@ class Iq(XMLDict):
     def __init__(self, nodedict={}):
         XMLDict.__init__(self, nodedict)
         self['element'] = 'iq'
+        self.type = "iq"
  
     def toirc(self):
         """ set ircevent compatible attributes """

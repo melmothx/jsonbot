@@ -570,9 +570,9 @@ class SXMPPBot(XMLStream, BotBase):
         newbot = SXMPPBot(self.cfg, self.users, self.plugs, self.jid)
 
         if newbot.connect():
-            self.name += '.old'
+            self.jid += '.old'
             newbot.joinchannels()
-            fleet.replace(self.name, newbot)
+            fleet.replace(self.jid, newbot)
             return True
 
         return False

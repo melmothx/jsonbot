@@ -35,6 +35,7 @@ class EventBase(LazyDict):
         if input:
             self.copyin(input)
         self.result = []
+        self.bottype = "console"
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
