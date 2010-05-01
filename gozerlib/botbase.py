@@ -216,9 +216,12 @@ class BotBase(LazyDict):
         e.makeargs()
 
         if self.plugs:
-            result = self.plugs.dispatch(self, e)
-            logging.info("bot - got result - %s" % result)
-            return result
+            try:
+                result = self.plugs.dispatch(self, e)
+                logging.info("bot - got result - %s" % result)
+                return result
+            except NoSuchCommand:
+                print "no such command: %s" % e.usercmnd
         else:
             raise PlugsNotConnected()
 

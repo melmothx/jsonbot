@@ -38,7 +38,7 @@ class Plugins(LazyDict):
         for plugname in self:
             self.unload(plugname)         
 
-    def loadall(self, paths=[], default=[], force=False):
+    def loadall(self, paths=[], force=False):
         """
             load all plugins from given paths, if force is true .. 
             otherwise load all plugins for default_plugins list.
@@ -57,7 +57,7 @@ class Plugins(LazyDict):
             try:
                 for plug in imp.__plugs__:
                     try:
-                        self.load("%s.%s" % (module,plug), force=True)
+                        self.load("%s.%s" % (module,plug), force=force)
                     except KeyError:
                         logging.debug("failed to load plugin package %s" % module)
             except AttributeError:

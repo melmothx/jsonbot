@@ -50,7 +50,7 @@ class Pgp(object):
     re_pubkey = re.compile('^\[GNUPG:\] NO_PUBKEY ([0-9A-F]+)', re.I | re.M)
 
     def __init__(self):
-        self.homedir = os.path.join(datadir, 'pgp')
+        self.homedir = os.path.join('config', 'pgp')
         if not os.path.exists(self.homedir):
             logging.debug('creating directory %s' % self.homedir)
             os.mkdir(self.homedir)
@@ -288,6 +288,7 @@ from gozerlib.utils.dol import Dol
 from gozerlib.datadir import datadir
 from gozerlib.utils.fileutils import tarextract
 from gozerlib.utils.log import setloglevel
+from gozerlib.boot import boot
 
 ## basic imports
 
@@ -568,3 +569,4 @@ print getversion('INSTALLPLUG')
 setloglevel('warning')
 os.chdir(botdir)
 installplug(opts.args)
+boot(force=True)

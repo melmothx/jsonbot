@@ -123,10 +123,8 @@ makedirs()
 logging.warn("irc - owner is %s" % cfg.owner)
 boot()
 
-packages = plugin_packages
-packages.remove('waveplugs')
 from gozerlib.plugins import plugs
-plugs.loadall(packages)
+plugs.loadall()
 
 ## start bot
 try:
