@@ -7,7 +7,7 @@
 ## lib imports
 
 from trace import whichmodule
-from lockmanager import LockManager, RlockManager
+from lockmanager import LockManager, RLockManager
 
 ## generic imports
 
@@ -18,7 +18,7 @@ import sys
 
 locks = []
 lockmanager = LockManager()
-rlockmanager = RlockManager()
+rlockmanager = RLockManager()
 
 ## classes
 

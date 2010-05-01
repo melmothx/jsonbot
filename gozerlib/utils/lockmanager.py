@@ -8,6 +8,7 @@
 
 import thread
 import threading
+import logging
 
 ## classes
 
@@ -46,9 +47,13 @@ class LockManager(object):
         logging.debug('lockmanager - releasing %s' % name)
         self.locks[name].release()
 
-class RlockManager(LockManager):
+
+class RLockManager(LockManager):
 
     def allocate(self, name):
         """ allocate a new lock """
         self.locks[name] = threading.RLock()
         logging.debug('lockmanager - allocated RLock %s' % name)
+
+lockmanager = LockManager()
+rlockmanager = RLockManager()
