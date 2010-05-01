@@ -1,12 +1,19 @@
-Welcome to JSONBOT
-==================
+JSONBOT README
+==============
 
-JSONBOT is a bot that stores all its data in json format. It runs on the
-Google Application Engine and can thus support wave, web and xmpp.
-Standalone programms are provided for IRC and console, the goal is to let both
-clientside and GAE side communicate through JSON either over XMPP or HTTP POST.
+JSONBOT is a bot that stores all its data in json format. It runs on the 
+Google Application Engine and can thus support wave, web and XMPP.
+Standalone programms are provided for IRC, XMPP and console, the goal is to 
+let both clientside and GAE side communicate through JSON either over XMPP or 
+HTTP POST.
 
 see http://jsonbot.googlecode.com
+
+JSONBOT is free code (MIT) and can be cloned where needed. 
+
+* Source code: http://jsonbot.googlecode.com
+* Live demo: http://jsonbot.appspot.com (web)
+* Wave/Jabber: jsonbot@appspot.com
 
 this bot needs google_appengine installed in your home dir
 
@@ -27,16 +34,15 @@ first checkout the main bot from the mercurial repository
 
 ``hg clone http://jsonbot.googlecode.com/hg``
 
-now you can run the programs in the bin directory with the ``./bin/<program>``  command. try ./bin/jsb for the console app
+now you can run the programs in the bin directory with the
+``./bin/<program>``  command. try ./bin/jsb for the console app
 
 
 contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
-email: bthate@gmail.com
-preview: bthate@googlewave.com
-sandbox: bthate@wavesandbox.com
+* email: bthate@gmail.com
+* preview: bthate@googlewave.com
+* sandbox: bthate@wavesandbox.com
 
 You can reach me by joining #dunkbots on FreeNode or IRCNet. If we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
-
-JSONBOT is free open source code (MIT).
