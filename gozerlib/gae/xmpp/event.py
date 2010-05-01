@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from gozerlib.channelbase import ChannelBase
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.xmpp import stripped, resource
 from gozerlib.utils.lazydict import LazyDict
@@ -68,6 +69,7 @@ class XMPPEvent(EventBase):
         self.jid = self['from']
         self.to = stripped(self['to'])
         self.channel = self.userhost
+        self.chan = ChannelBase(self.channel)
         self.origin = self.channel
         input = self.body
         self.origtxt = input

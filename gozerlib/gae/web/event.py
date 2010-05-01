@@ -55,19 +55,20 @@ class WebEvent(EventBase):
         self.waveid = request.get('waveid')
 
         if self.waveid:
-            self.isgadget = True
-            wave = Wave(self.waveid)
-            if wave:
-                logging.warn('web - setting channel to %s - %s' % (self.waveid, wave.data.title))
-            else:
-                logging.warn('web - setting channel to %s' % self.waveid)
-
-        if self.waveid:
             self.channel = self.waveid
             self.domain = self.waveid.split('!')[0]
         else:
             self.channel = stripped(userhost)
 
+        if self.waveid:
+            self.isgadget = True
+            if wave:
+                logging.warn('web - setting channel to %s - %s' % (self.waveid, self.chan.data.title))
+            else:
+                logging.warn('web - setting channel to %s' % self.waveid)
+
+
+        self.chan = Wave(self.channel)
         self.makeargs()
         logging.warn(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
