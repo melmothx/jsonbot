@@ -57,7 +57,7 @@ class Plugins(LazyDict):
             try:
                 for plug in imp.__plugs__:
                     try:
-                        self.load("%s.%s" % (module,plug), replace=True)
+                        self.load("%s.%s" % (module,plug), force=True)
                     except KeyError:
                         logging.debug("failed to load plugin package %s" % module)
             except AttributeError:
@@ -80,9 +80,9 @@ class Plugins(LazyDict):
 
         return True
 
-    def load(self, modname, replace=False):
+    def load(self, modname, force=False):
         """ load a plugin. """
-        if not replace:
+        if not force:
             if modname in sys.modules:
                 logging.debug("plugins - %s is already loaded" % modname)
                 self[modname] = sys.modules[modname]
@@ -110,10 +110,10 @@ class Plugins(LazyDict):
 
         return self[modname]
 
-    def reload(self, modname):
+    def reload(self, modname, force=False):
         """ reload a plugin. just load for now. """ 
         self.unload(modname)
-        return self.load(modname, replace=True)
+        return self.load(modname, force=force)
 
     def dispatch(self, bot, event, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """

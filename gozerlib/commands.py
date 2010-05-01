@@ -10,6 +10,7 @@
 
 ## gozerlib imports
 
+from threads import start_new_thread
 from utils.xmpp import stripped
 from utils.trace import calledfrom, whichmodule
 from utils.exception import handle_exception
@@ -40,7 +41,7 @@ class Command(LazyDict):
 
     """
 
-    def __init__(self, modname, cmnd, func, perms=[]):
+    def __init__(self, modname, cmnd, func, perms=[], threaded=False):
         LazyDict.__init__(self)
         self.modname = modname
         self.plugname = self.modname.split('.')[-1]
@@ -50,6 +51,7 @@ class Command(LazyDict):
             perms = [perms, ]
         self.perms = perms
         self.plugin = self.plugname
+        self.threaded = threaded
 
 class Commands(LazyDict):
 
@@ -60,7 +62,7 @@ class Commands(LazyDict):
     def add(self, cmnd, func, perms, threaded=False, *args, **kwargs):
         """ add a command. """
         modname = calledfrom(sys._getframe())
-        self[cmnd] = Command(modname, cmnd, func, perms)
+        self[cmnd] = Command(modname, cmnd, func, perms, threaded)
         return self
 
     def dispatch(self, bot, event):
@@ -94,8 +96,12 @@ class Commands(LazyDict):
         logging.warn('dispatching %s for %s' % (event.usercmnd, id))
         result = []
         try:
-            target.func(bot, event)
-            result = event.result
+            if target.threaded:
+                start_new_thread(target.func, (bot, event))
+                result = []
+            else:
+                target.func(bot, event)
+                result = event.result
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))
             handle_exception(event)
