@@ -30,10 +30,10 @@ enable = True
 
 try:
     cfg = PersistConfig()
-    cfg.define('enable', 0)
+    cfg.define('enable', 1)
     cfg.define('host' , socket.gethostbyname(socket.getfqdn()))
     cfg.define('name' , socket.getfqdn())
-    cfg.define('port' , 10102)
+    cfg.define('port' , 11111)
     cfg.define('disable', [])
     hp = "%s:%s" % (cfg.get('host'), cfg.get('port'))
     url = "http://%s" % hp

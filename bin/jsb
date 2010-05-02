@@ -23,6 +23,9 @@ if True:
     parser.add_option('-o', '--owner', type='string', default=False,
 dest='owner', 
                   help="owner of the bot")
+    parser.add_option('-s', '--server', type='string', default=False,
+dest='server', 
+                  help="whether the rest server needs to be started"),
     parser.add_option('-l', '--loglevel', type='string', default="error",
 dest='loglevel', help="set loglevel")
     parser.add_option('-c', '--channel', type='string', default="",
@@ -48,6 +51,7 @@ from gozerlib.datadir import makedirs, datadir
 from gozerlib.users import Users
 from gozerlib.boot import boot
 from gozerlib.errors import NoOwnerSet
+from gozerlib.threads import start_new_thread
 
 ## basic imports
 
@@ -71,7 +75,14 @@ except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
 
+
 if opts.command:
     bot.docmnd(cfg.owner, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
+    os._exit(0)
 else:
+    if opts.server:
+         print "rest server is enabled."
+         #plugs.reload("socketplugs.restserver")
+         #plugs["socketplugs.restserver"].startserver()
+
     bot.start()
