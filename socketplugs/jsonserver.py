@@ -29,16 +29,34 @@ from simplejson import dumps
 import socket
 import re
 import logging
+import os
 
 ## server part
 
 server = None
 
 def json_GET(server, request):
-    path = request.path
+    try:
+        path = request.path.split("jsondata")[1]
+    except (ValueError, IndexError):
+        return dumps("can't find datapointer in path %s" % request.path)
     logging.warn(path)    
-    return dumps(str(path))
-
+    if len(path) > 2:
+        try:
+            logging.warn("attempting to construct %s" % path[1:])
+            try:
+                result = Persist('gozerdata' + os.sep + path[1:])
+            except IOError:
+                return dumps("can't find %s file" % path[1:])
+            if result.data:
+                return dumps(result.data)
+            else:
+                return dumps("can't find matching data for %s" % path[1:])
+        except Exception, ex:
+            handle_exception()
+            request.send_error(500)
+    else:
+        request.send_error(404)
 
 def start():
     global server
@@ -50,7 +68,7 @@ def start():
         server.enable('/jsondata/')
     except Exception, ex:
         handle_exception()
-
+     
 ## plugin init
 
 def init():

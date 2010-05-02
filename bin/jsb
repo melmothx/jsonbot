@@ -23,10 +23,10 @@ if True:
     parser.add_option('-o', '--owner', type='string', default=False,
 dest='owner', 
                   help="owner of the bot")
-    parser.add_option('-s', '--server', type='string', default=False,
+    parser.add_option('-s', '--server', action="store_true", default=False,
 dest='server', 
                   help="whether the rest server needs to be started"),
-    parser.add_option('-l', '--loglevel', type='string', default="error",
+    parser.add_option('-l', '--loglevel', type='string', default="warning",
 dest='loglevel', help="set loglevel")
     parser.add_option('-c', '--channel', type='string', default="",
 dest='channel', help="channel to operate on")
