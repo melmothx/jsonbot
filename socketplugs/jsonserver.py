@@ -40,23 +40,36 @@ def json_GET(server, request):
         path = request.path.split("jsondata")[1]
     except (ValueError, IndexError):
         return dumps("can't find datapointer in path %s" % request.path)
-    logging.warn(path)    
+
+    logging.warn("json.server - got path %s" % path)
     if len(path) > 2:
+        path = 'gozerdata' + os.sep + path[1:]
+        if '..' in path:
+            return dumps("bork me huh ;]")
+        if not os.path.exists(path):
+            logging.error("json.server - non existing file - %s" % path)
+            request.send_error(404)
+            return
+ 
         try:
-            logging.warn("attempting to construct %s" % path[1:])
+            logging.warn("json.server - attempting to construct %s" % path)
             try:
-                result = Persist('gozerdata' + os.sep + path[1:])
+                result = Persist(path)
             except IOError:
-                return dumps("can't find %s file" % path[1:])
+                handle_exception()
+                request.send_error(404)
+                return
             if result.data:
                 return dumps(result.data)
             else:
-                return dumps("can't find matching data for %s" % path[1:])
+                return dumps("can't find matching data for %s" % path)
         except Exception, ex:
             handle_exception()
             request.send_error(500)
+            return
     else:
         request.send_error(404)
+        return
 
 def start():
     global server
@@ -65,6 +78,7 @@ def start():
         return
     try:
         server.addhandler('/jsondata/', 'GET', json_GET)
+        server.addhandler('/favicon.ico', 'GET', json_GET)
         server.enable('/jsondata/')
     except Exception, ex:
         handle_exception()

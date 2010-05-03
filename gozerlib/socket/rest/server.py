@@ -103,9 +103,9 @@ class RestServerBase(HTTPServer):
                 splitted.append(i)
         splitted = tuple(splitted)
         if not self.handlers.has_key(splitted):
-            self.handlers[splitted] = {}
-        self.handlers[splitted][type] = handler
-        logging.info('rest.server - %s %s handler added' % (splitted, type))
+            self.handlers[splitted[0]] = {}
+        self.handlers[splitted[0]][type] = handler
+        logging.info('rest.server - %s %s handler added' % (splitted[0], type))
 
     def enable(self, what):
         try:
@@ -128,6 +128,7 @@ class RestServerBase(HTTPServer):
             if i:
                 splitted.append(i)
         splitted = tuple(splitted)
+        logging.warn("res.server - incoming - %s" % str(splitted))
         for i in self.state['disable']:
             if i in splitted:
                 logging.warn('rest.server - %s - denied disabled %s' % (request.ip, i))
@@ -137,12 +138,13 @@ class RestServerBase(HTTPServer):
         request.value = None
         type = request.command
         try:
-            func = self.handlers[splitted][type]
+            func = self.handlers[splitted[0]][type]
         except (KeyError, ValueError):
             try:
-                func = self.handlers[splitted[:-1]][type]
+                func = self.handlers[splitted[0]][type]
                 request.value = splitted[-1]
             except (KeyError, ValueError):
+                logging.error("rest.server - no handler found for %s" % str(splitted[:-1]))
                 request.send_error(404)
                 return
         result = func(self, request)
