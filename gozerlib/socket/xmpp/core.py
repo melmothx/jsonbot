@@ -309,7 +309,7 @@ class XMLStream(NodeBuilder):
             self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
-                rlog(10, self.name, "data is not well formed: %s" % str(data))
+                logging.error("sxmpp.core - data is not well formed: %s" % str(data))
                 return {}
             logging.debug("sxmpp.core - ALERT: %s - %s" % (str(ex), data))
         except Exception, ex:
@@ -405,6 +405,8 @@ class XMLStream(NodeBuilder):
         self.sock.settimeout(30)
         if not self.port:
             self.port = 5222
+        if self.server:
+            self.host = self.server
         logging.warn("sxmpp.core - connecting to %s:%s" % (self.host, self.port))
         self.sock.connect((self.host, self.port))
         self.sock.setblocking(False)

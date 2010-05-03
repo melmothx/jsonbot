@@ -229,7 +229,7 @@ class SXMPPBot(XMLStream, BotBase):
                 return
             else:
                 logging.warn('sxmpp - connected')
-            self.logon(self.user, self.password)
+            self.logon(self.cfg.user, self.cfg.password)
             start_new_thread(self._outputloop, ())
             start_new_thread(self._keepalive, ())
             #start_new_thread(self._keepchannelsalive, ())
@@ -316,7 +316,7 @@ class SXMPPBot(XMLStream, BotBase):
         logging.warn('sxmpp - authing %s' % jid)
         name = jid.split('@')[0]
         rsrc = self.cfg['resource'] or self.cfg['resource'] or 'jsonbot';
-        self._raw("""<iq type='get'><query xmlns='jabber:iq:auth'></query></iq>""")
+        self._raw("""<iq type='get'><query xmlns='jabber:iq:auth'><username>%s</username></query></iq>""" % name)
         result = self.connection.read()
         iq = self.loop_one(result)
         logging.debug('sxmpp - auth:' + result)
