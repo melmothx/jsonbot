@@ -34,7 +34,7 @@ def load(event, url):
         return False
 
 def handle_gadgetload(bot, event):
-    if event.type != "wave":
+    if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
 
@@ -53,7 +53,7 @@ cmnds.add("gadget-load", handle_gadgetload, 'USER')
 examples.add("gadget-load", "load a gadget into a blip", "gadget-load")
 
 def handle_gadgetloadroot(bot, event):
-    if event.type != "wave":
+    if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
 
@@ -72,7 +72,7 @@ cmnds.add("gadget-loadroot", handle_gadgetloadroot, 'USER')
 examples.add("gadget-loadroot", "load a gadget into the root blip", "gadget-loadroot")
 
 def handle_gadgetiframe(bot, event):
-    if event.type != "wave":
+    if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
 
@@ -134,21 +134,19 @@ examples.add("gadget-list", "list known gadget urls", "gadget-list")
 
 
 def handle_gadgetconsole(bot, event):
-    if event.type != "wave":
+    if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
 
     wave = event.chan
-    if wave.data.feeds:
+    if wave.data.feeds and wave.data.dotitle:
         event.set_title("JSONBOT - %s #%s" % (" - ".join(wave.data.feeds), str(wave.data.nrcloned)))
-    else:
-        event.set_title("JSONBOT - no feeds running - #%s" % str(wave.data.nrcloned))
 
     from waveapi import element
 
-    event.insert_root("\n")
-    event.insert_root(
-        element.Gadget('http://jsonbot.appspot.com/feedform.xml'))
+    event.append("\n")
+    event.append(
+        element.Gadget('http://jsonbot.appspot.com/console.xml'))
 
 cmnds.add("gadget-console", handle_gadgetconsole, 'OPER')
 examples.add("gadget-console", "load the console gadget", "gadget-console")

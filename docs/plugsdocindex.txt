@@ -10,3 +10,4 @@ plugin documentation
     commonplugs/*
     waveplugs/*
     socketplugs/*
+    myplugs/*

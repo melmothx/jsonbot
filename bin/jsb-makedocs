@@ -245,6 +245,8 @@ if __name__ == '__main__':
     domods('gozerlib')
     domods('commonplugs')
     domods('waveplugs')
+    domods('socketplugs')
+    domods('myplugs')
 
     try:
         os.mkdir('docs' + os.sep + 'plugins')

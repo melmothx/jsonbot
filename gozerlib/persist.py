@@ -185,7 +185,7 @@ except ImportError:
             except IOError, ex:
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
-                    self.data = copy.deepcopy(default)
+                    #self.data = copy.deepcopy(default)
                     raise
                 else:
                     return

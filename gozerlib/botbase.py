@@ -105,7 +105,7 @@ class BotBase(LazyDict):
         """ start the mainloop of the bot. BotBase does console. """
         while 1: 
             try:
-                time.sleep(1)
+                time.sleep(0.1)
                 #sys.stdout.write("> ")
                 input = raw_input("> ")
 
@@ -216,9 +216,12 @@ class BotBase(LazyDict):
         e.makeargs()
 
         if self.plugs:
-            result = self.plugs.dispatch(self, e)
-            logging.info("bot - got result - %s" % result)
-            return result
+            try:
+                result = self.plugs.dispatch(self, e)
+                logging.info("bot - got result - %s" % result)
+                return result
+            except NoSuchCommand:
+                print "no such command: %s" % e.usercmnd
         else:
             raise PlugsNotConnected()
 
