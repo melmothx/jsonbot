@@ -15,6 +15,7 @@ from gozerlib.remote.bot import RemoteBot
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
 from gozerlib.persist import Persist
+from gozerlib.config import Config
 
 ## socketplugs imports
 
@@ -45,7 +46,7 @@ def json_GET(server, request):
     if len(path) > 2:
         path = 'gozerdata' + os.sep + path[1:]
         if '..' in path:
-            return dumps("bork me huh ;]")
+            return request.send_error(404)
         if not os.path.exists(path):
             logging.error("json.server - non existing file - %s" % path)
             request.send_error(404)
@@ -55,14 +56,22 @@ def json_GET(server, request):
             logging.warn("json.server - attempting to construct %s" % path)
             try:
                 result = Persist(path)
+                if result.data and result.data.public:
+                    try:
+                        return dumps(result.data)
+                    except TypeError:
+                        result = Config(path)
+                        logging.warn("json.server - got config - %s" % str(result))
+                        if result and result.public:
+                            try:
+                                return dumps(result.data)
+                            except TypeError:
+                                request.send_error(404)
             except IOError:
                 handle_exception()
                 request.send_error(404)
                 return
-            if result.data:
-                return dumps(result.data)
-            else:
-                return dumps("can't find matching data for %s" % path)
+            request.send_error(404)
         except Exception, ex:
             handle_exception()
             request.send_error(500)

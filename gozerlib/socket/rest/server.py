@@ -97,6 +97,7 @@ class RestServerBase(HTTPServer):
 
     def addhandler(self, path, type, handler):
         """ add a web handler """
+        path = unquote_plus(path)
         splitted = []
         for i in path.split('/'):
             if i:
@@ -120,7 +121,8 @@ class RestServerBase(HTTPServer):
 
     def do(self, request):
         """ do a request """
-        path = request.path.split('?')[0]
+        path = unquote_plus(request.path.strip())
+        path = path.split('?')[0]
         if path.endswith('/'):
             path = path[:-1]
         splitted = []
@@ -128,7 +130,7 @@ class RestServerBase(HTTPServer):
             if i:
                 splitted.append(i)
         splitted = tuple(splitted)
-        logging.warn("res.server - incoming - %s" % str(splitted))
+        logging.warn("rest.server - incoming - %s" % str(splitted))
         for i in self.state['disable']:
             if i in splitted:
                 logging.warn('rest.server - %s - denied disabled %s' % (request.ip, i))
