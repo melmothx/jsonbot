@@ -37,10 +37,12 @@ parser.add_option('-s', '--server', type='string',
                   default=socket.gethostbyname(socket.getfqdn()),
                   dest='server',
                   help="host to run the bot on")
-
 parser.add_option('-p', '--port', type='string', default='11111',
                   dest='port',   
                   help="port of the server")
+parser.add_option('-l', '--loglevel', type='string', default='error',
+                  dest='loglevel',   
+                  help="loglevel of the server")
 
 opts, args = parser.parse_args()
 opts.args = args
