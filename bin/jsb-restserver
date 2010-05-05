@@ -2,6 +2,11 @@
 #
 #
 
+## boot
+
+import os, sys
+sys.path.insert(0, os.getcwd())
+
 ## gozerlib imports
 
 from gozerlib.utils.generic import getversion
@@ -11,6 +16,7 @@ from gozerlib.eventbase import EventBase
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
 from gozerlib.config import Config
+from gozerlib.persist import Persist
 
 ## simplejson imports
 
@@ -96,8 +102,58 @@ def stopserver():
         handle_exception()
         pass
 
+## JSONDATA
+
+def json_GET(server, request):
+    try:
+        path = request.path.split("jsondata")[1]
+    except (ValueError, IndexError):
+        return dumps("can't find datapointer in path %s" % request.path)
+
+    logging.warn("json.server - got path %s" % path)
+    if len(path) > 2:
+        path = 'gozerdata' + os.sep + path[1:]
+        if '..' in path:
+            return request.send_error(404)
+        if not os.path.exists(path):
+            logging.error("json.server - non existing file - %s" % path)
+            request.send_error(404)
+            return
+
+        try:
+            logging.warn("json.server - attempting to construct %s" % path)
+            try:
+                result = Persist(path)
+                if result.data and result.data.public:
+                    try:
+                        return dumps(result.data)
+                    except TypeError:
+                        result = Config(path)
+                        logging.warn("json.server - got config - %s" % str(result))
+                        if result and result.public:
+                            try:
+                                return dumps(result.data)
+                            except TypeError:
+                                request.send_error(404)
+            except IOError:
+                handle_exception()
+                request.send_error(404)
+                return
+            request.send_error(404)
+        except Exception, ex:
+            handle_exception()
+            request.send_error(500)
+            return
+    else:
+        request.send_error(404)
+        return
+
 startserver()
+
 if not server:
     print "can't start server"
 else:
+    server.addhandler('/jsondata/', 'GET', json_GET)
+    server.addhandler('/favicon.ico', 'GET', json_GET)
+    server.enable('/jsondata/') 
     server.serve()

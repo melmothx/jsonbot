@@ -26,17 +26,19 @@ import logging
 
 ## defines
 
-enable = True
+enable = False
 
 try:
     cfg = PersistConfig()
-    cfg.define('enable', 1)
+    cfg.define('enable', 0)
     cfg.define('host' , socket.gethostbyname(socket.getfqdn()))
     cfg.define('name' , socket.getfqdn())
     cfg.define('port' , 11111)
     cfg.define('disable', [])
     hp = "%s:%s" % (cfg.get('host'), cfg.get('port'))
     url = "http://%s" % hp
+    if cfg.enable:
+         enable = True
 except AttributeError:
     # we are on the GAE
     enable = False
@@ -49,7 +51,7 @@ server = None
 
 def startserver(force=False):
     if not enable:
-        logging.warn("rest server is disabled")
+        logging.info("rest server is disabled")
         return
 
     global server 
