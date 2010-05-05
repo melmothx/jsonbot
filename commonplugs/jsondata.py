@@ -14,14 +14,21 @@ from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
+from gozerlib.datadir import datadir
+
+## basic imports
+
+import os
+import logging
 
 ## commands
 
 def handle_public(bot, event):
     if not event.rest:
-        event.reply("<path>")
+        event.reply("<data path>")
         return
-    path = event.args[0]
+    path = datadir + os.sep + event.args[0]
+    logging.warning("attempting to make %s public" % path)
     try:
         p = Persist(path)
         if p.data:
@@ -39,9 +46,10 @@ examples.add('public', 'set a data file accessible through the jsonserver plugin
 
 def handle_local(bot, event):
     if not event.rest:
-        event.reply("<path>")
+        event.reply("<data path>")
         return
-    path = event.rest
+    path = datadir + os.sep + event.args[0]
+    logging.warning("attempting to make %s local" % path)
     try:
         p = Persist(path)
         if p.data:
