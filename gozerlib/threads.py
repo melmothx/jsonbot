@@ -104,7 +104,7 @@ def start_new_thread(func, arglist, kwargs={}):
     else:
         name = kwargs['name']
 
-    logging.warn("threads - %s - %s - %s" % (name, str(func), str(arglist)))
+    logging.debug("threads - %s - %s - %s" % (name, str(func), str(arglist)))
 
     try:
         from google.appengine.ext.deferred import defer

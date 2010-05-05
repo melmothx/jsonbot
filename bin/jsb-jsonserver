@@ -10,6 +10,7 @@ sys.path.insert(0, os.getcwd())
 ## gozerlib imports
 
 from gozerlib.utils.generic import getversion
+print getversion("JSONSERVER")
 from gozerlib.utils.url import posturl, getpostdata
 from gozerlib.socket.rest.server import RestServer, RestRequestHandler
 from gozerlib.eventbase import EventBase
@@ -17,6 +18,7 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
 from gozerlib.config import Config
 from gozerlib.persist import Persist
+from gozerlib.utils.log import setloglevel
 
 ## simplejson imports
 
@@ -27,6 +29,7 @@ from simplejson import dumps
 import socket
 import re
 import logging
+import time
 
 ## options parsing
 
@@ -40,7 +43,7 @@ parser.add_option('-s', '--server', type='string',
 parser.add_option('-p', '--port', type='string', default='11111',
                   dest='port',   
                   help="port of the server")
-parser.add_option('-l', '--loglevel', type='string', default='error',
+parser.add_option('-l', '--loglevel', type='string', default='warning',
                   dest='loglevel',   
                   help="loglevel of the server")
 
@@ -48,6 +51,7 @@ opts, args = parser.parse_args()
 opts.args = args
 
 ## defines
+
 
 cfg = Config("restserver")
 if not cfg.disable:
@@ -59,6 +63,11 @@ if opts.server:
 if opts.port:
     cfg.port = int(opts.port)
 
+if opts.loglevel:
+    cfg.loglevel = opts.loglevel
+
+setloglevel(cfg.loglevel)
+cfg.save()
 hp = "%s:%s" % (cfg.get('host'), cfg.get('port'))
 url = "http://%s" % hp
 server = None
@@ -73,15 +82,8 @@ def startserver(force=False):
 
     try:
         server = RestServer((cfg.get('host'), cfg.get('port')), RestRequestHandler)
-
-        if server:
-            server.start()
-            logging.warn('restserver - running at %s:%s' % (cfg.get('host'), cfg.get('port')))
-
-            for mount in cfg.get('disable'):
-                server.disable(mount)
-        else:
-            logging.error('restserver - failed to start server at %s:%s' % (cfg.get('host'), cfg.get('port')))
+        server.start()
+        logging.warn('restserver - running at %s:%s' % (cfg.get('host'), cfg.get('port')))
 
     except socket.error, ex:
         logging.warn('restserver - start - socket error: %s' % str(ex))
@@ -155,7 +157,11 @@ startserver()
 if not server:
     print "can't start server"
 else:
+    for mount in cfg.get('disable'):
+        server.disable(mount)
+
     server.addhandler('/jsondata/', 'GET', json_GET)
     server.addhandler('/favicon.ico', 'GET', json_GET)
     server.enable('/jsondata/') 
-    server.serve()
+    while 1:
+        time.sleep(1)
