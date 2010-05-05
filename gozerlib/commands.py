@@ -96,8 +96,8 @@ class Commands(LazyDict):
         logging.warn('dispatching %s for %s' % (event.usercmnd, id))
         result = []
         try:
-            if target.threaded:
-                start_new_thread(target.func, (bot, event))
+            if target.threaded and not bot.isgae:
+                start_bot_command(target.func, (bot, event))
                 result = []
             else:
                 target.func(bot, event)

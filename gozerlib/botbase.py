@@ -44,6 +44,7 @@ class BotBase(LazyDict):
     def __init__(self, cfg=None, usersin=None, plugs=None, jid=None, *args, **kwargs):
         LazyDict.__init__(self)
         self.starttime = time.time()
+        self.isgae = False
         self.type = "base"
 
         if cfg:

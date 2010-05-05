@@ -104,7 +104,7 @@ def start_new_thread(func, arglist, kwargs={}):
     else:
         name = kwargs['name']
 
-    logging.debug("threads - %s - %s" % (name, str(arglist)))
+    logging.warn("threads - %s - %s - %s" % (name, str(func), str(arglist)))
 
     try:
         from google.appengine.ext.deferred import defer
@@ -130,6 +130,13 @@ def start_bot_command(func, arglist, kwargs={}):
         name = getname(func)
         if not name:
             name = 'noname'
+
+        try:
+            from google.appengine.ext.deferred import defer
+            defer(func, *arglist, **kwargs)
+            return
+        except ImportError: 
+            pass
 
         thread = Botcommand(group=None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()

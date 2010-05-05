@@ -19,6 +19,7 @@ class WebBot(BotBase):
         BotBase.__init__(self, cfg, users, plugs, *args, **kwargs)
         if self.cfg:
             self.cfg['type'] = 'web'
+        self.isgae = True
         self.type = "web"
 
     def say(self, channel, txt, *args, **kwargs):

@@ -27,6 +27,7 @@ class XMPPBot(BotBase):
         BotBase.__init__(self, cfg, users, plugs, jid, *args, **kwargs)
         if self.cfg:
             self.cfg['type'] = 'xmpp'
+        self.isgae = True
         self.type = "xmpp"
 
     def say(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False):

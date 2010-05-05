@@ -97,6 +97,7 @@ class WaveBot(BotBase, robot.Robot):
         self.register_handler(events.WaveletParticipantsChanged, self.OnParticipantsChanged)
         self.iswave = True
         self.waves = waves
+        self.isgae = True
  
     def OnParticipantsChanged(self, event, wavelet):
         """ invoked when any participants have been added/removed. """
