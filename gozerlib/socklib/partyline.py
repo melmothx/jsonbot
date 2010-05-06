@@ -1,4 +1,4 @@
-# gozerlib/socket/partyline.py
+# gozerlib/socklib/partyline.py
 #
 #
 

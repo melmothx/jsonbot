@@ -9,7 +9,7 @@ __copyright__ = 'this file is in the public domain'
 
 ## gozerbot imports
 
-from gozerlib.socket.utils.generic import fix_format, toenc, fromenc, stripident, makeargrest
+from gozerlib.socklib.utils.generic import fix_format, toenc, fromenc, stripident, makeargrest
 from gozerlib.eventbase import EventBase
 #from gozerlib.utils.generic import makeargrest
 from gozerlib.config import cfg as config

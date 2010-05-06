@@ -1,4 +1,4 @@
-# gozerlib/sockets/utils/generic.py
+# gozerlib/socklib/utils/generic.py
 #
 #
 

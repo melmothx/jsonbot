@@ -1,4 +1,4 @@
-# gozerlib/socket/xmpp/core.py
+# gozerlib/socklib/xmpp/core.py
 #
 #
 

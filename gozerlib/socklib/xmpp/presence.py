@@ -1,4 +1,4 @@
-# gozerlib/socket/xmpp/presence.py
+# gozerlib/socklib/xmpp/presence.py
 #
 #
 

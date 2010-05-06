@@ -1,4 +1,4 @@
-# gozerlib/socket/xmpp/wait.py
+# gozerlib/socklib/xmpp/wait.py
 #
 #
 
@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.utils.locking import lockdec
-from gozerlib.socket.wait import Wait
+from gozerlib.socklib.wait import Wait
 import gozerlib.threads as thr
 
 ## basic imports

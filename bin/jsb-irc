@@ -16,7 +16,7 @@ print getversion('IRC')
 
 ## gozerlib impors
 
-from gozerlib.socket.irc.bot import Bot
+from gozerlib.socklib.irc.bot import Bot
 from gozerlib.datadir import makedirs
 from gozerlib.admin import plugin_packages
 from gozerlib.boot import boot

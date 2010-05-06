@@ -10,7 +10,7 @@
 
 ## gozerlib imports
 
-from threads import start_new_thread
+from threads import start_new_thread, start_bot_command
 from utils.xmpp import stripped
 from utils.trace import calledfrom, whichmodule
 from utils.exception import handle_exception

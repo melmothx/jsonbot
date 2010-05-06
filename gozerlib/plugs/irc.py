@@ -7,7 +7,7 @@
 ## gozerbot imports
 
 from gozerlib.callbacks import callbacks
-from gozerlib.socket.partyline import partyline
+from gozerlib.socklib.partyline import partyline
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 import gozerlib.threads as thr

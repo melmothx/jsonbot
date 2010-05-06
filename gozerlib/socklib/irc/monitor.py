@@ -1,14 +1,14 @@
-# gozerbot/monitor.py
+# gozerlib/socklib/irc/monitor.py
 #
 #
 
 """ monitors .. call callback on bot output. """
 
-## gozerlib import s
+## gozerlib imports
 
 from gozerlib.monitor import Monitor
 
-## gozerlib.socket.irc imports
+## gozerlib.socklib.irc imports
 
 from ircevent import Ircevent
 

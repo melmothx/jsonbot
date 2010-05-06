@@ -264,6 +264,14 @@ if __name__ == '__main__':
         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'commonplugs')
     except:
         pass
+    try:
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'socketplugs')
+    except:
+        pass
+    try:
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs')
+    except:
+        pass
   
     if True:
         for file in os.listdir('gozerlib' + os.sep + 'plugs'):
@@ -281,6 +289,11 @@ if __name__ == '__main__':
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + file[:-3] + '.txt', 'w')
             threads.append(start_new_thread(gendoc, ('waveplugs', file, f)))
+        for file in os.listdir('socketplugs'):
+            if not file.endswith('.py') or '__init__' in file:
+                continue
+            f = open('docs' + os.sep + 'plugins' + os.sep + 'socketplugs' + os.sep + file[:-3] + '.txt', 'w')
+            threads.append(start_new_thread(gendoc, ('socketplugs', file, f)))
 
     for thread in threads:
         thread.join()

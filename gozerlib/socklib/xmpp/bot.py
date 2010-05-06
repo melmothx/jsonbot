@@ -1,4 +1,4 @@
-# gozerlib/socket/xmpp/bot.py
+# gozerlib/socklib/xmpp/bot.py
 #
 #
 
@@ -22,7 +22,7 @@ from gozerlib.exit import globalshutdown
 
 ## gozerlib.socket imports
 
-from gozerlib.socket.utils.generic import waitforqueue, toenc, fromenc, jabberstrip, getrandomnick
+from gozerlib.socklib.utils.generic import waitforqueue, toenc, fromenc, jabberstrip, getrandomnick
 
 ## xmpp imports
 

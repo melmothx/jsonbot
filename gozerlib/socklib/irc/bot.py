@@ -1,4 +1,4 @@
-# gozerlib/socket/irc/bot.py
+# gozerlib/socklib/irc/bot.py
 # 
 #
 #
@@ -27,16 +27,16 @@ from gozerlib.errors import NoSuchCommand
 from gozerlib.channelbase import ChannelBase
 from gozerlib.exit import globalshutdown
 
-## gozerlib.socket.irc imports
+## gozerlib.socklib.irc imports
 
-from gozerlib.socket.partyline import partyline
+from gozerlib.socklib.partyline import partyline
 
 from channels import Channels
 from irc import Irc
 from ircevent import Ircevent
 from monitor import outmonitor
-from gozerlib.socket.wait import Privwait
-from gozerlib.socket.utils.generic import getlistensocket, checkchan, makeargrest
+from gozerlib.socklib.wait import Privwait
+from gozerlib.socklib.utils.generic import getlistensocket, checkchan, makeargrest
 
 ## basic imports
 

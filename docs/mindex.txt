@@ -14,11 +14,11 @@ gozerlib
     gae/utils/index
     plugs/index
     remote/index
-    socket/index
-    socket/irc/index
-    socket/rest/index
-    socket/utils/index
-    socket/plugs/index
+    socklib/index
+    socklib/irc/index
+    socklib/rest/index
+    socklib/utils/index
+    socklib/plugs/index
     utils/index
 
     *

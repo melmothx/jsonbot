@@ -10,7 +10,7 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.persiststate import UserState
-from gozerlib.socket.utils.generic import waitforuser
+from gozerlib.socklib.utils.generic import waitforuser
 
 ## basic imports
 

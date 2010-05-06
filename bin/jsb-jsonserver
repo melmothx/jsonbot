@@ -12,7 +12,7 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.utils.generic import getversion
 print getversion("JSONSERVER")
 from gozerlib.utils.url import posturl, getpostdata
-from gozerlib.socket.rest.server import RestServer, RestRequestHandler
+from gozerlib.socklib.rest.server import RestServer, RestRequestHandler
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples

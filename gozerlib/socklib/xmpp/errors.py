@@ -1,4 +1,4 @@
-# gozerlib/socket/xmpp/errors.py
+# gozerlib/socklib/xmpp/errors.py
 #
 #
 

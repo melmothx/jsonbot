@@ -9,7 +9,7 @@
 
 ## gozerlib imports
 
-from gozerlib.socket.utils.generic import istr
+from gozerlib.socklib.utils.generic import istr
 
 ## basic imports
 

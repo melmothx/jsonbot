@@ -1,4 +1,4 @@
-# gozerbot/wait.py
+# gozerlib/socklib/wait.py
 #
 #
 

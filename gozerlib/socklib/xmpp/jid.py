@@ -1,6 +1,8 @@
-# gozerlib/socket/xmpp/JID.py
+# gozerlib/socklib/xmpp/JID.py
 #
 #
+
+""" JID related helpers. """
 
 ## classes
 
@@ -9,6 +11,8 @@ class InvalidJID(BaseException):
     pass
 
 class JID(object):
+
+    """ class representing a JID. """
 
     def __init__(self, str):
         if not str:
@@ -34,5 +38,6 @@ class JID(object):
             self.resource = u""
 
     def validate(self, s):
+        """ validate a JID. """
         if not '#' in s:
             return True

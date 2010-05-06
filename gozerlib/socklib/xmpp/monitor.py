@@ -1,4 +1,4 @@
-# gozerlib/socket/xmpp/monitor.py
+# gozerlib/socklib/xmpp/monitor.py
 #
 #
 
