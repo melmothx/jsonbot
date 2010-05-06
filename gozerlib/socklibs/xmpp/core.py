@@ -90,42 +90,20 @@ class XMLDict(EventBase):
 
     def get(self, name):
 
-        """
-            get a attribute by name.
-
-            :param name: name of the attribute
-            :type name: string
-
-            .. literalinclude:: ../../../gozerbot/xmpp/core.py
-                :pyobject: XMLDict.get
-
-        """
-
+        """ get a attribute by name. """
         if self.has_key('subelements'):
-
             for i in self['subelements']:
-
                 if name in i:
-
                     return i[name]
 
         if self.has_key(name):
-
             return self[name]
 
         return LazyDict()
 
     def toxml(self):
-
-        """
-            convert the dictionary to xml.
-
-            .. literalinclude:: ../../../gozerbot/xmpp/core.py
-               :pyobject: XMLDict.toxml
-        """
-
+        """ convert the dictionary to xml. """
         res = dict(self)
-
         if not res:
             raise Exception("%s .. toxml() can't convert empty dict" % self.name)
 
@@ -134,56 +112,37 @@ class XMLDict(EventBase):
         main = "<%s" % self['element']
 
         for attribute in attributes[elem]: 
-
             if attribute in res:
-
                 if res[attribute]:
                     main += u" %s='%s'" % (attribute, XMLescape(res[attribute]))
-
                 continue
 
         main += ">"
         gotsub = False
-
         if res.has_key('txt'):
-
             if res['txt']:
-
                 main += u"<body>%s</body>" % XMLescape(res['txt'])
                 gotsub = True
 
         for subelement in subelements[elem]:
-
             try:
                 data = res[subelement]
-
                 if data:
                     main += "<%s>%s</%s>" % (subelement, XMLescape(data), subelement)
                     gotsub = True
-
             except KeyError:
                 pass
 
         if gotsub:
-
             main += "</%s>" % elem
-
         else:
-
             main = main[:-1]
             main += "/>"
 
         return main
 
     def str(self):
-
-        """
-            convert to string.
-
-            .. literalinclude:: ../../../gozerbot/xmpp/core.py
-                :pyobject: XMLDict.str
-        """
-
+        """ convert to string. """
         result = ""
         elem = self['element']
         for item, value in dict(self).iteritems():
@@ -192,7 +151,6 @@ class XMLDict(EventBase):
         return result
  
 class XMLStream(NodeBuilder):
-
 
     """
         XMLStream.
@@ -206,7 +164,7 @@ class XMLStream(NodeBuilder):
 
     """
 
-    def __init__(self, host, port, name='gozerxmpp'):
+    def __init__(self, host, port, name='sxmpp'):
         # start sets these
         self.name = name
         # the connection
@@ -232,30 +190,15 @@ class XMLStream(NodeBuilder):
         self.addHandler('stream:features', self.handle_streamfeatures)
 
     def handle_stream(self, data):
-
-        """
-            default stream error handler.
-
-        """
-
+        """ default stream handler. """
         logging.debug("sxmpp.core - STREAM: %s" % data)
 
     def handle_streamerror(self, data):
-
-        """
-            default stream error handler.
-
-        """
-
+        """ default stream error handler. """
         logging.debug("sxmpp.core - STREAMERROR: %s" % data)
 
     def handle_streamfeatures(self, data):
-
-        """
-            default stream error handler.
-
-        """
-
+        """ default stream features handler. """
         logging.debug("sxmpp.core - STREAMFEATURES: %s" % data)
          
     def addHandler(self, namespace, func):

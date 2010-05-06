@@ -45,14 +45,7 @@ class Eventhandler(object):
         self.nooutput = False
 
     def start(self):
-
-        """
-            start the eventhandler thread.
-
-            .. literalinclude:: ../../gozerbot/eventhandler.py
-                   :pyobject: Eventhandler.start
-
-        """
+        """ start the eventhandler thread. """
 
         self.stopped = False
 
@@ -61,44 +54,19 @@ class Eventhandler(object):
             self.running = True
 
     def stop(self):
-
-        """
-            stop the eventhandler thread.
-
-            .. literalinclude:: ../../gozerbot/eventhandler.py
-                :pyobject: Eventhandler.stop
-
-        """
-
+        """ stop the eventhandler thread. """
         self.running = False
         self.stopped = True
         self.go.put('Yihaaa')
 
     def put(self, speed, func, *args, **kwargs):
-
-        """
-             put item on the queue.
-
-             .. literalinclude:: ../../gozerbot/eventhandler.py
-                 :pyobject: Eventhandler.put
-
-        """
-
+        """ put item on the queue. """
         self.queues[10-speed].put_nowait((func, args, kwargs))
         self.go.put('go')
 
     def getready(self):
-
-        """
-            check queues from available functions to execute.
-
-            .. literalinclude:: ../../gozerbot/eventhandler.py
-                :pyobject: Eventhandler.getready
-
-        """
-
+        """ check queues from available functions to execute. """
         ready = []
-
         for i in self.sortedlist:
             if self.queues[i].qsize():
                 ready.append(i)
@@ -107,32 +75,14 @@ class Eventhandler(object):
         return ready
 
     def handle_one(self):
-
-        """
-            do 1 loop over ready queues.
-
-            .. literalinclude:: ../../gozerbot/eventhandler.py
-                :pyobject: Eventhandler.handle_one
-
-        """
-
+        """ do 1 loop over ready queues. """
         ready = self.getready()
-
         for i in ready:
             self.dispatch(self.queues[i])
 
     def handleloop(self):
-
-        """
-            thread that polls the queues for items to dispatch.
-
-            .. literalinclude:: ../../gozerbot/eventhandler.py
-                :pyobject: Eventhandler.handleloop
-
-        """
-
+        """ thread that polls the queues for items to dispatch. """
         logging.debug('eventhandler - starting handle thread')
-
         while not self.stopped:
             self.go.get()
             self.handle_one()
@@ -140,16 +90,7 @@ class Eventhandler(object):
         logging.debug('eventhandler - stopping %s' % str(self))
 
     def dispatch(self, queue):
-
-        """
-            dispatch functions from provided queue.
-
-            .. literalinclude:: ../../gozerbot/eventhandler.py
-                :pyobject: Eventhandler.dispatch
-
-        """
-
-
+        """ dispatch functions from provided queue. """
         try:
             todo = queue.get_nowait()
         except Queue.Empty:

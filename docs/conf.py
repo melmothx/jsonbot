@@ -19,10 +19,18 @@ import sys, os
 # If your extensions (or modules documented by autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.append(os.path.abspath(".."))
-sys.path.append(os.path.abspath('..' + os.sep + 'gozerlib'))
-sys.path.append(os.path.abspath("~" + os.sep + "google_appengine" + os.sep + "google"))
-
+sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib' + os.sep + 'utils'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib' + os.sep + 'socket'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib' + os.sep + 'gae'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib' + os.sep + 'socket' + os.sep + 'xmpp'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib' + os.sep + 'socket' + os.sep + 'irc'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'socketplugs'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'commonplugs'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'waveplugs'))
+sys.path.insert(0, os.path.abspath("~" + os.sep + "google_appengine" + os.sep + "google"))
+print sys.path
 # General configuration
 # ---------------------
 
