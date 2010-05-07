@@ -62,11 +62,8 @@ class WebEvent(EventBase):
 
         if self.waveid:
             self.isgadget = True
-            if wave:
-                logging.warn('web - setting channel to %s - %s' % (self.waveid, self.chan.data.title))
-            else:
-                logging.warn('web - setting channel to %s' % self.waveid)
-
+            logging.warn('web - setting channel to %s' % self.waveid)
+            self.channel = self.waveid
 
         self.chan = Wave(self.channel)
         self.makeargs()
