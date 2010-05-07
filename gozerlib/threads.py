@@ -108,7 +108,8 @@ def start_new_thread(func, arglist, kwargs={}):
 
     try:
         from google.appengine.ext.deferred import defer
-        defer(func, *arglist, **kwargs)
+        #defer(func, *arglist, **kwargs)
+        func(*arglist, **kwargs)
         return
     except ImportError: 
         pass
@@ -133,7 +134,8 @@ def start_bot_command(func, arglist, kwargs={}):
 
         try:
             from google.appengine.ext.deferred import defer
-            defer(func, *arglist, **kwargs)
+            #defer(func, *arglist, **kwargs)
+            func(*arglist, **kwargs)
             return
         except ImportError: 
             pass

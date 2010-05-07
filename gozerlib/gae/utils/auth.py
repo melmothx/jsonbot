@@ -46,13 +46,15 @@ def checkuser(response, request):
             email = request.get('USER_EMAIL')
             if not email:
                 email = "notauth"
+            logging.warning("gae.utils.auth - using %s" % str(request))
             auth_domain = request.get('AUTH_DOMAIN')
-            if not auth_domain:
-                auth_domain = "nodomain"
             who = request.get('who')
             if not who:
                  who = email
-            userhost = nick = "%s!%s@%s" % (who, auth_domain, request.remote_addr)
+            if auth_domain:
+                userhost = nick = "%s@%s" % (who, auth_domain)
+            else:
+                userhost = nick = "%s@%s" % (who, request.remote_addr)
 
         except KeyError:
             userhost = nick = "notauth@%s" % request.remote_addr
