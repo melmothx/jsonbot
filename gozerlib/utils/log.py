@@ -20,9 +20,8 @@ def setloglevel(level_name):
             root.removeHandler(handler)
 
     logging.basicConfig(level=level,
-                    #format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)s - %(message)s')
-                    format='%(asctime)s - %(message)s')
-
+                    format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)s - %(message)s')
+                    #format='%(asctime)s - %(message)s')
     #formatter = logging.Formatter("[%(asctime)s] (%(name)s) %(message)s")
     #logger = logging.getLogger('')
     #logger.propagate = True

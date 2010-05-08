@@ -185,6 +185,7 @@ class XMLStream(NodeBuilder):
         self.addHandler('message', self.handle_message)
         self.addHandler('presence', self.handle_presence)
         self.addHandler('iq', self.handle_iq)
+        self.addHandler('stream', self.handle_stream)
         self.addHandler('stream:stream', self.handle_stream)
         self.addHandler('stream:error', self.handle_streamerror)
         self.addHandler('stream:features', self.handle_streamfeatures)
@@ -196,6 +197,7 @@ class XMLStream(NodeBuilder):
     def handle_streamerror(self, data):
         """ default stream error handler. """
         logging.debug("sxmpp.core - STREAMERROR: %s" % data)
+        self.exit()
 
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
@@ -319,11 +321,11 @@ class XMLStream(NodeBuilder):
                 logging.error('sxmpp - invalid stanza: %s' % what)
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
+                logging.debug("_raw: %s" % what)
                 try:
                     self.connection.send(what + u"\r\n")
                 except AttributeError:
                     self.connection.write(what)
-                logging.debug("_raw: %s" % what)
             else:
                 logging.error('sxmpp - invalid stanza: %s' % what)
 
@@ -348,8 +350,10 @@ class XMLStream(NodeBuilder):
         self.sock.settimeout(30)
         if not self.port:
             self.port = 5222
-        if self.server:
+        if self.server != 'localhost':
             self.host = self.server
+        else:
+            self.host = self.cfg.host
         logging.warn("sxmpp.core - connecting to %s:%s" % (self.host, self.port))
         self.sock.connect((self.host, self.port))
         self.sock.setblocking(False)
@@ -360,9 +364,12 @@ class XMLStream(NodeBuilder):
         time.sleep(3)
         result = self.sock.recv(1500)
         logging.debug("sxmpp.core - " + str(result))
+        self.loop_one(result)
         self.sock.send('<starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"/>\r\n')
         time.sleep(3)
-        logging.debug("sxmpp.core - " + self.sock.recv(1500))
+        result = self.sock.recv(1500)
+        logging.debug("sxmpp.core - " + str(result))
+        self.loop_one(result)
         self.sock.settimeout(60)
         return self.dossl()
 
@@ -370,8 +377,10 @@ class XMLStream(NodeBuilder):
         """ enable ssl on the socket. """
         try:
             import ssl
+            logging.warn("sxmpp.core - wrapping ssl socket")
             self.connection = ssl.wrap_socket(self.sock)
         except ImportError:
+            logging.warn("sxmpp.core - making ssl socket")
             self.connection = socket.ssl(self.sock)
         if self.connection:
             return True
@@ -392,14 +401,34 @@ class XMLStream(NodeBuilder):
             :rtype: gozerbot.utils.lazydict.LazyDict
 
         """
+        methods = []
         self.final['subelements'] = self.subelements
+
+        for subelement in self.subelements:
+            logging.warn("sxmpp.core - %s" % str(subelement))
+            for elem in subelement:
+                logging.warn("setting %s handler" % elem)
+                methods.append(self.getHandler(elem))
+            for method in methods:
+                if not method:
+                    continue
+                try:
+                    result = XMLDict(subelement)
+                    result.bot = self
+                    result.orig = data
+                    result.jabber = True
+                    method(result) 
+                except Exception, ex:
+                    handle_exception()
+
         if self.tags:
             element = self.tags[0]
             logging.debug("setting element: %s" % element)
         else:
-            element = 'presence'
+            element = 'stream'
 
         self.final['element'] = element
+
         method = self.getHandler(element)
 
         if method:

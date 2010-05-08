@@ -470,6 +470,7 @@ class SXMPPBot(XMLStream, BotBase):
     def errorHandler(self, event):
         """ error handler .. calls the errorhandler set in the event. """
         try:
+            logging.error("smpp.bot - error occured in %s" % str(event))
             event.errorHandler()
         except AttributeError:
             logging.error('sxmpp - unhandled error: %s' % event)
