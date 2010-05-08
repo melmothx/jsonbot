@@ -273,7 +273,7 @@ class XMLStream(NodeBuilder):
             try:
                 data = self.connection.read()
                 if data == "":
-                    logging.warn('remote disconnected')
+                    logging.error('remote disconnected')
                     self.error = 'disconnected'
                     self.disconnectHandler(Exception('remote %s disconnected' %  self.host))
                     break
@@ -405,9 +405,9 @@ class XMLStream(NodeBuilder):
         self.final['subelements'] = self.subelements
 
         for subelement in self.subelements:
-            logging.warn("sxmpp.core - %s" % str(subelement))
+            logging.debug("sxmpp.core - %s" % str(subelement))
             for elem in subelement:
-                logging.warn("setting %s handler" % elem)
+                logging.debug("setting %s handler" % elem)
                 methods.append(self.getHandler(elem))
             for method in methods:
                 if not method:

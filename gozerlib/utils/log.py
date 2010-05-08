@@ -4,6 +4,8 @@
 
 """ log module. """
 
+## basic imports
+
 import logging
 
 LEVELS = {'debug': logging.DEBUG,
@@ -20,14 +22,6 @@ def setloglevel(level_name):
             root.removeHandler(handler)
 
     logging.basicConfig(level=level,
-                    format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)s - %(message)s')
-                    #format='%(asctime)s - %(message)s')
-    #formatter = logging.Formatter("[%(asctime)s] (%(name)s) %(message)s")
-    #logger = logging.getLogger('')
-    #logger.propagate = True
-    #stream = logging.StreamHandler()
-    #stream.setFormatter(formatter)
-    #stream.propagate = False
+                    format='%(asctime)s - %(message)s - <%(funcName)s:%(lineno)s>')
     root.setLevel(level)
-    #logger.addHandler(stream)
     logging.warn("loglevel is %s (%s)" % (str(level), level_name))
