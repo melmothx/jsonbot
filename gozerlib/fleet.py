@@ -30,7 +30,6 @@ import types
 import time
 import glob
 import logging
-import asyncore
 
 ## classes
 
@@ -272,27 +271,27 @@ class Fleet(Persist):
             same name.
         """
         for i in range(len(self.bots)-1, -1, -1):
-            if self.bots[i].name == bot.name:
-                logging.debug('fleet - removing %s from fleet' % bot.name)
+            if self.bots[i].name == bot.botname:
+                logging.debug('fleet - removing %s from fleet' % bot.botname)
                 del self.bots[i]
 
-        logging.warn('fleet - adding %s' % bot.name)
+        logging.warn('fleet - adding %s' % bot.botname)
         self.bots.append(bot)
-        if bot.name and bot.name not in self.data['names']:
-            self.data['names'].append(bot.name)
-            self.data['types'][bot.name] = bot.type
+        if bot.botname and bot.botname not in self.data['names']:
+            self.data['names'].append(bot.botname)
+            self.data['types'][bot.botname] = bot.type
             self.save()
         return True
 
     def delete(self, name):
         """ delete bot with name from fleet. """
         for bot in self.bots:
-            if bot.name == name:
+            if bot.botname == name:
                 bot.exit()
                 self.remove(i)
                 bot.cfg['enable'] = 0
                 bot.cfg.save()
-                logging.debug('fleet - %s disabled' % bot.name)
+                logging.debug('fleet - %s disabled' % bot.botname)
                 return True
 
         return False
@@ -315,7 +314,7 @@ class Fleet(Persist):
             return
 
         for bot in self.bots:
-            if bot.name == name:
+            if bot.botname == name:
                 try:
                     bot.exit()
                 except:
@@ -356,7 +355,7 @@ class Fleet(Persist):
         if not result:
             return
 
-        res = ["[%s]" % bot.name, ]
+        res = ["[%s]" % bot.botname, ]
         res += result
         event.reply(res)
         return res
@@ -372,7 +371,7 @@ class Fleet(Persist):
 
         """
         for bot in self.bots:
-            self.cmnd(event, bot.name, cmnd)
+            self.cmnd(event, bot.botname, cmnd)
 
     def broadcast(self, txt):
         """ broadcast txt to all bots. """
@@ -387,7 +386,8 @@ class Fleet(Persist):
         from exit import globalshutdown
         while 1:
             try:
-                asyncore.poll(timeout=0.1)
+                #import asyncore
+                #asyncore.poll(timeout=0.1)
                 time.sleep(0.01)
                 mainhandler.handle_one()
             except KeyboardInterrupt:

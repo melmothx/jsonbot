@@ -69,17 +69,15 @@ class WaveBot(BotBase, robot.Robot):
 
     """
 
-    def __init__(self, cfg=None, users=None, plugs=None, jid=None, domain=None,
+    def __init__(self, cfg=None, users=None, plugs=None, name=None, domain=None,
                  image_url='http://jsonbot.appspot.com/assets/favicon.png',
                  profile_url='http://jsonbot.appspot.com/', *args, **kwargs):
         sname = 'jsonbot'
-        BotBase.__init__(self, cfg, users, plugs, *args, **kwargs)
         self.type = 'wave'
-        self.jid = jid
         if self.cfg:
             self.cfg['type'] = 'wave'
             self.cfg.save()
-        self.type = "wave"
+        BotBase.__init__(self, cfg, users, plugs, name, *args, **kwargs)
         if cfg:
             self.domain = cfg['domain'] or 'googlewave.com'
         else:

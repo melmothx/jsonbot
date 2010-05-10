@@ -47,7 +47,7 @@ def handle_adminmakebot(bot, ievent):
         return
 
     newbot = BotBase()
-    newbot.name = botname
+    newbot.botname = botname
     newbot.type = bottype
     newbot.owner = bot.owner
     newbot.save()

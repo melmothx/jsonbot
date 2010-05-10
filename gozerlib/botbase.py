@@ -30,7 +30,6 @@ import sys
 import getpass
 import os
 import thread
-import asyncore
 ## define
 
 cpy = copy.deepcopy
@@ -42,7 +41,8 @@ eventlocked = lockdec(eventlock)
 
 class BotBase(LazyDict):
 
-    def __init__(self, cfg=None, usersin=None, plugs=None, jid=None, *args, **kwargs):
+    def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
+        logging.warn("botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()
         self.isgae = False
@@ -54,8 +54,18 @@ class BotBase(LazyDict):
         else:
             self.cfg = mainconfig
 
-        self.name = self.cfg.name or 'default-%s' % self.type
+        if not self.cfg.name:
+            if botname:
+                self.botname = botname
+            else:
+                self.botname = "default-%s" % type(self)
+        else:
+            self.botname = self.cfg.name
 
+        # set datadir to datadir/fleet/<botname>
+        self.fleetdir = 'fleet' + os.sep + self.botname
+        self.datadir = datadir + os.sep + self.fleetdir
+        self.name = self.botname
         self.owner = self.cfg.owner
         if not self.owner:
             logging.warn("owner is not set in %s" % self.cfg.cfile)
@@ -64,15 +74,6 @@ class BotBase(LazyDict):
         logging.warn("botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
-
-        if jid:
-            self.name = self.jid = jid
-        else:
-            self.jid = self.name
-
-        # set datadir to datadir/fleet/<botname>
-        self.fleetdir = 'fleet' + os.sep + self.jid
-        self.datadir = datadir + os.sep + self.fleetdir
         self.outcache = Less(1)
 
         try:
@@ -110,7 +111,9 @@ class BotBase(LazyDict):
         # basic loop
         while 1:
             try:
-                asyncore.poll(timeout=0.1)
+                if not self.isgae:
+                    import asyncore
+                    asyncore.poll(timeout=0.1)
                 time.sleep(0.01)
                 mainhandler.handle_one()
             except KeyboardInterrupt:
@@ -188,7 +191,7 @@ class BotBase(LazyDict):
             e.copyin(event)
         e.origin = origin
         e.ruserhost = event.userhost
-        e.userhost = self.name
+        e.userhost = self.botname
         e.channel = channel
         e.txt = txt
         e.cbtype = 'OUTPUT'
