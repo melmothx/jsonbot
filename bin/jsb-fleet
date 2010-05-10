@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+#
+#
+
+## boot
+
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
+## print version
+
+from gozerlib.utils.generic import getversion
+print getversion('FLEET')
+
+## gozerlib impors
+
+from gozerlib.datadir import makedirs
+from gozerlib.boot import boot
+from gozerlib.utils.log import setloglevel
+from gozerlib.fleet import fleet
+import gozerlib
+
+## basic imports
+
+import logging
+import time
+
+## options parser
+
+if True:
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser.add_option('-l', '--loglevel', type='string', default=False,
+dest='loglevel', 
+                  help="loglevel of the bot .. the lower the more it logs")
+
+    opts, args = parser.parse_args()
+    opts.args = args
+
+if opts.loglevel:
+    setloglevel(opts.loglevel)
+
+makedirs()
+boot()
+
+from gozerlib.plugins import plugs
+plugs.loadall()
+
+fleet.loadall()
+fleet.startall()
+
+while 1:
+    time.sleep(1)
