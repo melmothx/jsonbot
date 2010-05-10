@@ -114,7 +114,9 @@ else:
     cfg.server = cfg.server or "localhost"
 
 if opts.name:
-    cfg.jid = opts.name
+    cfg.jid = cfg.name = opts.name
+else:
+    cfg.jid = cfg.name = 'default-irc'
 
 cfg.type = "irc"
 cfg.save()

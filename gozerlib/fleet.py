@@ -16,6 +16,7 @@ from persist import Persist
 from errors import NoSuchBotType
 from threads import start_new_thread
 from eventhandler import mainhandler
+from datadir import datadir
 
 ## waveapi imports
 
@@ -45,7 +46,7 @@ class Fleet(Persist):
     """
 
     def __init__(self):
-        Persist.__init__(self, 'fleet.core')
+        Persist.__init__(self, datadir + os.sep + 'fleet' + os.sep + 'fleet.core')
         if not self.data.has_key('names'):
             self.data['names'] = []
         if not self.data.has_key('types'):

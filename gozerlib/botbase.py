@@ -66,7 +66,7 @@ class BotBase(LazyDict):
         if jid:
             self.jid = jid
         else:
-            self.jid = "default"
+            self.jid = "default-%s" % self.type
 
         # set datadir to datadir/fleet/<botname>
         self.fleetdir = 'fleet' + os.sep + self.jid
