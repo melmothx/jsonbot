@@ -54,6 +54,8 @@ class BotBase(LazyDict):
         else:
             self.cfg = mainconfig
 
+        self.name = self.cfg.name or 'default-%s' % self.type
+
         self.owner = self.cfg.owner
         if not self.owner:
             logging.warn("owner is not set in %s" % self.cfg.cfile)
@@ -64,9 +66,9 @@ class BotBase(LazyDict):
         self.plugs = plugs or coreplugs 
 
         if jid:
-            self.jid = jid
+            self.name = self.jid = jid
         else:
-            self.jid = "default-%s" % self.type
+            self.jid = self.name
 
         # set datadir to datadir/fleet/<botname>
         self.fleetdir = 'fleet' + os.sep + self.jid
@@ -283,5 +285,3 @@ class BotBase(LazyDict):
         """ save bot state if available. """
         if self.state:
             self.state.save()
-
-

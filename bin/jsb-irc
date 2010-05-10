@@ -78,6 +78,9 @@ dest='save',
     parser.add_option('-f', '--fleet', action='store_true', default=False,
 dest='fleet', 
                   help="add bot to the fleet")
+    parser.add_option('', '--nick', type='string', default='jsonbot',
+dest='nick', 
+                  help="set nickname of the bot")
 
     opts, args = parser.parse_args()
     opts.args = args
@@ -117,6 +120,11 @@ if opts.name:
     cfg.jid = cfg.name = opts.name
 else:
     cfg.jid = cfg.name = 'default-irc'
+
+if opts.nick:
+    cfg.nick = opts.nick
+else:
+    cfg.nick = 'jsonbot'
 
 cfg.type = "irc"
 cfg.save()

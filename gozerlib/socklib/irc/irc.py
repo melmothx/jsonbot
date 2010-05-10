@@ -428,7 +428,7 @@ not in self.nicks401:
         logging.warn('irc - this may take a while')
 
         # check for username and realname
-        username = self.nick or self.cfg['username']
+        username = self.nick or 'jsonbot'
         realname = self.cfg['realname'] or username
 
         # first send nick

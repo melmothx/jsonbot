@@ -61,6 +61,9 @@ class Fleet(Persist):
             logging.warn("fleet - loading %s" % " .. ".join(self.data.names))
 
         for name in self.data.names:
+            if not name:
+                logging.debug("fleet - name is not set")
+                continue
             try:
                 self.makebot(self.data.types[name], name)
             except KeyError:
@@ -106,7 +109,7 @@ class Fleet(Persist):
             :type cfg: gozerlib.config.Config
 
         """
-        logging.info('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
+        logging.warn('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
         bot = None
         if not cfg:
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
