@@ -14,6 +14,8 @@ from users import users
 from plugins import plugs
 from persist import Persist
 from errors import NoSuchBotType
+from threads import start_new_thread
+from eventhandler import mainhandler
 
 ## waveapi imports
 
@@ -27,6 +29,7 @@ import types
 import time
 import glob
 import logging
+import asyncore
 
 ## classes
 
@@ -42,15 +45,25 @@ class Fleet(Persist):
     """
 
     def __init__(self):
-        Persist.__init__(self, 'fleet')
+        Persist.__init__(self, 'fleet.core')
         if not self.data.has_key('names'):
             self.data['names'] = []
+        if not self.data.has_key('types'):
+            self.data['types'] = {}
         self.bots = []
 
     def loadall(self):
-        """ load all bots. """
+        """ load all bots. """ 
+        if not self.data.names:
+            logging.error("fleet - no bots in fleet")
+        else:
+            logging.warn("fleet - loading %s" % " .. ".join(self.data.names))
+
         for name in self.data.names:
-            self.makebot(None, name)
+            try:
+                self.makebot(self.data.types[name], name)
+            except KeyError:
+                logging.error("no type know for %s bot" % name)
 
     def avail(self):
         """ return available bots. """
@@ -63,7 +76,7 @@ class Fleet(Persist):
     def getfirstjabber(self):
         """ return the first jabber bot of the fleet. """
         for bot in self.bots:
-            if bot.type == 'xmpp' or bot.type == 'jabber':
+            if bot.type == 'xmpp' or bot.type == 'jabber' or bot.type == 'sxmpp':
                return bot
         
     def size(self):
@@ -78,7 +91,7 @@ class Fleet(Persist):
         cfg.type = type
         cfg.save()
 
-    def makebot(self, type=None, name=None, domain="", cfg={}):
+    def makebot(self, type, name, domain="", cfg={}):
         """ 
             create a bot .. use configuration if provided. 
 
@@ -94,10 +107,9 @@ class Fleet(Persist):
         """
         logging.info('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
         bot = None
-        bot.name = name = name or 'default-%s' % type
         if not cfg:
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
-            cfg['name'] = name 
+            cfg['name'] = name
         if not cfg.type and type:
             logging.warn("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
@@ -118,12 +130,17 @@ class Fleet(Persist):
         if not cfg:
             raise Exception("can't make config for %s" % name)
 
-        type = type or cfg['type']
-
         # create bot based on type 
         if type == 'xmpp' or type == 'jabber':
-            from gozerlib.gae.xmpp.bot import XMPPBot
-            bot = XMPPBot(cfg)
+            try:
+                from gozerlib.gae.xmpp.bot import XMPPBot
+                bot = XMPPBot(cfg)
+            except ImportError:
+                from gozerlib.socklib.xmpp.bot import SXMPPBot          
+                bot = SXMPPBot(cfg)
+        elif type == 'sxmpp':
+            from gozerlib.socklib.xmpp.bot import SXMPPBot
+            bot = SXMPPBot(cfg)
         elif type == 'web':
             from gozerlib.gae.web.bot import WebBot
             bot = WebBot(cfg)
@@ -134,14 +151,14 @@ class Fleet(Persist):
         elif type == 'remote':
             from gozerlib.remote.bot import RemoteBot
             bot = RemoteBot(cfg)
+        elif type == 'irc':
+            from gozerlib.socklib.irc.bot import IRCBot
+            bot = IRCBot(cfg)
         else:
             raise NoSuchBotType('%s bot .. unproper type %s' % (name, type))
 
         # set bot name and initialize bot
         if bot:
-            if name and name not in self.data['names']:
-                self.data['names'].append(name)
-                self.save()
             self.addbot(bot)
             return bot
 
@@ -193,9 +210,6 @@ class Fleet(Persist):
 
         # set bot name and initialize bot
         if bot:
-            if name not in self.data['names']:
-                self.data['names'].append(name)
-                self.save()
             self.addbot(bot)
             return bot
 
@@ -253,27 +267,28 @@ class Fleet(Persist):
             add a bot to the fleet .. remove all existing bots with the 
             same name.
         """
-        if bot:
-            for i in range(len(self.bots)-1, -1, -1):
-                if self.bots[i].name == bot.name:
-                    logging.debug('fleet - removing %s from fleet' % bot.name)
-                    del self.bots[i]
+        for i in range(len(self.bots)-1, -1, -1):
+            if self.bots[i].name == bot.name:
+                logging.debug('fleet - removing %s from fleet' % bot.name)
+                del self.bots[i]
 
-            logging.debug('fleet - adding %s' % bot.name)
-            self.bots.append(bot)
-            return True
-
-        return False
+        logging.warn('fleet - adding %s' % bot.name)
+        self.bots.append(bot)
+        if bot.name and bot.name not in self.data['names']:
+            self.data['names'].append(bot.name)
+            self.data['types'][bot.name] = bot.type
+            self.save()
+        return True
 
     def delete(self, name):
         """ delete bot with name from fleet. """
-        for i in self.bots:
-            if i.name == name:
-                i.exit()
+        for bot in self.bots:
+            if bot.name == name:
+                bot.exit()
                 self.remove(i)
-                i.cfg['enable'] = 0
-                i.cfg.save()
-                logging.debug('fleet - %s disabled' % i.name)
+                bot.cfg['enable'] = 0
+                bot.cfg.save()
+                logging.debug('fleet - %s disabled' % bot.name)
                 return True
 
         return False
@@ -291,17 +306,17 @@ class Fleet(Persist):
         """ call exit on all bots. """
         if not name:
             threads = []
-            for i in self.bots:
-                i.exit()
+            for bot in self.bots:
+                bot.exit()
             return
 
-        for i in self.bots:
-            if i.name == name:
+        for bot in self.bots:
+            if bot.name == name:
                 try:
-                    i.exit()
+                    bot.exit()
                 except:
                     handle_exception()
-                self.remove(i)
+                self.remove(bot)
                 return True
 
         return False
@@ -352,13 +367,32 @@ class Fleet(Persist):
             :type cmnd: string
 
         """
-        for i in self.bots:
-            self.cmnd(event, i.name, cmnd)
+        for bot in self.bots:
+            self.cmnd(event, bot.name, cmnd)
 
     def broadcast(self, txt):
         """ broadcast txt to all bots. """
-        for i in self.bots:
-            i.broadcast(txt)
+        for bot in self.bots:
+            bot.broadcast(txt)
+
+    def startall(self):
+        for bot in self.bots:
+            start_new_thread(bot.start, ())
+
+        # basic loop
+        from exit import globalshutdown
+        while 1:
+            try:
+                asyncore.poll(timeout=0.1)
+                time.sleep(0.01)
+                mainhandler.handle_one()
+            except KeyboardInterrupt:
+                globalshutdown()
+                os._exit(0)
+            except Exception, ex:
+                handle_exception()   
+                globalshutdown()
+                os._exit(1)
 
 ## defines
 

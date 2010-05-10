@@ -49,7 +49,6 @@ import os
 import logging
 
 ## init
-
 logging.warn(getversion('WEB'))
 
 ## define

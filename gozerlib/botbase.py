@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from eventhandler import mainhandler
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
 from callbacks import callbacks, gn_callbacks
@@ -29,7 +30,7 @@ import sys
 import getpass
 import os
 import thread
-
+import asyncore
 ## define
 
 cpy = copy.deepcopy
@@ -103,28 +104,20 @@ class BotBase(LazyDict):
         return self.plugs
 
     def start(self):
-        """ start the mainloop of the bot. BotBase does console. """
-        while 1: 
+        """ start the mainloop of the bot. """
+        # basic loop
+        while 1:
             try:
-                time.sleep(0.1)
-                #sys.stdout.write("> ")
-                input = raw_input("> ")
-
-                if len(input) > 1:
-                    event = EventBase()
-                    event.auth = getpass.getuser()
-                    event.userhost = event.auth
-                    event.txt = input
-                    event.usercmnd = input.split()[0]
-                    event.makeargs()
-
-                    try:
-                        result = self.plugs.dispatch(self, event)
-                    except NoSuchCommand:
-                        print "no such command: %s" % event.usercmnd
-
-            except (KeyboardInterrupt, EOFError):
+                asyncore.poll(timeout=0.1)
+                time.sleep(0.01)
+                mainhandler.handle_one()
+            except KeyboardInterrupt:
                 globalshutdown()
+                os._exit(0)
+            except Exception, ex:
+                handle_exception()   
+                globalshutdown()
+                os._exit(1)
 
     @eventlocked
     def doevent(self, event):
@@ -290,3 +283,5 @@ class BotBase(LazyDict):
         """ save bot state if available. """
         if self.state:
             self.state.save()
+
+

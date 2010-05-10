@@ -26,6 +26,7 @@ from gozerlib.runner import runners_start
 from gozerlib.errors import NoSuchCommand
 from gozerlib.channelbase import ChannelBase
 from gozerlib.exit import globalshutdown
+from gozerlib.botbase import BotBase
 
 ## gozerlib.socklib.irc imports
 
@@ -55,7 +56,7 @@ dccchatre = re.compile('\001DCC CHAT CHAT (\S+) (\d+)\001', re.I)
 
 ## classes
 
-class Bot(Irc):
+class IRCBot(Irc):
 
     """ class that dispatches commands and checks for callbacks to fire. """ 
 
@@ -272,12 +273,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         except (KeyboardInterrupt, EOFError):
             globalshutdown() 
 
-        while 1:
-            try:
-                time.sleep(1)
-            except (KeyboardInterrupt, EOFError):
-                globalshutdown() 
-
+        BotBase.start(self)
 
     @threaded
     def reconnect(self):

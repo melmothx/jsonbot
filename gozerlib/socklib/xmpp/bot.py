@@ -249,11 +249,7 @@ class SXMPPBot(XMLStream, BotBase):
         except (KeyboardInterrupt, EOFError):
             globalshutdown()
 
-        while 1:
-            try:
-                time.sleep(1)
-            except (KeyboardInterrupt, EOFError):
-                globalshutdown()
+        BotBase.start(self)
 
     def logon(self, user, password):
         """ logon on the xmpp server. """
