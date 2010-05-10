@@ -25,6 +25,7 @@ class XMPPBot(BotBase):
 
     def __init__(self, cfg=None, users=None, plugs=None, jid="jsonbot@appspot.com", *args, **kwargs):
         BotBase.__init__(self, cfg, users, plugs, jid, *args, **kwargs)
+        self.jid = jid
         if self.cfg:
             self.cfg['type'] = 'xmpp'
         self.isgae = True

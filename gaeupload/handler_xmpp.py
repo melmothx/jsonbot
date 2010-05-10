@@ -107,7 +107,6 @@ application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler),
 def main():
     global application
     global bot
-    global gnbot
     run_wsgi_app(application)
 
 if __name__ == "__main__":

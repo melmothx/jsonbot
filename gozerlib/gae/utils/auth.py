@@ -46,7 +46,7 @@ def checkuser(response, request):
             email = request.get('USER_EMAIL')
             if not email:
                 email = "notauth"
-            logging.debug("gae.utils.auth - using %s" % str(request))
+            #logging.debug("gae.utils.auth - using %s" % str(request))
             auth_domain = request.get('AUTH_DOMAIN')
             who = request.get('who')
             if not who:
