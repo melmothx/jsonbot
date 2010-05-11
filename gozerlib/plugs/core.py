@@ -326,6 +326,7 @@ examples.add("logleve;", "set loglevel ot on of debug, info, warning or error", 
 def handle_botdata(bot, event):
     result = bot
     del result['plugs']
+    del result['cfg']
     event.reply(str(result))
 
 cmnds.add("bot-data", handle_botdata, 'OPER')
