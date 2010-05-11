@@ -12,6 +12,7 @@ from simplejson import loads, dumps
 from  xml.sax.saxutils import unescape
 import copy
 import logging
+import uuid
 
 ## defines
 
@@ -23,6 +24,8 @@ class LazyDict(dict):
 
     """ lazy dict allows dotted access to a dict """
 
+    def __init__(self, *args, **kwargs):
+        dict.__init__(self, *args, **kwargs)
 
     def __getattr__(self, attr, default=None):
         """ get attribute. """

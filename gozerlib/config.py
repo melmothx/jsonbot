@@ -22,6 +22,7 @@ import os
 import types
 import thread
 import logging
+import uuid
 
 ## classes
 
@@ -45,6 +46,8 @@ class Config(LazyDict):
         self.filename = filename or 'mainconfig'
         self.dir = 'config'
         self.cfile = self.dir + os.sep + self.filename
+        if not self.uuid:
+            self.uuid = uuid.uuid4()
         self.init()
         self.jsondb = None
 

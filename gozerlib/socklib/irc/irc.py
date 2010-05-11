@@ -164,7 +164,7 @@ class Irc(BotBase):
                 self.oldsock.bind((elite, 0))
             except socket.gaierror:
                 logging.info("irc - %s - can't bind to %s" % (self.name, elite))
-               # resolve the IRC server and pick a random server
+                # resolve the IRC server and pick a random server
                 if not server:
                     # valid IPv6 ip?
                     try: socket.inet_pton(socket.AF_INET6, self.server)

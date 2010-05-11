@@ -31,17 +31,13 @@ def globalshutdown():
     except:
         pass
 
-    try:
-        runners_stop()
-        logging.debug('shutting down fleet')
-        fleet.exit()
-        logging.debug('shutting down plugins')
-        plugs.exit()
-        logging.warn('done')
-        print "bye!"
-        os._exit(0)
-
-    except Exception, ex:
-        logging.error('exit - error %s:' % str(ex))
+    runners_stop()
+    logging.debug('shutting down fleet')
+    fleet.exit()
+    logging.debug('shutting down plugins')
+    plugs.exit()
+    logging.warn('done')
+    print "bye!"
+    os._exit(0)
 
 atexit.register(globalshutdown)
