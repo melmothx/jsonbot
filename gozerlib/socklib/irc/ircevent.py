@@ -150,6 +150,7 @@ class Ircevent(EventBase):
             self.stripped = self.userhost
             # determine user
             self.user = stripident(self.userhost).split('@')[0]
+            self.auth = self.userhost
 
         self.origtxt = self.txt
         if self.channel:

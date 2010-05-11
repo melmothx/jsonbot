@@ -304,7 +304,7 @@ class Irc(BotBase):
                 timeout += 1
                 if timeout > 2:
                     doreconnect = 1
-                    logging('irc - no pong received')
+                    logging.warn('irc - no pong received')
                     break
                 logging.debug("irc - socket timeout")
                 pingsend = self.ping()
@@ -734,32 +734,34 @@ realname))
         if not what:
             return
 
+        [res1, res2] = self.less(fromm, what)
+
         # split up in parts of 375 chars overflowing on word boundaries
-        txtlist = splittxt(what)
-        size = 0
+        #txtlist = splittxt(what)
+        #size = 0
 
         # send first block
-        self.output(printto, txtlist[0], how, who, fromm)
+        self.output(printto, res1, how, who, fromm)
 
         # see if we need to store output in less cache
-        result = ""
-        if len(txtlist) > 2:
-            if not fromm:
-                self.less(printto, txtlist[1:])
-            else:
-                logging.warning("irc - fromm is %s" % fromm)
-                self.less(fromm, txtlist[1:])
-            size = len(txtlist) - 2
-            result = txtlist[1:2][0]
-            if size:
-                result += " (+%s)" % size
-        else:
-            if len(txtlist) == 2:
-                result = txtlist[1]
+        #result = ""
+        #if len(txtlist) > 2:
+        #    if not fromm:
+        #        self.less(printto, txtlist[1:])
+        #    else:
+        #        self.less(fromm, txtlist[1:])
+        #    size = len(txtlist) - 2
+        #    result = txtlist[1:2][0]
+        #    if size:
+        #        result += " (+%s)" % size
+        #else:
+        #    if len(txtlist) == 2:
+        #        result = txtlist[1]
 
         # send second block
-        if result:
-            self.output(printto, result, how, who, fromm)
+        #if result:
+        if res2:
+            self.output(printto, res2, how, who, fromm)
 
     def output(self, printto, what, how='msg' , who=None, fromm=None):
 
@@ -906,7 +908,7 @@ realname))
             now = time.time()
             timetosleep = 4 - (now - self.lastoutput)
             if timetosleep > 0 and not self.nolimiter:
-                logging.warn('irc - flood protect')
+                logging.debug('irc - flood protect')
                 time.sleep(timetosleep)
             txt = toenc(strippedtxt(txt))
             txt = txt.rstrip()
@@ -1098,7 +1100,6 @@ pingtime2)
     def handle_error(self, ievent):
 
         """ show error. """
-        logging.error(str(ievent))
         if ievent.cmnd == "422":
             return
 

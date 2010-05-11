@@ -321,8 +321,8 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
 
         if self.channels:
             self.channels.save()
-        if self.userhosts:
-            self.userhosts.save()
+        #if self.userhosts:
+        #    self.userhosts.save()
         Irc.save(self)
 
     def stop(self):
@@ -535,7 +535,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
 
         # sync joined user with userhosts cache
         if self.userhosts:
-            self.userhosts.data[nick] = ievent.userhost
+            self.userhosts[nick] = ievent.userhost
         if self.userchannels:
             self.userchannels.adduniq(nick, chan)
 
@@ -562,7 +562,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         """ update userhost cache on nick change. """
 
         nick = ievent.txt
-        self.userhosts.data[nick] = ievent.userhost
+        self.userhosts[nick] = ievent.userhost
 
         if ievent.nick == self.nick:
             self.cfg['nick'] = nick
@@ -638,7 +638,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         logging.debug('irc - adding %s to userhosts: %s' % (nick, userhost))
         # userhosts cache is accessed by lower case nick
         if self.userhosts:
-            self.userhosts.data[nick] = userhost
+            self.userhosts[nick] = userhost
 
     def handle_352(self, ievent):
 
@@ -652,7 +652,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         userhost = "%s@%s" % (user, host)
         logging.debug('adding %s to userhosts: %s' % (nick, userhost))
         if self.userhosts:
-             self.userhosts.data[nick] = userhost
+             self.userhosts[nick] = userhost
         if self.userchannels:
             self.userchannels.adduniq(nick, channel)
 

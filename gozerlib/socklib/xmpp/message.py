@@ -164,7 +164,7 @@ class Message(XMLDict):
 
         # see if we need to store output in less cache
         if len(txtlist) > 1:
-            self.less.add(self.userhost, txtlist)
+            self.less(txtlist)
             size = len(txtlist) - 1
             result = txtlist[:1][0]
             if size:
@@ -228,6 +228,7 @@ class Message(XMLDict):
         self.ruserhost = self.jid
         self.userhost = self.jid
         self.stripped = self.jid.split('/')[0]
+        self.auth = self.stripped
         self.printto = self.channel
 
         for node in self.subelements:

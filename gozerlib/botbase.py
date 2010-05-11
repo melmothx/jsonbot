@@ -20,6 +20,7 @@ from less import Less
 from boot import boot
 from utils.locking import lockdec
 from exit import globalshutdown
+from utils.generic import splittxt
 
 ## basic imports
 
@@ -30,6 +31,8 @@ import sys
 import getpass
 import os
 import thread
+import types
+
 ## define
 
 cpy = copy.deepcopy
@@ -42,7 +45,7 @@ eventlocked = lockdec(eventlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
-        logging.warn("botbase - %s - %s" % (str(cfg), botname))
+        logging.debug("botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()
         self.isgae = False
@@ -71,7 +74,7 @@ class BotBase(LazyDict):
             logging.warn("owner is not set in %s" % self.cfg.cfile)
 
         self.setusers(usersin)
-        logging.warn("botbase - owner is %s" % self.owner)
+        logging.debug("botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
         self.outcache = Less(1)
@@ -127,7 +130,7 @@ class BotBase(LazyDict):
         self.curevent = event
         go = False
         cc = event.chan.data.cc
-        logging.warn("cc for %s is %s" % (event.title or event.channel, cc))
+        logging.debug("cc for %s is %s" % (event.title or event.channel, cc))
         if not cc:
             cc = "!"
         if event.txt and event.txt[0] in cc:
@@ -223,11 +226,12 @@ class BotBase(LazyDict):
 
     def less(self, who, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
-        try:
-            what = what.strip()
-            txtlist = splittxt(what, nr)
-        except AttributeError:
+        
+        if type(what) == types.ListType:
             txtlist = what
+        else:
+            what = what.strip()
+            txtlist = splittxt(what, nr - 5)
 
         size = 0
 

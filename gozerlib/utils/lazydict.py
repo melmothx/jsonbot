@@ -31,7 +31,7 @@ class LazyDict(dict):
         """ get attribute. """
         if not self.has_key(attr):
             self[attr] = default
-            logging.warning("setting default of %s to %s" % (attr, default))
+            #logging.warning("setting default of %s to %s" % (attr, default))
 
         return self[attr]
 

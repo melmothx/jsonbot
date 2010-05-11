@@ -121,24 +121,4 @@ class EventBase(LazyDict):
         return ""
             
     def less(self, what):
-        what = what.strip()
-        txtlist = splittxt(what, 1000)
-        size = 0
-
-        # send first block
-        res = txtlist[0]
-
-        # see if we need to store output in less cache
-        result = ""
-        if len(txtlist) > 2:
-            logging.warn("addding %s lines to %s outputcache" % (len(txtlist), self.userhost))
-            self.bot.outcache.add(self.userhost, txtlist[1:])
-            size = len(txtlist) - 2
-            result = txtlist[1:2][0]
-            if size:
-                result += " (+%s)" % size
-        else:
-            if len(txtlist) == 2:
-                result = txtlist[1]
-
-        return [res, result] 
+        return self.bot.less(self.userhost, what)

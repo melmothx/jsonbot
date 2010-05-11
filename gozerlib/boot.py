@@ -31,7 +31,7 @@ rundir = "run"
 def boot(force=False):
     """ initialize the bot. """
     global loaded
-    logging.warn("booting ..")
+    logging.warn("boot - starting ..")
 
     if not admin.cmndtable:
         admin.cmndtable = Persist(rundir + os.sep + 'cmndtable')
@@ -60,6 +60,8 @@ def boot(force=False):
     if not admin.loaded:
         for plug in default_plugins:
             plugs.load(plug)
+
+    logging.warn("boot - booting done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """

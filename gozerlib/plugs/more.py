@@ -59,7 +59,10 @@ def handle_more(bot, ievent):
     try:
         who = ievent.args[0]
     except IndexError:
-        who = ievent.auth
+        if bot.type == "irc":
+            who = ievent.nick or ievent.auth
+        else:
+            who = ievent.auth
 
     what, size = bot.outcache.more(who, 0)
 
@@ -70,9 +73,9 @@ def handle_more(bot, ievent):
     #ievent.reply(what)
 
     if size:
-        ievent.reply("%s (+%s)" % (what.strip(), size), raw=True)
+        ievent.reply("%s (+%s)" % (what.strip(), size))
     else:
-        ievent.reply(what.strip(), raw=True)
+        ievent.reply(what.strip())
      
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('more', 'return txt from output cache', '1) more 2) more test')
