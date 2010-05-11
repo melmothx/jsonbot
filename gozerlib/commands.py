@@ -16,6 +16,7 @@ from utils.trace import calledfrom, whichmodule
 from utils.exception import handle_exception
 from utils.lazydict import LazyDict
 from errors import NoSuchCommand
+from config import cfg as mainconfig
 
 ## basic imports
 
@@ -84,7 +85,7 @@ class Commands(LazyDict):
             return self.doit(bot, event, c)
         elif not bot.users or bot.users.allowed(id, c.perms, bot=bot):
             return self.doit(bot, event, c)
-        elif bot.cfg and bot.cfg.auto_register:
+        elif mainconfig.auto_register:
             bot.users.addguest(event.userhost)
             if bot.users.allowed(id, c.perms, bot=bot):
                 return self.doit(bot, event, c)

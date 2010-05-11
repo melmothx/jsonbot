@@ -52,7 +52,6 @@ class BotBase(LazyDict):
         self.isgae = False
         self.type = "base"
 
-
         if botname:
             self.botname = botname
         else:
