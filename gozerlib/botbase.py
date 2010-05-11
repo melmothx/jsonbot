@@ -42,7 +42,7 @@ eventlocked = lockdec(eventlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
-        logging.debug("botbase - %s - %s" % (str(cfg), botname))
+        logging.warn("botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()
         self.isgae = False
@@ -111,9 +111,6 @@ class BotBase(LazyDict):
         # basic loop
         while 1:
             try:
-                if not self.isgae:
-                    import asyncore
-                    asyncore.poll(timeout=0.1)
                 time.sleep(0.01)
                 mainhandler.handle_one()
             except KeyboardInterrupt:
@@ -226,8 +223,12 @@ class BotBase(LazyDict):
 
     def less(self, who, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
-        what = what.strip()
-        txtlist = splittxt(what, nr)
+        try:
+            what = what.strip()
+            txtlist = splittxt(what, nr)
+        except AttributeError:
+            txtlist = what
+
         size = 0
 
         # send first block

@@ -24,13 +24,14 @@ class LazyDict(dict):
 
     """ lazy dict allows dotted access to a dict """
 
-    def __init__(self, *args, **kwargs):
-        dict.__init__(self, *args, **kwargs)
+    def __deepcopy__(self, a, b):
+        return  LazyDict(a) 
 
     def __getattr__(self, attr, default=None):
         """ get attribute. """
         if not self.has_key(attr):
             self[attr] = default
+            logging.warning("setting default of %s to %s" % (attr, default))
 
         return self[attr]
 

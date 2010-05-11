@@ -406,8 +406,7 @@ class Irc(BotBase):
                 except ValueError:
                     self.send(res)
                     continue
-                if not self.stopped and not self.stopoutloop and printto \
-not in self.nicks401:
+                if not self.stopped and not self.stopoutloop and printto not in self.nicks401:
                     self.out(printto, what, who, how, fromm, speed)
             else:
                 time.sleep(0.1)
@@ -748,6 +747,7 @@ realname))
             if not fromm:
                 self.less(printto, txtlist[1:])
             else:
+                logging.warning("irc - fromm is %s" % fromm)
                 self.less(fromm, txtlist[1:])
             size = len(txtlist) - 2
             result = txtlist[1:2][0]

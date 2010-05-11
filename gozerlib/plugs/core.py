@@ -29,6 +29,10 @@ import cgi
 
 ## define
 
+cpy = copy.deepcopy
+
+## commands
+
 def handle_encoding(bot, ievent):
     """ show default encoding. """
     ievent.reply('default encoding is %s' % sys.getdefaultencoding())
@@ -324,13 +328,7 @@ cmnds.add("loglevel", handle_loglevel, "OPER")
 examples.add("logleve;", "set loglevel ot on of debug, info, warning or error", "loglevel debug")
 
 def handle_botdata(bot, event):
-    result = bot
-    try:
-       del result['plugs']
-       del result['cfg']
-       del result['password']
-    except KeyError:
-       pass 
+    result = bot.dump()
     event.reply(str(result))
 
 cmnds.add("bot-data", handle_botdata, 'OPER')
