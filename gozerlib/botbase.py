@@ -58,7 +58,7 @@ class BotBase(LazyDict):
             if botname:
                 self.botname = botname
             else:
-                self.botname = "default-%s" % type(self)
+                self.botname = "default-%s" % str(type(self)).split('.')[-1]
         else:
             self.botname = self.cfg.name
 
