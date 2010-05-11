@@ -85,7 +85,7 @@ dest='fleet',
     opts, args = parser.parse_args()
     opts.args = args
 
-name = opts.name or 'sxmpp-default'
+name = opts.name or 'default-sxmpp'
 cfg = Config('fleet' + os.sep + name + os.sep + 'config')
 cfg.name = name
 

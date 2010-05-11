@@ -15,6 +15,7 @@ from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet
 from datadir import datadir
 from commands import Commands
 from config import cfg as mainconfig
+from config import Config
 from utils.pdod import Pdod
 from less import Less
 from boot import boot
@@ -51,30 +52,30 @@ class BotBase(LazyDict):
         self.isgae = False
         self.type = "base"
 
+
+        if botname:
+            self.botname = botname
+        else:
+            self.botname = "default-%s" % str(type(self)).split('.')[-1][:-2]
+
+        self.fleetdir = 'fleet' + os.sep + self.botname
+
         if cfg:
             self.cfg = cfg
             self.update(cfg)
         else:
-            self.cfg = mainconfig
-
-        if not self.cfg.name:
-            if botname:
-                self.botname = botname
-            else:
-                self.botname = "default-%s" % str(type(self)).split('.')[-1]
-        else:
-            self.botname = self.cfg.name
+            self.cfg = Config(self.fleetdir + os.sep + 'config')
 
         # set datadir to datadir/fleet/<botname>
-        self.fleetdir = 'fleet' + os.sep + self.botname
         self.datadir = datadir + os.sep + self.fleetdir
         self.name = self.botname
         self.owner = self.cfg.owner
         if not self.owner:
-            logging.warn("owner is not set in %s" % self.cfg.cfile)
+            logging.warn("owner is not set in %s - using mainconfig" % self.cfg.cfile)
+            self.owner = mainconfig.owner
 
         self.setusers(usersin)
-        logging.debug("botbase - owner is %s" % self.owner)
+        logging.warn("botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
         self.outcache = Less(1)
