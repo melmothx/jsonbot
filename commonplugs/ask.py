@@ -35,6 +35,7 @@ def askprecondition(bot, event):
 
     """ check to see whether the callback needs to be executed. """
 
+    global questions
     if event.userhost in questions.data and not event.iscmnd:
         return True
 
@@ -68,7 +69,7 @@ def askcallback(bot, event):
         askbot = fleet.makebot(type)
 
         if not askbot:
-            askbot = fleet.makebot('xmpp')
+            askbot = fleet.makebot('xmpp', 'askxmppbot')
 
         logging.debug("ask - %s %s %s %s" % (botname, type, userhost, channel))
 
@@ -199,7 +200,7 @@ def handle_askjoin(bot, event):
     if not subjects.data.has_key(expert):
         subjects.data[expert] = []
 
-    if not event.userhost in experts.data[expert]:
+    if not subject in subjects.data[expert]:
         subjects.data[expert].append(subject)
         subjects.save()
 

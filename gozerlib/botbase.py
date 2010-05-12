@@ -87,6 +87,8 @@ class BotBase(LazyDict):
         except:
             pass
 
+        self.setstate()
+
     def setstate(self, state=None):
         """ set state on the bot. """
         self.state = state or Pdod(self.datadir + os.sep + 'state')
