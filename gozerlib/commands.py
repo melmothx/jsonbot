@@ -114,6 +114,8 @@ class Commands(LazyDict):
         """ remove modname registered commands from store. """
         delete = []
         for name, cmnd in self.iteritems():
+            if not cmnd:
+                continue
             if cmnd.modname == modname:
                 delete.append(cmnd)
 

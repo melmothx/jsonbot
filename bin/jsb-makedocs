@@ -147,10 +147,10 @@ def gendoc(mod, f, output):
                 out = None
                 try:
                     out = bot.docmnd("test@test", "#test", i.strip())
-                    if not out:
+                    if not out.result:
                         output.write("        <output> none" + '\n')
                         continue
-                    result = ' .. '.join(out)
+                    result = ' .. '.join(out.result)
                     result = result.replace('\002', '')
                     teller2 = 1
                     for j in splittxt(result, 50):

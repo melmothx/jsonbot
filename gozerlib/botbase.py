@@ -52,6 +52,7 @@ class BotBase(LazyDict):
         self.starttime = time.time()
         self.isgae = False
         self.type = "base"
+        self.status = "init"
 
         if botname:
             self.botname = botname
@@ -113,6 +114,7 @@ class BotBase(LazyDict):
     def start(self):
         """ start the mainloop of the bot. """
         # basic loop
+        self.status == "running"
         while 1:
             try:
                 time.sleep(0.01)
@@ -127,6 +129,7 @@ class BotBase(LazyDict):
 
     def doevent(self, event):
         """ dispatch an event. """
+        self.status = "dispatch"
         self.curevent = event
         go = False
         cc = "!"
