@@ -45,6 +45,7 @@ setloglevel(opts.loglevel)
 
 from gozerlib.plugins import Plugins
 from gozerlib.console.bot import ConsoleBot
+from gozerlib.console.event import ConsoleEvent
 from gozerlib.plugins import Plugins
 from gozerlib.config import Config
 from gozerlib.datadir import makedirs, datadir

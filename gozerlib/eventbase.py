@@ -45,12 +45,11 @@ class EventBase(LazyDict):
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
-        logging.info(u"eventbase - out - %s - %s" % (self.userhost, unicode(txt)))
-        print u"> " + txt
-        self.result.append(txt)
+        pass
 
     def parse(self, *args, **kwargs):
         """ overload this. """
+        pass
 
     def copyin(self, eventin):
         """ copy in an event. """
@@ -61,8 +60,6 @@ class EventBase(LazyDict):
         if eventin.has_key('queues'):
             if eventin['queues']:
                 self.queues = list(eventin['queues'])
-        #if eventin.inqueue:
-        #    self.inqueue = cpy(eventin.inqueue)
 
         return self
 
@@ -94,9 +91,7 @@ class EventBase(LazyDict):
         return self
 
     def makeargs(self):
-
         """ make arguments and rest attributes from self.txt. """
-
         try:
             self.args = self.txt.split()[1:]
             self.rest = ' '.join(self.args)
@@ -114,6 +109,7 @@ class EventBase(LazyDict):
         return False
 
     def makeresponse(self, txt, result, nritems=False, dot=", ", *args, **kwargs):
+        """ create a response from a string and result list. """
         if txt:
             return txt + dot.join(result)
         elif result:
@@ -121,4 +117,5 @@ class EventBase(LazyDict):
         return ""
             
     def less(self, what):
+        """ check string for overflow, if so send data to the output cache. """
         return self.bot.less(self.userhost, what)

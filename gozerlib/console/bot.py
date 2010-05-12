@@ -6,14 +6,16 @@
 
 ## gozerlib imports
 
-from gozerlib.eventbase import EventBase
+from gozerlib.errors import NoSuchCommand
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
+from event import ConsoleEvent
 
 ## basic imports
 
 import time
-import getpass
+
+## classes
 
 class ConsoleBot(BotBase):
 
@@ -21,16 +23,11 @@ class ConsoleBot(BotBase):
         while 1: 
             try: 
                 time.sleep(0.1)
-                #sys.stdout.write("> ")
                 input = raw_input("> ")
 
                 if len(input) > 1:
-                    event = EventBase()
-                    event.auth = getpass.getuser()
-                    event.userhost = event.auth   
-                    event.txt = input
-                    event.usercmnd = input.split()[0]
-                    event.makeargs()
+                    event = ConsoleEvent()
+                    event.parse(input)
 
                     try:
                         result = self.plugs.dispatch(self, event)

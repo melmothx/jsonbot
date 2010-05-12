@@ -176,15 +176,12 @@ def handle_watcherstart(bot, event):
     watched.subscribe(bot.name, bot.type, event.rest, event.channel)
     event.done()
 
-    try:
+    if bot.type == "wave":
         wave = Wave(event.rest)
         if wave:
-            wavebot = fleet.makebot(type='wave')
+            wavebot = fleet.makebot('wave', 'wavewatchbot')
             if wavebot:
                 wave.say(wavebot, "%s is now watching %s" % (event.channel, event.rest))
-
-    except Exception, ex:
-        handle_exception()
 
 cmnds.add('watcher-start', handle_watcherstart, 'USER')
 examples.add('watcher-start', 'start watching a channel/wave. ', 'watcher-start <channel>')

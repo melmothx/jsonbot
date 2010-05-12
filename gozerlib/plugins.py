@@ -183,7 +183,7 @@ class Plugins(LazyDict):
             from boot import getcmndtable
             plugin = getcmndtable()[event.usercmnd]
         except KeyError:
-            logging.warn("can't find plugin to reload for %s" % event.usercmnd)
+            logging.info("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return
 
         #logging.warn('cmnd: %s plugin: %s' % (event.usercmnd, plugin))
