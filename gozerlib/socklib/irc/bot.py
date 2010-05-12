@@ -151,7 +151,6 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         res = ""
         # add joined user to the partyline
         partyline.add_party(self, sock, nick, userhost, channel)
-        chan = ChannelBase(channel or userhost)
 
         while 1:
             time.sleep(0.001)
@@ -198,7 +197,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
                 ievent.nick = nick
                 ievent.userhost = userhost
                 ievent.channel = channel or ievent.userhost
-                ievent.chan = chan
+                ievent.chan = ChannelBase(channel or userhost)
                 ievent.origtxt = res
                 ievent.txt = res
                 ievent.cmnd = 'DCC'
