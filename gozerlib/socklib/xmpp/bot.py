@@ -71,7 +71,7 @@ class SXMPPBot(XMLStream, BotBase):
         if not self.host:
             self.host = self.cfg.host
             if not self.host:
-                raise Exception("host not set in sxmpp bot")
+                raise Exception("host not set in sxmpp bot - %s" % str(self.cfg))
 
         self.username = self.user.split('@')[0]
         XMLStream.__init__(self, self.host, self.port, self.name)   

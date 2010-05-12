@@ -182,6 +182,7 @@ class XMLStream(NodeBuilder):
         self.port = port
         # handlers
         self.handlers = LazyDict()
+        self.addHandler('proceed', self.handle_proceed)
         self.addHandler('message', self.handle_message)
         self.addHandler('presence', self.handle_presence)
         self.addHandler('iq', self.handle_iq)
@@ -189,6 +190,10 @@ class XMLStream(NodeBuilder):
         self.addHandler('stream:stream', self.handle_stream)
         self.addHandler('stream:error', self.handle_streamerror)
         self.addHandler('stream:features', self.handle_streamfeatures)
+
+    def handle_proceed(self, data):
+        """ default stream handler. """
+        logging.warn("sxmpp.core - proceeding")
 
     def handle_stream(self, data):
         """ default stream handler. """

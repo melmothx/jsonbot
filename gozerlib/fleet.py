@@ -108,7 +108,7 @@ class Fleet(Persist):
             :type cfg: gozerlib.config.Config
 
         """
-        logging.warn('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
+        logging.debug('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
         bot = None
         if not cfg:
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
@@ -116,7 +116,6 @@ class Fleet(Persist):
         if not cfg.type and type:
             logging.warn("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
-            cfg.save()
         if not cfg['type']:
             try:
                 self.data['names'].remove(name)
@@ -129,10 +128,9 @@ class Fleet(Persist):
             cfg.owner = mainconfig.owner
         if not cfg['domain'] and domain:
             cfg['domain'] = domain
-            cfg.save()
         if not cfg:
             raise Exception("can't make config for %s" % name)
-
+        cfg.save()
         # create bot based on type 
         if type == 'xmpp' or type == 'jabber':
             try:
@@ -280,7 +278,6 @@ class Fleet(Persist):
         if bot.botname and bot.botname not in self.data['names']:
             self.data['names'].append(bot.botname)
             self.data['types'][bot.botname] = bot.type
-            self.save()
         return True
 
     def delete(self, name):
