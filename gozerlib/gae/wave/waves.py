@@ -14,10 +14,6 @@ from gozerlib.utils.locking import lockdec
 
 from simplejson import dumps
 
-## google imports
-
-import google
-
 ## basic imports
 
 import logging
@@ -181,6 +177,7 @@ class Wave(ChannelBase):
 
         logging.warn("submitting to server: %s" % wavelet.serialize())
         try:
+            import google
             bot.submit(wavelet)
         except google.appengine.api.urlfetch_errors.DownloadError:
             handle_exception()
@@ -203,6 +200,7 @@ class Wave(ChannelBase):
 
         logging.warn('wave - out - %s - %s' % (self.data.title, txt))
         try:
+            import google
             blip = wavelet._root_blip.reply()
             blip.append(txt)
             bot.submit(wavelet)
