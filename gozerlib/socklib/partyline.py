@@ -22,6 +22,7 @@ from simplejson import load
 import thread
 import pickle
 import socket
+import logging
 
 ## classes
 
@@ -58,7 +59,7 @@ class PartyLine(object):
             channel = i['channel']
 
             if not bot:
-                rlog(10, 'partyline', "can't find %s bot in fleet" % i['botname'])
+                logging.error("partyline - can't find %s bot in fleet" % i['botname'])
                 continue
 
             self.socks.append({'bot': bot, 'sock': sock, 'nick': nick, 'userhost': userhost, 'channel': channel, 'silent': i['silent']})
@@ -191,7 +192,7 @@ class PartyLine(object):
         self.socks.append({'bot': bot, 'sock': sock, 'nick': nick, \
 'userhost': userhost, 'channel': channel, 'silent': False})
 
-        rlog(1, 'partyline', 'added user %s on the partyline' % nick)
+        logging.debug("partyline - added user %s" % nick)
 
     def del_party(self, nick):
 
@@ -213,7 +214,7 @@ class PartyLine(object):
                 if self.socks[socknr]['nick'].lower() == nick:
                     del self.socks[socknr]
 
-            rlog(1, 'partyline', 'removed user %s from the partyline' % nick)
+            logging.debug('partyline - removed user %s' % nick)
 
         finally:
             self.lock.release()

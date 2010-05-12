@@ -124,15 +124,16 @@ class BotBase(LazyDict):
                 globalshutdown()
                 os._exit(1)
 
-    @eventlocked
     def doevent(self, event):
         """ dispatch an event. """
         self.curevent = event
         go = False
-        cc = event.chan.data.cc
-        logging.debug("cc for %s is %s" % (event.title or event.channel, cc))
+        cc = "!"
+        if event.chan:
+            cc = event.chan.data.cc
         if not cc:
             cc = "!"
+        logging.debug("cc for %s is %s" % (event.title or event.channel, cc))
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
             if event.txt:

@@ -16,7 +16,6 @@ from gozerlib.utils.generic import waitforqueue, uniqlist, strippedtxt
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks
 from gozerlib.plugins import plugs as plugins
-from gozerlib.users import users
 from gozerlib.datadir import datadir
 from gozerlib.threads import start_new_thread, threaded
 from gozerlib.utils.dol import Dol
@@ -116,6 +115,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
             # go listen to response
             sock = listensock.accept()[0]
         except Exception, ex:
+            handle_exception()
             logging.error('irc - dcc error: %s' % str(ex))
             return
 
@@ -131,14 +131,13 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
 
         try:
             # send welcome message .. show list of commands for USER perms
-            cmndslist = cmnds.list('USER')
-            cmndslist.sort()
             sock.send('Welcome to the GOZERBOT partyline ' + nick + " ;]\n")
             partylist = partyline.list_nicks()
             if partylist:
                 sock.send("people on the partyline: %s\n" % ' .. '.join(partylist))
             sock.send("control character is ! .. bot broadcast is @\n")
         except Exception, ex:
+            handle_exception()
             logging.error('irc - dcc error: %s' % str(ex))
             return
         start_new_thread(self._dccloop, (sock, nick, userhost, channel))
@@ -148,15 +147,18 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         """ loop for dcc commands. """
 
         sockfile = sock.makefile('r')
+        sock.setblocking(True)
         res = ""
         # add joined user to the partyline
         partyline.add_party(self, sock, nick, userhost, channel)
+        chan = ChannelBase(channel or userhost)
 
         while 1:
             time.sleep(0.001)
             try:
                 # read from socket
                 res = sockfile.readline()
+                logging.debug("irc - dcc - %s got %s" % (userhost, res))
                 # if res == "" than the otherside had disconnected
                 if self.stopped or not res:
                     logging.info('irc - closing dcc with ' + nick)
@@ -192,9 +194,11 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
                     channel = nick
                 # create ircevent
                 ievent = Ircevent()
+                ievent.bottype = "irc"
                 ievent.nick = nick
                 ievent.userhost = userhost
-                ievent.channel = channel
+                ievent.channel = channel or ievent.userhost
+                ievent.chan = chan
                 ievent.origtxt = res
                 ievent.txt = res
                 ievent.cmnd = 'DCC'
@@ -203,9 +207,9 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
                 ievent.speed = 1
                 ievent.isdcc = True
                 ievent.msg = True
+                logging.debug("irc - dcc - constructed event")
                 # check if its a command if so dispatch
                 if ievent.txt[0] == "!":
-                    ievent.txt = ievent.txt[1:]
                     self.doevent(ievent)
                     continue
                 elif ievent.txt[0] == "@":
@@ -418,7 +422,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         chat = re.search(dccchatre, ievent.txt)
         if chat:
             # check if the user is known
-            if users.allowed(ievent.userhost, 'USER'):
+            if self.users.allowed(ievent.userhost, 'USER'):
                 # start connection
                 start_new_thread(self._dccconnect, (ievent.nick, ievent.userhost, chat.group(1), chat.group(2))) 
                 return
