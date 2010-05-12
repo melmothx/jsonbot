@@ -505,24 +505,15 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
              logging.debug("irc - %s is available again" % ievent.nick)
              self.nicks401.remove(ievent.nick)
         chan = ievent.channel
+        logging.warn("joining %s channel" % chan)
         nick = ievent.nick
 
         # see if its the bot who is joining
         if nick == self.nick:
             # check if we already have a channels object, if not init it
-            if self.channels:
-                if not self.channels.has_key(chan):
-                    self.channels[chan] = {}
-                    self.channels[chan]['cc'] = self.cfg['defaultcc'] or '!'
-                if not chan in self.state['joinedchannels']:
-                    self.state['joinedchannels'].append(chan)
-                    self.state.save()
-                if chan in self.state['opchan']:
-                    self.state['opchan'].remove(chan)
-                    self.state.save()
-                time.sleep(0.5)
-                self.who(self, chan)
-                return
+            time.sleep(0.5)
+            self.who(chan)
+            return
 
         # sync joined user with userhosts cache
         self.userhosts[nick] = ievent.userhost
