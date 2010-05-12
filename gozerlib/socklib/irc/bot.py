@@ -319,27 +319,19 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         self.monitor.put(self, str(txt))
 
     def save(self):
-
         """ saves channels and state. """
-
         if self.channels:
             self.channels.save()
-        #if self.userhosts:
-        #    self.userhosts.save()
         Irc.save(self)
 
     def stop(self):
-
         """ stop the bot. """
-
         self.stopped = 1
         # shut down handlers
         logging.warn('irc - stopped')
 
     def exit(self):
-
         """ save data, quit the bot and do shutdown. """
-
         if self.connectok.isSet():
             try:
                 self._raw('QUIT :%s' % self.cfg['quitmsg'])
@@ -353,17 +345,13 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         return 1
 
     def getchannelmode(self, channel):
-
         """ send MODE request for channel. """
-
         if not channel:
             return
         self.putonqueue(9, 'MODE %s' % channel)
 
     def join(self, channel, password=None):
-
         """ join a channel .. use optional password. """
-
         result = Irc.join(self, channel, password)
         if result != 1:
             return result
@@ -537,8 +525,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
                 return
 
         # sync joined user with userhosts cache
-        if self.userhosts:
-            self.userhosts[nick] = ievent.userhost
+        self.userhosts[nick] = ievent.userhost
         if self.userchannels:
             self.userchannels.adduniq(nick, chan)
 
@@ -640,8 +627,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         userhost = "%s@%s" % (user, host)
         logging.debug('irc - adding %s to userhosts: %s' % (nick, userhost))
         # userhosts cache is accessed by lower case nick
-        if self.userhosts:
-            self.userhosts[nick] = userhost
+        self.userhosts[nick] = userhost
 
     def handle_352(self, ievent):
 
@@ -654,8 +640,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         host = args[3]
         userhost = "%s@%s" % (user, host)
         logging.debug('adding %s to userhosts: %s' % (nick, userhost))
-        if self.userhosts:
-             self.userhosts[nick] = userhost
+        self.userhosts[nick] = userhost
         if self.userchannels:
             self.userchannels.adduniq(nick, channel)
 

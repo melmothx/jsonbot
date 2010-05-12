@@ -81,6 +81,7 @@ class BotBase(LazyDict):
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
         self.outcache = Less(1)
+        self.userhosts = {}
 
         try:
             if not os.isdir(self.datadir):

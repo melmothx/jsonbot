@@ -482,7 +482,7 @@ class SXMPPBot(XMLStream, BotBase):
             return 0
 
         if nick:
-            self.userhosts.data[nick] = str(frm)
+            self.userhosts[nick] = str(frm)
             nickk = nick
 
         jid = None
@@ -498,7 +498,7 @@ class SXMPPBot(XMLStream, BotBase):
             if not self.jids.has_key(channel):
                 self.jids[channel] = {}
             self.jids[channel][nickk] = jid
-            self.userhosts.data[nickk] = str(jid)
+            self.userhosts[nickk] = str(jid)
             logging.debug('sxmpp - setting jid of %s (%s) to %s' % (nickk, channel, jid))
 
         if p.type == 'subscribe':

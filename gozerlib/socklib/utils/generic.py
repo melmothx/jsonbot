@@ -258,7 +258,7 @@ def getwho(bot, who):
     """ get userhost from bots userhost cache """
     who = who.lower()
     try:
-        result = bot.userhosts.data[who]
+        result = bot.userhosts[who]
         if bot.cfg['stripident']:
             rlog(10, 'getwho', 'removed ident from %s' % result)
             result = stripident(result)
