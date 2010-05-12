@@ -17,6 +17,7 @@ from commands import Commands
 from config import cfg as mainconfig
 from config import Config
 from utils.pdod import Pdod
+from channelbase import ChannelBase
 from less import Less
 from boot import boot
 from utils.locking import lockdec
@@ -209,6 +210,7 @@ class BotBase(LazyDict):
         e.auth = origin
         e.userhost = origin
         e.channel = channel
+        e.chan = ChannelBase(channel)
         e.txt = txt
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]

@@ -58,7 +58,7 @@ from gozerlib.threads import start_new_thread
 
 import getpass
 import logging
-
+import time
 
 ## start the bot
 
@@ -78,7 +78,8 @@ except NoOwnerSet:
 
 
 if opts.command:
-    bot.docmnd(cfg.owner, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
+    result = bot.docmnd(cfg.owner, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
+    time.sleep(3)
     os._exit(0)
 else:
     if opts.server:
