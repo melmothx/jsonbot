@@ -92,7 +92,7 @@ def handle_wikipedia(bot, ievent):
     txt, url = res
     prefix = '%s ===> ' % url
     result = splittxt(striphtml(txt).strip())
-    ievent.reply(prefix, result, raw=True)
+    ievent.reply(prefix, result)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
 examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search \
