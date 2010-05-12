@@ -10,7 +10,12 @@ from gozerlib.persist import Persist
 
 ## defines
 
-plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'myplugs', 'waveplugs', 'socketplugs']
+try:
+    import waveapi
+    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'myplugs', 'waveplugs']
+except ImportError:
+    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'myplugs', 'waveplugs', 'socketplugs']
+
 default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.outputcache']
 
 # these are set in gozerlib/boot.py
