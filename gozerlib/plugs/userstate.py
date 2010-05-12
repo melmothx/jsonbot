@@ -52,7 +52,7 @@ def handle_userstateget(bot, ievent):
     for i, j in userstate.data.iteritems():
         result.append("%s=%s" % (i, j))
     if result:
-        ievent.reply("userstate of %s: " % ievent.rest, result, dot=True)
+        ievent.reply("userstate of %s: " % ievent.rest, result)
     else:
         ievent.reply('no userstate of %s known' % ievent.rest)
 

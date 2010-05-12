@@ -34,6 +34,7 @@ def handle_reload(bot, ievent):
             try:
                 if plugs.reload(modname, force=True):
                     reloaded.append(modname)
+                    break
             except Exception, ex:
                 if 'No module named' in str(ex):
                     continue

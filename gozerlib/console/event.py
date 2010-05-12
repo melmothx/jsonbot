@@ -7,6 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.eventbase import EventBase
+from gozerlib.channelbase import ChannelBase
 
 ## basic imports
 
@@ -30,4 +31,6 @@ class ConsoleEvent(EventBase):
         self.origin = self.userhost
         self.txt = input
         self.usercmnd = input.split()[0]
+        self.channel = self.userhost
+        self.chan = ChannelBase(self.channel)
         self.makeargs()

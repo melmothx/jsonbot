@@ -99,14 +99,12 @@ class Commands(LazyDict):
         try:
             if target.threaded and not bot.isgae:
                 start_bot_command(target.func, (bot, event))
-                result = []
             else:
                 target.func(bot, event)
-                result = event.result
+            result = event
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))
-            handle_exception(event)
-
+            raise
         if event.queues:
             for queue in event.queues:
                 queue.put_nowait(None)

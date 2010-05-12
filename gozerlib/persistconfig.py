@@ -48,14 +48,14 @@ class PersistConfig(Config):
         self.hide = []
         self.modname = whichplugin()
         self.plugname = self.modname.split('.')[-1]
-        Config.__init__(self, 'plugs' + os.sep + self.plugname, "config")
+        Config.__init__(self, 'plugs' + os.sep + self.modname, "config")
         cmndname = "%s-cfg" % self.plugname
         logging.debug('persistconfig - added command %s (%s)' % (cmndname, self.plugname))
-        cmnds[cmndname] = Command(self.plugname, cmndname, self.cmnd_cfg, ['OPER', ])
-        examples.add(cmndname, "plugin configuration", cmndname)
+        cmnds[cmndname] = Command(self.modname, cmndname, self.cmnd_cfg, ['OPER', ])
+        examples.add(cmndname, "%s configuration" % self.plugname, cmndname)
         cmndnamesave = cmndname + "save"
-        cmnds[cmndnamesave] = Command(self.plugname, cmndname, self.cmnd_cfgsave, ['OPER',])
-        examples.add(cmndnamesave, "save plugin configuration", cmndnamesave)
+        cmnds[cmndnamesave] = Command(self.modname, cmndname, self.cmnd_cfgsave, ['OPER',])
+        examples.add(cmndnamesave, "save %s configuration" % self.plugname, cmndnamesave)
 
     ### cmnds
 

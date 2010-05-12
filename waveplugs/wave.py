@@ -200,10 +200,10 @@ def handle_wavewhitelistadd(bot, event):
         return
 
     target = event.rest
-    if not event.chan.whitelist:
-        event.chan.whitelist = []
-    if target not in event.chan.whitelist:
-        event.chan.whitelist.append(target)
+    if not event.chan.data.whitelist:
+        event.chan.data.whitelist = []
+    if target not in event.chan.data.whitelist:
+        event.chan.data.whitelist.append(target)
         event.chan.save()
     event.reply("done")
 
@@ -216,10 +216,10 @@ def handle_wavewhitelistdel(bot, event):
         return
 
     target = event.rest
-    if not event.chan.whitelist:
-        event.chan.whitelist = []
-    if target in event.chan.whitelist:
-        event.chan.whitelist.remove(target)
+    if not event.chan.data.whitelist:
+        event.chan.data.whitelist = []
+    if target in event.chan.data.whitelist:
+        event.chan.data.whitelist.remove(target)
         event.chan.save()
     event.reply("done")
 

@@ -87,13 +87,14 @@ class Plugins(LazyDict):
                 logging.debug("plugins - %s is already loaded" % modname)
                 self[modname] = sys.modules[modname]
                 return sys.modules[modname]
-
+        else:
+            try:
+                del sys.modules[modname]
+            except KeyError:
+                pass
         logging.debug("plugins - loading %s" % modname)
-        try:
-            mod = _import(modname)
-        except ImportError, ex:
-            logging.info("can't import %s - %s" % (modname, str(ex)))
-            return
+        mod = _import(modname)
+
         try:
             self[modname] = mod
         except KeyError:
@@ -124,6 +125,7 @@ class Plugins(LazyDict):
             if event.queues:
                 for queue in event.queues:
                     queue.put_nowait(None)
+
             return result
 
         if event.txt and ' | ' in event.txt:
@@ -168,7 +170,7 @@ class Plugins(LazyDict):
         for e in events:
             self.dispatch(bot, e)
 
-        return events[-1].result
+        return events[-1]
 
     def needreloadcheck(self, bot, event, target=None):
         """
@@ -191,8 +193,8 @@ class Plugins(LazyDict):
         if plugin in self:
             return False
 
-        plugloaded = self.reload(plugin)
         logging.warn("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
+        plugloaded = self.reload(plugin)
         return plugloaded
 
 ## define

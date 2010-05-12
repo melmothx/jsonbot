@@ -1340,27 +1340,22 @@ def handle_hubbubregister(bot, ievent):
         ievent.reply("the feedurl needs to start with http(s)://")
         return
 
-    try:
-        result = subscribe(url)
-        if int(result.status) > 200 and int(result.status) < 300:
-            if watcher.add(name, url, ievent.userhost):
-                watcher.start(bot.name, bot.type, name, target)
-                ievent.reply('started %s feed. entries will show up when the feed is updated.' % name)
-                if bot.type == "wave":
-                    wave = Wave(ievent.waveid)
-                    logging.debug("feed running in %s: %s" % (ievent.title, wave.data.feeds))
-                    if name not in ievent.title:
-                        ievent.set_title("JSONBOT - %s - #%s" % (' - '.join(wave.data.feeds), str(wave.data.nrcloned)))
-                return
-            else:
-                ievent.reply("there already exists a %s feed. please choose a different name" % name)
-                return
+    result = subscribe(url)
+    if int(result.status) > 200 and int(result.status) < 300:
+        if watcher.add(name, url, ievent.userhost):
+            watcher.start(bot.name, bot.type, name, target)
+            ievent.reply('started %s feed. entries will show up when the feed is updated.' % name)
+            if bot.type == "wave":
+                wave = Wave(ievent.waveid)
+                logging.debug("feed running in %s: %s" % (ievent.title, wave.data.feeds))
+                if name not in ievent.title:
+                    ievent.set_title("JSONBOT - %s - #%s" % (' - '.join(wave.data.feeds), str(wave.data.nrcloned)))
+            return
         else:
-            ievent.reply('feed %s NOT added. Status code is %s. please check if the feed is valid.' % (name, result.status))
-        
-    except Exception, ex:
-        handle_exception()
-        ievent.reply("Oops something went wrong: %s" % str(ex))
+            ievent.reply("there already exists a %s feed. please choose a different name" % name)
+            return
+    else:
+        ievent.reply('feed %s NOT added. Status code is %s. please check if the feed is valid.' % (name, result.status))
 
 cmnds.add('hb-register', handle_hubbubregister, ['USER', 'GUEST'])
 examples.add('hb-register', 'hb-register .. register url and start it in one pass', 'hb-register hgrepo http://code.google.com/feeds/p/jsonbot/hgchanges/basic')

@@ -98,10 +98,12 @@ examples.add('part', 'part [<channel>]', '1) part 2) part #test')
 
 def handle_channels(bot, ievent):
     """ channels .. show joined channels. """
-    chans = bot.state['joinedchannels']
-
+    if bot.state:
+        chans = bot.state['joinedchannels']
+    else:
+        chans = []
     if chans:
-        ievent.reply("joined channels: ", chans, dot=True)
+        ievent.reply("joined channels: ", chans)
     else:
         ievent.reply('no channels joined')
 
