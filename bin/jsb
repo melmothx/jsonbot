@@ -63,6 +63,7 @@ import time
 ## start the bot
 
 makedirs()
+boot()
 plugs = Plugins()
 plugs.loadall()
 users = Users()

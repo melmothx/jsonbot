@@ -10,6 +10,7 @@ from gozerlib.examples import examples
 from gozerlib.eventbase import EventBase
 from gozerlib.users import users
 from gozerlib.threads import start_new_thread
+from gozerlib.socklib.utils.generic import waitforqueue
 
 ## basic imports
 
@@ -26,7 +27,7 @@ donot = ['quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
 'snarf', 'validate', 'popcon', 'twitter', 'tinyurl', 'whois', 'rblcheck', \
 'wowwiki', 'wikipedia', 'tr', 'translate', 'serie', 'sc', 'shoutcast', 'mash', \
 'gcalc', 'identi', 'mail', 'part', 'cycle', 'exception', 'fleet', 'rss', 'ln', 'markov-learn', 'pit', 'bugtracker', 'tu', 'banner', 'test', 'cloud', 'dispatch', 'lns', 'loglevel', \
-'hb-register', 'hb-subscribe']
+'hb-register', 'hb-subscribe', 'hb-cloneurl']
 
 def dummy(a, b=None):
     return ""
@@ -65,23 +66,9 @@ def handle_testplugs(bot, event):
             if skip:
                 continue
             teller += 1
-            if bot.type == "sxmpp":
-                from gozerlib.socklib.xmpp.message import Message
-                newmessage = Message(msg)
-                newmessage.txt = example
-                newmessage.onlyqueues = False
-            elif bot.type == "irc":
-                from gozerlib.socklib.irc.ircevent import Ircevent
-                newmessage = Ircevent(msg)
-                newmessage.txt = '!' + example
-                newmessage.onlyqueues = False
-            else:
-                newmessage = EventBase(msg)
-                newmessage.txt = '!' + example
-                newmessage.onlyqueues = False
             event.reply('command: ' + example)
             try:
-                bot.doevent(newmessage)
+                bot.docmnd(event.userhost, event.channel, example, event)
             except Exception, ex:
                 errors[example] = exceptionmsg()
     event.reply('%s tests run' % teller)
@@ -91,6 +78,8 @@ def handle_testplugs(bot, event):
             event.reply("%s - %s" % (cmnd, error))
     else:
         event.reply("no errors")
+
+    event.outqueue.put_nowait(None)
 
 cmnds.add('test-plugs', handle_testplugs, ['USER', ], threaded=True)
 

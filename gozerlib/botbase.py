@@ -23,6 +23,7 @@ from boot import boot
 from utils.locking import lockdec
 from exit import globalshutdown
 from utils.generic import splittxt
+from utils.trace import whichmodule
 
 ## basic imports
 
@@ -185,11 +186,16 @@ class BotBase(LazyDict):
 
     def _raw(self, txt):
         """ override this. """ 
-        sys.stdout.write(u"> %s\n"  % unicode(txt))
+        logging.error("botbase - %s - please override the BotBase.raw() method" % whichmodule())
+        return self
 
     def say(self, channel, txt, result=[], event=None, *args, **kwargs):
-        """ override this. """ 
-        print u"> " + txt + u', '.join(result)
+        e = EventBase()
+        if e.checkqueues(result):
+            return
+        resp = e.makeresponse(txt, result, *args, **kwargs)
+        self._raw(resp)
+        return self
 
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """
@@ -224,9 +230,7 @@ class BotBase(LazyDict):
 
         if self.plugs:
             try:
-                result = self.plugs.dispatch(self, e)
-                logging.info("bot - got result - %s" % result)
-                return result
+                return self.plugs.dispatch(self, e)
             except NoSuchCommand:
                 print "no such command: %s" % e.usercmnd
         else:

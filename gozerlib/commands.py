@@ -89,7 +89,7 @@ class Commands(LazyDict):
             bot.users.addguest(event.userhost)
             if bot.users.allowed(id, c.perms, bot=bot):
                 return self.doit(bot, event, c)
-        return []
+        return event
 
     def doit(self, bot, event, target):
         """ do the dispatching. """

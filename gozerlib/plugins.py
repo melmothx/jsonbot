@@ -125,12 +125,14 @@ class Plugins(LazyDict):
             if event.queues:
                 for queue in event.queues:
                     queue.put_nowait(None)
-
+            event.outqueue.put_nowait(None)
             return result
 
         if event.txt and ' | ' in event.txt:
             return self.pipelined(bot, event, *args, **kwargs)
-              
+
+        return event              
+
     def pipelined(self, bot, event, *args, **kwargs):
         """ split cmnds, create events for them, chain the queues and dispatch.  """
         origqueues = event.queues

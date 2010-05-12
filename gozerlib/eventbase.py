@@ -18,6 +18,7 @@ from simplejson import dumps, loads
 from  xml.sax.saxutils import unescape
 import copy
 import logging
+import Queue
 
 ## defines
 
@@ -35,6 +36,7 @@ class EventBase(LazyDict):
         if input:
             self.copyin(input)
         self.result = []
+        self.outqueue = Queue.Queue()
         self.bottype = "console"
 
     def __deepcopy__(self, a):
@@ -76,6 +78,7 @@ class EventBase(LazyDict):
             self._raw(resp)
 
         self.result.append(resp)
+        self.outqueue.put_nowait(resp)
         return self
 
     def missing(self, txt):

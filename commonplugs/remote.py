@@ -126,5 +126,5 @@ def handle_remotecmnd(bot, event):
     event.reply("sending to: ", gnbot.outs)
     gnbot.cmnd(event, "!%s" % cmndstring)
 
-cmnds.add('cmnd', handle_remotecmnd, 'OPER') 
+cmnds.add('cmnd', handle_remotecmnd, 'OPER', threaded=True) 
 examples.add('cmnd', 'execute a command on the remotenet', 'cmnd version')

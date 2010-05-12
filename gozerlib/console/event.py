@@ -18,10 +18,16 @@ import logging
 
 class ConsoleEvent(EventBase):
 
+    def __deepcopy__(self, a):
+        """ deepcopy an console event. """
+        e = ConsoleEvent()
+        e.copyin(self)
+        return e
+
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
-        logging.info(u"eventbase - out - %s - %s" % (self.userhost, unicode(txt)))
-        print u"> " + txt
+        logging.info(u"console - out - %s - %s" % (self.userhost, unicode(txt)))
+        print u"=> " + txt
         self.result.append(txt)  
 
     def parse(self, input, *args, **kwargs):
