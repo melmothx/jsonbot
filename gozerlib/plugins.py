@@ -53,6 +53,8 @@ class Plugins(LazyDict):
             except ImportError:
                 logging.warn("plugins - no %s plugin package found" % module)
                 continue
+            except Exception, ex:
+                handle_exception()
             logging.debug("plugins - got plugin package %s" % module)
             try:
                 for plug in imp.__plugs__:
@@ -60,6 +62,8 @@ class Plugins(LazyDict):
                         self.load("%s.%s" % (module,plug), force=force)
                     except KeyError:
                         logging.debug("failed to load plugin package %s" % module)
+                    except Exception, ex:
+                        handle_exception()
             except AttributeError:
                 logging.warn("no plugins in %s .. define __plugs__ in __init__.py" % module)
 

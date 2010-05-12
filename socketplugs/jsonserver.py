@@ -82,7 +82,10 @@ def json_GET(server, request):
 
 def start():
     global server
-    server = startserver()
+    try:
+        server = startserver()
+    except socket.gaierror:
+        return
     if not server:
         return
     try:
