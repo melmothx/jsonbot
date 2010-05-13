@@ -303,16 +303,12 @@ class Users(Persist):
 
     def add(self, name, userhosts, perms):
         """ add an user. """
-        user = self.byname(name)
-        logging.debug("users - %s - %s" % (name, str(user)))
-        if not user:
-            newuser = JsonUser(name, userhosts, perms)
-            for userhost in userhosts:
-                self.data.names[userhost] = name
-            newuser.save()
-            self.save()
-            logging.warn('users - %s %s %s added to user database' % (name, userhosts, perms))
-
+        newuser = JsonUser(name, userhosts, perms)
+        for userhost in userhosts:
+            self.data.names[userhost] = name
+        newuser.save()
+        self.save()
+        logging.warn('users - %s %s %s added to user database' % (name, userhosts, perms))
         return True
 
     def addguest(self, userhost):
@@ -461,10 +457,18 @@ class Users(Persist):
     def delete(self, name):
         """ delete user with name. """
         try:
-            del self.data.names[name]
+            user = JsonUser(name)
+            user.data.deleted = True
+            user.save()
+            if user:
+                 for userhost in user.data.userhosts:
+                     try:
+                         del self.data.names[userhost]
+                     except KeyError:
+                         pass
             self.save()
             return True
-        except ValueError:
+        except NoSuchUser:
             pass
         
     def deluserhost(self, name, userhost):
