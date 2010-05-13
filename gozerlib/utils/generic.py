@@ -34,10 +34,16 @@ def jsonstring(s):
         s = list(s)
     return dumps(s)
 
-
-def getwho(bot, nick):
-    """ return userhost for nick. NOT IMPLEMENTED YET .. return the nick. """
-    return nick
+def getwho(bot, who):
+    """ get userhost from bots userhost cache """
+    try:
+        result = bot.userhosts[who]
+        if bot.cfg['stripident']:
+            logging.debug('getwho - removed ident from %s' % result)
+            result = stripident(result)
+        return result
+    except KeyError:
+        return None
 
 def getversion(txt=""):
 

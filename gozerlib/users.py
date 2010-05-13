@@ -54,7 +54,7 @@ class Users(Persist):
         self.data.names = self.data.names or {}
 
     def exists(self, name):
-        return name in self.data.names
+        return name in self.data.names.values()
 
     def all(self):
 
@@ -462,6 +462,7 @@ class Users(Persist):
         try:
             del self.data.names[name]
             self.save()
+            return True
         except ValueError:
             pass
         

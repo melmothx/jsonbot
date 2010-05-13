@@ -179,8 +179,8 @@ class BotBase(LazyDict):
 
     def ownercheck(self, userhost):
         """ check if provided userhost belongs to an owner. """
-        if 'owner' in self:
-            if userhost in self.owner:
+        if 'owner' in self.cfg:
+            if userhost in self.cfg.owner:
                 return True
 
         return False

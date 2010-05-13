@@ -13,6 +13,10 @@ from gozerlib.users import users
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
+## basic imports
+
+import logging
+
 ## commands
 
 def handle_whoami(bot, ievent):
@@ -25,7 +29,7 @@ examples.add('user-whoami', 'get your username', 'user-whoami')
 def handle_meet(bot, ievent):
     """ <nick> .. introduce a new user to the bot. """
     try:
-        nick = ievent.args[0].lower()
+        nick = ievent.args[0]
     except IndexError:
         ievent.missing('<nick>')
         return
@@ -35,6 +39,7 @@ def handle_meet(bot, ievent):
         return
 
     userhost = getwho(bot, nick)
+    logging.warn("users - meet - userhost is %s" % userhost)
     if not userhost:
         ievent.reply("can't find userhost of %s" % nick)
         return
@@ -49,7 +54,7 @@ def handle_meet(bot, ievent):
     name = stripname(nick.lower())
     result = bot.users.add(name, [userhost, ], ['USER', ])
     if result:
-        ievent.reply('%s (%s) added to user database' % (nick, name))
+        ievent.reply('%s - %s - (%s) added to user database' % (nick, userhost, name))
     else:
         ievent.reply('add failed')
 
@@ -164,8 +169,11 @@ def handle_delete(bot, ievent):
         result = bot.users.delete(name)
         if result:
             ievent.reply('%s deleted' % name)
+            return
     except KeyError:
-        ievent.reply('no %s item in database' % name)
+        pass
+
+    ievent.reply('no %s item in database' % name)
 
 cmnds.add('user-del', handle_delete, 'OPER')
 examples.add('user-del', 'user-del <name> .. delete user with <username>' , 'user-del dunker')

@@ -256,11 +256,10 @@ def checkchan(bot, item):
 
 def getwho(bot, who):
     """ get userhost from bots userhost cache """
-    who = who.lower()
     try:
         result = bot.userhosts[who]
         if bot.cfg['stripident']:
-            rlog(10, 'getwho', 'removed ident from %s' % result)
+            logging.debug('getwho - removed ident from %s' % result)
             result = stripident(result)
         return result
     except KeyError:
