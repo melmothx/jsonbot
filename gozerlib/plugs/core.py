@@ -38,6 +38,9 @@ cpy = copy.deepcopy
 ## commands
 
 def handle_reboot(bot, ievent):
+    if bot.isgae:
+        ievent.reply("this command doesnt work on the GAE")
+        return
     ievent.reply("rebooting")
     if ievent.rest == "cold":
         stateful = False
@@ -58,6 +61,9 @@ cmnds.add("reboot", handle_reboot, "OPER")
 examples.add("reboot", "reboot the bot.", "reboot")
 
 def handle_quit(bot, ievent):
+    if bot.isgae:
+        ievent.reply("this command doesnt work on the GAE")
+        return
     ievent.reply("quiting")
     bot.exit()
 
