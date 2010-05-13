@@ -81,6 +81,7 @@ class Users(Persist):
     def byname(self, name):
         """ return user by name. """ 
         try:
+            name = stripname(name)
             user = JsonUser(name)
             if user.data.userhosts:
                 return user
