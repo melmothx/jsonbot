@@ -16,6 +16,10 @@ from gozerlib.plugins import plugs
 from gozerlib.admin import plugin_packages
 from gozerlib.boot import getpluginlist, boot
 from gozerlib.persist import Persist
+from gozerlib.reboot import reboot, reboot_stateful
+from gozerlib.eventhandler import mainhandler
+from gozerlib.fleet import fleet
+from gozerlib.socklib.partyline import partyline
 
 ## basic imports
 
@@ -32,6 +36,33 @@ import cgi
 cpy = copy.deepcopy
 
 ## commands
+
+def handle_reboot(bot, ievent):
+    ievent.reply("rebooting")
+    if ievent.rest == "cold":
+        stateful = False
+    else:
+        stateful = True
+
+    if stateful:
+        #if fleet.size():
+        #    fleet.exit()
+        #else:
+        #    bot.exit()
+        mainhandler.put(0, reboot_stateful, bot, ievent, fleet, partyline)
+    else:
+        bot.exit()
+        mainhandler.put(0, reboot)
+
+cmnds.add("reboot", handle_reboot, "OPER")
+examples.add("reboot", "reboot the bot.", "reboot")
+
+def handle_quit(bot, ievent):
+    ievent.reply("quiting")
+    bot.exit()
+
+cmnds.add("quit", handle_quit, "OPER")
+examples.add("quit", "quit the bot.", "quit")
 
 def handle_encoding(bot, ievent):
     """ show default encoding. """

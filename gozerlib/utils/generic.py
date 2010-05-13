@@ -72,7 +72,7 @@ def splittxt(what, l=375):
 def getrandomnick():
     """ return a random nick. """
 
-    return "gbot2-" + str(random.randint(0, 100))
+    return "jsonbot-" + str(random.randint(0, 100))
 
 def decodeperchar(txt, encoding='utf-8', what=""):
     """ decode a string char by char. strip chars that can't be decoded. """

@@ -16,6 +16,7 @@ print getversion('IRC')
 
 ## gozerlib imports
 
+from gozerlib.socklib.partyline import partyline
 from gozerlib.socklib.irc.bot import IRCBot
 from gozerlib.datadir import makedirs
 from gozerlib.admin import plugin_packages
@@ -140,19 +141,28 @@ boot()
 from gozerlib.plugins import plugs
 plugs.loadall()
 
-## start bot
-try:
-    bot = IRCBot(cfg)
-    bot.nick = cfg.nick or 'jsonbot'
-except NoOwnerSet, ex:
-    print "owner is not set in %s - use the -o option" % str(ex)
-    os._exit(1)
+if opts.doresume and os.path.isfile(opts.doresume):
+    fleet.resume(opts.doresume)
+    fleet.startok.wait()
+    partyline.resume(opts.doresume)
+    os.unlink(opts.doresume) # bye
+    fleet.startall()
 
-if opts.channel and not opts.channel in bot.state['joinedchannels']:
-    bot.state['joinedchannels'].append(opts.channel)
-    bot.state.save()
+else:
 
-if opts.fleet:
-    fleet.addbot(bot)
+    ## start bot
+    try:
+        bot = IRCBot(cfg)
+        bot.nick = cfg.nick or 'jsonbot'
+    except NoOwnerSet, ex:
+        print "owner is not set in %s - use the -o option" % str(ex)
+        os._exit(1)
 
-bot.start()
+    if opts.channel and not opts.channel in bot.state['joinedchannels']:
+        bot.state['joinedchannels'].append(opts.channel)
+        bot.state.save()
+
+    if opts.fleet:
+        fleet.addbot(bot)
+
+    bot.start()

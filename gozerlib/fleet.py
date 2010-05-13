@@ -30,6 +30,7 @@ import types
 import time
 import glob
 import logging
+import threading
 
 ## classes
 
@@ -50,6 +51,7 @@ class Fleet(Persist):
             self.data['names'] = []
         if not self.data.has_key('types'):
             self.data['types'] = {}
+        self.startok = threading.Event()
         self.bots = []
 
     def loadall(self):
@@ -377,7 +379,8 @@ class Fleet(Persist):
 
     def startall(self):
         for bot in self.bots:
-            start_new_thread(bot.start, ())
+            if bot.state == 'init':
+                start_new_thread(bot.start, ())
 
         # basic loop
         from exit import globalshutdown
@@ -394,6 +397,58 @@ class Fleet(Persist):
                 handle_exception()   
                 globalshutdown()
                 os._exit(1)
+
+
+    def resume(self, sessionfile):
+        """ resume bot from session file. """
+        # read JSON session file
+        session = load(open(sessionfile))
+
+        #  resume bots in session file
+        for name in session['bots'].keys():
+            reto = None
+            if name == session['name']:
+                reto = session['channel']
+            start_new_thread(self.resumebot, (name, session['bots'][name], reto))
+
+        # allow 5 seconds for bots to resurrect
+        time.sleep(5)
+
+        # set start event
+        self.startok.set()
+
+    def resumebot(self, botname, data={}, printto=None):
+        """
+            resume individual bot.
+
+            :param botname: name of the bot to resume
+            :type botname: string
+            :param data: resume data
+            :type data: dict
+            :param printto: whom to reply to that resuming is done
+            :type printto: nick or JID
+        """
+        # see if we need to exit the old bot
+        oldbot = self.byname(botname)
+        if oldbot:
+            oldbot.exit()
+
+        # recreate config file of the bot
+        #cfg = Config(datadir + os.sep + 'fleet' + os.sep + botname, 'config')
+
+        # make the bot and resume (IRC) or reconnect (Jabber)
+        bot = self.makebot(data['type'], botname)
+
+        if bot:
+            if oldbot:
+                self.replace(oldbot, bot)
+            else:
+                self.bots.append(bot)
+
+            if not bot.type == "xmpp":
+                bot._resume(data, printto)
+            else:
+                start_new_thread(bot.connectwithjoin, ())
 
 ## defines
 

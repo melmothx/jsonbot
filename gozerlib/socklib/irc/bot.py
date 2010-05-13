@@ -86,8 +86,8 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
 
         if not Irc._resume(self, data, reto):
             return 0
-        for i in self.state['joinedchannels']:
-            self.who(self, i)
+        for channel in self.state['joinedchannels']:
+            self.who(channel)
         return 1
 
     def _dccresume(self, sock, nick, userhost, channel=None):

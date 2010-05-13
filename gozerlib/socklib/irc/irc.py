@@ -533,6 +533,7 @@ realname))
             fd = None
             self.exit()
         return {self.name: {
+            'type': self.type,
             'nick': self.nick,
             'server': self.server,
             'port': self.port,
