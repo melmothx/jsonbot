@@ -137,7 +137,7 @@ class WaveBot(BotBase, robot.Robot):
         self.doevent(wevent)
 
     @saylocked
-    def say(self, waveid, txt):
+    def say(self, waveid, txt, result=[], event=None, origin="", dot=", ", *args, **kwargs):
         """
             output to the root id. 
 
@@ -151,10 +151,12 @@ class WaveBot(BotBase, robot.Robot):
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
             logging.warn("waves - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
-            
+
+        resp = self.makeresponse(txt, result, dot)
+
         wave = Wave(waveid)
         if wave and wave.data.waveid:
-            wave.say(self, txt)
+            wave.say(self, resp)
         else:
             logging.warn("we are not joined into %s" % waveid)
 

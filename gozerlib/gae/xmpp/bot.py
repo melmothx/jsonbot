@@ -31,7 +31,7 @@ class XMPPBot(BotBase):
         self.isgae = True
         self.type = "xmpp"
 
-    def say(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False):
+    def say(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False, extend=0):
         """ output xmpp message. """
         if type(jids) == types.StringType:
             jids = [jids, ]

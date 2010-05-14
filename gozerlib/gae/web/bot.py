@@ -24,8 +24,6 @@ class WebBot(BotBase):
 
     def say(self, channel, txt, *args, **kwargs):
         """ saying on a webbot add it to the output cache. """
+        
         add(channel, [txt, ])
 
-    def sayroot(self, channel, txt, *args, **kwargs):
-        """ say root also add the txt to the output cache. """ 
-        add(channel, [txt, ])

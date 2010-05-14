@@ -73,7 +73,7 @@ class EventBase(LazyDict):
 
         txt = self.makeresponse(txt, result, dot)
 
-        res1, res2 = self.less(txt, 1000)
+        res1, res2 = self.less(txt, 1000+extend)
         self.bot.say(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
 
         if res2:
@@ -115,23 +115,7 @@ class EventBase(LazyDict):
 
     def makeresponse(self, txt, result, dot=u", ", *args, **kwargs):
         """ create a response from a string and result list. """
-        res = []
-        # check if there are list in list
-        for i in result:
-            if type(i) == types.ListType or type(i) == types.TupleType:
-                try:
-                    res.append(dotchars.join(i))
-                except TypeError:
-                    res.extend(unicode(i))
-            else:
-                res.append(unicode(i))
-
-
-        if txt:
-            return txt + dot.join(res)
-        elif result:
-            return dot.join(res)
-        return ""
+        return self.bot.makeresponse(txt, result, dot, *args, **kwargs)
             
     def less(self, what, nr=365):
         """ check string for overflow, if so send data to the output cache. """

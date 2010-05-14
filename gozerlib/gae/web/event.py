@@ -92,16 +92,12 @@ class WebEvent(EventBase):
         else:
             self._raw(start + txt + end)
 
-    def makeresponse(self, txt, resultlist, nritems, dot, *args, **kwargs):
-        """ create a response based of response string and result list. """
-        return EventBase.makeresponse(self, txt, resultlist, nritems, dot=dot, *args, **kwargs)
-
-    def reply(self, txt, resultlist=[], nritems=False, dot=", ", raw=False, *args, **kwargs):
+    def reply(self, txt, resultlist=[], event=None, origin="", dot=", ", raw=False, *args, **kwargs):
         """ send reply to the web user. """
         if self.checkqueues(resultlist):
             return
 
-        result = self.makeresponse(txt, resultlist, nritems, dot, *args, **kwargs)
+        result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
         (res1, res2) = self.less(result)
         self.write(res1, raw=raw)
         if res2:

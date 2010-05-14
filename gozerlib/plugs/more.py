@@ -22,12 +22,15 @@ def handle_more(bot, ievent):
         ievent.reply('no more data available for %s' % who)
         return
 
-    #ievent.reply(what)
-
     if size:
-        bot.say(ievent.channel, "%s (+%s)" % (what.strip(), size), extend=5)
+        txt = "%s (+%s)" % (what.strip(), size)
     else:
-        bot.say(ievent.channel, what.strip())
-     
+        txt = what.strip()
+
+    if bot.type == 'web':
+        ievent.reply(txt)
+    else:
+        bot.say(ievent.channel, txt, extend=5)
+        
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('more', 'return txt from output cache', '1) more 2) more test')

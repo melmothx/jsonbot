@@ -202,12 +202,12 @@ class WaveEvent(EventBase):
 
         return self.rootblip
 
-    def reply(self, txt, resultlist=[], nritems=False, dot=", ", *args, **kwargs):
+    def reply(self, txt, resultlist=[], event=None, origin="", dot=", ", *args, **kwargs):
         """ reply txt. """
         if self.checkqueues(resultlist):
             return
 
-        outtxt = self.makeresponse(txt, resultlist, nritems, dot, *args, **kwargs)
+        outtxt = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
 
         if not outtxt:
             return
@@ -218,25 +218,21 @@ class WaveEvent(EventBase):
         if res2:
             self.write(res2)
 
-    def replyroot(self, txt, resultlist=[], nritems=False, root=None, *args, **kwargs):
+    def replyroot(self, txt, resultlist=[], event=None, origin="", dot=", ", *args, **kwargs):
         """ reply to wave root. """
         if self.checkqueues(resultlist):
             return
 
-        if resultlist:
-            outtxt = txt + u" " + u' .. '.join(resultlist)
-        else:
-            outtxt = txt
+        outtxt = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
 
         if not outtxt:
             return
 
         self.result.append(unicode(outtxt))
-        logging.debug("wave - reply root - %s - %s" % (self.root, root))
         (res1, res2) = self.less(outtxt)
-        self.write_root(res1, root)
+        self.write_root(res1)
         if res2:
-            self.write_root(res2, root)
+            self.write_root(res2)
 
     def write(self, outtxt, end="\n"):
         """ write outtxt to the server. """
