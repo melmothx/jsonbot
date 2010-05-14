@@ -31,7 +31,7 @@ import gozerlib.users as users
 import gozerlib
 
 ## basic imports
-
+from simplejson import load
 import logging
 import time
 
@@ -142,8 +142,19 @@ from gozerlib.plugins import plugs
 plugs.loadall()
 
 if opts.doresume and os.path.isfile(opts.doresume):
-    fleet.resume(opts.doresume)
-    fleet.startok.wait()
+    if fleet.size():
+        fleet.resume(opts.doresume)
+        fleet.startok.wait()
+    else:
+        #  resume bot from session file
+        session = load(open(opts.doresume))
+        for name in session['bots'].keys():
+            reto = None
+            if name == session['name']:
+                reto = session['channel']
+        bot = IRCBot(cfg)
+        bot._resume(session['bots'][name], reto)
+
     partyline.resume(opts.doresume)
     os.unlink(opts.doresume) # bye
     fleet.startall()
