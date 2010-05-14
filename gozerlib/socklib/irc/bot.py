@@ -376,24 +376,6 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
         self.getchannelmode(channel)
         return 1
 
-    def say(self, printto, what, who=None, how='msg', fromm=None, speed=5, groupchat=False):
-
-        """ output what to printto. """
-
-        # check if printto is a queue if so put output to the queue
-        if type(printto) == type(Queue.Queue): 
-            printto.put_nowait('[%s] %s' % (self.name, what))
-            return
-        # check if bot is in notice mode
-        notice = False
-        try:
-            notice = self.channels[printto]['notice']
-        except (KeyError, TypeError):
-            pass
-        if notice:
-            how = 'notice'
-        Irc.say(self, printto, what, who, how, fromm, speed, groupchat)
-
     def handle_privmsg(self, ievent):
 
         """ check if PRIVMSG is command, if so dispatch. """

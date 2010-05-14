@@ -4,6 +4,7 @@
 
 """ access the output cache. """
 
+from gozerlib.utils.generic import getwho
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
@@ -57,12 +58,10 @@ def handle_lesssize(bot, ievent):
 def handle_more(bot, ievent):
     """ pop message from the output cache. """
     try:
-        who = ievent.args[0]
+        w = ievent.args[0]
+        who = getwho(bot, w)
     except IndexError:
-        if bot.type == "irc":
-            who = ievent.nick or ievent.auth
-        else:
-            who = ievent.auth
+        who = ievent.userhost
 
     what, size = bot.outcache.more(who, 0)
 

@@ -65,20 +65,20 @@ class EventBase(LazyDict):
 
         return self
 
-    def reply(self, txt, result=[], *args, **kwargs):
+    def reply(self, txt, result=[], dot=", ",*args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result):
             return
 
-        resp = self.makeresponse(txt, result, *args, **kwargs)
+        txt = self.makeresponse(txt, result, dot=dot)
 
         if self.bot:
-            self.bot.say(self.channel, resp)
+            self.bot.say(self.channel, txt, origin=self.userhost, *args, **kwargs)
         else:
             self._raw(resp)
 
-        self.result.append(resp)
-        self.outqueue.put_nowait(resp)
+        self.result.append(txt)
+        self.outqueue.put_nowait(txt)
         return self
 
     def missing(self, txt):

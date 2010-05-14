@@ -191,11 +191,7 @@ class BotBase(LazyDict):
         return self
 
     def say(self, channel, txt, result=[], event=None, *args, **kwargs):
-        e = EventBase()
-        if e.checkqueues(result):
-            return
-        resp = e.makeresponse(txt, result, *args, **kwargs)
-        self._raw(resp)
+        logging.error("botbase - %s - please override the BotBase.say() method" % whichmodule())
         return self
 
     def outmonitor(self, origin, channel, txt, event=None):

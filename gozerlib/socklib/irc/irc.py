@@ -448,6 +448,23 @@ realname))
 
         pass
 
+    def say(self, printto, what, event=None, how='msg', origin=""):
+        if origin:
+            res1, res2 = self.less(origin, what)
+        else:
+            res1, res2 = self.less(printto, what)
+        self.out(printto, res1, how)
+        if res2:
+            self.out(printto, res2, how)
+
+    def out(self, printto, what, how):
+        if how == 'msg':
+            self.privmsg(printto, what)
+        elif how == 'notice':
+            self.notice(printto, what)
+        elif how == 'ctcp':
+            self.ctcp(printto, what)
+
     def _resume(self, data, reto=None):
 
         """ resume to server/port using nick. """
@@ -696,96 +713,6 @@ realname))
             return
         logging.warn('irc - fakein - %s' % txt)
         self.handle_ievent(Ircevent().parse(self, txt))
-
-    def say(self, printto, what, who=None, how='msg', fromm=None, speed=0, groupchat=False):
-
-        """ say what to printto. """
-
-        if not printto or not what or printto in self.nicks401:
-            return
-
-        # if who is set add "who: " to txt
-        if not 'socket' in repr(printto):
-            if who:
-                what = "%s: %s" % (who, what)
-            if speed > 9:
-                speed = 9
-            self.putonqueue(9-speed, (printto, what, who, how, fromm, speed))
-            return
-
-        # do the sending
-        try:
-            printto.send(what + '\n')
-            time.sleep(0.001)
-        except Exception, ex :
-            if "Broken pipe" in str(ex) or "Bad file descriptor" in str(ex):
-                return
-            handle_exception()
-
-    def out(self, printto, what, who=None, how='msg', fromm=None, speed=5):
-
-        """ output the first 375 chars .. put the rest into cache. """
-
-        # convert the data to the encoding
-        try:
-            what = toenc(what.rstrip())
-        except Exception, ex:
-            logging.error("can't output: %s" % str(ex))
-            return
-        if not what:
-            return
-
-        [res1, res2] = self.less(fromm, what)
-
-        # split up in parts of 375 chars overflowing on word boundaries
-        #txtlist = splittxt(what)
-        #size = 0
-
-        # send first block
-        self.output(printto, res1, how, who, fromm)
-
-        # see if we need to store output in less cache
-        #result = ""
-        #if len(txtlist) > 2:
-        #    if not fromm:
-        #        self.less(printto, txtlist[1:])
-        #    else:
-        #        self.less(fromm, txtlist[1:])
-        #    size = len(txtlist) - 2
-        #    result = txtlist[1:2][0]
-        #    if size:
-        #        result += " (+%s)" % size
-        #else:
-        #    if len(txtlist) == 2:
-        #        result = txtlist[1]
-
-        # send second block
-        #if result:
-        if res2:
-            self.output(printto, res2, how, who, fromm)
-
-    def output(self, printto, what, how='msg' , who=None, fromm=None):
-
-        """ first output .. then call saymonitor. """
-
-        self.outputnolog(printto, what, how, who, fromm)
-        saymonitor.put(self.name, printto, what, who, how, fromm)
-        
-    def outputnolog(self, printto, what, how, who=None, fromm=None):
-
-        """ do output to irc server .. rate limit to 3 sec. """
-
-        try:
-            what = fix_format(what)
-            if what:
-                if how == 'msg':
-                    self.privmsg(printto, what)
-                elif how == 'notice':
-                    self.notice(printto, what)
-                elif how == 'ctcp':
-                    self.ctcp(printto, what)
-        except Exception, ex:
-            handle_exception()
 
     def donick(self, nick, setorig=0, save=0, whois=0):
 
