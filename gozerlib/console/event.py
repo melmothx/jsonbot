@@ -24,14 +24,20 @@ class ConsoleEvent(EventBase):
         e.copyin(self)
         return e
 
+    def reply(self, txt, result=[]):
+        resp = self.makeresponse(txt, result)
+        logging.info(u"console - out - %s - %s" % (self.userhost, unicode(resp)))
+        self.bot._raw(resp)
+        self.result.append(resp)  
+        self.outqueue.put_nowait(resp)
+
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
-        logging.info(u"console - out - %s - %s" % (self.userhost, unicode(txt)))
         print u"=> " + txt
-        self.result.append(txt)  
 
-    def parse(self, input, *args, **kwargs):
+    def parse(self, bot, input, *args, **kwargs):
         """ overload this. """
+        self.bot = bot
         self.auth = getpass.getuser()
         self.userhost = self.auth
         self.origin = self.userhost

@@ -87,7 +87,7 @@ def handle_ccdel(bot, ievent):
             return
 
         try:
-            ievent.chan.data.cc = event.chan.data.cc.replace(what, '')
+            ievent.chan.data.cc = ievent.chan.data.cc.replace(what, '')
         except KeyError:
             ievent.reply("no channel %s in database")
             return

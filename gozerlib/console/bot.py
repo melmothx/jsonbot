@@ -30,7 +30,7 @@ class ConsoleBot(BotBase):
             try: 
                 if len(input) > 1:
                     event = ConsoleEvent()
-                    event.parse(input)
+                    event.parse(self, input)
 
                     try:
                         result = self.plugs.dispatch(self, event)
@@ -45,6 +45,9 @@ class ConsoleBot(BotBase):
             except (KeyboardInterrupt, EOFError):
                 globalshutdown()
 
+
+    def say(self, printto, txt, *args, **kwargs):
+        self._raw(txt)
 
     def _raw(self, txt):
         sys.stdout.write("=> ")

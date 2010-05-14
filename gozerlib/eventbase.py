@@ -19,6 +19,7 @@ from  xml.sax.saxutils import unescape
 import copy
 import logging
 import Queue
+import types
 
 ## defines
 
@@ -65,14 +66,14 @@ class EventBase(LazyDict):
 
         return self
 
-    def reply(self, txt, result=[], event=None, origin="", dot=", ", extend=0, *args, **kwargs):
+    def reply(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result):
             return
 
-        txt = self.makeresponse(txt, result, dot=dot)
+        txt = self.makeresponse(txt, result, dot)
 
-        res1, res2 = self.less(txt, 365)
+        res1, res2 = self.less(txt, 1000)
         self.bot.say(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
 
         if res2:
@@ -112,12 +113,24 @@ class EventBase(LazyDict):
             return True
         return False
 
-    def makeresponse(self, txt, result, dot=", ", *args, **kwargs):
+    def makeresponse(self, txt, result, dot=u", ", *args, **kwargs):
         """ create a response from a string and result list. """
+        res = []
+        # check if there are list in list
+        for i in result:
+            if type(i) == types.ListType or type(i) == types.TupleType:
+                try:
+                    res.append(dotchars.join(i))
+                except TypeError:
+                    res.extend(unicode(i))
+            else:
+                res.append(unicode(i))
+
+
         if txt:
-            return txt + dot.join(result)
+            return txt + dot.join(res)
         elif result:
-            return dot.join(result)
+            return dot.join(res)
         return ""
             
     def less(self, what, nr=365):
