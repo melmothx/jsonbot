@@ -7,6 +7,9 @@
 from gozerlib.utils.trace import calledfrom
 import sys
 
+class PropertyIgnored(Exception):
+    pass
+
 class BotNotSetInEvent(Exception):
     pass
 

@@ -4,19 +4,53 @@
 
 """ a lazydict allows dotted access to a dict .. dict.key. """
 
+## gozerlib imports
+
+from gozerlib.errors import PropertyIgnored
+
 ## simplejson imports
 
 from simplejson import loads, dumps
 
 ## basic imports
+
 from  xml.sax.saxutils import unescape
 import copy
 import logging
 import uuid
+import types
 
 ## defines
 
+defaultignore = ['plugs', 'pass', 'password']
+
 cpy = copy.deepcopy
+
+## functions
+
+def dumpelement(element, ignore=[]):
+    new = {}
+    for name in element:
+        if name in ignore:
+            continue
+        
+        try:
+            prop = getattr(element, name)
+        except AttributeError:
+            continue
+
+        try:
+            dumps(prop)
+            new[name] = prop
+            ignore.remove(name)
+        except ValueError:
+            continue
+        except TypeError:
+            try:
+                new[name] = dumpelement(prop, ignore.append(name))
+            except TypeError:
+                new[name] = str(type(prop))
+    return new
 
 ## classes
 
@@ -25,7 +59,7 @@ class LazyDict(dict):
     """ lazy dict allows dotted access to a dict """
 
     def __deepcopy__(self, a, b):
-        return  LazyDict(a) 
+        return LazyDict(a) 
 
     def __getattr__(self, attr, default=None):
         """ get attribute. """
@@ -39,6 +73,9 @@ class LazyDict(dict):
         """ set attribute. """
         self[attr] = value
 
+    def __str__(self):
+        return self.dump()
+
     def dostring(self):
         """ return a string representation of the dict """
         res = ""
@@ -48,18 +85,9 @@ class LazyDict(dict):
 
         return res
 
-    def dump(self):
+    def dump(self, ignore=[]):
         """ serialize this event to json. """
-        new = {}
-        for name in self:
-            try:
-                prop = getattr(self, name)
-                dumps(prop)
-                new[name] = prop
-            except TypeError:
-                pass
-        logging.debug('lazydict - tojson - %s' % str(new))
-        return dumps(new)
+        return dumps(dumpelement(self, defaultignore + ignore))
 
     def load(self, input):
         """ load from json string. """  
