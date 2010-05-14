@@ -70,6 +70,11 @@ def savecmndtable():
     for cmndname, c in cmnds.iteritems():
         admin.cmndtable.data[cmndname] = c.modname   
 
+    if cmnds.subs:
+        for cmndname, clist in cmnds.subs.iteritems():
+            if clist and len(clist) == 1:
+                admin.cmndtable.data[cmndname] = clist[0].modname   
+
     logging.debug("saving command table")
     admin.cmndtable.save()
 

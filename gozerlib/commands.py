@@ -42,18 +42,18 @@ class Command(LazyDict):
 
     """
 
-    def __init__(self, modname, cmnd, func, perms=[], threaded=False):
+    def __init__(self, modname, cmnd, func, perms=[], threaded=False, orig=None):
         LazyDict.__init__(self)
         self.modname = modname
         self.plugname = self.modname.split('.')[-1]
         self.cmnd = cmnd
+        self.orig = orig
         self.func = func
         if type(perms) == types.StringType:
             perms = [perms, ]
         self.perms = perms
         self.plugin = self.plugname
         self.threaded = threaded
-
 class Commands(LazyDict):
 
     """
@@ -64,6 +64,16 @@ class Commands(LazyDict):
         """ add a command. """
         modname = calledfrom(sys._getframe())
         self[cmnd] = Command(modname, cmnd, func, perms, threaded)
+        try:
+            c = cmnd.split('-')[1]
+            if not self.subs:
+                self.subs = LazyDict()
+            if self.subs.has_key(c):
+                self.subs[c].append(Command(modname, c, func, perms, threaded, cmnd))
+            else:
+                self.subs[c] = [Command(modname, c, func, perms, threaded, cmnd), ]
+        except IndexError:
+            pass
         return self
 
     def dispatch(self, bot, event):
@@ -74,8 +84,15 @@ class Commands(LazyDict):
         cmnd = event.usercmnd
         try:
             c = self[cmnd]
-        except KeyError: 
-            raise NoSuchCommand(cmnd)
+        except KeyError:
+            if self.subs and self.subs.has_key(cmnd):
+                if len(self.subs[cmnd]) == 1:
+                    c = self.subs[cmnd][0]
+                else:
+                    event.reply("use one of ", [c.orig for c in self.subs[cmnd]])
+                    return
+            else:
+                raise NoSuchCommand(cmnd)
 
         # identity of the caller
         id = event.auth or event.userhost
