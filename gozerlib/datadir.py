@@ -26,6 +26,8 @@ def makedirs(ddir=None):
         os.mkdir(ddir + '/users/')
     if not os.path.isdir(ddir + '/db/'):
         os.mkdir(ddir + '/db/')
+    if not os.path.isdir(ddir + '/channels/'):
+        os.mkdir(ddir + '/channels/')
     if not os.path.isdir(ddir + '/fleet/'):
         os.mkdir(ddir + '/fleet/')
     if not os.path.isdir(ddir + '/pgp/'):

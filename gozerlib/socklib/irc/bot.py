@@ -292,7 +292,7 @@ self.nick, self.server, self.ipv6, self.ssl, self.port)
 
         for i in self.state['joinedchannels']:
             try:
-                channel = ChannelBase(self.datadir + os.sep + 'channels' + os.sep + i)
+                channel = ChannelBase(i)
                 if channel:
                     key = channel.getpass()
                 else:

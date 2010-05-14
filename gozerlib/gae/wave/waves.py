@@ -38,7 +38,7 @@ class Wave(ChannelBase):
     """ a wave is seen as a channel. """
 
     def __init__(self, waveid):
-        ChannelBase.__init__(self, 'gozerdata' + os.sep + 'waves' + os.sep + waveid)
+        ChannelBase.__init__(self, waveid)
         self.data.seenblips = self.data.seenblips or 0
         self.data.threshold = self.data.threshold or -1
         self.data.nrcloned = self.data.nrcloned or 0

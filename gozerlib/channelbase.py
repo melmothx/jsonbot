@@ -8,10 +8,12 @@
 
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.persist import Persist
+from gozerlib.datadir import datadir
 
 ## basic imports
 
 import time
+import os
 
 ## classes
 
@@ -28,7 +30,7 @@ class ChannelBase(Persist):
     """
 
     def __init__(self, id, type="notset"):
-        Persist.__init__(self, id)
+        Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + id)
         self.id = id
         self.type = type
         self.lastmodified = time.time()

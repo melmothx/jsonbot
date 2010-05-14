@@ -836,7 +836,7 @@ realname))
         # do join with password
         if password:
             self._raw('JOIN %s %s' % (channel, password))
-            chan = ChannelBase(self.datadir + os.sep + 'channels' + os.sep + channel)
+            chan = ChannelBase(channel)
             if chan:
                 chan.setpass('IRC', password)            
         else:
