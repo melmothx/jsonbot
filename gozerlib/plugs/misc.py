@@ -36,8 +36,8 @@ def handle_testevent(bot, ievent):
         del event.cfg
         del event.plugs
         del event.bot
-    except Exception, ex:
-        handle_exception()
+    except AttributeError:
+        pass
     ievent.reply(str(event))
     
 cmnds.add('test-event', handle_testevent, ['USER', 'GUEST', ])

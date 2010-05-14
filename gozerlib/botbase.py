@@ -240,7 +240,7 @@ class BotBase(LazyDict):
             txtlist = what
         else:
             what = what.strip()
-            txtlist = splittxt(what, nr - 5)
+            txtlist = splittxt(what, nr)
 
         size = 0
 

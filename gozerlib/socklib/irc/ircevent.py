@@ -169,6 +169,13 @@ class Ircevent(EventBase):
         makeargrest(self)
         return self
 
+    def reply(self, txt, result=[], to="", dot=", ", extend=0):
+        restxt = self.makeresponse(txt, result, dot)
+        res1, res2 = self.less(restxt, 365+extend)
+        self.bot.out(to or self.channel, res1, 'msg')
+        if res2:
+            self.bot.out(to or self.channel, res2, 'msg')
+
 # postfix count aka how many arguments
 
 pfc = {}

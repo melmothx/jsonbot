@@ -65,17 +65,18 @@ class EventBase(LazyDict):
 
         return self
 
-    def reply(self, txt, result=[], dot=", ",*args, **kwargs):
+    def reply(self, txt, result=[], event=None, origin="", dot=", ", extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result):
             return
 
         txt = self.makeresponse(txt, result, dot=dot)
 
-        if self.bot:
-            self.bot.say(self.channel, txt, origin=self.userhost, *args, **kwargs)
-        else:
-            self._raw(resp)
+        res1, res2 = self.less(txt, 365)
+        self.bot.say(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+
+        if res2:
+            self.bot.say(self.channel, res2, origin=origin or self.userhost, extend=extend, *args, **kwargs)
 
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
@@ -111,7 +112,7 @@ class EventBase(LazyDict):
             return True
         return False
 
-    def makeresponse(self, txt, result, nritems=False, dot=", ", *args, **kwargs):
+    def makeresponse(self, txt, result, dot=", ", *args, **kwargs):
         """ create a response from a string and result list. """
         if txt:
             return txt + dot.join(result)
@@ -119,6 +120,6 @@ class EventBase(LazyDict):
             return dot.join(result)
         return ""
             
-    def less(self, what):
+    def less(self, what, nr=365):
         """ check string for overflow, if so send data to the output cache. """
-        return self.bot.less(self.userhost, what)
+        return self.bot.less(self.userhost, what, nr)

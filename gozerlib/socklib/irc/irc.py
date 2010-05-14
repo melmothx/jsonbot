@@ -448,22 +448,16 @@ realname))
 
         pass
 
-    def say(self, printto, what, event=None, how='msg', origin=""):
-        if origin:
-            res1, res2 = self.less(origin, what)
-        else:
-            res1, res2 = self.less(printto, what)
-        self.out(printto, res1, how)
-        if res2:
-            self.out(printto, res2, how)
+    def say(self, printto, what, event=None, how='msg', origin="", extend=0):
+        self.out(printto, what, how)
 
     def out(self, printto, what, how):
-        if how == 'msg':
-            self.privmsg(printto, what)
-        elif how == 'notice':
+        if how == 'notice':
             self.notice(printto, what)
         elif how == 'ctcp':
             self.ctcp(printto, what)
+        else:
+            self.privmsg(printto, what)
 
     def _resume(self, data, reto=None):
 

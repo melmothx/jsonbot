@@ -632,19 +632,26 @@ class SXMPPBot(XMLStream, BotBase):
 
         self.send(message)
         
-    def say(self, printto, txt, fromm=None, groupchat=True, speed=5, type="normal", how=''):
+    def say(self, printto, txt, event=None, origin="", extend=0, groupchat=False):
         """ say txt to channel/JID. """
-        txt = jabberstrip(txt)
+        if origin:
+            res1, res2 = self.less(origin, txt, 900+extend)        
+        else:
+            res1, res2 = self.less(printto, txt, 900+extend)        
+ 
+        self.out(printto, res1, event, origin, groupchat)
+        if res2:
+            self.out(printto, res2, event, origin, groupchat)
+
+    def out(self, printto, txt, event, origin, groupchat):
         if self.google:
             fromm = self.me
         if printto in self.state['joinedchannels'] and groupchat:
-            message = Message({'to': printto, 'body': txt, 'type': 'groupchat'})
+            message = Message({'to': printto, 'txt': txt, 'type': 'groupchat'})
         else:
-            message = Message({'to': printto, 'body': txt, 'type': 'chat'})
-        if fromm:
-            message.fromm = fromm
-        else:
-            message.fromm = self.me
+            message = Message({'to': printto, 'txt': txt})
+        if origin:
+            message.fromm = origin
 
         self.send(message)
 

@@ -55,128 +55,14 @@ class Message(XMLDict):
     def __deepcopy__(self, bla):
         return Message(self)
 
-                 
-    #@replylocked
-    def reply(self, txt, result=None, nick=None, dot=False, nritems=False, nr=False, fromm=None, private=False):
-        """ reply txt. """
-        if result == []:
-            return
-        restxt = ""
+    def reply(self, txt, result=[], to="", dot=", ", extend=0):
+        restxt = self.makeresponse(txt, result, dot)
+        res1, res2 = self.less(restxt, 900+extend)
+        self.out(res1, to)
+        if res2:
+            self.out(res2, to)
 
-        if type(result) == types.DictType:
-            for i, j in result.iteritems():
-                if type(j) == types.ListType:
-                    try:
-                        z = dotchars.join(j)
-                    except TypeError:
-                        z = unicode(j)
-                else:
-                    z = j
-                if dot == True:
-                    restxt += "%s: %s %s " % (i, z, dotchars)
-                elif dot:
-                    restxt += "%s: %s %s " % (i, z, dot)
-                else:
-                    restxt += "%s: %s " % (i, z)
-
-            if restxt:
-                if dot == True:
-                    restxt = restxt[:-6]
-                elif dot:
-                    restxt = restxt[:-len(dot)]
-        lt = False
-        if type(txt) == types.ListType and not result:
-            result = txt
-            origtxt = ""
-            lt = True
-        else:
-            origtxt = txt
-        if result:
-            lt = True
-
-        if self.queues:
-            for i in self.queues:
-                if lt:
-                    for j in result:
-                        i.put_nowait(j)
-                else:
-                    i.put_nowait(txt)
-            if self.onlyqueues:
-                return
-
-        pretxt = origtxt
-        if lt and not restxt:
-            res = []
-            for i in result:
-                if type(i) == types.ListType or type(i) == types.TupleType:
-                    try:
-                        res.append(dotchars.join(i))
-                    except TypeError:
-                        res.append(unicode(i))
-                else:
-                    res.append(i)
-            result = res
-            if nritems:
-                if len(txt) > 1:
-                    pretxt = "(%s items) .. " % len(result)
-            txtlist = [unicode(i) for i in result]
-            if not nr is False:
-                try:
-                    start = int(nr)
-                except ValueError:
-                    start = 0
-                txtlist2 = []
-                teller = start
-                for i in txtlist:
-                    txtlist2.append("%s) %s" % (teller, i))
-                    teller += 1
-                txtlist = txtlist2
-            if dot == True:
-                restxt = dotchars.join(txtlist)
-            elif dot:
-                restxt = dot.join(txtlist)
-            else:
-                restxt = ' '.join(txtlist)
-
-        if pretxt:
-            restxt = pretxt + restxt
-
-        txt = jabberstrip(restxt)
-
-        if not txt:
-            return
-
-        what = txt
-        txtlist = []
-        start = 0
-        end = 900
-        length = len(what)
-
-        for i in range(length/end+1):
-            endword = what.find(' ', end)
-            if endword == -1:
-                endword = end
-            txtlist.append(what[start:endword])
-            start = endword
-            end = start + 900
-
-        size = 0
-
-        # see if we need to store output in less cache
-        if len(txtlist) > 1:
-            self.less(txtlist)
-            size = len(txtlist) - 1
-            result = txtlist[:1][0]
-            if size:
-                result += " (+%s)" % size
-        else:
-            result = txtlist[0]
-
-        #try:
-        #    to = self.options['--to']
-        #except KeyError:
-        #    to = None
-        to = None
+    def out(self, txt, to=""):
         outtype = self.type
 
         if not self.bot:
@@ -187,23 +73,19 @@ class Message(XMLDict):
             self.groupchat = True
             self.msg = False
 
-        repl = Message({'from': self.me, 'to': to or self.jid, 'type': outtype, 'txt': result})
+        repl = Message({'from': self.me, 'to': to or self.jid, 'type': outtype, 'txt': txt})
 
         if self.groupchat:
             if self.resource == self.bot.nick:
                 return
             if to:
                 pass
-            elif nick:
-                repl.type = 'chat'
-            elif private:
-                repl.to = self.userhost
             elif self.printto:
                 repl.to = self.printto
             else:
                 repl.to = self.channel
 
-        if nick:
+        if to:
             repl.type = 'normal'
         elif not repl.type:
             repl.type = 'chat'
