@@ -42,6 +42,7 @@ def handle_reboot(bot, ievent):
         ievent.reply("this command doesnt work on the GAE")
         return
     ievent.reply("rebooting")
+    time.sleep(5)
     if ievent.rest == "cold":
         stateful = False
     else:
