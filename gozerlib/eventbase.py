@@ -39,6 +39,7 @@ class EventBase(LazyDict):
         self.result = []
         self.outqueue = Queue.Queue()
         self.bottype = "botbase"
+        self.closequeue = True
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
@@ -60,19 +61,18 @@ class EventBase(LazyDict):
             logging.error("no event given in copyin")
             return self
         self.update(eventin)
-        if eventin.has_key('queues'):
-            if eventin['queues']:
-                self.queues = list(eventin['queues'])
-
+        
+        #if eventin.has_key('queues'):
+        #    if eventin['queues']:
+        #        self.queues = list(eventin['queues'])
         return self
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
         """ reply to this event """
+
         if self.checkqueues(result):
             return
-
         txt = self.makeresponse(txt, result, dot)
-
         res1, res2 = self.less(txt, 1000+extend)
         self.bot.say(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
 
@@ -108,8 +108,11 @@ class EventBase(LazyDict):
         if self.queues:
             for queue in self.queues:   
                 for item in resultlist:
-                    queue.put_nowait(item)
-
+                    if item:
+                        queue.put_nowait(item)
+            for item in resultlist:
+                if item:
+                    self.outqueue.put_nowait(item)      
             return True
         return False
 

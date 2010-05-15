@@ -125,12 +125,7 @@ class Plugins(LazyDict):
         result = []
         if event.txt and not ' | ' in event.txt:
             self.needreloadcheck(bot, event)
-            result = cmnds.dispatch(bot, event, *args, **kwargs)
-            if event.queues:
-                for queue in event.queues:
-                    queue.put_nowait(None)
-            event.outqueue.put_nowait(None)
-            return result
+            return cmnds.dispatch(bot, event, *args, **kwargs)
 
         if event.txt and ' | ' in event.txt:
             return self.pipelined(bot, event, *args, **kwargs)
@@ -142,11 +137,13 @@ class Plugins(LazyDict):
         origqueues = event.queues
         event.queues = []
         event.allowqueue = True
+        event.closequeue = False
         events = []
 
         # split commands
         for item in event.txt.split(' | '):
             e = copy.deepcopy(event)
+            #print e
             e.queues = []
             e.onlyqueues = True
             e.txt = item.strip()
@@ -167,7 +164,7 @@ class Plugins(LazyDict):
             prevq = q
 
         events[-1].inqueue = prevq
-        events[-1].onlyqueues = False
+        events[-1].closequeue = True
 
         if origqueues:
             events[-1].queues = origqueues

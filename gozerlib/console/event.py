@@ -25,6 +25,8 @@ class ConsoleEvent(EventBase):
         return e
 
     def reply(self, txt, result=[]):
+        if self.checkqueues(result):
+             return
         resp = self.makeresponse(txt, result)
         logging.info(u"console - out - %s - %s" % (self.userhost, unicode(resp)))
         self.bot._raw(resp)

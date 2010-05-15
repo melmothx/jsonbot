@@ -34,7 +34,7 @@ class ConsoleBot(BotBase):
 
                     try:
                         result = self._plugs.dispatch(self, event)
-                        logging.warn("plugins - waiting for %s to finish" % event.usercmnd)
+                        logging.debug("console - waiting for %s to finish" % event.usercmnd)
                         waitforqueue(result.outqueue)
                     except NoSuchCommand:
                         print "no such command: %s" % event.usercmnd

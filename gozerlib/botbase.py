@@ -307,15 +307,15 @@ class BotBase(LazyDict):
         """ create a response from a string and result list. """
         res = []
         # check if there are list in list
+
         for i in result:
             if type(i) == types.ListType or type(i) == types.TupleType:
                 try:
-                    res.append(dotchars.join(i))
+                    res.append(dot.join(i))
                 except TypeError:
                     res.extend(unicode(i))
             else:   
                 res.append(unicode(i))
-
 
         if txt: 
             return txt + dot.join(res)   
