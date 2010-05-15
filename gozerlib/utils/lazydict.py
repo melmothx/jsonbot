@@ -22,7 +22,7 @@ import types
 
 ## defines
 
-defaultignore = ['_', 'pass', 'password', 'fsock']
+defaultignore = ['_', 'pass', 'password', 'fsock', 'sock', 'handlers']
 
 cpy = copy.deepcopy
 
@@ -34,8 +34,8 @@ def checkignore(element, ignore):
             return True
     return False
 
-def dumpelement(element, ignore=[]):
-    newer = LazyDict()
+def dumpelement(element, ignore=[], prev={}):
+    newer = dict(prev) or {}
     try:
         for name in element:
             if checkignore(name, ignore):
@@ -47,15 +47,26 @@ def dumpelement(element, ignore=[]):
                 continue
             if not prop:
                 continue
+            if checkignore(prop, ignore):
+                newer[name] = str(type(prop))
+                continue
                 
             try:
                 dumps(prop)
                 newer[name] = prop
             except (TypeError, AttributeError):
-                newer[name] = str(type(prop))
+                try:
+                    newer[name] = dumpelement(prop, ignore, prop)
+                except (TypeError, AttributeError):
+                    newer[name] = str(type(prop))
+
 
     except TypeError:
-        raise
+        return str(type(element))
+
+    for name in newer.keys():
+        if checkignore(name, ignore):
+            newer[name] = "jsonbot-ignored"
 
     return newer
 
@@ -89,8 +100,8 @@ class LazyDict(dict):
 
         return res
 
-    def dump(self):
-        result = dumpelement(self)
+    def dump(self, ignore=[]):
+        result = dumpelement(self, defaultignore + ignore)
         return dumps(result)
 
     def load(self, input):
