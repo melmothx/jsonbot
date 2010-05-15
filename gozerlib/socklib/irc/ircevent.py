@@ -57,9 +57,6 @@ class Ircevent(EventBase):
 
     """ represents an IRC event. """
 
-    def __copy__(self):
-        return Ircevent(self)
-
     def __deepcopy__(self, bla):
         return Ircevent(self)
     

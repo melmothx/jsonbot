@@ -79,7 +79,7 @@ class BotBase(LazyDict):
         self.setusers(usersin)
         logging.warn("botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
-        self.plugs = plugs or coreplugs 
+        self._plugs = plugs or coreplugs 
         self.outcache = Less(1)
         self.userhosts = {}
 
@@ -112,8 +112,8 @@ class BotBase(LazyDict):
 
     def loadplugs(self, packagelist=[]):
         """ load plugins from packagelist. """
-        self.plugs.loadall(packagelist)
-        return self.plugs
+        self._plugs.loadall(packagelist)
+        return self._plugs
 
     def start(self):
         """ start the mainloop of the bot. """
@@ -164,7 +164,7 @@ class BotBase(LazyDict):
 
         try:
             if go or event.bottype in ['web', 'xmpp', 'irc']:
-                result = self.plugs.dispatch(self, event)
+                result = self._plugs.dispatch(self, event)
             else:
                 result =  []
         except NoSuchCommand:
@@ -225,9 +225,9 @@ class BotBase(LazyDict):
         e.cbtype = 'DOCMND'
         e.makeargs()
 
-        if self.plugs:
+        if self._plugs:
             try:
-                return self.plugs.dispatch(self, e)
+                return self._plugs.dispatch(self, e)
             except NoSuchCommand:
                 print "no such command: %s" % e.usercmnd
         else:

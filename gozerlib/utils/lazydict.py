@@ -22,35 +22,42 @@ import types
 
 ## defines
 
-defaultignore = ['plugs', 'pass', 'password']
+defaultignore = ['_', 'pass', 'password', 'fsock']
 
 cpy = copy.deepcopy
 
 ## functions
 
-def dumpelement(element, ignore=[]):
-    new = {}
-    for name in element:
-        if name in ignore:
-            continue
-        
-        try:
-            prop = getattr(element, name)
-        except AttributeError:
-            continue
+def checkignore(element, ignore):
+    for item in ignore:
+        if item in str(element):
+            return True
+    return False
 
-        try:
-            dumps(prop)
-            new[name] = prop
-            ignore.remove(name)
-        except ValueError:
-            continue
-        except TypeError:
+def dumpelement(element, ignore=[]):
+    newer = LazyDict()
+    try:
+        for name in element:
+            if checkignore(name, ignore):
+                newer[name] = "jsonbot-ignored"
+                continue
             try:
-                new[name] = dumpelement(prop, ignore.append(name))
-            except TypeError:
-                new[name] = str(type(prop))
-    return new
+                prop = getattr(element, name)
+            except AttributeError:
+                continue
+            if not prop:
+                continue
+                
+            try:
+                dumps(prop)
+                newer[name] = prop
+            except (TypeError, AttributeError):
+                newer[name] = str(type(prop))
+
+    except TypeError:
+        raise
+
+    return newer
 
 ## classes
 
@@ -58,7 +65,7 @@ class LazyDict(dict):
 
     """ lazy dict allows dotted access to a dict """
 
-    def __deepcopy__(self, a, b):
+    def __deepcopy__(self, a):
         return LazyDict(a) 
 
     def __getattr__(self, attr, default=None):
@@ -73,9 +80,6 @@ class LazyDict(dict):
         """ set attribute. """
         self[attr] = value
 
-    def __str__(self):
-        return self.dump()
-
     def dostring(self):
         """ return a string representation of the dict """
         res = ""
@@ -85,9 +89,9 @@ class LazyDict(dict):
 
         return res
 
-    def dump(self, ignore=[]):
-        """ serialize this event to json. """
-        return dumps(dumpelement(self, defaultignore + ignore))
+    def dump(self):
+        result = dumpelement(self)
+        return dumps(result)
 
     def load(self, input):
         """ load from json string. """  

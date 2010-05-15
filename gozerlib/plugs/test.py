@@ -106,6 +106,6 @@ def handle_testwrongxml(bot, ievent):
 cmnds.add('test-wrongxml', handle_testwrongxml, 'OPER')
 
 def handle_tojson(bot, ievent):
-    ievent.reply(ievent.tojson())
+    ievent.reply(str(ievent.dump()))
 
 cmnds.add('test-json', handle_tojson, 'OPER')

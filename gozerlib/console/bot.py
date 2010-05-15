@@ -33,7 +33,7 @@ class ConsoleBot(BotBase):
                     event.parse(self, input)
 
                     try:
-                        result = self.plugs.dispatch(self, event)
+                        result = self._plugs.dispatch(self, event)
                         logging.warn("plugins - waiting for %s to finish" % event.usercmnd)
                         waitforqueue(result.outqueue)
                     except NoSuchCommand:

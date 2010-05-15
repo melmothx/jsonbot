@@ -31,14 +31,7 @@ examples.add('test', 'give test response',' test')
 
 def handle_testevent(bot, ievent):
     """ give dump of event. """
-    event = cpy(ievent)
-    try:
-        del event.cfg
-        del event.plugs
-        del event.bot
-    except AttributeError:
-        pass
-    ievent.reply(str(event))
+    ievent.reply(str(ievent))
     
 cmnds.add('test-event', handle_testevent, ['USER', 'GUEST', ])
 examples.add('test-event', 'dump the event',' test-event')

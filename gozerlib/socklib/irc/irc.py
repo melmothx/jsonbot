@@ -95,6 +95,7 @@ class Irc(BotBase):
         self.stopoutloop = False
         if self.port == 0:
             self.port = 6667
+        self.connecttime = 0
         self.connectlock = thread.allocate_lock()
         self.connectok = threading.Event()
         self.encoding = 'utf-8'
@@ -193,7 +194,6 @@ class Irc(BotBase):
 
         # we are connected
         logging.warn('irc - connection ok')
-        time.sleep(1)
         self.connected = True
 
         # make file socket
@@ -224,7 +224,7 @@ class Irc(BotBase):
             self.outputlock.release()
         except thread.error:
             pass
-
+        self.connecttime = time.time()
         return 1
 
     def start(self):
@@ -789,7 +789,7 @@ realname))
 
         if not who:
             return
-        self.putonqueue(6, 'WHO %s' % who.strip())
+        self.putonqueue(4, 'WHO %s' % who.strip())
 
     def names(self, channel):
 
@@ -797,7 +797,7 @@ realname))
 
         if not channel:
             return
-        self.putonqueue(6, 'NAMES %s' % channel)
+        self.putonqueue(4, 'NAMES %s' % channel)
 
     def whois(self, who):
 
@@ -805,7 +805,7 @@ realname))
 
         if not who:
             return
-        self.putonqueue(6, 'WHOIS %s' % who)
+        self.putonqueue(4, 'WHOIS %s' % who)
 
     def privmsg(self, printto, what):
 
@@ -829,7 +829,7 @@ realname))
             self.outputlock.acquire()
             now = time.time()
             timetosleep = 4 - (now - self.lastoutput)
-            if timetosleep > 0 and not self.nolimiter:
+            if timetosleep > 0 and not self.nolimiter and not (time.time() - self.connecttime < 5):
                 logging.debug('irc - flood protect')
                 time.sleep(timetosleep)
             txt = toenc(strippedtxt(txt))

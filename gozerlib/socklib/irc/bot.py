@@ -75,11 +75,6 @@ class IRCBot(Irc):
         self.monitor = outmonitor
         self.monitor.start()
 
-
-    def __str__(self):
-        return "name: %s nick: %s server: %s ipv6: %s ssl: %s port:%s" % (self.name, \
-self.nick, self.server, self.ipv6, self.ssl, self.port)
-
     def _resume(self, data, reto=None):
 
         """ resume the bot. """
