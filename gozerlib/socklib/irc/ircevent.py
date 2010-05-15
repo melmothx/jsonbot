@@ -167,6 +167,8 @@ class Ircevent(EventBase):
         return self
 
     def reply(self, txt, result=[], to="", dot=", ", extend=0):
+        if self.checkqueues(result):
+            return
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 365+extend)
         self.bot.out(to or self.channel, res1, 'msg')
