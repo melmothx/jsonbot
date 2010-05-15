@@ -56,6 +56,8 @@ class Message(XMLDict):
         return Message(self)
 
     def reply(self, txt, result=[], to="", dot=", ", extend=0):
+        if self.checkqueues(result):
+            return
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 900+extend)
         self.out(res1, to)
