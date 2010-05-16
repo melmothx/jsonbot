@@ -130,17 +130,12 @@ def handle_commands(bot, ievent):
     try:
         plugin = ievent.args[0].lower()
     except IndexError:
-        ievent.missing('<plugin> .. see the list command for available plugins')
-        return
-
-    if not plugs.has_key(plugin):
-        ievent.reply('no %s plugin is loaded .. see the available command for available plugins (reload to enable)' % plugin)
-        return
+        plugin = ""
 
     result = []
     cp = dict(cmnds)
     for i, j in cp.iteritems():
-        if plugin == j.plugname:
+        if not plugin or plugin == j.plugname:
             txt = i
             if txt:
                 result.append(txt)
