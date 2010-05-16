@@ -309,7 +309,7 @@ def handle_apro(bot, ievent):
         result.append(i)
 
     if result:
-        ievent.reply("commands matching %s: " % what, result , nr=1)
+        ievent.reply("commands matching %s: " % what, result)
     else: 
         ievent.reply('no matching commands found for %s (%s)' % (what, ' .. '.join(perms)))
 
