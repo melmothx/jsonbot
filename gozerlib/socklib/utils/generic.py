@@ -68,34 +68,6 @@ def makedirs(datadir):
     if not os.path.isdir(datadir + '/configs/'):
         os.mkdir(datadir + '/configs/')
 
-def cleanpyc():
-    removed = []
-    try:
-        files = os.listdir('gozerplugs')
-        for file in files:
-            if file.endswith('.pyc'):
-                os.unlink('gozerplugs' + os.sep + file)
-                removed.append(file)
-    except:
-        pass
-    try:
-        files = os.listdir('gozerplugs/plugs')
-        for file in files:
-            if file.endswith('.pyc'):
-                os.unlink('gozerplugs/plugs' + os.sep + file)
-                removed.append(file)
-    except:
-        pass
-    return removed
-
-def cleanpycfile(filename):
-    try:
-        if filename.endswith('.pyc'):
-            os.unlink(filename)
-            rlog(10, 'generic', 'cleaned %s' % filename)
-    except:
-        pass
-
 def getversion():
     version = config['version']
     if config['nodb']:
@@ -273,7 +245,7 @@ def waitforuser(bot, userhost, timeout=15):
     return result
 
 def getrandomnick():
-    return "gbot" + str(random.randint(0, 100))
+    return "jsb-" + str(random.randint(0, 100))
 
 def waitforqueue(queue, timeout=10, maxitems=None):
     result = []

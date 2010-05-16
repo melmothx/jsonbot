@@ -25,7 +25,11 @@ class ConsoleBot(BotBase):
 
     def start(self):
         time.sleep(0.1)
-        input = raw_input("> ")
+        try:
+            input = raw_input("> ")
+        except KeyboardInterrupt:
+            globalshutdown()
+
         while 1: 
             try: 
                 if len(input) > 1:
