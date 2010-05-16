@@ -85,10 +85,12 @@ class Commands(LazyDict):
         # identity of the caller
         id = event.auth or event.userhost
         if event.usercmnd:
+            logging.debug("setting user to %s" % id)
             event.user = bot.users.getuser(id)
-            event.userstate = UserState(event.user.data.name)
-            logging.debug("setting user to %s" % event.user.data.name)
-
+            if event.user:
+                event.userstate = UserState(event.user.data.name)
+            else:
+                logging.debug("failed to set user %s" % id)
         cmnd = event.usercmnd
         try:
             cmnd = event.userstate.data.aliases[cmnd]

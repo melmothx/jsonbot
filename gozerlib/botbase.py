@@ -179,7 +179,7 @@ class BotBase(LazyDict):
 
     def ownercheck(self, userhost):
         """ check if provided userhost belongs to an owner. """
-        if 'owner' in self.cfg:
+        if self.cfg and self.cfg.owner:
             if userhost in self.cfg.owner:
                 return True
 
@@ -187,11 +187,11 @@ class BotBase(LazyDict):
 
     def _raw(self, txt):
         """ override this. """ 
-        logging.error("botbase - %s - please override the BotBase.raw() method" % whichmodule())
+        print txt
         return self
 
     def say(self, channel, txt, result=[], event=None, *args, **kwargs):
-        logging.error("botbase - %s - please override the BotBase.say() method" % whichmodule())
+        self._raw(self.makeresponse(txt, result))
         return self
 
     def outmonitor(self, origin, channel, txt, event=None):
@@ -245,6 +245,10 @@ class BotBase(LazyDict):
         size = 0
 
         # send first block
+        if not txtlist:
+            logging.debug("can't split txt from %s" % what)
+            return ["", ""]
+
         res = txtlist[0]
 
         # see if we need to store output in less cache

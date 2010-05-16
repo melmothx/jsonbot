@@ -292,6 +292,9 @@ sleeptime=30*60, running=0, item={}):
 
         return tobereturned
 
+    def all(self):
+        return self.data.result
+
     def search(self, item, search):
         res = []
 

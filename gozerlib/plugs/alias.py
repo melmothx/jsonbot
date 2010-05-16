@@ -82,11 +82,11 @@ def handle_delalias(bot, ievent):
     # del alias and save
     aliases = ievent.userstate.data.aliases
     try:
-        del aliases[aliasfrom]
+        del aliases[what]
         ievent.userstate.save()
         ievent.reply('alias deleted')
     except KeyError:
-        ievent.reply('there is no %s alias' % aliasfrom)
+        ievent.reply('there is no %s alias' % what)
 
 cmnds.add('alias-del', handle_delalias, 'USER')
 examples.add('alias-del', 'alias-del <what> .. delete alias', 'alias-del ll')

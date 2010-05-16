@@ -36,13 +36,13 @@ def dummy(a, b=None):
 
 def handle_testplugs(bot, event):
     if bot.cfg['type'] == 'irc' and not event.isdcc:
-        msg.reply('use this command in a /dcc chat with the bot')
+        event.reply('use this command in a /dcc chat with the bot')
         return
     if bot.cfg['type'] == 'web':
-        msg.reply("don't use this command on a web bot")
+        event.reply("don't use this command on a web bot")
         return
     if bot.cfg['type'] == 'wave':
-        msg.reply("don't use this command on a wave bot")
+        event.reply("don't use this command on a wave bot")
         return
     match = ""
     try:
@@ -68,7 +68,8 @@ def handle_testplugs(bot, event):
             teller += 1
             event.reply('command: ' + example)
             try:
-                bot.docmnd(event.userhost, event.channel, example, event)
+                msg.txt = "!" + example
+                bot.docmnd(event.userhost, event.channel, example, msg)
             except Exception, ex:
                 errors[example] = exceptionmsg()
     event.reply('%s tests run' % teller)

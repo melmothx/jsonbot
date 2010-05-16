@@ -36,13 +36,14 @@ class ConsoleEvent(EventBase):
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
-        print u"=> " + txt
+        self.console.push(u"=> " + txt)
 
-    def parse(self, bot, input, *args, **kwargs):
+    def parse(self, bot, input, console, *args, **kwargs):
         """ overload this. """
         if not input:
             raise NoInput()
         self.bot = bot
+        self.console = console
         self.auth = getpass.getuser()
         self.userhost = self.auth
         self.origin = self.userhost

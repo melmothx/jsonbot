@@ -45,8 +45,9 @@ class Botcommand(threading.Thread):
 
             if self.ievent.closequeue:
                 logging.debug('threads- closing queue for %s' % self.ievent.userhost)
-                for i in self.ievent.queues:
-                    i.put_nowait(None)
+                if self.ievent.queues:
+                    for i in self.ievent.queues:
+                        i.put_nowait(None)
                 self.ievent.outqueue.put_nowait(None)
         except Exception, ex:
             handle_exception(self.ievent)
