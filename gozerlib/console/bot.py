@@ -19,8 +19,37 @@ import time
 import Queue
 import logging
 import sys
+import code
+import os
+import readline
+import atexit
+
+## defines
+
+histfilepath = os.path.expanduser("run/console-history")
 
 ## classes
+
+class HistoryConsole(code.InteractiveConsole):
+    def __init__(self, locals=None, filename="<console>",
+                 histfile=histfilepath):
+        self.fname = histfile
+        code.InteractiveConsole.__init__(self, locals, filename)
+        self.init_history(histfile)
+
+    def init_history(self, histfile):
+        readline.parse_and_bind("tab: complete")
+        if hasattr(readline, "read_history_file"):
+            try:
+                readline.read_history_file(histfile)
+            except IOError:
+                pass
+            #atexit.register(self.save_history, histfile)
+
+    def save_history(self, histfile=None):
+        readline.write_history_file(histfile or self.fname)
+
+console = HistoryConsole()
 
 class ConsoleBot(BotBase):
 
@@ -28,7 +57,7 @@ class ConsoleBot(BotBase):
         time.sleep(0.1)
         while 1: 
             try: 
-                input = raw_input("> ")
+                input = console.raw_input("> ")
                 event = ConsoleEvent()
                 event.parse(self, input)
 
@@ -42,6 +71,7 @@ class ConsoleBot(BotBase):
             except NoInput:
                 continue
             except (KeyboardInterrupt, EOFError):
+                console.save_history()
                 globalshutdown()
             except Exception, ex:
                 handle_exception()
