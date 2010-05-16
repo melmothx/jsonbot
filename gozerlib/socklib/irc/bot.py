@@ -188,11 +188,12 @@ class IRCBot(Irc):
                     channel = nick
                 # create ircevent
                 ievent = Ircevent()
+                ievent.printto = sock
                 ievent.bottype = "irc"
                 ievent.nick = nick
                 ievent.userhost = userhost
                 ievent.channel = channel or ievent.userhost
-                ievent.chan = ChannelBase(channel or userhost)
+                ievent.chan = ChannelBase(ievent.channel)
                 ievent.origtxt = res
                 ievent.txt = res
                 ievent.cmnd = 'DCC'
@@ -414,7 +415,6 @@ class IRCBot(Irc):
             if self.cfg['noccinmsg'] and self.msg:
                 self.doevent(ievent)
             elif ievent.txt[0] in ccs: 
-                
                 self.doevent(ievent)
             return
 

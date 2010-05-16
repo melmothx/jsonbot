@@ -39,6 +39,7 @@ import os
 import Queue
 import random
 import logging
+import types
 
 ## locks
 
@@ -452,6 +453,19 @@ realname))
         self.out(printto, what, how)
 
     def out(self, printto, what, how):
+        # check for socket
+
+        if 'socket' in repr(printto): 
+            try:
+                printto.send(what + '\n')
+                time.sleep(0.001)
+            except Exception, ex :
+                if "Broken pipe" in str(ex) or "Bad file descriptor" in str(ex):
+                    return
+                raise
+            return
+
+        # normal
         if how == 'notice':
             self.notice(printto, what)
         elif how == 'ctcp':

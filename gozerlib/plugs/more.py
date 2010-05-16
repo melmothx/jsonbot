@@ -30,7 +30,7 @@ def handle_more(bot, ievent):
     if bot.type == 'web':
         ievent.reply(txt)
     else:
-        bot.say(ievent.channel, txt, extend=5)
+        bot.say(ievent.printto, txt, extend=5)
         
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('more', 'return txt from output cache', '1) more 2) more test')

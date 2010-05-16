@@ -162,7 +162,7 @@ class Ircevent(EventBase):
                 logging.error('irc - %s - %s - %s' % (self.cmnd, self.arguments, self.txt))
         except ValueError:
             pass
-
+        self.printto = self.channel 
         makeargrest(self)
         return self
 
@@ -171,9 +171,9 @@ class Ircevent(EventBase):
             return
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 365+extend)
-        self.bot.out(to or self.channel, res1, 'msg')
+        self.bot.out(to or self.printto, res1, 'msg')
         if res2:
-            self.bot.out(to or self.channel, res2, 'msg')
+            self.bot.out(to or self.printto, res2, 'msg')
 
 # postfix count aka how many arguments
 
