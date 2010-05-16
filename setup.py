@@ -66,13 +66,7 @@ setup(
               'commonplugs',
               'socketplugs'],
     package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs']},
-    long_description = """
-JSONBOT is a bot that stores all its data in json format. It runs on the 
-Google Application Engine and can thus support wave, web and xmpp. Standalone 
-programms are provided for IRC and console, the goal is to let both clientside
-and GAE side communicate through JSON either over XMPP or HTTP POST.
-see http://jsonbot.googlecode.com
-""",  
+    long_description = """ JSONBOT is a bot that stores all its data in json format. It runs on the google Application Engine and can thus support wave, web and xmpp. Standalone programms are provided for IRC, XMPP and console, the goal is to let both clientside and GAE side communicate through JSON either over XMPP or HTTP POST. see http://jsonbot.googlecode.com """,  
     install_requires = ['simplejson > 1.0'],
     classifiers=[
         'Development Status :: 4 - Beta',
