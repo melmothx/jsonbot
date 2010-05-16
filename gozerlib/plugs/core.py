@@ -6,6 +6,7 @@
 
 ## gozerbot imports
 
+from gozerlib.utils.statdict import StatDict
 from gozerlib.utils.log import setloglevel
 from gozerlib.utils.timeutils import elapsedstring
 from gozerlib.utils.generic import getversion
@@ -371,3 +372,30 @@ def handle_botdata(bot, event):
 
 cmnds.add("bot-data", handle_botdata, 'OPER')
 examples.add("bot-data", "show data of the bot", "bot-data")
+
+def handle_threads(bot, ievent):
+
+    """ show running threads. """
+
+    try:
+         import threading
+    except ImportError:
+         ievent.reply("threading is not enabled.")
+         return
+
+    stats = StatDict()
+    threadlist = threading.enumerate()
+
+    for thread in threadlist:
+        stats.upitem(thread.getName())
+
+    result = []
+
+    for item in stats.top():
+        result.append("%s = %s" % (item[0], item[1]))
+
+    result.sort()
+    ievent.reply("threads running: ", result)
+
+cmnds.add('threads', handle_threads, ['USER', 'OPER'])
+examples.add('threads', 'show running threads', 'thread')
