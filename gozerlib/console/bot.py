@@ -60,9 +60,21 @@ class ConsoleBot(BotBase):
                 input = console.raw_input("> ")
                 event = ConsoleEvent()
                 event.parse(self, input)
-
+                if input.startswith('#'):
+                    try:
+                        env = {"bot": self, "event": event}
+                        env.update(locals())
+                        env.update(globals())
+                        console.locals.update(env)
+                        console.runsource(input[1:])
+                        continue
+                    except Exception, ex:
+                        handle_exception()
+                        continue
                 try:
                     result = self._plugs.dispatch(self, event)
+                    if not result:
+                            continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
                     waitforqueue(result.outqueue)
                 except NoSuchCommand:
