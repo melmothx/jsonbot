@@ -6,4 +6,11 @@
 
 __version__ = "0.2"
 
-__all__ = ['persistconfig', 'rest', 'jsbimport', 'admin', 'boot', 'botbase', 'callbacks', 'channelbase', 'commands', 'config', 'contrib', 'datadir', 'eggs', 'errors', 'eventbase', 'examples', 'fleet', 'gae', 'gozernet', 'less', 'monitor', 'outputcache', 'periodical', 'persist', 'persiststate', 'plugins', 'plugs', 'runner', 'socket', 'tasks', 'threadloop', 'threads', 'users', 'utils']
+__all__ = ['persistconfig', 'rest', 'jsbimport', 'admin', 'boot', 'botbase', 'callbacks', 'channelbase', 'commands', 'config', 'contrib', 'datadir', 'eggs', 'errors', 'eventbase', 'examples', 'fleet', 'gae', 'gozernet', 'less', 'monitor', 'outputcache', 'periodical', 'persist', 'persiststate', 'plugins', 'plugs', 'runner', 'socklib', 'tasks', 'threadloop', 'threads', 'users', 'utils', 'console']
+
+from gozerlib.eggs import loadegg
+
+import os
+
+loadegg('simplejson', [os.getcwd(), os.getcwd() + os.sep + 'jsbnest'], log=False)
+

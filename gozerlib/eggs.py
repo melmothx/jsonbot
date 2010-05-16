@@ -28,7 +28,7 @@ mainenv = None
 
 ## functions
 
-def init(eggdir, log=False):
+def init(eggdir, log=True):
 
     """
         make sure setuptools is available.
@@ -99,7 +99,7 @@ def enable_egg(env, egg, log=True):
             sys.path.insert(0, egg.location)
             log and logging.warn('eggs - override %s' % egg)
 
-def loadegg(name, eggdirs=['gozernest',], log=True):
+def loadegg(name, eggdirs=['jsbnest',], log=True):
     """
         scan eggdir for a egg matching `name`.
 

@@ -66,7 +66,14 @@ setup(
               'commonplugs',
               'socketplugs'],
     package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs']},
-    long_description = """ JSONBOT is a wave and xmpp bot for pushing pubsubhubbub feeds to Google Wave and Jabber (see jsonbot@appspot.com). Combined with a feed fetching service like superfeedr.com it can deliver your feeds on multiple platforms (wave and xmpp are suported now though xmpp conferences aren't yet) - JSONBOT runs on the Google Application Engine - IRC support is on its way. """,
+    long_description = """
+JSONBOT is a bot that stores all its data in json format. It runs on the 
+Google Application Engine and can thus support wave, web and xmpp. Standalone 
+programms are provided for IRC and console, the goal is to let both clientside
+and GAE side communicate through JSON either over XMPP or HTTP POST.
+see http://jsonbot.googlecode.com
+""",  
+    install_requires = ['simplejson > 1.0'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
