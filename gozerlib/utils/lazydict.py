@@ -35,7 +35,10 @@ def checkignore(element, ignore):
     return False
 
 def dumpelement(element, ignore=[], prev={}):
-    newer = dict(prev) or {}
+    try:
+        newer = dict(prev) or {}
+    except:
+        return str(type(prev))
     try:
         for name in element:
             if checkignore(name, ignore):
