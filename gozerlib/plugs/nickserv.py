@@ -116,15 +116,6 @@ if not nsauth.data:
 
 callbacks.add('001', nsauth.handle_001, threaded=True)
 
-def init():
-
-    """ init the nickserv data. """
-
-    passwd = bot.cfg['nickservpass']
-    if passwd:
-        nsauth.add(bot, **{'password': passwd, 'nickservtxt': bot.cfg['nickservtxt']})
-    return 1
-
 ## commands
 
 def handle_nsadd(bot, ievent):
