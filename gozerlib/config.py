@@ -46,7 +46,6 @@ class Config(LazyDict):
         self.filename = filename or 'mainconfig'
         self.dir = 'config'
         self.cfile = self.dir + os.sep + self.filename
-        self.init()
         self.jsondb = None
 
         try:
@@ -62,6 +61,8 @@ class Config(LazyDict):
         if not self.uuid:
             self.uuid = str(uuid.uuid4())
             self.save()
+
+        self.init()
 
     def __getitem__(self, item):
         """ accessor function. """
@@ -263,7 +264,7 @@ class Config(LazyDict):
             self.setdefault('auto_register', 0)
             self.setdefault('ondemand', 1)
 
-        self['version'] = "JSONBOT 0.2"
+        self['version'] = "JSONBOT 0.2 BETA1"
 
 
         return self
