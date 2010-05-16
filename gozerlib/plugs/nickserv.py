@@ -120,9 +120,9 @@ def init():
 
     """ init the nickserv data. """
 
-    passwd = config['nickservpass']
+    passwd = bot.cfg['nickservpass']
     if passwd:
-        nsauth.add(bot, **{'password': passwd, 'nickservtxt': config['nickservtxt']})
+        nsauth.add(bot, **{'password': passwd, 'nickservtxt': bot.cfg['nickservtxt']})
     return 1
 
 ## commands
