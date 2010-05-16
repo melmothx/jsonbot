@@ -92,8 +92,15 @@ class Commands(LazyDict):
         cmnd = event.usercmnd
         try:
             cmnd = event.userstate.data.aliases[cmnd]
+            event.usercmnd = cmnd
+            event.makeargs()
         except (TypeError, KeyError):
             pass
+
+        target = bot.plugs
+        if target:
+            target.reloadcheck(bot, event)
+
         try:
             c = self[cmnd]
         except KeyError:
