@@ -11,6 +11,9 @@ __all__ = ['eventhandler', 'persistconfig', 'rest', 'jsbimport', 'admin', 'boot'
 from gozerlib.eggs import loadegg
 
 import os
+import warnings
+
+warnings.simplefilter('ignore')
 
 loadegg('simplejson', [os.getcwd(), os.getcwd() + os.sep + 'jsbnest'], log=False)
 
