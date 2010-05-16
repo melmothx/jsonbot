@@ -7,6 +7,9 @@
 from gozerlib.utils.trace import calledfrom
 import sys
 
+class NoInput(Exception):
+    pass
+
 class PropertyIgnored(Exception):
     pass
 

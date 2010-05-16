@@ -17,6 +17,7 @@ from utils.exception import handle_exception
 from utils.lazydict import LazyDict
 from errors import NoSuchCommand
 from config import cfg as mainconfig
+from persiststate import UserState
 
 ## basic imports
 
@@ -81,7 +82,18 @@ class Commands(LazyDict):
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
         """
+        # identity of the caller
+        id = event.auth or event.userhost
+        if event.usercmnd:
+            event.user = bot.users.getuser(id)
+            event.userstate = UserState(event.user.data.name)
+            logging.debug("setting user to %s" % event.user.data.name)
+
         cmnd = event.usercmnd
+        try:
+            cmnd = event.userstate.data.aliases[cmnd]
+        except (TypeError, KeyError):
+            pass
         try:
             c = self[cmnd]
         except KeyError:
@@ -94,8 +106,6 @@ class Commands(LazyDict):
             else:
                 raise NoSuchCommand(cmnd)
 
-        # identity of the caller
-        id = event.auth or event.userhost
 
         # core business
         if bot.allowall:

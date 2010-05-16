@@ -8,6 +8,7 @@
 
 from gozerlib.eventbase import EventBase
 from gozerlib.channelbase import ChannelBase
+from gozerlib.errors import NoInput
 
 ## basic imports
 
@@ -39,6 +40,8 @@ class ConsoleEvent(EventBase):
 
     def parse(self, bot, input, *args, **kwargs):
         """ overload this. """
+        if not input:
+            raise NoInput()
         self.bot = bot
         self.auth = getpass.getuser()
         self.userhost = self.auth

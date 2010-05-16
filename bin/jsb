@@ -23,9 +23,6 @@ if True:
     parser.add_option('-o', '--owner', type='string', default=False,
 dest='owner', 
                   help="owner of the bot")
-    parser.add_option('-s', '--server', action="store_true", default=False,
-dest='server', 
-                  help="whether the rest server needs to be started"),
     parser.add_option('-l', '--loglevel', type='string', default="warning",
 dest='loglevel', help="set loglevel")
     parser.add_option('-c', '--channel', type='string', default="",
@@ -83,9 +80,4 @@ if opts.command:
     time.sleep(3)
     os._exit(0)
 else:
-    if opts.server:
-         print "rest server is enabled."
-         #plugs.reload("socketplugs.restserver")
-         #plugs["socketplugs.restserver"].startserver()
-
     bot.start()
