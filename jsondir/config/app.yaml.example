@@ -1,0 +1,103 @@
+# JSONBOT application file
+#
+#
+
+application: jsonbot
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+
+- url: /_ah/queue/deferred
+  script: $PYTHON_LIB/google/appengine/ext/deferred/deferred.py
+  login: admin
+
+- url: /tasks.*
+  script: handler_task.py
+  login: admin
+
+- url: /_wave/.*
+  script: handler_wave.py
+
+- url: /_ah/xmpp/.*
+  script: handler_xmpp.py
+
+- url: /remote?(.*)
+  script: handler_remote.py
+
+- url: /remote(.*)
+  script: handler_remote.py
+
+- url: /hubbub?(.*)
+  script: handler_hubbub.py
+
+- url: /hubbub(.*)
+  script: handler_hubbub.py
+
+- url: /(.*\.xml)
+  static_files: gadgets/\1
+  upload: gadgets/(.*\.xml)
+
+- url: /assets/(.*)
+  static_files: assets/\1
+  upload: /1
+
+- url: /_static/(.*)
+  static_files: assets/\1
+  upload: assets//1
+
+- url: /gadgetexec/
+  script: handler_gadgetexec.py
+
+- url: /gadgetexec
+  script: handler_gadgetexec.py
+
+- url: /gadgetexec/_static/(.*\.(gif|png|jpg|ico|css|js))
+  static_files: assets/\1
+  upload: assets/(.*\.(gif|png|jpg|ico|css|js))
+
+- url: /dispatch/
+  script: handler_web.py
+
+
+- url: /dispatch/_static/(.*\.(gif|png|jpg|ico|css|js))
+  static_files: assets/\1
+  upload: assets/(.*\.(gif|png|jpg|ico|css|js))
+
+- url: /
+  script: handler_web.py
+
+- url: /feeds
+  script: handler_web.py
+
+- url: /feeds/
+  script: handler_web.py
+
+- url: /docs
+  static_files: docs/html/index.html
+  upload: docs/html/index.html
+
+- url: /docs/
+  static_files: docs/html/index.html
+  upload: docs/html/index.html
+
+- url: /docs/html/(.*)
+  static_files: docs/html/\1
+  upload: docs/html/(.*)
+
+- url: /docs/(.*)
+  static_files: docs/html/\1
+  upload: docs/html/(.*)
+
+
+- url: /(.*\.(gif|png|jpg|ico|css|js))
+  static_files: assets/\1
+  upload: assets/(.*\.(gif|png|jpg|ico|css|js))
+
+- url: /.*
+  script: handler_wave.py
+
+inbound_services:
+
+- xmpp_message   
