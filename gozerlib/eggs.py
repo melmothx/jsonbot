@@ -99,7 +99,7 @@ def enable_egg(env, egg, log=True):
             sys.path.insert(0, egg.location)
             log and logging.warn('eggs - override %s' % egg)
 
-def loadegg(name, eggdirs=['jsbnest',], log=True):
+def loadegg(name, eggdirs, log=True):
     """
         scan eggdir for a egg matching `name`.
 
@@ -172,4 +172,3 @@ try:
 except ImportError:
     # first search for setuptools and load it
     init(os.getcwd())
-    init(os.getcwd() + os.sep + 'jsbnest')
