@@ -14,7 +14,6 @@
 ## gozerlib imports
 
 from utils.exception import handle_exception
-from gozerlib.config import cfg as config
 
 ## basic imports
 
@@ -74,15 +73,16 @@ def enable_egg(env, egg, log=True):
         reqstr = str(req)
         reqq = parse_requirements([reqstr.replace('==', '>='), ])
         for e in working_set.resolve(reqq, mainenv):
-            if e.location not in sys.path:
+            if True:
+            #if e.location not in sys.path:
                 env.add(e)
                 working_set.add(e)
                 working_set.add_entry(e.location)
                 latest[egg.project_name] = e
                 sys.path.insert(0, egg.location)
                 log and logging.warn('eggs - loaded %s' % e)
-            else:
-                log and logging.warn('eggs - %s already on path' % e)
+            #else:
+            #    log and logging.warn('eggs - %s already on path' % e)
     except DistributionNotFound, ex:
         env.add(egg)
         working_set.add(egg)

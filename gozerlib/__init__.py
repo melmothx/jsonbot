@@ -15,5 +15,8 @@ import warnings
 
 warnings.simplefilter('ignore')
 
-loadegg('simplejson', [os.getcwd(), os.getcwd() + os.sep + 'jsbnest'], log=False)
+try:
+    from simplejson import loads
+except ImportError:
+    loadegg('simplejson', [os.getcwd(), os.getcwd() + os.sep + 'jsbnest'], log=True)
 
