@@ -11,7 +11,7 @@ import os
 
 ## define
 
-datadir = 'jsondata'
+datadir = 'jsondir'
 
 ## functions
 
@@ -34,6 +34,8 @@ def makedirs(ddir=None):
         os.mkdir(ddir + '/pgp/')
     if not os.path.isdir(ddir + '/plugs/'):
         os.mkdir(ddir + '/plugs/')
+    if not os.path.isdir(ddir + '/myplugs/'):
+        os.mkdir(ddir + '/myplugs/')
     if not os.path.isdir(ddir + '/old/'):
         os.mkdir(ddir + '/old/')
         return True
