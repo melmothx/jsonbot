@@ -28,6 +28,7 @@ import gozerlib
 
 import logging
 import time
+import os
 
 ## options parser
 
