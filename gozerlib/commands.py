@@ -82,8 +82,12 @@ class Commands(LazyDict):
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
         """
+        if mainconfig.auto_register:
+            bot.users.addguest(event.userhost)
+
         # identity of the caller
         id = event.auth or event.userhost
+
         if event.usercmnd:
             logging.debug("setting user to %s" % id)
             event.user = bot.users.getuser(id)
@@ -96,7 +100,7 @@ class Commands(LazyDict):
             cmnd = event.userstate.data.aliases[cmnd]
             event.usercmnd = cmnd
             event.makeargs()
-        except (TypeError, KeyError):
+        except (TypeError, KeyError, AttributeError):
             pass
 
         target = bot.plugs
@@ -121,10 +125,8 @@ class Commands(LazyDict):
             return self.doit(bot, event, c)
         elif not bot.users or bot.users.allowed(id, c.perms, bot=bot):
             return self.doit(bot, event, c)
-        elif mainconfig.auto_register:
-            bot.users.addguest(event.userhost)
-            if bot.users.allowed(id, c.perms, bot=bot):
-                return self.doit(bot, event, c)
+        elif bot.users.allowed(id, c.perms, bot=bot):
+            return self.doit(bot, event, c)
         return event
 
     def doit(self, bot, event, target):
