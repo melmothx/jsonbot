@@ -2,15 +2,9 @@
 #
 #
 
-## boot
-
-import os
-import sys
-
-sys.path.insert(0, os.getcwd())
-sys.path.insert(0, os.getcwd() + os.sep + '..')
-
-## print version
+## bootstrap
+import warnings
+warnings.simplefilter("ignore")
 
 from gozerlib.utils.generic import getversion
 print getversion('SXMPP')

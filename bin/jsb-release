@@ -4,6 +4,10 @@
 
 """ install the GAE upload dir so it can be uploaded. """
 
+## bootstrap
+
+import warnings
+warnings.simplefilter("ignore")
 
 ## imports
 
@@ -11,11 +15,6 @@ import sys
 import os
 import pkg_resources
 import shutil
-
-## boot
-
-sys.path.insert(0, os.getcwd())
-
 
 ## gozerlib imports
 

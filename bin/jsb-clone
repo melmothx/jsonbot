@@ -4,8 +4,6 @@
 
 import sys, os, shutil
 
-sys.path.insert(0, os.getcwd())
-
 try:
     source = sys.argv[1]
     target = sys.argv[2]

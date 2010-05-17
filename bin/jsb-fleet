@@ -2,14 +2,10 @@
 #
 #
 
-## boot
+## bootstrap
 
-import os
-import sys
-
-sys.path.insert(0, os.getcwd())
-
-## print version
+import warnings
+warnings.simplefilter("ignore")
 
 from gozerlib.utils.generic import getversion
 print getversion('FLEET')

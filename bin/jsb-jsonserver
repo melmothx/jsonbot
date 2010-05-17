@@ -3,14 +3,16 @@
 #
 
 ## boot
+# bootstrap
 
-import os, sys
-sys.path.insert(0, os.getcwd())
-
-## gozerlib imports
+import warnings
+warnings.simplefilter("ignore")
 
 from gozerlib.utils.generic import getversion
 print getversion("JSONSERVER")
+
+## gozerlib imports
+
 from gozerlib.utils.url import posturl, getpostdata
 from gozerlib.socklib.rest.server import RestServer, RestRequestHandler
 from gozerlib.eventbase import EventBase

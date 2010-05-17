@@ -15,9 +15,6 @@
 # (c) Wijnand 'tehmaze' Modderman - http://tehmaze.com
 # BSD License
 
-import sys, os
-sys.path.insert(0, os.getcwd())
-
 ## gozerlib plugins
 
 from gozerlib.config import cfg as config
@@ -30,6 +27,7 @@ import os
 import re
 import tempfile
 import logging
+import sys
 
 ## classes
 

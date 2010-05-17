@@ -29,7 +29,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.2b1',
+    version='0.2b2',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',

@@ -2,15 +2,10 @@
 #
 #
 
-# bootstrap
+## bootstrap
 
-import sys
-import os
-import logging
-sys.path.insert(0, os.getcwd())
-sys.path.insert(0, os.getcwd() + os.sep + '..')
-
-# print version
+import warnings
+warnings.simplefilter("ignore")
 
 from gozerlib.utils.generic import getversion
 print getversion('CONSOLE')
