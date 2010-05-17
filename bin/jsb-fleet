@@ -7,6 +7,9 @@
 import warnings
 warnings.simplefilter("ignore")
 
+import os, sys
+sys.path.insert(0, os.getcwd())
+
 from gozerlib.utils.generic import getversion
 print getversion('FLEET')
 
@@ -16,6 +19,8 @@ from gozerlib.datadir import makedirs
 from gozerlib.boot import boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.fleet import fleet
+from gozerlib.utils.mainloop import mainloop
+
 import gozerlib
 
 ## basic imports
@@ -46,6 +51,4 @@ plugs.loadall()
 
 fleet.loadall()
 fleet.startall()
-
-while 1:
-    time.sleep(1)
+mainloop()

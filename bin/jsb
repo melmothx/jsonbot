@@ -38,6 +38,7 @@ setloglevel(opts.loglevel)
 
 # gozerlib imports
 
+from gozerlib.utils.mainloop import mainloop
 from gozerlib.plugins import Plugins
 from gozerlib.console.bot import ConsoleBot
 from gozerlib.console.event import ConsoleEvent
@@ -84,3 +85,6 @@ if opts.command:
     os._exit(0)
 else:
     bot.start()
+
+mainloop()
+

@@ -280,6 +280,7 @@ class Fleet(Persist):
         if bot.botname and bot.botname not in self.data['names']:
             self.data['names'].append(bot.botname)
             self.data['types'][bot.botname] = bot.type
+            self.save()
         return True
 
     def delete(self, name):
@@ -379,25 +380,7 @@ class Fleet(Persist):
 
     def startall(self):
         for bot in self.bots:
-            if bot.state == 'init':
-                start_new_thread(bot.start, ())
-
-        # basic loop
-        from exit import globalshutdown
-        while 1:
-            try:
-                #import asyncore
-                #asyncore.poll(timeout=0.1)
-                time.sleep(0.01)
-                mainhandler.handle_one()
-            except KeyboardInterrupt:
-                globalshutdown()
-                os._exit(0)
-            except Exception, ex:
-                handle_exception()   
-                globalshutdown()
-                os._exit(1)
-
+            start_new_thread(bot.start, ())
 
     def resume(self, sessionfile):
         """ resume bot from session file. """

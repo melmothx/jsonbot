@@ -119,17 +119,6 @@ class BotBase(LazyDict):
         """ start the mainloop of the bot. """
         # basic loop
         self.status == "running"
-        while 1:
-            try:
-                time.sleep(0.01)
-                mainhandler.handle_one()
-            except KeyboardInterrupt:
-                globalshutdown()
-                os._exit(0)
-            except Exception, ex:
-                handle_exception()   
-                globalshutdown()
-                os._exit(1)
 
     def doevent(self, event):
         """ dispatch an event. """

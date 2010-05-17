@@ -134,7 +134,6 @@ class Irc(BotBase):
                 logging.warn("irc - ERROR: can't send %s" % str(ex))
                 self.reconnect()
 
-    @threaded
     def _connect(self):
 
         """ connect to server/port using nick. """

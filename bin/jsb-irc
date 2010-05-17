@@ -25,6 +25,7 @@ from gozerlib.config import Config
 from gozerlib.config import cfg as mainconfig
 from gozerlib.errors import NoOwnerSet
 from gozerlib.fleet import fleet
+from gozerlib.utils.mainloop import mainloop
 
 import gozerlib.users as users
 import gozerlib
@@ -178,3 +179,5 @@ else:
         fleet.addbot(bot)
 
     bot.start()
+
+mainloop()
