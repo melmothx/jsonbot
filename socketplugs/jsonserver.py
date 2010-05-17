@@ -44,7 +44,7 @@ def json_GET(server, request):
 
     logging.warn("json.server - got path %s" % path)
     if len(path) > 2:
-        path = 'gozerdata' + os.sep + path[1:]
+        path = 'jsondata' + os.sep + path[1:]
         if '..' in path:
             return request.send_error(404)
         if not os.path.exists(path):

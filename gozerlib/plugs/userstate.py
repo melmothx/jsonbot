@@ -2,7 +2,7 @@
 #
 #
 
-""" userstate is stored in gozerdata/userstates. """
+""" userstate is stored in jsondata/state/users/<username>. """
 
 ## gozerlib imports
 

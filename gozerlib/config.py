@@ -44,7 +44,7 @@ class Config(LazyDict):
         LazyDict.__init__(self, *args, **kw)
         #self.dir = os.path.abspath(os.path.dirname(os.path.realpath(__file__ + os.sep + '..')))
         self.filename = filename or 'mainconfig'
-        self.dir = 'config'
+        self.dir = datadir + os.sep + 'config'
         self.cfile = self.dir + os.sep + self.filename
         self.jsondb = None
 

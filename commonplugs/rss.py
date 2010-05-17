@@ -138,7 +138,7 @@ class Rssitem(Persist):
 sleeptime=30*60, running=0):
 
         if True:
-            filebase = 'gozerdata' + os.sep + 'plugs' + os.sep + 'waveplugs.rss' + os.sep + name
+            filebase = 'jsondata' + os.sep + 'plugs' + os.sep + 'waveplugs.rss' + os.sep + name
             Persist.__init__(self, filebase + os.sep + 'rss-core')
 
             if not self.data:

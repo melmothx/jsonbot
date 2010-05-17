@@ -9,6 +9,7 @@
 from gozerlib.utils.name import stripname
 from gozerlib.utils.trace import calledfrom
 from persist import Persist
+from gozerlib.datadir import datadir
 
 ## basic imports
 
@@ -51,14 +52,14 @@ class PlugState(PersistState):
     def __init__(self, *args, **kwargs):
         self.plugname = calledfrom(sys._getframe())
         logging.debug('persiststate - initialising %s' % self.plugname)
-        PersistState.__init__(self, 'gozerdata' + os.sep + 'state' + os.sep + 'plugs' + os.sep + self.plugname + os.sep + 'state')
+        PersistState.__init__(self, datadir + os.sep + 'state' + os.sep + 'plugs' + os.sep + self.plugname + os.sep + 'state')
 
 class ObjectState(PersistState):
 
     """ state for usage in constructors. """
 
     def __init__(self, *args, **kwargs):
-        PersistState.__init__(self, 'gozerdata' + os.sep + 'state' + os.sep + calledfrom(sys._getframe(1))+'.state')
+        PersistState.__init__(self, datadir + os.sep + 'state' + os.sep + calledfrom(sys._getframe(1))+'.state')
 
 class UserState(PersistState):
 
@@ -67,5 +68,5 @@ class UserState(PersistState):
     def __init__(self, username, filename="state", *args, **kwargs):
         assert username
         username = stripname(username)
-        datadir = 'gozerdata' + os.sep + 'state' + os.sep + 'users' + os.sep + username
-        PersistState.__init__(self,  datadir + os.sep + filename)
+        ddir = datadir + os.sep + 'state' + os.sep + 'users' + os.sep + username
+        PersistState.__init__(self,  ddir + os.sep + filename)

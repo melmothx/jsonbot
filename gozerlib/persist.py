@@ -241,7 +241,7 @@ except ImportError:
 
 class PlugPersist(Persist):
 
-    """ persist plug related data. data is stored in gozerdata/plugs/{plugname}/{filename}. """
+    """ persist plug related data. data is stored in jsondata/plugs/{plugname}/{filename}. """
 
     def __init__(self, filename, default=None):
         # retrieve plugname where object is constructed
