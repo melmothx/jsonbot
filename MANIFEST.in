@@ -1,4 +1,5 @@
 recursive-include gaeupload *
-recursive-include config *
+recursive-include jsondir/config *.example
+recursive-include jsondir/myplugs *
 recursive-include tests *
 recursive-include simplejson *

@@ -338,9 +338,9 @@ class Installer(object):
         pre-configured `installsites`.
         '''
         # check if logs dir exists if not create it
-        if not os.path.isdir('myplugs'):
-            os.mkdir('myplugs')
-            touch('myplugs/__init__.py') 
+        if not os.path.isdir('jsondir' + os.sep + 'myplugs'):
+            os.mkdir('jsondir' + os.sep + 'myplugs')
+            
         errors = [] 
         if plugname.endswith('.py'):
             plugname = plugname[:3]
