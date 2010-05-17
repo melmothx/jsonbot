@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from gozerlib.datadir import datadir
 from gozerlib.socklib.utils.generic import waitforqueue
 from gozerlib.errors import NoSuchCommand, NoInput
 from gozerlib.botbase import BotBase
@@ -26,7 +27,7 @@ import atexit
 
 ## defines
 
-histfilepath = os.path.expanduser("run/console-history")
+histfilepath = os.path.expanduser(datadir + os.sep + "run" + os.sep + "console-history")
 
 ## classes
 

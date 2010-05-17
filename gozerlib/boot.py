@@ -11,6 +11,7 @@ from gozerlib.plugins import plugs
 from gozerlib.commands import cmnds
 from gozerlib.admin import plugin_packages, default_plugins
 from gozerlib.callbacks import callbacks
+from gozerlib.datadir import datadir
 import admin
 import users
 
@@ -24,7 +25,7 @@ sys.path.insert(0, os.getcwd())
 
 ## define
 
-rundir = "run"
+rundir = datadir + os.sep + "run"
 
 ## functions
 
