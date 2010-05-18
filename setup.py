@@ -83,6 +83,7 @@ setup(
    zip_safe=False, 
    test_suite = 'nose.collector',
    data_files=[('jsondir', uploadlist('jsondir')),
+               ('jsondir/myplugs', uploadlist('jsondir/myplugs')),
                ('tests', uploadlist('tests')),
                ('simplejson', uploadlist('simplejson')),
                ('gaeupload', uploadlist('gaeupload')),

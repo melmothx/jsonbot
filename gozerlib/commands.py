@@ -132,7 +132,7 @@ class Commands(LazyDict):
     def doit(self, bot, event, target):
         """ do the dispatching. """
         id = event.auth or event.userhost
-        logging.info('commands - dispatching %s for %s' % (event.usercmnd, id))
+        logging.warn('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
             if target.threaded and not bot.isgae:
                 start_bot_command(target.func, (bot, event))
