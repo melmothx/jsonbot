@@ -13,6 +13,7 @@ import gozerlib.threads as thr
 
 import time
 import thread
+import logging
 
 ## locks
 
@@ -52,7 +53,7 @@ class Wait(object):
                 if cmnd == "JOIN":
 	            catch = ievent.txt + ievent.postfix
                 else:
-                    catch = ievent.nick + ievent.postfix
+                    catch = ievent.postfix
                 if item[1] in catch:
                     ievent.ticket = item[3]
                     item[2].put_nowait(ievent)
