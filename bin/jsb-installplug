@@ -5,6 +5,11 @@
 
 """ install remote plugins. """
 
+## boot
+
+import os, sys
+sys.path.insert(0, os.getcwd())
+
 ## PGP section
 
 """ signature of downloaded plugins is verified by signature files """
@@ -48,7 +53,7 @@ class Pgp(object):
     re_pubkey = re.compile('^\[GNUPG:\] NO_PUBKEY ([0-9A-F]+)', re.I | re.M)
 
     def __init__(self):
-        self.homedir = os.path.join('config', 'pgp')
+        self.homedir = os.path.join('jsondir', 'config', 'pgp')
         if not os.path.exists(self.homedir):
             logging.debug('creating directory %s' % self.homedir)
             os.mkdir(self.homedir)
@@ -352,12 +357,12 @@ class Installer(object):
                     plugdata, plugsig, plugtype = self.fetchplug(site, plugname)
                     break # no exception? found it!
                 except InstallerException, e:
-                    errors.append(str(e))
+                    errors.append(exceptionmsg())
         else:
                 try:
                     plugdata, plugsig, plugtype = self.fetchplug(site, plugname)
                 except InstallerException, e:
-                    errors.append(str(e))
+                    errors.append(exceptionmsg())
         if not plugdata:
             if errors:
                 raise InstallerException(', '.join(str(e) for e in errors))
@@ -389,7 +394,7 @@ class Installer(object):
                 plugdata, plugsig = self.fetchplugdata(base, ext)
                 return plugdata, plugsig, ext
             except InstallerException, e:
-                errors.append(str(e))
+                errors.append(exceptionmsg())
         raise InstallerException(errors)
 
     def fetchplugdata(self, base, ext='py'):
@@ -463,7 +468,7 @@ class Installer(object):
     def save_py(self, plugname, plugdata):
         oldtype, oldname = self.backup(plugname)
         try:
-            plugfile = open(os.path.join('myplugs', '%s.py' % plugname), 'w')
+            plugfile = open(os.path.join('jsondir', 'myplugs', '%s.py' % plugname), 'w')
             plugfile.write(plugdata)
             plugfile.close()
         except InstallerException:
@@ -485,7 +490,7 @@ def dolist():
         try:
             pluglist = geturl2(i)
         except Exception, ex:
-            errors.append(i) 
+            errors.append(exceptionmsg()) 
             continue
         result += re.findall('<a href="(.*?)\.py">', pluglist)
         try:
@@ -525,7 +530,7 @@ def installplug(plugs):
 want to install remote plugins"
                 return
             except Exception, ex:
-                errors[site] = str(ex)
+                errors[site] = exceptionmsg()
     if errors:
         errordict = Dol()
         errorlist = []
@@ -533,7 +538,7 @@ want to install remote plugins"
             errordict.add(j, i)
         for error, sites in errordict.iteritems():
             errorlist.append("%s => %s" % (' , '.join(sites), error)) 
-        print "errors: %s" % ' .. '.join(errors)
+        print "errors: %s" % ' .. '.join(errorlist)
 
 from optparse import OptionParser
 parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion('INSTALLPLUG'))

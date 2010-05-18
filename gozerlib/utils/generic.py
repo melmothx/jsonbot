@@ -151,8 +151,8 @@ def uniqlist(l):
     """ return unique elements in a list (as list). """
     result = []
     for i in l:
-        if j not in result:
-            result.append(j)
+        if i not in result:
+            result.append(i)
 
     return result
 
