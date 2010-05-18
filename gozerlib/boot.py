@@ -69,12 +69,14 @@ def savecmndtable():
     admin.cmndtable.data = {}
 
     for cmndname, c in cmnds.iteritems():
-        admin.cmndtable.data[cmndname] = c.modname   
+        if cmndname:
+            admin.cmndtable.data[cmndname] = c.modname   
 
     if cmnds.subs:
         for cmndname, clist in cmnds.subs.iteritems():
-            if clist and len(clist) == 1:
-                admin.cmndtable.data[cmndname] = clist[0].modname   
+            if cmndname:
+                if clist and len(clist) == 1:
+                    admin.cmndtable.data[cmndname] = clist[0].modname   
 
     logging.debug("saving command table")
     admin.cmndtable.save()
@@ -111,9 +113,11 @@ def savepluginlist():
     admin.pluginlist.data = []
 
     for cmndname, c in cmnds.iteritems():
+        if not c.plugname:
+            logging.warn("boot - not adding %s to pluginlist" % cmndname)
+            continue
         if c.plugname not in admin.pluginlist.data:
             admin.pluginlist.data.append(c.plugname)
-
     admin.pluginlist.data.sort()
     logging.debug("saving plugin list")
     admin.pluginlist.save()

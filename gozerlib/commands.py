@@ -45,6 +45,8 @@ class Command(LazyDict):
 
     def __init__(self, modname, cmnd, func, perms=[], threaded=False, orig=None):
         LazyDict.__init__(self)
+        if not modname:
+             raise Exception("modname is not set - %s" % cmnd)
         self.modname = modname
         self.plugname = self.modname.split('.')[-1]
         self.cmnd = cmnd
