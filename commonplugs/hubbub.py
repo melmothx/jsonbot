@@ -53,7 +53,7 @@ def subscribe(url):
 
     headers = {}
 
-    import config.credentials as credentials
+    import jsondir.config.credentials as credentials
     
     if credentials.HUB_CREDENTIALS:
       auth_string = "Basic " + base64.b64encode("%s:%s" % tuple(credentials.HUB_CREDENTIALS))
