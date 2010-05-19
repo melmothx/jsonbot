@@ -26,7 +26,6 @@ from gozerlib.exit import globalshutdown
 ## gozerlib.irc imports
 
 from ircevent import Ircevent
-from monitor import saymonitor
 from gozerlib.socklib.wait import Wait
 
 ## basic imports
@@ -238,7 +237,6 @@ class Irc(BotBase):
         self._logon()
         self.nickchanged = 0
         self.reconnectcount = 0
-        saymonitor.start()
         self.connectok.wait()
         logging.warn("irc - logged on!")
 
@@ -451,6 +449,7 @@ realname))
 
     def say(self, printto, what, event=None, how='msg', origin="", extend=0):
         self.out(printto, what, how)
+        self.outmonitor(origin, printto, what, event)
 
     def out(self, printto, what, how):
         # check for socket
@@ -546,7 +545,6 @@ realname))
         self.reconnectcount = 0
         if reto:
             self.say(reto, 'rebooting done')
-        saymonitor.start()
         return 1
 
     def _resumedata(self):

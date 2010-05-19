@@ -34,7 +34,6 @@ from gozerlib.socklib.partyline import partyline
 from channels import Channels
 from irc import Irc
 from ircevent import Ircevent
-from monitor import outmonitor
 from gozerlib.socklib.wait import Privwait
 from gozerlib.socklib.utils.generic import getlistensocket, checkchan, makeargrest
 
@@ -71,9 +70,6 @@ class IRCBot(Irc):
 
         if not self.state.has_key('joinedchannels'):
             self.state['joinedchannels'] = []
-
-        self.monitor = outmonitor
-        self.monitor.start()
 
     def _resume(self, data, reto=None):
 
@@ -307,13 +303,6 @@ class IRCBot(Irc):
 
         for i in self.state['joinedchannels']:
             self.say(i, txt)
-
-    def send(self, txt):
-
-        """ call Irc send and check for monitor callbacks. """
-
-        Irc.send(self, str(txt))
-        self.monitor.put(self, str(txt))
 
     def save(self):
         """ saves channels and state. """

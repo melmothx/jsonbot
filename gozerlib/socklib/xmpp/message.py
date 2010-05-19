@@ -61,8 +61,10 @@ class Message(XMLDict):
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 900+extend)
         self.out(res1, to)
+        self.bot.outmonitor(self.userhost, self.channel, res1, self)
         if res2:
             self.out(res2, to)
+            self.bot.outmonitor(self.userhost, self.channel, res2, self)
 
     def out(self, txt, to=""):
         outtype = self.type

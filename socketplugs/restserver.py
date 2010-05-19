@@ -8,7 +8,6 @@ from gozerlib.callbacks import callbacks
 from gozerlib.utils.url import posturl, getpostdata
 from gozerlib.persistconfig import PersistConfig
 from gozerlib.commands import cmnds
-from gozerlib.socklib.irc.monitor import outmonitor
 from gozerlib.socklib.rest.server import RestServer, RestRequestHandler
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.exception import handle_exception

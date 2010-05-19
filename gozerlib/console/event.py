@@ -33,6 +33,7 @@ class ConsoleEvent(EventBase):
         self.bot._raw(resp)
         self.result.append(resp)  
         self.outqueue.put_nowait(resp)
+        self.bot.outmonitor(self.origin, self.printto, resp, self)
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """

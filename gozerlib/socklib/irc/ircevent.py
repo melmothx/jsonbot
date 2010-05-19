@@ -174,8 +174,10 @@ class Ircevent(EventBase):
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 365+extend)
         self.bot.out(to or self.printto, res1, 'msg')
+        self.bot.outmonitor(self.userhost, self.channel, res1, self)
         if res2:
             self.bot.out(to or self.printto, res2, 'msg')
+            self.bot.outmonitor(self.userhost, self.channel, res2, self)
 
 # postfix count aka how many arguments
 

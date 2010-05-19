@@ -654,6 +654,7 @@ class SXMPPBot(XMLStream, BotBase):
             message.fromm = origin
 
         self.send(message)
+        self.outmonitor(origin, printto, txt, event)
 
     def saynocb(self, printto, txt, fromm=None, groupchat=True, speed=5, type="normal", how=''):
         """ say txt to channel/JID without calling callbacks/monitors. """
