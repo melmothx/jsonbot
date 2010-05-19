@@ -19,5 +19,5 @@ def handle_count(bot, ievent):
     result = waitforqueue(ievent.inqueue, 5)
     ievent.reply(str(len(result)))
 
-cmnds.add('count', handle_count, ['USER', 'GUEST', 'CLOUD'], threaded=True)
+cmnds.add('count', handle_count, ['USER', 'GUEST', 'CLOUD'])
 examples.add('count', 'count nr of items', 'list | count')

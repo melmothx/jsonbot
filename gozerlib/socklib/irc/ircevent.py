@@ -58,8 +58,10 @@ class Ircevent(EventBase):
     """ represents an IRC event. """
 
     def __deepcopy__(self, bla):
-        return Ircevent(self)
-    
+        e = Ircevent()
+        e.copyin(self)
+        return e
+
     def toirc(self):
         pass
 

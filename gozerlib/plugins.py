@@ -137,13 +137,12 @@ class Plugins(LazyDict):
         origqueues = event.queues
         event.queues = []
         event.allowqueue = True
-        event.closequeue = False
+        event.closequeue = True
         events = []
 
         # split commands
         for item in event.txt.split(' | '):
             e = copy.deepcopy(event)
-            #print e
             e.queues = []
             e.onlyqueues = True
             e.txt = item.strip()
@@ -162,7 +161,7 @@ class Plugins(LazyDict):
             if prevq:
                 e.inqueue = prevq
             prevq = q
-
+         
         events[-1].inqueue = prevq
         events[-1].closequeue = True
 

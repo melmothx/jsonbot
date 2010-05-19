@@ -48,6 +48,10 @@ class EventBase(LazyDict):
         e.copyin(self)
         return e
 
+    def finish(self):
+        self.user = self.bot.users.getuser(self.auth or self.userhost)
+        self.makeargs()
+
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
         pass
@@ -103,7 +107,7 @@ class EventBase(LazyDict):
             self.rest = ' '.join(self.args)
         except:
             self.args = None
-
+          
     def checkqueues(self, resultlist):
         """ check if resultlist is to be sent to the queues. if so do it. """
         if self.queues:

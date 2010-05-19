@@ -98,24 +98,17 @@ copyover(source, release + os.sep + 'simplejson')
 
 homedir = os.path.expanduser("~")
 try:
-    copyover(homedir + os.sep + "jsonregs" + os.sep + targetin, release + os.sep + 'jsondir' + os.sep + 'config')
+    shutil.move(release + os.sep + 'jsondir' + os.sep + 'config', release + os.sep + 'jsondir' + os.sep + 'config.bck')
+    copyover(homedir + os.sep + 'jsonregs' + os.sep + targetin, release + os.sep + 'jsondir' + os.sep + 'config')
+    shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
 except OSError, ex:
-    print str(ex)
+    print "TAKE NOTE ! no %s available .. %s" % (os.path.join(homedir, 'jsonregs', targetin), str(ex))
     try:
         copyover(release + os.sep + 'jsondir' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
         print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
     except OSError, ex:
         print str(ex)
-        os._exit()
-
-try:
-    shutil.copy(release + os.sep + 'jsondir' + os.sep + 'examples' + os.sep + 'app.yaml.example', release + os.sep + 'app.yaml')
-except IOError:
-    print "app.yaml is missing in %s. see app.yaml.example" % (homedir + os.sep + 'jsonregs'  + os.sep + targetin, )
-    #try:
-    #    shutil.copy(release + os.sep + 'jsondir' + os.sep + 'examples' + os.sep + 'mainconfig.example', release + os.sep + 'jsondir' + os.sep + 'config' + os.sep + 'mainconfig')
-    #except IOError:
-    #    print "mainconfig is missing in %s. see mainconfig.example" % (homedir + os.sep + 'jsonregs'  + os.sep + targetin, )
+        os._exit(1)
 
 if os.path.isdir('docs'):
     copyover('docs', release + os.sep + 'docs')
