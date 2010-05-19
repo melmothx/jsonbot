@@ -100,6 +100,7 @@ class Irc(BotBase):
         self.connectok = threading.Event()
         self.encoding = 'utf-8'
         self.blocking = 1
+        self.lastoutput = 0
 
     def __del__(self):
         self.exit()
@@ -123,15 +124,21 @@ class Irc(BotBase):
         except Exception, ex:
             # check for broken pipe error .. if so ignore 
             # used for nonblocking sockets
+            handle_exception()
             try:
-                (errno, errstr) = ex
+                try:
+                    (errno, errstr) = ex
+                except ValueError:
+                    errno = 0
+                    errstr = str(ex)
                 if errno != 32 and errno != 9:
                     raise
                 else:
                     time.sleep(0.5)
             except:
-                logging.warn("irc - ERROR: can't send %s" % str(ex))
-                self.reconnect()
+                pass
+            logging.warn("irc - ERROR: can't send %s" % str(ex))
+            self.reconnect()
 
     def _connect(self):
 
@@ -860,6 +867,7 @@ realname))
                 time.sleep(0.5)
             else:
                 logging.error('irc - send error: %s' % str(ex))
+                handle_exception()
                 self.reconnect()
                 return
             

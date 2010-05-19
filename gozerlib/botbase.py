@@ -190,7 +190,7 @@ class BotBase(LazyDict):
         if event:
             e.copyin(event)
         e.origin = origin
-        e.ruserhost = event.userhost
+        e.ruserhost = self.botname
         e.userhost = self.botname
         e.channel = channel
         e.txt = txt
