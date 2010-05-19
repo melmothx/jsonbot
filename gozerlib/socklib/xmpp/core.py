@@ -107,7 +107,7 @@ class XMLDict(EventBase):
         if not res:
             raise Exception("%s .. toxml() can't convert empty dict" % self.name)
 
-        logging.debug("sxmpp.core - toxml input: %s" % res)
+        #logging.debug("sxmpp.core - toxml input: %s" % res)
         elem = self['element']
         main = "<%s" % self['element']
 
@@ -197,7 +197,7 @@ class XMLStream(NodeBuilder):
 
     def handle_stream(self, data):
         """ default stream handler. """
-        logging.debug("sxmpp.core - STREAM: %s" % data)
+        #logging.debug("sxmpp.core - STREAM: %s" % data)
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
@@ -206,7 +206,7 @@ class XMLStream(NodeBuilder):
 
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
-        logging.debug("sxmpp.core - STREAMFEATURES: %s" % data)
+        #logging.debug("sxmpp.core - STREAMFEATURES: %s" % data)
          
     def addHandler(self, namespace, func):
         """

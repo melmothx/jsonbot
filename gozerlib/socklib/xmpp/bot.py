@@ -30,7 +30,6 @@ from presence import Presence
 from message import Message
 from iq import Iq
 from core import XMLStream
-from monitor import xmppmonitor
 from wait import XMPPWait, XMPPErrorWait
 from jid import JID, InvalidJID
 from errors import xmpperrors
@@ -87,7 +86,6 @@ class SXMPPBot(XMLStream, BotBase):
         self.connection = None
         self.privwait = XMPPWait()
         self.errorwait = XMPPErrorWait()
-        self.monitor = xmppmonitor
         self.jabber = True
         self.connectok = threading.Event()
         self.jids = {}
@@ -101,8 +99,6 @@ class SXMPPBot(XMLStream, BotBase):
         if self.port == 0:
             self.port = 5222
 
-        self.monitor.start()
-    
     def _resumedata(self):
         """ return data needed for resuming. """
         return {self.name: [self.server, self.user, self.password, self.port]}
@@ -382,7 +378,7 @@ class SXMPPBot(XMLStream, BotBase):
         """ message handler. """
         m = Message(data)
         m.parse(self)
-        logging.debug("sxmpp - handling message - %s" % str(m))
+        #logging.debug("sxmpp - handling message - %s" % str(m))
 
         if data.type == 'groupchat' and data.subject:
             logging.debug("checking topic")
@@ -606,10 +602,9 @@ class SXMPPBot(XMLStream, BotBase):
             handle_exception()
             return
             #raise Exception("can't convert %s to xml .. bot.send()" % what) 
-           
-        self.outqueue.put(toenc(xml))
-        self.monitor.put(self, what)
 
+        self.outqueue.put(toenc(xml))
+           
     def sendnocb(self, what):
         """ send to server without calling callbacks/monitors. """
         try:

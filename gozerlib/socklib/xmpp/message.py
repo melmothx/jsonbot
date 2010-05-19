@@ -53,7 +53,9 @@ class Message(XMLDict):
         return Message(self)
 
     def __deepcopy__(self, bla):
-        return Message(self)
+        m = Message()
+        m.copyin(self)
+        return m
 
     def reply(self, txt, result=[], to="", dot=", ", extend=0):
         if self.checkqueues(result):

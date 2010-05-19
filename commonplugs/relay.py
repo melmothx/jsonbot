@@ -77,7 +77,7 @@ def relaycallback(bot, event):
                         continue
 
                 # retrieve the bot from fleet (based on type)
-                outbot = fleet.makebot(botname, type)
+                outbot = fleet.makebot(type, botname)
                 if outbot:
                     logging.debug('relay - outbot found - %s - %s' % (outbot.name, outbot.type))
                     # we got bot .. use it to send the relayed message
@@ -147,7 +147,7 @@ def handle_relay(bot, event):
              (type, target) = event.args
         except ValueError:
             event.missing('[<botname>] <bottype> <target>')
-        return 
+            return 
 
     origin = event.origin or event.channel
     if origin == target:
