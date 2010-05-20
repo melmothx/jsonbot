@@ -1,0 +1,2 @@
+mv jsondir jsondir.2
+cp -Ra $1/jsondir .
