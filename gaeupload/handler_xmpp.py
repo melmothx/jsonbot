@@ -46,6 +46,7 @@ import types
 import logging
 
 logging.warn(getversion('XMPP'))
+boot()
 
 ## define
 

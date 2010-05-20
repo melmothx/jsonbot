@@ -4,10 +4,6 @@
 
 """ admin related data and functions. """
 
-## gozerlib imports
-
-from gozerlib.persist import Persist
-
 ## defines
 
 try:

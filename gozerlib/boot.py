@@ -31,8 +31,8 @@ rundir = datadir + os.sep + "run"
 
 def boot(force=False):
     """ initialize the bot. """
-    global loaded
-    logging.info("boot - starting ..")
+    logging.warn("boot - starting ..")
+    reload(sys.modules['gozerlib.admin'])
 
     if not admin.cmndtable:
         admin.cmndtable = Persist(rundir + os.sep + 'cmndtable')
@@ -55,14 +55,14 @@ def boot(force=False):
     if not admin.callbacktable.data or force:
         if not admin.loaded:
             plugs.loadall(plugin_packages)
-            loaded = True
+            admin.loaded = True
         savecallbacktable()
 
     if not admin.loaded:
         for plug in default_plugins:
             plugs.load(plug)
 
-    logging.info("boot - booting done")
+    logging.warn("boot - booting done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """
@@ -96,7 +96,7 @@ def savecallbacktable():
         for c in cbs:
             if not admin.callbacktable.data.has_key(type):
                 admin.callbacktable.data[type] = []
-            admin.callbacktable.data[type].append(c.plugname)
+            admin.callbacktable.data[type].append(c.modname)
 
     logging.debug("saving callback table")
     admin.callbacktable.save()

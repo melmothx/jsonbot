@@ -9,6 +9,7 @@
 from gozerlib.utils.generic import getversion
 from gozerlib.config import cfg
 from gozerlib.errors import NoSuchCommand
+from gozelrib.boot import boot
 
 ## gaelib imports
 
@@ -22,6 +23,7 @@ import os
 ## defines
 
 logging.warn(getversion('WAVE'))
+boot()
 
 # the bot
 

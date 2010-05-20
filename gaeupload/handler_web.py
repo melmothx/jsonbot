@@ -50,6 +50,7 @@ import logging
 
 ## init
 logging.warn(getversion('WEB'))
+boot()
 
 ## define
 
