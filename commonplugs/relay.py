@@ -36,8 +36,9 @@ relay = PlugPersist('relay')
 def relayprecondition(bot, event):
     """ check to see whether the callback needs to be executed. """
     origin = event.origin or event.channel
-    if event.txt and origin in relay.data and not event.iscmnd and not event.isremote:
-        return True
+    if event.txt:
+        if origin and origin in relay.data and not event.iscmnd and not event.isremote:
+            return True
 
     return False
 
@@ -196,6 +197,21 @@ def handle_relaystop(bot, event):
 cmnds.add('relay-stop', handle_relaystop, 'USER')
 examples.add('relay-stop', 'close a relay to another user', 'relay-stop bthate@gmail.com')
 
+def handle_relayclear(bot, event):
+    """ clear all relays from a channel. all relaying to target will be ignored. """
+    origin = event.origin or event.channel
+    try:
+        logging.debug('clearing relay for %s' % origin)
+        relay.data[origin] = []
+        relay.save()
+    except (KeyError, ValueError):
+        pass
+
+    event.done()
+
+cmnds.add('relay-clear', handle_relayclear, 'OPER')
+examples.add('relay-clear', 'clear all relays from a channel', 'relay-clear')
+
 def handle_askrelaylist(bot, event):
     """ show all relay's of a user. """
     origin = event.origin or event.channel
@@ -205,7 +221,7 @@ def handle_askrelaylist(bot, event):
     except KeyError:
         event.reply('no relays for %s' % origin)
 
-cmnds.add('relay-list', handle_askrelaylist, 'OPER')
+cmnds.add('relay-list', handle_askrelaylist, 'USER')
 examples.add('relay-list', 'show all relays of user/channel/wave.', 'relay-list')
 
 def handle_relayblock(bot, event):
@@ -260,5 +276,5 @@ def handle_relayblocklist(bot, event):
     except KeyError:
         event.reply('no blocks for %s' % origin)
 
-cmnds.add('relay-blocklist', handle_relayblocklist, 'OPER')
+cmnds.add('relay-blocklist', handle_relayblocklist, 'USER')
 examples.add('relay-blocklist', 'show blocked relays to us', 'relay-blocklist')
