@@ -14,8 +14,7 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.plugins import plugs
-from gozerlib.admin import plugin_packages
-from gozerlib.boot import getpluginlist, boot
+from gozerlib.boot import plugin_packages, getpluginlist, boot
 from gozerlib.persist import Persist
 from gozerlib.reboot import reboot, reboot_stateful
 from gozerlib.eventhandler import mainhandler

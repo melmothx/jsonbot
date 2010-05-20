@@ -11,7 +11,7 @@ from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
-from admin import cmndtable, plugin_packages
+from boot import cmndtable, plugin_packages
 from errors import NoSuchPlugin
 from jsbimport import force_import, _import
 

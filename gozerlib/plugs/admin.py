@@ -9,8 +9,7 @@
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.persist import Persist
-from gozerlib.boot import savecmndtable, savepluginlist, boot
-from gozerlib.admin import plugin_packages
+from gozerlib.boot import savecmndtable, savepluginlist, boot, plugin_packages
 from gozerlib.config import cfg
 from gozerlib.plugins import plugs
 from gozerlib.botbase import BotBase

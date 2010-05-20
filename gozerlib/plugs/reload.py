@@ -11,7 +11,7 @@ from gozerlib.plugins import plugs
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.admin import plugin_packages
-from gozerlib.boot import savecmndtable, savepluginlist
+from gozerlib.boot import plugin_packages, savecmndtable, savepluginlist
 
 ## basic imports
 

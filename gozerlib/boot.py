@@ -21,9 +21,24 @@ import logging
 import os
 import sys
 
-sys.path.insert(0, os.getcwd())
+#sys.path.insert(0, os.getcwd())
 
-## define
+## defines
+
+try:
+    import waveapi
+    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'jsondir.myplugs', 'waveplugs']
+except ImportError:
+    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'jsondir.myplugs', 'waveplugs', 'socketplugs']
+
+default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.outputcache']
+
+# these are set in gozerlib/boot.py
+
+loaded = False
+cmndtable = None 
+pluginlist = None
+callbacktable = None
 
 rundir = datadir + os.sep + "run"
 
@@ -31,34 +46,37 @@ rundir = datadir + os.sep + "run"
 
 def boot(force=False):
     """ initialize the bot. """
+    global loaded
     logging.warn("boot - starting ..")
     reload(sys.modules['gozerlib.admin'])
-
-    if not admin.cmndtable:
-        admin.cmndtable = Persist(rundir + os.sep + 'cmndtable')
-    if not admin.pluginlist:
-         admin.pluginlist = Persist(rundir + os.sep + 'pluginlist')
-    if not admin.callbacktable:
-         admin.callbacktable = Persist(rundir + os.sep + 'callbacktable')
+    global cmndtable
+    if not cmndtable:
+        cmndtable = Persist(rundir + os.sep + 'cmndtable')
+    global pluginlist
+    if not pluginlist:
+         pluginlist = Persist(rundir + os.sep + 'pluginlist')
+    global callbacktable
+    if not callbacktable:
+         callbacktable = Persist(rundir + os.sep + 'callbacktable')
     
-    if not admin.cmndtable.data or force:
+    if not cmndtable.data or force:
         plugs.loadall(plugin_packages)
-        admin.loaded = True
+        loaded = True
         savecmndtable()
 
-    if not admin.pluginlist.data or force:
-        if not admin.loaded:
+    if not pluginlist.data or force:
+        if not loaded:
             plugs.loadall(plugin_packages)
-            admin.loaded = True
+            loaded = True
         savepluginlist()
 
-    if not admin.callbacktable.data or force:
-        if not admin.loaded:
+    if not callbacktable.data or force:
+        if not loaded:
             plugs.loadall(plugin_packages)
-            admin.loaded = True
+            loaded = True
         savecallbacktable()
 
-    if not admin.loaded:
+    if not loaded:
         for plug in default_plugins:
             plugs.load(plug)
 
@@ -66,65 +84,70 @@ def boot(force=False):
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """
-    admin.cmndtable.data = {}
+    global cmndtable
+    cmndtable.data = {}
 
     for cmndname, c in cmnds.iteritems():
         if cmndname:
-            admin.cmndtable.data[cmndname] = c.modname   
+            cmndtable.data[cmndname] = c.modname   
 
     if cmnds.subs:
         for cmndname, clist in cmnds.subs.iteritems():
             if cmndname:
                 if clist and len(clist) == 1:
-                    admin.cmndtable.data[cmndname] = clist[0].modname   
+                    cmndtable.data[cmndname] = clist[0].modname   
 
     logging.debug("saving command table")
-    admin.cmndtable.save()
+    cmndtable.save()
 
 def getcmndtable():
     """ save command -> plugin list to db backend. """
-    if not admin.cmndtable:
+    global cmndtable
+    if not cmndtable:
         boot()
 
-    return admin.cmndtable.data
+    return cmndtable.data
 
 def savecallbacktable():
     """ save command -> plugin list to db backend. """
-    admin.callbacktable.data = {}
+    global callbacktable
+    callbacktable.data = {}
 
     for type, cbs in callbacks.cbs.iteritems():
         for c in cbs:
             if not admin.callbacktable.data.has_key(type):
-                admin.callbacktable.data[type] = []
-            admin.callbacktable.data[type].append(c.modname)
+                callbacktable.data[type] = []
+            callbacktable.data[type].append(c.modname)
 
     logging.debug("saving callback table")
-    admin.callbacktable.save()
+    callbacktable.save()
 
 def getcallbacktable():
     """ save command -> plugin list to db backend. """
-    if not admin.callbacktable:
+    global callbacktable
+    if not callbacktable:
         boot()
 
-    return admin.callbacktable.data
+    return callbacktable.data
 
 def savepluginlist():
     """ save a list of available plugins to db backend. """
-    admin.pluginlist.data = []
+    global pluginlist
+    pluginlist.data = []
 
     for cmndname, c in cmnds.iteritems():
         if not c.plugname:
             logging.warn("boot - not adding %s to pluginlist" % cmndname)
             continue
         if c.plugname not in admin.pluginlist.data:
-            admin.pluginlist.data.append(c.plugname)
-    admin.pluginlist.data.sort()
+            pluginlist.data.append(c.plugname)
+    pluginlist.data.sort()
     logging.debug("saving plugin list")
-    admin.pluginlist.save()
+    pluginlist.save()
 
 def getpluginlist():
     """ get the plugin list. """
-    if not admin.pluginlist:
+    global pluginlist
+    if not pluginlist:
          boot()
-    return admin.pluginlist.data
- 
+    return pluginlist.data

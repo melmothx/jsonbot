@@ -9,7 +9,7 @@
 from gozerlib.utils.generic import getversion
 from gozerlib.config import cfg
 from gozerlib.errors import NoSuchCommand
-from gozelrib.boot import boot
+from gozerlib.boot import boot
 
 ## gaelib imports
 
