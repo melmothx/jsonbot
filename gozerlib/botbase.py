@@ -195,6 +195,7 @@ class BotBase(LazyDict):
         e.channel = channel
         e.txt = txt
         e.cbtype = 'OUTPUT'
+        e.iscmnd = False
         callbacks.check(self, e)
 
     def docmnd(self, origin, channel, txt, event=None):
