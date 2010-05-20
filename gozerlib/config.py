@@ -49,6 +49,10 @@ class Config(LazyDict):
         self.jsondb = None
 
         try:
+            try:
+                self.fromfile(self.cfile)
+            except IOError:
+                pass
             import google
             from persist import Persist
             self.jsondb = Persist(self.cfile)
@@ -56,7 +60,6 @@ class Config(LazyDict):
             self.isdb = True
             logging.debug("config - fromdb - %s - %s" % (self.cfile, str(self)))
         except ImportError:
-            self.fromfile(self.cfile)
             self.isdb = False
 
         if not self.uuid:

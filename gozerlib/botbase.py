@@ -14,7 +14,6 @@ from eventbase import EventBase
 from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet
 from datadir import datadir
 from commands import Commands
-from config import cfg as mainconfig
 from config import Config
 from utils.pdod import Pdod
 from channelbase import ChannelBase
@@ -74,6 +73,7 @@ class BotBase(LazyDict):
         self.owner = self.cfg.owner
         if not self.owner:
             logging.warn("owner is not set in %s - using mainconfig" % self.cfg.cfile)
+            from config import cfg as mainconfig
             self.owner = mainconfig.owner
 
         self.setusers(usersin)

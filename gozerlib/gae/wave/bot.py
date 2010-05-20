@@ -47,7 +47,6 @@ import thread
 
 ## defines
 
-waves = {}
 saylock = thread.allocate_lock()
 saylocked = lockdec(saylock)
 
@@ -73,10 +72,6 @@ class WaveBot(BotBase, robot.Robot):
                  image_url='http://jsonbot.appspot.com/assets/favicon.png',
                  profile_url='http://jsonbot.appspot.com/', *args, **kwargs):
         sname = 'jsonbot'
-        self.type = 'wave'
-        if self.cfg:
-            self.cfg['type'] = 'wave'
-            self.cfg.save()
         BotBase.__init__(self, cfg, users, plugs, name, *args, **kwargs)
         if cfg:
             self.domain = cfg['domain'] or 'googlewave.com'
@@ -85,6 +80,7 @@ class WaveBot(BotBase, robot.Robot):
         if self.cfg and self.cfg['domain'] != self.domain:
                 self.cfg['domain'] = self.domain
                 self.cfg.save()
+        self.type = 'wave'
 
         robot.Robot.__init__(self, name=sname, image_url=image_url, profile_url=profile_url)
         self.set_verification_token_info(credentials.verification_token[self.domain], credentials.verification_secret[self.domain])
@@ -94,7 +90,6 @@ class WaveBot(BotBase, robot.Robot):
         self.register_handler(events.WaveletSelfAdded, self.OnSelfAdded)
         self.register_handler(events.WaveletParticipantsChanged, self.OnParticipantsChanged)
         self.iswave = True
-        self.waves = waves
         self.isgae = True
  
     def OnParticipantsChanged(self, event, wavelet):
