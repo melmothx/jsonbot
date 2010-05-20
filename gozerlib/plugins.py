@@ -93,9 +93,12 @@ class Plugins(LazyDict):
                 return sys.modules[modname]
         else:
             try:
-                del sys.modules[modname]
+                reload(sys.modules[modname])
             except KeyError:
-                pass
+                try:
+                    del sys.modules[modname]
+                except KeyError:
+                    pass
         logging.debug("plugins - loading %s" % modname)
         mod = _import(modname)
 

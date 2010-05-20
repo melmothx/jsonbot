@@ -456,7 +456,10 @@ realname))
 
     def say(self, printto, what, event=None, how='msg', origin="", extend=0):
         self.out(printto, what, how)
-        self.outmonitor(origin, printto, what, event)
+        if origin:
+            self.outmonitor(origin, printto, what, event)
+        else:
+            self.outmonitor(self.name, printto, what, event)
 
     def out(self, printto, what, how):
         # check for socket

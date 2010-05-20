@@ -41,6 +41,8 @@ class EventBase(LazyDict):
         self.bottype = "botbase"
         self.closequeue = True
         self.printto = None
+        self.isremote = False
+        self.iscmnd = False
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """

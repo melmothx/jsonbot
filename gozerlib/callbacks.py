@@ -39,11 +39,11 @@ class Callback(object):
 
     """
 
-    def __init__(self, func, prereq, plugname, kwargs, threaded=False, \
-speed=5):
+    def __init__(self, modname, func, prereq, kwargs, threaded=False, speed=5):
+        self.modname = modname
+        self.plugname = self.modname.split('.')[-1]
         self.func = func # the callback function
         self.prereq = prereq # pre condition function
-        self.plugname = plugname # plugin name
         self.kwargs = kwargs # kwargs to pass on to function
         self.threaded = copy.deepcopy(threaded) # run callback in thread
         self.speed = copy.deepcopy(speed) # speed to execute callback with
@@ -81,30 +81,31 @@ class Callbacks(object):
         """
         what = what.upper()
         # get the plugin this callback was registered from
-        plugname = whichplugin()
+        modname = calledfrom(sys._getframe())
         if not kwargs:
             kwargs = {}
 
         # add callback to the dict of lists
         if nr != False:
-            self.cbs.insert(nr, what, Callback(func, prereq, plugname, kwargs, threaded, speed))
+            self.cbs.insert(nr, what, Callback(modname, func, prereq, kwargs, threaded, speed))
         else:
-            self.cbs.add(what, Callback(func, prereq, plugname, kwargs, threaded, speed))
+            self.cbs.add(what, Callback(modname, func, prereq, kwargs, threaded, speed))
 
-        logging.debug('callbacks - added %s (%s)' % (what, plugname))
+        logging.debug('callbacks - added %s (%s)' % (what, modname))
         return self
 
-    def unload(self, plugname):
+    def unload(self, modname):
         """ unload all callbacks registered in a plugin. """
         unload = []
         # look for all callbacks in a plugin
         for name, cblist in self.cbs.iteritems():
             index = 0
             for item in cblist:
-                if item.plugname == plugname:
+                if item.modname == modname:
                     unload.append((name, index))
                 index += 1
 
+        logging.debug("callbacks - unload is %s" % str(unload))
         # delete callbacks
         for callback in unload[::-1]:
             self.cbs.delete(callback[0], callback[1])
@@ -208,6 +209,7 @@ class Callbacks(object):
 
             # launch the callback
             cb.func(bot, event)
+            event.callbackdone = True
             return True
 
         except Exception, ex:

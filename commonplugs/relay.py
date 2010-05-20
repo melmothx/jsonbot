@@ -36,8 +36,9 @@ relay = PlugPersist('relay')
 def relayprecondition(bot, event):
     """ check to see whether the callback needs to be executed. """
     origin = event.origin or event.channel
+    logging.debug("relay - precondition - origin is %s" % origin)
     if event.txt:
-        if origin and origin in relay.data and not event.iscmnd and not event.isremote:
+        if origin and origin in relay.data and not event.callbackdone:
             return True
 
     return False
@@ -52,7 +53,6 @@ def relaycallback(bot, event):
     """ this is the callbacks that handles the responses to questions. """
     # determine where the event came from
     origin = event.origin or event.channel
-
     try:
         # loop over relays for origin
         for botname, type, target in relay.data[origin]:
