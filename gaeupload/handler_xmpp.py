@@ -16,8 +16,7 @@ from gozerlib.utils.generic import fromenc, toenc, getversion
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.exception import handle_exception
 from gozerlib.plugins import plugs
-from gozerlib.boot import boot
-from gozerlib.admin import plugin_packages
+from gozerlib.boot import boot, plugin_packages
 from gozerlib.remote.event import RemoteEvent
 from gozerlib.remote.bot import RemoteBot
 

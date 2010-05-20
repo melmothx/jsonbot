@@ -16,7 +16,8 @@ import logging
 import os
 import sys
 
-#sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.getcwd() + os.sep + '..')
 
 ## defines
 
@@ -84,18 +85,20 @@ def savecmndtable():
     cmndtable.data = {}
 
     from gozerlib.commands import cmnds
+    assert cmnds
 
     for cmndname, c in cmnds.iteritems():
         if cmndname:
             cmndtable.data[cmndname] = c.modname   
 
     if cmnds.subs:
-        for cmndname, clist in cmnds.subs.iteritems():
-            if cmndname:
+        for name, clist in cmnds.subs.iteritems():
+            if name:
                 if clist and len(clist) == 1:
-                    cmndtable.data[cmndname] = clist[0].modname   
+                    cmndtable.data[name] = clist[0].modname   
 
     logging.debug("saving command table")
+    assert cmndtable
     cmndtable.save()
 
 def getcmndtable():
@@ -109,9 +112,12 @@ def getcmndtable():
 def savecallbacktable():
     """ save command -> plugin list to db backend. """
     global callbacktable
+    assert callbacktable
+ 
     callbacktable.data = {}
   
     from gozerlib.callbacks import callbacks
+    assert callbacks
 
     for type, cbs in callbacks.cbs.iteritems():
         for c in cbs:
@@ -120,6 +126,7 @@ def savecallbacktable():
             callbacktable.data[type].append(c.modname)
 
     logging.debug("saving callback table")
+    assert callbacktable
     callbacktable.save()
 
 def getcallbacktable():
@@ -136,6 +143,7 @@ def savepluginlist():
     pluginlist.data = []
 
     from gozerlib.commands import cmnds
+    assert cmnds
 
     for cmndname, c in cmnds.iteritems():
         if not c.plugname:
@@ -145,6 +153,7 @@ def savepluginlist():
             pluginlist.data.append(c.plugname)
     pluginlist.data.sort()
     logging.debug("saving plugin list")
+    assert pluginlist
     pluginlist.save()
 
 def getpluginlist():
