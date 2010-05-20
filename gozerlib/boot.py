@@ -7,12 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.persist import Persist
-from gozerlib.plugins import plugs
-from gozerlib.commands import cmnds
-from gozerlib.admin import plugin_packages, default_plugins
-from gozerlib.callbacks import callbacks
 from gozerlib.datadir import datadir
-import admin
 import users
 
 ## basic imports
@@ -48,7 +43,7 @@ def boot(force=False):
     """ initialize the bot. """
     global loaded
     logging.warn("boot - starting ..")
-    reload(sys.modules['gozerlib.admin'])
+
     global cmndtable
     if not cmndtable:
         cmndtable = Persist(rundir + os.sep + 'cmndtable')
@@ -59,6 +54,7 @@ def boot(force=False):
     if not callbacktable:
          callbacktable = Persist(rundir + os.sep + 'callbacktable')
     
+    from gozerlib.plugins import plugs
     if not cmndtable.data or force:
         plugs.loadall(plugin_packages)
         loaded = True
@@ -87,6 +83,8 @@ def savecmndtable():
     global cmndtable
     cmndtable.data = {}
 
+    from gozerlib.commands import cmnds
+
     for cmndname, c in cmnds.iteritems():
         if cmndname:
             cmndtable.data[cmndname] = c.modname   
@@ -112,10 +110,12 @@ def savecallbacktable():
     """ save command -> plugin list to db backend. """
     global callbacktable
     callbacktable.data = {}
+  
+    from gozerlib.callbacks import callbacks
 
     for type, cbs in callbacks.cbs.iteritems():
         for c in cbs:
-            if not admin.callbacktable.data.has_key(type):
+            if not callbacktable.data.has_key(type):
                 callbacktable.data[type] = []
             callbacktable.data[type].append(c.modname)
 
@@ -135,11 +135,13 @@ def savepluginlist():
     global pluginlist
     pluginlist.data = []
 
+    from gozerlib.commands import cmnds
+
     for cmndname, c in cmnds.iteritems():
         if not c.plugname:
             logging.warn("boot - not adding %s to pluginlist" % cmndname)
             continue
-        if c.plugname not in admin.pluginlist.data:
+        if c.plugname not in pluginlist.data:
             pluginlist.data.append(c.plugname)
     pluginlist.data.sort()
     logging.debug("saving plugin list")
