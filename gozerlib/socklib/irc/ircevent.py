@@ -72,6 +72,7 @@ class Ircevent(EventBase):
         self.bottype = "irc"
         self.bot = bot
         bot.nrevents += 1 
+        self.ttl = 2
         rawstr = rawstr.rstrip()
         splitted = re.split('\s+', rawstr)
 
@@ -173,11 +174,12 @@ class Ircevent(EventBase):
             return
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 365+extend)
-        self.bot.out(to or self.printto, res1, 'msg')
-        self.bot.outmonitor(self.userhost, self.channel, res1, self)
+        target = to or self.printto
+        self.bot.out(target, res1, 'msg')
+        self.bot.outmonitor(self.userhost, target, res1, self)
         if res2:
-            self.bot.out(to or self.printto, res2, 'msg')
-            self.bot.outmonitor(self.userhost, self.channel, res2, self)
+            self.bot.out(target, res2, 'msg')
+            self.bot.outmonitor(self.userhost, target, res2, self)
 
 # postfix count aka how many arguments
 
