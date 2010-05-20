@@ -43,6 +43,7 @@ class EventBase(LazyDict):
         self.printto = None
         self.isremote = False
         self.iscmnd = False
+        self.ttl = 1
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
@@ -93,14 +94,17 @@ class EventBase(LazyDict):
     def missing(self, txt):
         """ display missing arguments. """
         self.reply("%s %s" % (self.usercmnd, txt)) 
-
         return self
 
     def done(self):
         """ tell the user we are done. """
         self.reply('done')
-
         return self
+
+    def leave(self):
+        self.ttl -= 1
+        if self.ttl <= 0 :
+            self.status = "done"
 
     def makeargs(self):
         """ make arguments and rest attributes from self.txt. """

@@ -38,7 +38,7 @@ def relayprecondition(bot, event):
     origin = event.origin or event.channel
     logging.debug("relay - precondition - origin is %s" % origin)
     if event.txt:
-        if origin and origin in relay.data and not event.callbackdone:
+        if origin and origin in relay.data:
             return True
 
     return False

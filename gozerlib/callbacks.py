@@ -195,6 +195,9 @@ class Callbacks(object):
 
         """
         try:
+            if event.status == "done":
+                logging.debug("callback - event is done .. ignoring")
+                return
             # see if the callback pre requirement succeeds
             if cb.prereq:
                 logging.debug('callbacks - excecuting in loop %s' % str(cb.prereq))
@@ -209,7 +212,7 @@ class Callbacks(object):
 
             # launch the callback
             cb.func(bot, event)
-            event.callbackdone = True
+            event.leave()
             return True
 
         except Exception, ex:

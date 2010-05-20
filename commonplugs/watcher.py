@@ -128,20 +128,14 @@ def watchcallback(bot, event):
         except ValueError:
             continue
 
-        watchbot = fleet.makebot(botname, type)
+        watchbot = fleet.byname(botname)
+        if not watchbot:
+            watchbot = fleet.makebot(type, botname)
         if watchbot:
             orig = event.nick or event.userhost
 
             if event.cbtype == "OUTPUT":
-                try:
-                    from gozerlib.gae.wave.waves import Wave
-                    wave = Wave(event.channel)
-                except ImportError:
-                    wave = None
-                if wave:
-                    txt = u"[%s] %s: %s" % (wave.data.title, event.ruserhost, event.txt)
-                else:
-                    txt = u"[%s] %s: %s" % (type, event.ruserhost, event.txt)
+                txt = u"[%s] %s" % (event.ruserhost, event.txt)
             else:
                 txt = u"[%s] %s" % (orig, event.txt)
 
@@ -149,15 +143,12 @@ def watchcallback(bot, event):
             if txt.find('] [') > 1:
                 continue
 
-            watchbot.say(channel, txt)
+            watchbot.saynocb(channel, txt)
 
-gn_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
 callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
-gn_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
-#callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
-gn_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
+callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
 callbacks.add('OUTPUT', watchcallback, prewatchcallback)
-gn_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
+callbacks.add('MESSAGE', watchcallback, prewatchcallback)
 
 ## commands
 

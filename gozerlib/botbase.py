@@ -122,6 +122,9 @@ class BotBase(LazyDict):
 
     def doevent(self, event):
         """ dispatch an event. """
+        if event.status == "done":
+            logging.debug("botbase - event is done .. ignoring")
+            return
         self.status = "dispatch"
         self.curevent = event
         go = False
@@ -144,9 +147,10 @@ class BotBase(LazyDict):
         if event.isremote:
             logging.debug('doing REMOTE callback')
             gn_callbacks.check(self, e)
+            e.leave()
         else:
             callbacks.check(self, e)
-
+            e.leave()
         if event.isremote and not event.remotecmnd:
             logging.debug("event is remote but not command .. not dispatching")
             return
@@ -155,6 +159,7 @@ class BotBase(LazyDict):
             if go or event.bottype in ['web', 'xmpp', 'irc']:
                 event.finish()
                 result = self._plugs.dispatch(self, event)
+                event.leave()
             else:
                 result =  []
         except NoSuchCommand:
@@ -189,6 +194,9 @@ class BotBase(LazyDict):
         e = EventBase()
         if event:
             e.copyin(event)
+        if e.status == "done":
+            logging.debug("botbase - outmonitor - event is done .. ignoring")
+            return
         e.origin = origin
         e.ruserhost = self.botname
         e.userhost = self.botname
@@ -197,6 +205,7 @@ class BotBase(LazyDict):
         e.cbtype = 'OUTPUT'
         e.iscmnd = False
         callbacks.check(self, e)
+        e.leave()
 
     def docmnd(self, origin, channel, txt, event=None):
         """ do a command. """
