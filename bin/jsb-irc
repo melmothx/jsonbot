@@ -18,8 +18,7 @@ print getversion('IRC')
 from gozerlib.socklib.partyline import partyline
 from gozerlib.socklib.irc.bot import IRCBot
 from gozerlib.datadir import makedirs
-from gozerlib.admin import plugin_packages
-from gozerlib.boot import boot
+from gozerlib.boot import plugin_packages, boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.config import Config
 from gozerlib.config import cfg as mainconfig
