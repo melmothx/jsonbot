@@ -56,19 +56,19 @@ class XMPPEvent(EventBase):
 
         self.copyin(LazyDict(request.POST))
         (userhost, user, u, nick) = checkuser(response, request)
-        self.userhost = stripped(self['from'])
+        self.userhost = self['from']
         self.origin = self.channel
 
         if user:
             self.auth = user.email()
         else:
-            self.auth = self.userhost
+            self.auth = stripped(self.userhost)
 
         logging.warn('xmpp - auth is %s' % self.auth)
         self.resource = resource(self['from'])
         self.jid = self['from']
         self.to = stripped(self['to'])
-        self.channel = self.userhost
+        self.channel = stripped(self.userhost)
         self.chan = ChannelBase(self.channel)
         self.origin = self.channel
         input = self.body
@@ -78,7 +78,7 @@ class XMPPEvent(EventBase):
             input = input[1:]
             
         self.txt = input
-        self.usercmnd = self.txt.split()[0]
+        self.usercmnd = self.txt.split()[0].lower()
         self.makeargs()
         logging.warn(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self

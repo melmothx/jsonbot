@@ -149,7 +149,7 @@ class Plugins(LazyDict):
             e.queues = []
             e.onlyqueues = True
             e.txt = item.strip()
-            e.usercmnd = e.txt.split()[0]
+            e.usercmnd = e.txt.split()[0].lower()
             logging.debug('creating event for %s' % e.txt)
             e.bot = bot
             e.makeargs()
@@ -188,7 +188,7 @@ class Plugins(LazyDict):
 
         try:
             from boot import getcmndtable
-            plugin = getcmndtable()[event.usercmnd]
+            plugin = getcmndtable()[event.usercmnd.lower()]
         except KeyError:
             logging.info("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return

@@ -97,7 +97,7 @@ class Commands(LazyDict):
                 event.userstate = UserState(event.user.data.name)
             else:
                 logging.debug("failed to set user %s" % id)
-        cmnd = event.usercmnd
+        cmnd = event.usercmnd.lower()
         try:
             cmnd = event.userstate.data.aliases[cmnd]
             event.usercmnd = cmnd
