@@ -53,7 +53,7 @@ class Config(LazyDict):
                 self.fromfile(self.cfile)
             except IOError:
                 pass
-            import google
+            import waveapi
             from persist import Persist
             self.jsondb = Persist(self.cfile)
             self.update(self.jsondb.data)
@@ -62,11 +62,12 @@ class Config(LazyDict):
         except ImportError:
             self.isdb = False
 
+        self.init()
+
         if not self.uuid:
             self.uuid = str(uuid.uuid4())
             self.save()
 
-        self.init()
 
     def __getitem__(self, item):
         """ accessor function. """
@@ -134,9 +135,11 @@ class Config(LazyDict):
             if not line or line.startswith('#'):
                 continue
             else:
-                key, value = line.split('=', 1)
-                self[key.strip()] = loads(unicode(value.strip()))
-
+                try:
+                    key, value = line.split('=', 1)
+                    self[key.strip()] = loads(unicode(value.strip()))
+                except ValueError:
+                    logging.warn("config - skipping line - unable to parse: %s" % line)
         return self
 
     def tofile(self, filename=None):
