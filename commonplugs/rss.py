@@ -1359,7 +1359,7 @@ def handle_rsschannels(bot, ievent):
     for i in rssitem.data.watchchannels:
         result.append(str(i))
 
-    ievent.reply("channels of %s: " % name, result, dot=True)
+    ievent.reply("channels of %s: " % name, result)
 
 cmnds.add('rss-channels', handle_rsschannels, ['OPER', ])
 examples.add('rss-channels', 'rss-channels <name> .. show channels', 'rss-channels gozerbot')
@@ -1500,7 +1500,7 @@ def handle_rssmarkuplist(bot, ievent):
 
     """ show possible markups that can be used. """
 
-    ievent.reply('possible markups ==> ' , possiblemarkup, dot=True)
+    ievent.reply('possible markups ==> ' , possiblemarkup)
 
 cmnds.add('rss-markuplist', handle_rssmarkuplist, ['USER', ])
 examples.add('rss-markuplist', 'show possible markup entries', \
@@ -1793,7 +1793,7 @@ def handle_rsslist(bot, ievent):
     result.sort()
 
     if result:
-        ievent.reply("rss items: ", result, dot=True)
+        ievent.reply("rss items: ", result)
     else:
         ievent.reply('no rss items yet')
 
@@ -1954,7 +1954,7 @@ def handle_rssfeeds(bot, ievent):
         result = watcher.getfeeds(bot.name, channel)
 
         if result:
-            ievent.reply("feeds running in %s: " % channel, result, dot=True)
+            ievent.reply("feeds running in %s: " % channel, result)
         else:
             ievent.reply('%s has no feeds running' % channel)
 

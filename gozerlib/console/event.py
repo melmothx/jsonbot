@@ -25,10 +25,10 @@ class ConsoleEvent(EventBase):
         e.copyin(self)
         return e
 
-    def reply(self, txt, result=[]):
+    def reply(self, txt, result=[], dot=", ", *args, **kwargs):
         if self.checkqueues(result):
              return
-        resp = self.makeresponse(txt, result)
+        resp = self.makeresponse(txt, result, dot)
         logging.info(u"console - out - %s - %s" % (self.userhost, unicode(resp)))
         self.bot._raw(resp)
         self.result.append(resp)  

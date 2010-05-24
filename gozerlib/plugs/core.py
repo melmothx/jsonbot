@@ -256,12 +256,12 @@ def handle_helpplug(bot, ievent):
                     if perm in perms:
                         if True:
                             try:
-                                descr = j.func.__doc__
+                                descr = j.func.__doc__.strip()
                                 cmndhelp = cmnds.gethelp(i)
                                 try:
-                                    cmndresult.append(u"    !%s %s - examples: %s" % (i, descr, examples[i].example))
+                                    cmndresult.append(u"    !%s - %s - examples: %s" % (i, descr, examples[i].example))
                                 except KeyError:
-                                    cmndresult.append(u"    !%s %s - no examples" % (i, descr))
+                                    cmndresult.append(u"    !%s - %s - no examples" % (i, descr))
 
                             except AttributeError:
                                 cmndresult.append(i)

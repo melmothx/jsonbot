@@ -19,7 +19,7 @@ from gozerlib.gae.wave.waves import Wave
 import logging
 
 def handle_wavestart(bot, event):
-
+    """ start a protected wave. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -41,7 +41,7 @@ cmnds.add('wave-start', handle_wavestart, 'USER')
 examples.add('wave-start', 'start a new wave', 'wave-start')
 
 def handle_waveclone(bot, event):
-
+    """ clone wave into a new one, copying over particpants and feeds. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -60,7 +60,7 @@ cmnds.add('wave-clone', handle_waveclone, 'USER')
 examples.add('wave-clone', 'clone the wave', 'wave-clone')
 
 def handle_wavenew(bot, event):
-
+    """ make a new wave. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -77,7 +77,7 @@ cmnds.add('wave-new', handle_wavenew, 'USER')
 examples.add('wave-new', 'make a new wave', 'wave-new')
 
 def handle_wavepublic(bot, event):
-
+    """ make the wave public. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -89,6 +89,7 @@ cmnds.add('wave-public', handle_wavepublic, 'USER')
 examples.add('wave-public', 'make the wave public', 'wave-public')
 
 def handle_waveinvite(bot, event):
+    """ invite a user to the wave. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -104,6 +105,7 @@ cmnds.add('wave-invite', handle_waveinvite, 'USER')
 examples.add('wave-invite', 'invite a user/bot into the wave', 'wave-invite bthate@googlewave.com')
 
 def handle_waveid(bot, event):
+    """ get the id of the wave. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -113,6 +115,7 @@ cmnds.add('wave-id', handle_waveid, 'USER')
 examples.add('wave-id', 'show the id of the wave the command is given in.', 'wave-id')
 
 def handle_waveurl(bot, event):
+    """ get the url of the wave. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -122,6 +125,7 @@ cmnds.add('wave-url', handle_waveurl, 'USER')
 examples.add('wave-url', 'show the url of the wave the command is given in.', 'wave-url')
 
 def handle_waveparticipants(bot, event):
+    """ show participants. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -131,6 +135,7 @@ cmnds.add('wave-participants', handle_waveparticipants, 'USER')
 examples.add('wave-participants', 'show the participants of the wave the command is given in.', 'wave-participants')
 
 def handle_wavepart(bot, event):
+    """ leave a wave. not implemented yet. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -141,6 +146,7 @@ cmnds.add('wave-part', handle_wavepart, 'OPER')
 examples.add('wave-part', 'leave the wave', 'wave-part')
 
 def handle_wavetitle(bot, event):
+    """ set title of the wave. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -156,6 +162,7 @@ cmnds.add('wave-title', handle_wavetitle, 'OPER')
 examples.add('wave-title', 'set title of the wave', 'wave-title')
 
 def handle_wavedata(bot, event):
+    """ show stored wave data. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -173,6 +180,7 @@ cmnds.add('wave-data', handle_wavedata, 'OPER')
 examples.add('wave-data', 'show the waves stored data', 'wave-data')
 
 def handle_wavethreshold(bot, event):
+    """ set threshold of the wave. after x nr of blips the wave will be cloned. """
     if event.bottype != "wave":
         event.reply("this command only works in google wave.");
         return
@@ -195,6 +203,7 @@ cmnds.add('wave-threshold', handle_wavethreshold, 'OPER')
 examples.add('wave-threshold', 'set nr of blips after which we clone the wave', 'wave-threshold')
 
 def handle_wavewhitelistadd(bot, event):
+    """ add a user to the waves whitelist .. allow modifications. """
     if not event.rest:
         event.missing("<id>")
         return
@@ -211,6 +220,7 @@ cmnds.add("wave-whitelistadd", handle_wavewhitelistadd, "OPER")
 examples.add("wave-whitelistadd", "add a user to the waves whitelist", "wave-whitelistadd bthate@googlewave.com")
 
 def handle_wavewhitelistdel(bot, event):
+    """ remove user from the waves whitelist .. deny modifications. """
     if not event.rest:
         event.missing("<id>")
         return

@@ -30,7 +30,7 @@ def handle_uniq(bot, ievent):
     if not result:
         ievent.reply('no result')
     else:
-        ievent.reply(result, dot=True)
+        ievent.reply(result)
 
 cmnds.add('uniq', handle_uniq, ['USER', 'GUEST', 'CLOUD'])
 examples.add('uniq', 'sort out multiple elements', 'list | grep uniqe')
