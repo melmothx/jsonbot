@@ -8,6 +8,7 @@
 
 import re
 import os
+import shutil
 
 ## define
 
@@ -22,6 +23,7 @@ def makedirs(ddir=None):
 
     if not os.path.isdir(ddir):
         os.mkdir(ddir)
+    shutil.copyfile(os.path.join("commonplugs", "__init__.py"), os.path.join(ddir, "__init__.py"))
     if not os.path.isdir(ddir + '/config/'):
         os.mkdir(ddir + '/config/')
     if not os.path.isdir(ddir + '/users/'):

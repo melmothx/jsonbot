@@ -33,6 +33,7 @@ import re
 import tempfile
 import logging
 import sys
+import shutil
 
 ## classes
 
@@ -421,7 +422,7 @@ class Installer(object):
         directory, and what its original name was.
         '''
         oldtype = None
-        oldname = os.path.join('myplugs', plugname)
+        oldname = os.path.join('jsondir', 'myplugs', plugname)
         newname = self.BACKUP_PATTERN % oldname
         if os.path.isfile('%s.py' % oldname):
             newname = self.BACKUP_PATTERN % '%s.py' % oldname
@@ -441,7 +442,7 @@ class Installer(object):
         '''
         Restore a plugin with `plugname` from `oldname` with type `oldtype`.
         '''
-        newname = os.path.join('myplugs', plugname)
+        newname = os.path.join('jsondir', 'myplugs', plugname)
         if oldtype == 'dir':
             # remove partial 'new' data
             if os.path.isdir(newname):
@@ -457,7 +458,7 @@ class Installer(object):
     def save_tar(self, plugname, plugdata):
         oldtype, oldname = self.backup(plugname)
         try:
-            if not tarextract(plugname, str(plugdata), 'myplugs'): # because it is an istr
+            if not tarextract(plugname, str(plugdata), 'jsondir' + os.sep + 'myplugs'): # because it is an istr
                 raise InstallerException('%s.tar had no (valid) files to extract' % (plugname))
         except InstallerException:
             raise
@@ -572,4 +573,5 @@ print getversion('INSTALLPLUG')
 setloglevel('warning')
 os.chdir(botdir)
 installplug(opts.args)
+shutil.copyfile("commonplugs" + os.sep + "__init__.py", os.path.join("jsondir", "myplugs", "__init__.py"))
 boot(force=True)
