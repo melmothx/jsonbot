@@ -104,7 +104,7 @@ class Plugins(LazyDict):
         else:
             try:
                 self[modname] = reload(sys.modules[modname])
-                
+                logging.debug("plugins - %s reloaded (true)" % modname)                
                 try:
                     init = getattr(self[modname], 'init')
                 except AttributeError:
@@ -112,7 +112,7 @@ class Plugins(LazyDict):
 
                 init()
                 logging.debug('plugins - %s init called' % modname)
-                return
+                return self[modname]
             except KeyError:
                 try:
                     del sys.modules[modname]

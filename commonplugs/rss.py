@@ -30,8 +30,8 @@ from gozerlib.utils.id import getrssid
 from gozerlib.tasks import taskmanager
 from gozerlib.callbacks import callbacks
 from gozerlib.fleet import fleet
-from gozerlib.threadloop import ThreadLoop
-
+from gozerlib.threadloop import TimedLoop
+from gozerlib.threads import start_new_thread
 import gozerlib.contrib.feedparser as feedparser
 
 ## google imports
@@ -140,7 +140,7 @@ sleeptime=30*60, running=0):
 
         if True:
             filebase = 'jsondata' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
-            Persist.__init__(self, filebase + os.sep + 'rss-core')
+            Persist.__init__(self, filebase + '-core')
 
             if not self.data:
                  self.data = {}
@@ -154,7 +154,7 @@ sleeptime=30*60, running=0):
             self.data['sleeptime'] = self.data.sleeptime or int(sleeptime)
             self.data['running'] = self.data.running or running
             self.data['result'] = self.data.result or []
-            self.lastpeek = Persist(filebase + os.sep + 'rss-lastpeek')
+            self.lastpeek = Persist(filebase + '-lastpeek')
             
     def boot(self, name="", url="", itemslist=[], watchchannels=[], \
 sleeptime=30*60, running=0, item={}):
@@ -340,7 +340,7 @@ class Rssdict(PlugPersist):
 
         self.itemslists = Pdol('gozerstore' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.itemslists')
         self.markup = Pdod('gozerstore' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.markup')
-        #self.startwatchers()
+        self.startwatchers()
 
     def save(self, namein=None):
 
@@ -378,6 +378,7 @@ class Rssdict(PlugPersist):
 
         self.feeds[name] = Rssitem(name, url, owner, ['title', 'link'])
         self.data['urls'][url] = name
+        self.feeds[name].save()
         self.watch(name)
         self.save(name)
 
@@ -858,7 +859,7 @@ class Rsswatcher(Rssdict):
 
         for name in self.data['names']:
             z = self.byname(name)
-            if z.data.running == 1 and not z.data.stoprunning: 
+            if z and z.data.running == 1 and not z.data.stoprunning: 
                 result.append((z.data.name, z.data.watchchannels))
 
         return result
@@ -981,21 +982,13 @@ class Rsswatcher(Rssdict):
             logging.debug('deleting %s cache entry' % feed)
             dosync(feed)
 
-    def loop(self, *args, **kwargs):
-        logging.debug("rss - starting loop.")
-        while not self.stop:
-            time.sleep(self.sleepsec)
-            if not self.stop:
-                self.periodical(*args, **kwargs)
-        logging.debug("rss - stopping loop.")
-
     def startwatchers(self):
 
         """ start watcher threads """
 
         for name in self.data['names']:
             z = self.byname(name)
-            if z.data.running:
+            if z and z.data.running:
                 self.watch(z.data.name)
 
     def start(self, botname, name, channel):
@@ -1045,7 +1038,7 @@ class Rsswatcher(Rssdict):
 
         return feeds
 
-class Looper(ThreadLoop):
+class Looper(TimedLoop):
 
     def handle(self, *args, **kwargs):
         taskmanager.dispatch('periodical', *args, **kwargs)
