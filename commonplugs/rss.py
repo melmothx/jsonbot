@@ -1,4 +1,4 @@
-# waveplugs/rss.py
+# commonplugs/rss.py
 #
 #
 
@@ -30,6 +30,7 @@ from gozerlib.utils.id import getrssid
 from gozerlib.tasks import taskmanager
 from gozerlib.callbacks import callbacks
 from gozerlib.fleet import fleet
+from gozerlib.threadloop import ThreadLoop
 
 import gozerlib.contrib.feedparser as feedparser
 
@@ -45,7 +46,7 @@ except ImportError:
 ## tinyurl import
 
 try:
-    from waveplugs.tinyurl import get_tinyurl
+    from commonplugs.tinyurl import get_tinyurl
 except ImportError:
     def get_tinyurl(url):
         return [url, ]
@@ -138,7 +139,7 @@ class Rssitem(Persist):
 sleeptime=30*60, running=0):
 
         if True:
-            filebase = 'jsondata' + os.sep + 'plugs' + os.sep + 'waveplugs.rss' + os.sep + name
+            filebase = 'jsondata' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
             Persist.__init__(self, filebase + os.sep + 'rss-core')
 
             if not self.data:
@@ -316,6 +317,8 @@ class Rssdict(PlugPersist):
     """ dict of rss entries """
 
     def __init__(self, filename, feedname=None):
+        self.stop = False
+        self.sleepsec = 300
         self.feeds = {}
         PlugPersist.__init__(self, filename)
 
@@ -335,8 +338,8 @@ class Rssdict(PlugPersist):
             else:
                 self.feeds[feedname] = Rssitem(feedname)
 
-        self.itemslists = Pdol('gozerstore' + os.sep + 'plugs' + os.sep + 'waveplugs.rss' + os.sep + filename + '.itemslists')
-        self.markup = Pdod('gozerstore' + os.sep + 'plugs' + os.sep + 'waveplugs.rss' + os.sep + filename + '.markup')
+        self.itemslists = Pdol('gozerstore' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.itemslists')
+        self.markup = Pdod('gozerstore' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.markup')
         #self.startwatchers()
 
     def save(self, namein=None):
@@ -978,6 +981,13 @@ class Rsswatcher(Rssdict):
             logging.debug('deleting %s cache entry' % feed)
             dosync(feed)
 
+    def loop(self, *args, **kwargs):
+        logging.debug("rss - starting loop.")
+        while not self.stop:
+            time.sleep(self.sleepsec)
+            if not self.stop:
+                self.periodical(*args, **kwargs)
+        logging.debug("rss - stopping loop.")
 
     def startwatchers(self):
 
@@ -1035,10 +1045,18 @@ class Rsswatcher(Rssdict):
 
         return feeds
 
+class Looper(ThreadLoop):
+
+    def handle(self, *args, **kwargs):
+        taskmanager.dispatch('periodical', *args, **kwargs)
+        #watcher.periodical(self, *args, **kwargs)
+
 # the watcher object 
 watcher = Rsswatcher('rss')
+looper = Looper('rss')
 
 assert(watcher)
+assert(looper)
 
 def dosync(feedname):
 
@@ -1056,14 +1074,17 @@ def dosync(feedname):
 def doperiodical(*args, **kwargs):
 
     """ rss periodical function. """
-    from google.appengine.ext.deferred import defer
 
     for feed in watcher.data['names']:
         time.sleep(0.2)
         try:
+            from google.appengine.ext.deferred import defer
             defer(dosync, feed)
-        except Exception, ex:
-            handle_exception()
+        except ImportError:
+            try:
+                start_new_thread(dosync, (feed, ))
+            except Exception, ex:
+                handle_exception()
 
 taskmanager.add('periodical', doperiodical)
 
@@ -1079,6 +1100,15 @@ def pollerpeek(bot, event):
 
 #callbacks.add('POLLER', pollerpeek)
 
+def init():
+    try:
+        from google.appengine.ext.deferred import defer
+    except ImportError:
+        global looper
+        looper.start()
+
+def shutdown():
+    looper.stop()
 
 def size():
 

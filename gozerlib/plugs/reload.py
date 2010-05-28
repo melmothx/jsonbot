@@ -7,7 +7,6 @@
 ## gozerlib imports
 
 from gozerlib.utils.exception import handle_exception
-from gozerlib.plugins import plugs
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.boot import plugin_packages, savecmndtable, savepluginlist
@@ -31,7 +30,7 @@ def handle_reload(bot, ievent):
         for package in plugin_packages:
             modname = "%s.%s" % (package, plug)
             try:
-                if plugs.reload(modname, force=True):
+                if bot.plugs.reload(modname, force=True):
                     reloaded.append(modname)
                     break
             except Exception, ex:
@@ -55,11 +54,11 @@ def handle_unload(bot, ievent):
         ievent.missing('<plugin>')
         return
 
-    if not what in plugs:
+    if not what in bot.plugs:
         ievent.reply('there is no %s module' % what)
         return
 
-    got = plugs.unload(what)
+    got = bot.plugs.unload(what)
     ievent.reply("unloaded and disabled: ", got)
 
 cmnds.add('unload', handle_unload, 'OPER')

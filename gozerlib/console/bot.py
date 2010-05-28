@@ -12,6 +12,7 @@ from gozerlib.errors import NoSuchCommand, NoInput
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
 from gozerlib.utils.exception import handle_exception
+from gozerlib.fleet import fleet
 from event import ConsoleEvent
 
 ## basic imports
@@ -73,7 +74,7 @@ class ConsoleBot(BotBase):
                         handle_exception()
                         continue
                 try:
-                    result = self._plugs.dispatch(self, event)
+                    result = self.plugs.dispatch(self, event)
                     if not result:
                             continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)

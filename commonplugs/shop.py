@@ -45,7 +45,7 @@ def handle_shop(bot, ievent):
 
     sayshop(bot, ievent, ievent.user.data.shops)
 
-cmnds.add('shop', handle_shop, 'USER')
+cmnds.add('shop', handle_shop, ['USER', 'GUEST'])
 
 def handle_shop2(bot, ievent):
     """ add items to shop list """
@@ -95,6 +95,6 @@ def handle_got(bot, ievent):
     ievent.user.save()
     ievent.reply('%s shop item(s) deleted' % teller)
 
-cmnds.add('got', handle_got, 'USER')
+cmnds.add('got', handle_got, ['USER', 'GUEST'])
 examples.add('got', 'got <listofnrs> .. remove item <listofnrs> from shop list','1) got 3 2) got 1 6 8')
 

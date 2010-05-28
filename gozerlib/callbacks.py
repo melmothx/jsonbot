@@ -14,7 +14,6 @@ from threads import getname
 from utils.exception import handle_exception
 from utils.trace import calledfrom, whichplugin
 from utils.dol import Dol
-from plugins import plugs
 
 ## basic imports
 
@@ -231,6 +230,8 @@ class Callbacks(object):
         except KeyError:
             logging.debug("can't find plugin to reload for %s" % event.cmnd)
             return
+
+        from plugins import plugs
 
         for name in plugins:
             if name in plugs:

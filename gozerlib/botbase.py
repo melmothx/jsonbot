@@ -23,6 +23,7 @@ from utils.locking import lockdec
 from exit import globalshutdown
 from utils.generic import splittxt
 from utils.trace import whichmodule
+from fleet import fleet
 
 ## basic imports
 
@@ -79,7 +80,7 @@ class BotBase(LazyDict):
         self.setusers(usersin)
         logging.warn("botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
-        self._plugs = plugs or coreplugs 
+        self.plugs = plugs or coreplugs 
         self.outcache = Less(1)
         self.userhosts = {}
 
@@ -90,6 +91,7 @@ class BotBase(LazyDict):
             pass
 
         self.setstate()
+        fleet.bots.append(self)
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -112,8 +114,8 @@ class BotBase(LazyDict):
 
     def loadplugs(self, packagelist=[]):
         """ load plugins from packagelist. """
-        self._plugs.loadall(packagelist)
-        return self._plugs
+        self.plugs.loadall(packagelist)
+        return self.plugs
 
     def start(self):
         """ start the mainloop of the bot. """
@@ -158,7 +160,7 @@ class BotBase(LazyDict):
         try:
             if go or event.bottype in ['web', 'xmpp', 'irc']:
                 event.finish()
-                result = self._plugs.dispatch(self, event)
+                result = self.plugs.dispatch(self, event)
                 event.leave()
             else:
                 result =  []
@@ -179,6 +181,10 @@ class BotBase(LazyDict):
                 return True
 
         return False
+
+    def exit(self):
+        """ overload this. """
+        pass
 
     def _raw(self, txt):
         """ override this. """ 
@@ -225,9 +231,9 @@ class BotBase(LazyDict):
         e.cbtype = 'DOCMND'
         e.makeargs()
 
-        if self._plugs:
+        if self.plugs:
             try:
-                return self._plugs.dispatch(self, e)
+                return self.plugs.dispatch(self, e)
             except NoSuchCommand:
                 print "no such command: %s" % e.usercmnd
         else:

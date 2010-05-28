@@ -108,6 +108,6 @@ userstate" % nick)
     else:
         ievent.reply(resultstr)
 
-cmnds.add('weather', handle_weather, 'USER')
+cmnds.add('weather', handle_weather, ['USER', 'GUEST'])
 examples.add('weather', 'get weather for <LOCATION> or <nick>', '1) weather London, \
 England 2) weather dunker')

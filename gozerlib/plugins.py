@@ -7,6 +7,7 @@
 ## gozerlib imports
 
 from commands import cmnds
+from callbacks import callbacks
 from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
@@ -72,15 +73,24 @@ class Plugins(LazyDict):
         logging.debug("plugins - unloading %s" % modname)
 
         try:
+            self[modname].shutdown()
+            logging.debug('plugins - called %s shutdown' % modname)
+        except KeyError:
+            logging.debug("plugins - no %s module found" % modname) 
+            return False
+        except AttributeError:
+            pass
+
+        try:
             cmnds.unload(modname)
         except KeyError:
             return False
 
         try:
-            self[modname].shutdown()
-            logging.debug('plugins - called %s shutdown' % modname)
-        except (AttributeError, KeyError):
-            pass
+            callbacks.unload(modname)
+        except KeyError:
+            return False
+
 
         return True
 
@@ -93,7 +103,16 @@ class Plugins(LazyDict):
                 return sys.modules[modname]
         else:
             try:
-                reload(sys.modules[modname])
+                self[modname] = reload(sys.modules[modname])
+                
+                try:
+                    init = getattr(self[modname], 'init')
+                except AttributeError:
+                    return self[modname]
+
+                init()
+                logging.debug('plugins - %s init called' % modname)
+                return
             except KeyError:
                 try:
                     del sys.modules[modname]
@@ -120,14 +139,15 @@ class Plugins(LazyDict):
 
     def reload(self, modname, force=False):
         """ reload a plugin. just load for now. """ 
-        self.unload(modname)
+        if self.has_key(modname):
+            self.unload(modname)
         return self.load(modname, force=force)
 
     def dispatch(self, bot, event, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
         if event.txt and not ' | ' in event.txt:
-            self.needreloadcheck(bot, event)
+            #self.reloadcheck(bot, event)
             return cmnds.dispatch(bot, event, *args, **kwargs)
 
         if event.txt and ' | ' in event.txt:
@@ -177,7 +197,7 @@ class Plugins(LazyDict):
 
         return events[-1]
 
-    def needreloadcheck(self, bot, event, target=None):
+    def reloadcheck(self, bot, event, target=None):
         """
             check if event requires a plugin to be reloaded. if so 
             reload the plugin.
