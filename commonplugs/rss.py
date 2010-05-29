@@ -153,26 +153,14 @@ sleeptime=30*60, running=0):
             self.data['name'] = self.data.name or str(name)
             self.data['url'] = self.data.url or str(url)
             self.data['owner'] = self.data.owner or str(owner)
-            self.data['itemslist'] = self.data.itemslist or list(itemslist) # used to initialize feed
             self.data['watchchannels'] = self.data.watchchannels or list(watchchannels)
             self.data['sleeptime'] = self.data.sleeptime or int(sleeptime)
             self.data['running'] = self.data.running or running
             self.data['result'] = self.data.result or []
+            self.itemslists = Pdol(filebase + '-itemslists')
+            self.markup = Pdod(filebase + '-markup')
             self.lastpeek = Persist(filebase + '-lastpeek')
             
-    def boot(self, name="", url="", itemslist=[], watchchannels=[], \
-sleeptime=30*60, running=0, item={}):
-
-        if True:
-            self['name'] = name
-            self['url'] = url
-            self['itemslist'] = list(itemslist)
-            self['watchchannels'] = list(watchchannels)
-            self['sleeptime'] = int(sleeptime)
-            self['running'] = int(running)
-            self['stoprunning'] = 0
-            self['botname'] = None
-
     def ownercheck(self, userhost):
 
         """ check is userhost is the owner of the feed. """
@@ -189,6 +177,8 @@ sleeptime=30*60, running=0, item={}):
         """ save rss data. """
 
         Persist.save(self)
+        self.itemslists.save()
+        self.markup.save()
         self.lastpeek.save()
 
     def getdata(self):
@@ -281,13 +271,13 @@ sleeptime=30*60, running=0, item={}):
                     return False
 
                 dtt = time.mktime(dt)
-                if res.updated:
-                    if dtt > r:
-                        tobereturned.append(LazyDict(res))
-                        r = dtt
-                        self.lastpeek.data[name] = dtt
-                        logging.debug('lastpeek of %s set to %s' % (name, time.ctime(self.lastpeek.data[name])))
-                        got = True
+                logging.debug("rss - %s - %s" % (dtt, r))
+                if dtt > r:
+                    tobereturned.append(LazyDict(res))
+                    r = dtt
+                    self.lastpeek.data[name] = dtt
+                    logging.debug('lastpeek of %s set to %s' % (name, time.ctime(self.lastpeek.data[name])))
+                    got = True
 
             if got and save:
                 self.lastpeek.save()
@@ -339,8 +329,6 @@ class Rssdict(PlugPersist):
             else:
                 self.feeds[feedname] = Rssitem(feedname)
 
-        self.itemslists = Pdol('jsondir' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.itemslists')
-        self.markup = Pdod('jsondir' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.markup')
         self.startwatchers()
 
     def save(self, namein=None):
@@ -358,9 +346,6 @@ class Rssdict(PlugPersist):
                 feed.save()
             except Exception, ex:
                 handle_exception()
-
-        self.itemslists.save()
-        self.markup.save()
 
     def size(self):
 
@@ -543,10 +528,10 @@ class Rsswatcher(Rssdict):
                     logging.info("no updates for %s (%s) feed available" % (rssitem.data.name, channel))
                     continue
 
-                if self.markup.get(jsonstring([name, channel]), 'reverse-order'):
+                if rssitem.markup.get(jsonstring([name, channel]), 'reverse-order'):
                     res2 = res2[::-1]
 
-                if self.markup.get(jsonstring([name, channel]), 'all-lines'):
+                if rssitem.markup.get(jsonstring([name, channel]), 'all-lines'):
 
                     for i in res2:
                         response = self.makeresponse(name, [i, ], channel)
@@ -558,7 +543,7 @@ class Rsswatcher(Rssdict):
 
                 else:
                     
-                    sep =  self.markup.get(jsonstring([name, channel]), 'separator')
+                    sep =  rssitem.markup.get(jsonstring([name, channel]), 'separator')
 
                     if sep:
                         response = self.makeresponse(name, res2, channel, sep=sep)
@@ -647,16 +632,20 @@ class Rsswatcher(Rssdict):
     def makeresult(self, name, target, data):
 
         """ make a result (txt) of a feed depending on its itemlist. """
-
+        rssitem = self.byname(name)
+        if not rssitem == None:
+            logging.info("rss - no %s rss item available" % name)
+            return
+            
         res = []
 
         for j in data:
             tmp = {}
 
-            if not self.itemslists.data[jsonstring([name, target])]:
+            if not rssitem.itemslists.data[jsonstring([name, target])]:
                 return []
 
-            for i in self.itemslists.data[jsonstring([name, target])]:
+            for i in rssitem.itemslists.data[jsonstring([name, target])]:
                 try:
                     tmp[i] = unicode(j[i])
                 except KeyError:
@@ -670,23 +659,22 @@ class Rsswatcher(Rssdict):
     def makeresponse(self, name, res, channel, sep=" .. "):
 
         """ loop over result to make a response. """
+        rssitem = self.byname(name)
+        if not rssitem:
+            logging.info("rss - no %s rss item available" % name)
+            return
 
         result = u"%s - " % name 
 
         try:
-            itemslist = self.itemslists.data[jsonstring([name, channel])]
+            itemslist = rssitem.itemslists.data[jsonstring([name, channel])]
         except KeyError:
-            rssitem = self.byname(name)
-
-            if rssitem == None:
-                return "no %s rss item" % name
-            else:
-                itemslist = self.itemslists.data[jsonstring([name, channel])] = list(rssitem.data.itemslist)
-                self.itemslists.save()
+            itemslist = rssitem.itemslists.data[jsonstring([name, channel])] = ['title', 'link']
+            rssitem.itemslists.save()
                 
         for j in res:
 
-            if self.markup.get(jsonstring([name, channel]), 'skipmerge') and 'Merge branch' in j['title']:
+            if rssitem.markup.get(jsonstring([name, channel]), 'skipmerge') and 'Merge branch' in j['title']:
                 continue
 
             resultstr = u""
@@ -704,7 +692,7 @@ class Rsswatcher(Rssdict):
 
                     if item.startswith('http://'):
 
-                        if self.markup.get(jsonstring([name, channel]), 'tinyurl'):
+                        if rssitem.markup.get(jsonstring([name, channel]), 'tinyurl'):
 
                             try:
                                 tinyurl = get_tinyurl(item)
@@ -785,10 +773,10 @@ class Rsswatcher(Rssdict):
 
                 got = True
 
-                if self.markup.get(jsonstring([name, channel]), 'reverse-order'):
+                if rssitem.markup.get(jsonstring([name, channel]), 'reverse-order'):
                     res2 = res2[::-1]
 
-                if self.markup.get(jsonstring([name, channel]), 'all-lines'):
+                if rssitem.markup.get(jsonstring([name, channel]), 'all-lines'):
 
                     for i in res2:
                         response = self.makeresponse(name, [i, ], channel)
@@ -807,7 +795,7 @@ class Rsswatcher(Rssdict):
 
                 else:
                     
-                    sep =  self.markup.get(jsonstring([name, channel]), 'separator')
+                    sep =  rssitem.markup.get(jsonstring([name, channel]), 'separator')
 
                     if sep:
                         response = self.makeresponse(name, res2, channel, sep=sep)
@@ -998,12 +986,12 @@ class Rsswatcher(Rssdict):
         if not jsonstring([botname, target]) in rssitem.data.watchchannels and not [botname, target] in rssitem.data.watchchannels:
             rssitem.data.watchchannels.append([botname, target])
 
-        rssitem.lastpeek.data[target] = time.time()
-        watcher.itemslists[jsonstring([name, target])] = ['title', 'link']
-        watcher.markup.set(jsonstring([name, target]), 'tinyurl', 1)
+        rssitem.lastpeek.data[target] = time.localtime()
+        rssitem.itemslists[jsonstring([name, target])] = ['title', 'link']
+        rssitem.markup.set(jsonstring([name, target]), 'tinyurl', 1)
         rssitem.data.running = 1
         rssitem.data.stoprunning = 0
-        watcher.save(name)
+        rssitem.save()
         watcher.watch(name)
         logging.debug("started %s feed in %s channel" % (name, channel))
         return True
@@ -1441,13 +1429,13 @@ def handle_rsssetitems(bot, ievent):
         return
 
     target = ievent.channel
-
-    if not watcher.byname(name):
+    rssitem = watcher.byname(name)
+    if not rssitem:
         ievent.reply("we don't have a %s feed" % name)
         return
 
-    watcher.itemslists.data[jsonstring([name, target])] = items
-    watcher.itemslists.save()
+    rssitem.itemslists.data[jsonstring([name, target])] = items
+    rssitem.itemslists.save()
     ievent.reply('%s added to (%s,%s) itemslist' % (items, name, target))
 
 cmnds.add('rss-setitems', handle_rsssetitems, ['RSS', 'USER'])
@@ -1473,11 +1461,11 @@ def handle_rssadditem(bot, ievent):
         return
 
     try:
-        watcher.itemslists.data[jsonstring([name, target])].append(item)
+        feed.itemslists.data[jsonstring([name, target])].append(item)
     except KeyError:
-        watcher.itemslists.data[jsonstring([name, target])] = feed.data.itemslist
+        feed.itemslists.data[jsonstring([name, target])] = ['title', 'link']
 
-    watcher.itemslists.save()
+    feed.itemslists.save()
     ievent.reply('%s added to (%s,%s) itemslist' % (item, name, target))
 
 cmnds.add('rss-additem', handle_rssadditem, ['RSS', 'USER'])
@@ -1496,13 +1484,14 @@ def handle_rssdelitem(bot, ievent):
 
     target = ievent.channel
 
-    if not watcher.byname(name):
+    rssitem =  watcher.byname(name)
+    if not rssitem:
         ievent.reply("we don't have a %s feed" % name)
         return
 
     try:
-        watcher.itemslists.data[jsonstring([name, target])].remove(item)
-        watcher.itemslists.save()
+        rssitem.itemslists.data[jsonstring([name, target])].remove(item)
+        rssitem.itemslists.save()
     except (RssNoSuchItem, ValueError):
         ievent.reply("we don't have a %s rss feed" % name)
         return
@@ -1533,10 +1522,14 @@ def handle_rssmarkup(bot, ievent):
         ievent.missing('<name>')
         return
 
+    rssitem =  watcher.byname(name)
+    if not rssitem:
+        ievent.reply("we don't have a %s feed" % name)
+        return
     target = ievent.channel
 
     try:
-        ievent.reply(str(watcher.markup[jsonstring([name, target])]))
+        ievent.reply(str(rssitem.markup[jsonstring([name, target])]))
     except KeyError:
         pass
 
@@ -1554,6 +1547,11 @@ def handle_rssaddmarkup(bot, ievent):
         ievent.missing('<name> <item> <value>')
         return
 
+    rssitem =  watcher.byname(name)
+    if not rssitem:
+        ievent.reply("we don't have a %s feed" % name)
+        return
+
     target = ievent.channel
 
     try:
@@ -1562,8 +1560,8 @@ def handle_rssaddmarkup(bot, ievent):
         pass
 
     try:
-        watcher.markup.set(jsonstring([name, target]), item, value)
-        watcher.markup.save()
+        rssitem.markup.set(jsonstring([name, target]), item, value)
+        rssitem.markup.save()
         ievent.reply('%s added to (%s,%s) markuplist' % (item, name, target))
     except KeyError:
         ievent.reply("no (%s,%s) feed available" % (name, target))
@@ -1582,10 +1580,15 @@ def handle_rssdelmarkup(bot, ievent):
         ievent.missing('<name> <item>')
         return
 
+    rssitem =  watcher.byname(name)
+    if not rssitem:
+        ievent.reply("we don't have a %s feed" % name)
+        return
+
     target = ievent.channel
 
     try:
-        del watcher.markup[jsonstring([name, target])][item]
+        del rssitem.markup[jsonstring([name, target])][item]
     except (KeyError, TypeError):
         ievent.reply("can't remove %s from %s feed's markup" %  (item, name))
         return
@@ -1769,7 +1772,7 @@ def handle_rssget(bot, ievent):
         ievent.reply('%s error: %s' % (name, str(ex)))
         return
 
-    if watcher.markup.get(jsonstring([name, channel]), 'reverse-order'):
+    if rssitem.markup.get(jsonstring([name, channel]), 'reverse-order'):
         result = result[::-1]
 
     response = watcher.makeresponse(name, result, ievent.channel)
@@ -1891,8 +1894,12 @@ def handle_rssitemslist(bot, ievent):
         ievent.missing('<name>')
         return
 
+    rssitem = watcher.byname(name)
+    if not rssitem:
+        ievent.reply("we don't have a %s feed." % name)
+        return
     try:
-        itemslist = watcher.itemslists[jsonstring([name, ievent.channel])]
+        itemslist = rssitem.itemslists[jsonstring([name, ievent.channel])]
     except KeyError:
         ievent.reply("no itemslist set for (%s, %s)" % (name, ievent.channel))
         return

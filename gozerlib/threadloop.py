@@ -127,14 +127,14 @@ class TimedLoop(ThreadLoop):
             time.sleep(self.sleepsec)
 
             if self.stopped:
-                logging.warn("%s - loop is stopped" % self.name)
+                logging.debug("%s - loop is stopped" % self.name)
                 break
 
-            logging.warn('%s - now running timedloop' % self.name)
+            logging.debug('%s - now running timedloop' % self.name)
             try:
                 self.handle()
             except Exception, ex:
                 handle_exception()
 
         self.running = False
-        logging.warn('%s - stopping timedloop' % self.name)
+        logging.debug('%s - stopping timedloop' % self.name)

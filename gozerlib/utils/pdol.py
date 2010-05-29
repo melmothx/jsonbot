@@ -30,11 +30,8 @@ class Pdol(Persist):
             return 1
 
     def __setitem__(self, item, what):
-        if self.data.has_key(item):
-            self.data[item].append(what)
-        else:
-            self.data[item] = [what]
-        return 1
+        self.data[item] = [what]
+        return self
 
     def add(self, item, what):
         """ add what to items list """

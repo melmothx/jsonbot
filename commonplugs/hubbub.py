@@ -105,7 +105,7 @@ class HubbubItem(Persist):
 
 
     def __init__(self, name, url="", owner="", itemslist=['title', 'link'], watchchannels=[], running=1):
-        filebase = 'gozerstore' + os.sep + 'plugs' + os.sep + 'waveplugs.hubbub' + os.sep + name
+        filebase = 'jsondir' + os.sep + 'plugs' + os.sep + 'waveplugs.hubbub' + os.sep + name
         Persist.__init__(self, filebase + os.sep + name + '.core')
 
         if not self.data:

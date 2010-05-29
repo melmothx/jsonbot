@@ -121,9 +121,9 @@ try:
                     cfrom = whichmodule(3)
 
             if gotcache:
-                logging.warn('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
+                logging.info('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
             else:
-                logging.warn('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
+                logging.info('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
 
         def save(self):
             """ save json data to database. """
@@ -145,7 +145,7 @@ try:
                 if 'gozerlib' in cfrom:
                     cfrom = whichmodule(3)
 
-            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
+            logging.info('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
             set(self.fn, bla)
 
 except ImportError:
@@ -211,7 +211,7 @@ except ImportError:
                     dirr.append(p)
                     pp = os.sep.join(dirr)
                     if not os.path.isdir(pp):
-                        logging.warn("persist - creating %s dir" % pp)
+                        logging.info("persist - creating %s dir" % pp)
                         os.mkdir(pp)
 
                 tmp = self.fn + '.tmp' # tmp file to save to
@@ -234,7 +234,7 @@ except ImportError:
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
 
-                logging.warn('persist - %s saved' % self.fn)
+                logging.info('persist - %s saved' % self.fn)
 
             finally:
                 pass
