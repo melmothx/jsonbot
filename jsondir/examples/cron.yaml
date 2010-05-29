@@ -1,0 +1,8 @@
+# jsonbot cron file
+#
+#
+
+cron:
+- description: periodical beat
+  url: /tasks/periodical
+  schedule: every 5 minutes
