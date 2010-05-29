@@ -51,6 +51,10 @@ except ImportError:
     def get_tinyurl(url):
         return [url, ]
 
+## simplejson import
+
+from simplejson import loads
+
 ## basic imports
 
 import time
@@ -139,7 +143,7 @@ class Rssitem(Persist):
 sleeptime=30*60, running=0):
 
         if True:
-            filebase = 'jsondata' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
+            filebase = 'jsondir' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
             Persist.__init__(self, filebase + '-core')
 
             if not self.data:
@@ -206,7 +210,7 @@ sleeptime=30*60, running=0, item={}):
 
         url = self.data['url']
         result = feedparser.parse(url, agent=useragent())
-        logging.debug("rss - fetch - got result from %s" % url)
+        logging.info("rss - fetch - got result from %s" % url)
         
         if result and result.has_key('bozo_exception'):
             logging.info('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
@@ -277,10 +281,7 @@ sleeptime=30*60, running=0, item={}):
                     return False
 
                 dtt = time.mktime(dt)
-
-
                 if res.updated:
-
                     if dtt > r:
                         tobereturned.append(LazyDict(res))
                         r = dtt
@@ -291,6 +292,7 @@ sleeptime=30*60, running=0, item={}):
             if got and save:
                 self.lastpeek.save()
 
+        logging.debug("rss - %s" % str(tobereturned))
         return tobereturned
 
     def all(self):
@@ -317,7 +319,6 @@ class Rssdict(PlugPersist):
     """ dict of rss entries """
 
     def __init__(self, filename, feedname=None):
-        self.stop = False
         self.sleepsec = 300
         self.feeds = {}
         PlugPersist.__init__(self, filename)
@@ -338,8 +339,8 @@ class Rssdict(PlugPersist):
             else:
                 self.feeds[feedname] = Rssitem(feedname)
 
-        self.itemslists = Pdol('gozerstore' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.itemslists')
-        self.markup = Pdod('gozerstore' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.markup')
+        self.itemslists = Pdol('jsondir' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.itemslists')
+        self.markup = Pdod('jsondir' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + filename + '.markup')
         self.startwatchers()
 
     def save(self, namein=None):
@@ -533,7 +534,7 @@ class Rsswatcher(Rssdict):
                 bot = fleet.byname(botname)
 
                 if not bot:
-                    logging.error("rss - can't find %s bot in fleet" % botname)
+                    logging.debug("rss - can't find %s bot in fleet" % botname)
                     continue
 
                 res2 = result.entries
@@ -670,7 +671,7 @@ class Rsswatcher(Rssdict):
 
         """ loop over result to make a response. """
 
-        result = u"[%s] - " % name 
+        result = u"%s - " % name 
 
         try:
             itemslist = self.itemslists.data[jsonstring([name, channel])]
@@ -680,18 +681,20 @@ class Rsswatcher(Rssdict):
             if rssitem == None:
                 return "no %s rss item" % name
             else:
-                self.itemslists.data[jsonstring([name, channel])] = list(rssitem.data.itemslist)
+                itemslist = self.itemslists.data[jsonstring([name, channel])] = list(rssitem.data.itemslist)
                 self.itemslists.save()
-
+                
         for j in res:
 
             if self.markup.get(jsonstring([name, channel]), 'skipmerge') and 'Merge branch' in j['title']:
                 continue
 
             resultstr = u""
+            logging.debug("rss - using itemslist: %s" % str(itemslist))
 
-            for i in self.itemslists.data[jsonstring([name, channel])]:
+            for i in itemslist:
                 try:
+                    logging.warning("rss - trying %s" % unicode(i))
                     item = getattr(j, i)
 
                     if not item:
@@ -974,14 +977,6 @@ class Rsswatcher(Rssdict):
                 #delete(z.data.url)
                 self.peek(z.data.name, event)
 
-    def periodical(self, *args, **kwargs):
-
-        """ run periodical .. refresh items. """
-
-        for feed in self.data['names']:
-            logging.debug('deleting %s cache entry' % feed)
-            dosync(feed)
-
     def startwatchers(self):
 
         """ start watcher threads """
@@ -1042,7 +1037,6 @@ class Looper(TimedLoop):
 
     def handle(self, *args, **kwargs):
         taskmanager.dispatch('periodical', *args, **kwargs)
-        #watcher.periodical(self, *args, **kwargs)
 
 # the watcher object 
 watcher = Rsswatcher('rss')

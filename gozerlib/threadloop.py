@@ -114,22 +114,27 @@ class TimedLoop(ThreadLoop):
 
     """ threadloop that sleeps x seconds before executing. """
 
-    def __init__(self, name, sleepsec=300, *args, **kwargs):
+    def __init__(self, name, sleepsec=60, *args, **kwargs):
         ThreadLoop.__init__(self, name, *args, **kwargs)
         self.sleepsec = sleepsec
 
     def _loop(self):
-        logging.debug('%s - starting timedloop (%s seconds)' % (self.name, self.sleepsec))
+        logging.info('%s - starting timedloop (%s seconds)' % (self.name, self.sleepsec))
+        self.stopped = False
         self.running = True
 
         while not self.stopped:
             time.sleep(self.sleepsec)
 
             if self.stopped:
+                logging.warn("%s - loop is stopped" % self.name)
                 break
 
-            logging.debug('%s - now running timedloop' % self.name)
-            self.handle()
+            logging.warn('%s - now running timedloop' % self.name)
+            try:
+                self.handle()
+            except Exception, ex:
+                handle_exception()
 
         self.running = False
-        logging.debug('%s - stopping timedloop' % self.name)
+        logging.warn('%s - stopping timedloop' % self.name)

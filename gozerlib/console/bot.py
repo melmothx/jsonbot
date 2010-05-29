@@ -11,6 +11,7 @@ from gozerlib.socklib.utils.generic import waitforqueue
 from gozerlib.errors import NoSuchCommand, NoInput
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
+from gozerlib.utils.generic import strippedtxt
 from gozerlib.utils.exception import handle_exception
 from gozerlib.fleet import fleet
 from event import ConsoleEvent
@@ -25,6 +26,7 @@ import code
 import os
 import readline
 import atexit
+import getpass
 
 ## defines
 
@@ -92,7 +94,8 @@ class ConsoleBot(BotBase):
                 
 
     def say(self, printto, txt, *args, **kwargs):
-        self._raw(txt)
+        if getpass.getuser() == printto:
+            self._raw(strippedtxt(txt))
 
     def _raw(self, txt):
         sys.stdout.write("=> ")
