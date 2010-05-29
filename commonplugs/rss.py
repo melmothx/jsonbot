@@ -494,7 +494,7 @@ class Rsswatcher(Rssdict):
 
         result = feedparser.parse(data)
         url = find_self_url(result.feed.links)
-        logging.warn("rss - insert - %s - %s" % (url, data))
+        logging.debug("rss - insert - %s - %s" % (url, data))
         
         try:
 
@@ -504,7 +504,7 @@ class Rsswatcher(Rssdict):
                 loopover = rssitem.data.watchchannels
                 name = rssitem.data.name
             else:
-                logging.warn("rss - can't find %s item" % url)
+                logging.debug("rss - can't find %s item" % url)
                 return
 
             logging.debug("loopover in %s peek is: %s" % (rssitem.data.name, loopover))
@@ -664,7 +664,7 @@ class Rsswatcher(Rssdict):
             logging.info("rss - no %s rss item available" % name)
             return
 
-        result = u"%s - " % name 
+        result = u"[%s] - " % name 
 
         try:
             itemslist = rssitem.itemslists.data[jsonstring([name, channel])]
@@ -682,7 +682,7 @@ class Rsswatcher(Rssdict):
 
             for i in itemslist:
                 try:
-                    logging.warning("rss - trying %s" % unicode(i))
+                    logging.debug("rss - trying %s" % unicode(i))
                     item = getattr(j, i)
 
                     if not item:

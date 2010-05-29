@@ -114,7 +114,7 @@ class TimedLoop(ThreadLoop):
 
     """ threadloop that sleeps x seconds before executing. """
 
-    def __init__(self, name, sleepsec=60, *args, **kwargs):
+    def __init__(self, name, sleepsec=300, *args, **kwargs):
         ThreadLoop.__init__(self, name, *args, **kwargs)
         self.sleepsec = sleepsec
 
