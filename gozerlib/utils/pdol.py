@@ -30,7 +30,7 @@ class Pdol(Persist):
             return 1
 
     def __setitem__(self, item, what):
-        self.data[item] = [what]
+        self.data[item] = what
         return self
 
     def add(self, item, what):
