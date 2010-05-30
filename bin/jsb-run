@@ -1,2 +1,2 @@
 export PATH="./bin:.:$PATH"
-~/google_appengine/dev_appserver.py -c releases/$1
+~/google_appengine/dev_appserver.py releases/$1

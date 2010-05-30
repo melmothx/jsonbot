@@ -7,41 +7,44 @@
 from gozerlib.utils.trace import calledfrom
 import sys
 
-class NoInput(Exception):
+class JsonBotError(Exception):
     pass
 
-class PropertyIgnored(Exception):
+class NoInput(JsonBotError):
     pass
 
-class BotNotSetInEvent(Exception):
+class PropertyIgnored(JsonBotError):
     pass
 
-class FeedProviderError(Exception):
+class BotNotSetInEvent(JsonBotError):
     pass
 
-class CantSaveConfig(FeedProviderError):
+class FeedProviderError(JsonBotError):
     pass
 
-class NoOwnerSet(FeedProviderError):
+class CantSaveConfig(JsonBotError):
     pass
 
-class NoSuchUser(FeedProviderError):
+class NoOwnerSet(JsonBotError):
     pass
 
-class NoSuchBotType(FeedProviderError):
+class NoSuchUser(JsonBotError):
     pass
 
-class NoSuchWave(FeedProviderError):
+class NoSuchBotType(JsonBotError):
     pass
 
-class NoSuchCommand(FeedProviderError):
+class NoSuchWave(JsonBotError):
     pass
 
-class NoSuchPlugin(FeedProviderError):
+class NoSuchCommand(JsonBotError):
     pass
 
-class NoOwnerSet(FeedProviderError):
+class NoSuchPlugin(JsonBotError):
     pass
 
-class PlugsNotConnected(FeedProviderError):
+class NoOwnerSet(JsonBotError):
+    pass
+
+class PlugsNotConnected(JsonBotError):
     pass

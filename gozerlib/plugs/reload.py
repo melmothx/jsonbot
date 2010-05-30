@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.exception import handle_exception
+from gozerlib.utils.exception import handle_exception, exceptionmsg
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.boot import plugin_packages, savecmndtable, savepluginlist
@@ -36,7 +36,7 @@ def handle_reload(bot, ievent):
             except Exception, ex:
                 if 'No module named' in str(ex):
                     continue
-                errors.append(str(ex))
+                errors.append(exceptionmsg())
 
     if reloaded:
         ievent.reply('reloaded: ', reloaded)

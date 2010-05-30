@@ -25,7 +25,7 @@ class TaskManager(object):
         return True
 
     def unload(self, taskname):
-        logging.debug("tasks - unloading task %s - %s" % (taskname, func))
+        logging.debug("tasks - unloading task %s" % taskname)
         try:
             del self.handlers[taskname]
             del self.plugins[taskname]
