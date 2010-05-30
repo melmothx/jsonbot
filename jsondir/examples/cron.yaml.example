@@ -3,6 +3,6 @@
 #
 
 cron:
-- description: periodical beat
-  url: /tasks/periodical
+- description: rss beat
+  url: /tasks/rss
   schedule: every 5 minutes

@@ -99,8 +99,12 @@ copyover(source, release + os.sep + 'simplejson')
 homedir = os.path.expanduser("~")
 try:
     shutil.move(release + os.sep + 'jsondir' + os.sep + 'config', release + os.sep + 'jsondir' + os.sep + 'config.bck')
+except IOError, ex:
+    print "TAKE NOTE ! no %s dir available" % os.path.join(release, "jsondir", "config")    
+try:
     copyover(homedir + os.sep + 'jsonregs' + os.sep + targetin, release + os.sep + 'jsondir' + os.sep + 'config')
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
+    shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'cron.yaml', release + os.sep + 'cron.yaml')
 except OSError, ex:
     print "TAKE NOTE ! no %s available .. %s" % (os.path.join(homedir, 'jsonregs', targetin), str(ex))
     try:

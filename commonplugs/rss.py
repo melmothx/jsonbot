@@ -713,7 +713,7 @@ class Rsswatcher(Rssdict):
                     else:
                         resultstr += u"%s - " % item.strip()
 
-                except (KeyError, AttributeError), ex:
+                except (KeyError, AttributeError, TypeError), ex:
                     logging.info('rss - %s - %s' % (name, str(ex)))
                     continue
 
@@ -864,7 +864,7 @@ class Rsswatcher(Rssdict):
         for name in self.data['names']:
             z = self.byname(name)
 
-            if not z.data.running:
+            if not z or not z.data.running:
                 continue
 
             if jsonstring([botname, channel]) in z.data.watchchannels or [botname, channel] in z.data.watchchannels:
@@ -986,7 +986,7 @@ class Rsswatcher(Rssdict):
         if not jsonstring([botname, target]) in rssitem.data.watchchannels and not [botname, target] in rssitem.data.watchchannels:
             rssitem.data.watchchannels.append([botname, target])
 
-        rssitem.lastpeek.data[target] = time.localtime()
+        rssitem.lastpeek.data[target] = time.mktime(time.localtime())
         rssitem.itemslists[jsonstring([name, target])] = ['title', 'link']
         rssitem.markup.set(jsonstring([name, target]), 'tinyurl', 1)
         rssitem.data.running = 1
@@ -1076,6 +1076,7 @@ def pollerpeek(bot, event):
 #callbacks.add('POLLER', pollerpeek)
 
 def init():
+    taskmanager.add('rss', doperiodical)
     try:
         from google.appengine.ext.deferred import defer
     except ImportError:
@@ -1083,6 +1084,7 @@ def init():
         looper.start()
 
 def shutdown():
+    taskmanager.unload('rss', doperiodical)
     looper.stop()
 
 def size():
@@ -1974,16 +1976,11 @@ def handle_rssfeeds(bot, ievent):
     except IndexError:
         channel = ievent.channel
 
-    try:
-        result = watcher.getfeeds(bot.name, channel)
-
-        if result:
-            ievent.reply("feeds running in %s: " % channel, result)
-        else:
-            ievent.reply('%s has no feeds running' % channel)
-
-    except Exception, ex:
-        ievent.reply("ERROR: %s" % str(ex))
+    result = watcher.getfeeds(bot.name, channel)
+    if result:
+        ievent.reply("feeds running in %s: " % channel, result)
+    else:
+        ievent.reply('%s has no feeds running' % channel)
 
 cmnds.add('rss-feeds', handle_rssfeeds, ['USER', 'RSS'])
 examples.add('rss-feeds', 'rss-feeds <name> .. show what feeds are running \

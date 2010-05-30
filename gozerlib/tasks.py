@@ -19,10 +19,19 @@ class TaskManager(object):
         self.plugins = {}
 
     def add(self, taskname, func):
-        logging.debug("added task %s - %s" % (taskname, func))
+        logging.debug("tasks - added task %s - %s" % (taskname, func))
         self.handlers[taskname] = func
         self.plugins[taskname] = calledfrom(sys._getframe())
         return True
+
+    def unload(self, taskname):
+        logging.debug("tasks - unloading task %s - %s" % (taskname, func))
+        try:
+            del self.handlers[taskname]
+            del self.plugins[taskname]
+            return True
+        except KeyError: 
+            return False
 
     def dispatch(self, taskname, *args, **kwargs):
 	

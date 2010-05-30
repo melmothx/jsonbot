@@ -27,8 +27,8 @@ import logging
 
 ## vars
 
-periodicals =  []
-mountpoints = ['periodical', ]
+periodicals =  ['commonplugs.rss', ]
+mountpoints = ['rss', ]
 
 ##
 
@@ -51,7 +51,7 @@ class TaskHandler(webapp.RequestHandler):
         if path.endswith('/'):
             path = path[:-1]
 
-        taskname = path.split('/')[-1]
+        taskname = path.split('/')[-1].strip()
         logging.debug("using taskname: %s" % taskname)
 
         inputdict = {}
@@ -77,7 +77,7 @@ class TaskHandler(webapp.RequestHandler):
         if path.endswith('/'):
             path = path[:-1]
 
-        taskname = path.split('/')[-1]
+        taskname = path.split('/')[-1].strip()
         logging.debug("using taskname: %s taken from %s" % (taskname, path))
 
         if not taskname:
