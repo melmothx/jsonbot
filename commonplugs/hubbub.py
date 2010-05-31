@@ -263,9 +263,9 @@ class HubbubWatcher(PlugPersist):
                 if not bot and type == 'wave' and 'wave' in botname:
                     bot = fleet.makewavebot(botname)
                 if not bot and type:
-                    bot = fleet.makebot(type=type)
+                    bot = fleet.makebot(type, botname)
                 if not bot:
-                    bot = fleet.makebot('xmpp')
+                    bot = fleet.makebot('xmpp', botname)
             except NoSuchBotType, ex:
                 logging.warn("hubbub - %s" % str(ex))
                 return
