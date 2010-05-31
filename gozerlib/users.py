@@ -118,7 +118,12 @@ class Users(Persist):
             if user:
                 return user
         except KeyError:
-            return 
+            try:
+                user = self.byname(self.data.names[userhost])
+                if user:
+                    return user
+            except KeyError:
+                return 
 
     ### Check functions
     def exist(self, name):
@@ -191,11 +196,14 @@ class Users(Persist):
     def getname(self, userhost):
         """ get name of user belonging to <userhost> """
         try:
-            return self.data.names[userhost]
-        except:
-            user = self.getuser(userhost)
-            if user:
-                return user.data.name
+            return self.data.names[stripped(userhost)]
+        except KeyError:
+            try:
+                return self.data.names[userhost]
+            except KeyError:
+                user = self.getuser(userhost)
+                if user:
+                    return user.data.name
 
     def gethosts(self, userhost):
         """ return the userhosts of the user associated with the specified userhost """
