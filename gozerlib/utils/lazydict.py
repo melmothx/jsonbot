@@ -47,8 +47,9 @@ def dumpelement(element, ignore=[], prev={}):
             try:
                 prop = getattr(element, name)
             except AttributeError:
+                logging.debug("lazydict - no %s element" % name)
                 continue
-            if not prop:
+            if prop == None:
                 continue
             if checkignore(prop, ignore):
                 newer[name] = str(type(prop))
