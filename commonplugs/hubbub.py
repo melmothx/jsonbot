@@ -260,7 +260,7 @@ class HubbubWatcher(PlugPersist):
             name = item.data.name
             try:
                 bot = fleet.byname(botname)
-                if not bot and type == 'wave' and 'wave' in botname:
+                if not bot and type == 'wave':
                     bot = fleet.makewavebot(botname)
                 if not bot and type:
                     bot = fleet.makebot(type, botname)
@@ -555,14 +555,18 @@ class HubbubWatcher(PlugPersist):
         item.save()
         watcher.watch(name)
         logging.debug("putting feedname %s in target: %s" % (name, target)) 
-        if type == "wave":
-            chan = Wave(target)
-        else:
-            chan = ChannelBase(target)
+        #if type == "wave":
+        #    chan = Wave(target)
+        #else:
+        #    chan = ChannelBase(target)
 
-        if not name in chan.data.feeds:
-            chan.data.feeds.append(name)
-        chan.save()
+        #logging.debug("hubbub - using chan: %s" % chan.data.dump())
+
+        #if not name in chan.data.feeds:
+        #    logging.debug('hubbub - adding %s feed to feeds' % name) 
+        #    chan.data.feeds.append(name)
+
+        #chan.save()
 
         logging.debug("hubbub - started %s feed in %s channel" % (name, channel))
         return True
@@ -756,17 +760,21 @@ def handle_hubbubstart(bot, ievent):
     for name in feeds:
         if watcher.start(bot.name, bot.type, name, ievent.channel):
             started.append(name)
+            if name not in ievent.chan.data.feeds:
+                ievent.chan.data.feeds.append(name)
+                ievent.chan.save()
         else:
             cantstart.append(name)
 
     if bot.type == "wave":
-        wave = Wave(ievent.channel)
+        wave = ievent.chan
         if wave and wave.data:
             logging.debug("feed running in %s: %s" % (ievent.title, wave.data.feeds))
-            try:
-                ievent.set_title("JSONBOT - %s - #%s" % (' - '.join(wave.data.feeds), str(wave.data.nrcloned)))
-            except Exception, ex:
-                handle_exception()
+            if wave.data.loud:
+                try:
+                    ievent.set_title("JSONBOT - %s - #%s" % (' - '.join(wave.data.feeds), str(wave.data.nrcloned)))
+                except Exception, ex:
+                    handle_exception()
     if started:
         ievent.reply('started: ', started)
     else:
@@ -790,6 +798,9 @@ def handle_hubbubstop(bot, ievent):
     for name in feeds:
         if watcher.stop(bot.name, bot.type, name, ievent.channel):
             stopped.append(name)
+            if name in ievent.chan.data.feeds:
+                ievent.chan.data.feeds.remove(name)
+                ievent.chan.save()
         else:
             cantstop.append(name)
 
@@ -815,6 +826,9 @@ def handle_hubbubstopall(bot, ievent):
     if feeds:
         for feed in feeds:
             if watcher.stop(bot.name, feed, target):
+                if name in ievent.chan.data.feeds:
+                    ievent.chan.data.feeds.remove(name)
+                    ievent.chan.save()
                 stopped.append(feed)
 
         ievent.reply('stopped feeds: ', stopped)
@@ -1323,6 +1337,9 @@ def handle_hubbubregister(bot, ievent):
         if item:
             if not name in watcher.getfeeds(ievent.channel):
                 watcher.start(bot.name, bot.type, name, target)
+                if name not in ievent.chan.data.feeds:
+                    ievent.chan.data.feeds.append(name)
+                    ievent.chan.save()
                 ievent.reply('started %s feed. entries will show up when the feed is updated.' % name)
                 if bot.type == "wave":
                     wave = Wave(ievent.waveid)
