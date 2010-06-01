@@ -1278,6 +1278,9 @@ def handle_rssstart(bot, ievent):
 
     for name in feeds:
         watcher.start(bot.name, bot.type, name, ievent.channel)
+        if name not in ievent.chan.data.feeds:
+            ievent.chan.data.feeds.append(name)
+            ievent.chan.save()
         started.append(name)
 
     ievent.reply('started: ', started)
@@ -1317,6 +1320,9 @@ def handle_rssstop(bot, ievent):
             return
 
     rssitem.save()
+    if name in ievent.chan.data.feeds:
+        ievent.chan.data.feeds.remove(name)
+        ievent.chan.save()
     ievent.reply('%s stopped' % name)
 
 cmnds.add('rss-stop', handle_rssstop, ['RSS', 'USER'])
@@ -1340,6 +1346,9 @@ def handle_rssstopall(bot, ievent):
         for feed in feeds:
 
             if watcher.stop(bot.name, feed, target):
+                if name in ievent.chan.data.feeds:
+                    ievent.chan.data.feeds.remove(name)
+                    ievent.chan.save()
                 stopped.append(feed)
 
         ievent.reply('stopped feeds: ', stopped)
