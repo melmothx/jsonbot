@@ -13,7 +13,7 @@ import logging
 
 ## define
 
-datadir = 'jsondir'
+datadir = 'gozerdata'
 
 ## functions
 
