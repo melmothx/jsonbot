@@ -1,5 +1,5 @@
 recursive-include gaeupload *
-recursive-include jsondir/examples
-recursive-include jsondir/myplugs *
+recursive-include gozerdata/examples *
+recursive-include gozerdata/myplugs *
 recursive-include tests *
 recursive-include simplejson *

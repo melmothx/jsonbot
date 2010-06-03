@@ -23,9 +23,9 @@ sys.path.insert(0, os.getcwd() + os.sep + '..')
 
 try:
     import waveapi
-    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'jsondir.myplugs', 'waveplugs']
+    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs']
 except ImportError:
-    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'jsondir.myplugs', 'waveplugs', 'socketplugs']
+    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs', 'socketplugs']
 
 default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.outputcache']
 

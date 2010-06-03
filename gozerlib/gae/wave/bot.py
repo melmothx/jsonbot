@@ -33,7 +33,7 @@ from waveapi import appengine_robot_runner
 from django.utils import simplejson
 from google.appengine.api import urlfetch
 
-import jsondir.config.credentials as credentials
+import gozerdata.config.credentials as credentials
 import google
 import waveapi
 
