@@ -54,7 +54,7 @@ class Pgp(object):
     re_pubkey = re.compile('^\[GNUPG:\] NO_PUBKEY ([0-9A-F]+)', re.I | re.M)
 
     def __init__(self):
-        self.homedir = os.path.join('jsondir', 'config', 'pgp')
+        self.homedir = os.path.join('gozerdata', 'config', 'pgp')
         if not os.path.exists(self.homedir):
             logging.debug('creating directory %s' % self.homedir)
             os.mkdir(self.homedir)
@@ -344,8 +344,8 @@ class Installer(object):
         pre-configured `installsites`.
         '''
         # check if logs dir exists if not create it
-        if not os.path.isdir('jsondir' + os.sep + 'myplugs'):
-            os.mkdir('jsondir' + os.sep + 'myplugs')
+        if not os.path.isdir('gozerdata' + os.sep + 'myplugs'):
+            os.mkdir('gozerdata' + os.sep + 'myplugs')
             
         errors = [] 
         if plugname.endswith('.py'):
@@ -422,7 +422,7 @@ class Installer(object):
         directory, and what its original name was.
         '''
         oldtype = None
-        oldname = os.path.join('jsondir', 'myplugs', plugname)
+        oldname = os.path.join('gozerdata', 'myplugs', plugname)
         newname = self.BACKUP_PATTERN % oldname
         if os.path.isfile('%s.py' % oldname):
             newname = self.BACKUP_PATTERN % '%s.py' % oldname
@@ -442,7 +442,7 @@ class Installer(object):
         '''
         Restore a plugin with `plugname` from `oldname` with type `oldtype`.
         '''
-        newname = os.path.join('jsondir', 'myplugs', plugname)
+        newname = os.path.join('gozerdata', 'myplugs', plugname)
         if oldtype == 'dir':
             # remove partial 'new' data
             if os.path.isdir(newname):
@@ -458,7 +458,7 @@ class Installer(object):
     def save_tar(self, plugname, plugdata):
         oldtype, oldname = self.backup(plugname)
         try:
-            if not tarextract(plugname, str(plugdata), 'jsondir' + os.sep + 'myplugs'): # because it is an istr
+            if not tarextract(plugname, str(plugdata), 'gozerdata' + os.sep + 'myplugs'): # because it is an istr
                 raise InstallerException('%s.tar had no (valid) files to extract' % (plugname))
         except InstallerException:
             raise
@@ -469,7 +469,7 @@ class Installer(object):
     def save_py(self, plugname, plugdata):
         oldtype, oldname = self.backup(plugname)
         try:
-            plugfile = open(os.path.join('jsondir', 'myplugs', '%s.py' % plugname), 'w')
+            plugfile = open(os.path.join('gozerdata', 'myplugs', '%s.py' % plugname), 'w')
             plugfile.write(plugdata)
             plugfile.close()
         except InstallerException:
@@ -573,5 +573,5 @@ print getversion('INSTALLPLUG')
 setloglevel('warning')
 os.chdir(botdir)
 installplug(opts.args)
-shutil.copyfile("commonplugs" + os.sep + "__init__.py", os.path.join("jsondir", "myplugs", "__init__.py"))
+shutil.copyfile("commonplugs" + os.sep + "__init__.py", os.path.join("gozerdata", "myplugs", "__init__.py"))
 boot(force=True)

@@ -33,6 +33,8 @@ from gozerlib.fleet import fleet
 from gozerlib.threadloop import TimedLoop
 from gozerlib.threads import start_new_thread
 from gozerlib.errors import NoSuchBotType
+from gozerlib.datadir import datadir
+
 import gozerlib.contrib.feedparser as feedparser
 
 ## google imports
@@ -139,12 +141,11 @@ class Rssitem(Persist):
 
     """ item that contains rss data """
 
-
     def __init__(self, name="nonameset", url="", owner="noownerset", itemslist=['title', 'link'], watchchannels=[], \
 sleeptime=30*60, running=0):
 
         if True:
-            filebase = 'jsondir' + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
+            filebase = datadir + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
             Persist.__init__(self, filebase + '-core')
 
             if not self.data:

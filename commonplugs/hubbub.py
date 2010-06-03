@@ -53,7 +53,7 @@ def subscribe(url):
 
     headers = {}
 
-    import jsondir.config.credentials as credentials
+    import gozerdata.config.credentials as credentials
     
     if credentials.HUB_CREDENTIALS:
       auth_string = "Basic " + base64.b64encode("%s:%s" % tuple(credentials.HUB_CREDENTIALS))
@@ -105,7 +105,7 @@ class HubbubItem(Persist):
 
 
     def __init__(self, name, url="", owner="", itemslist=['title', 'link'], watchchannels=[], running=1):
-        filebase = 'jsondir' + os.sep + 'plugs' + os.sep + 'waveplugs.hubbub' + os.sep + name
+        filebase = gozerdata + os.sep + 'plugs' + os.sep + 'waveplugs.hubbub' + os.sep + name
         Persist.__init__(self, filebase + os.sep + name + '.core')
 
         if not self.data:
