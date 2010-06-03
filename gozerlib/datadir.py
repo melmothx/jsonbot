@@ -6,6 +6,7 @@
 
 ## basic imports
 
+import pkg_resources
 import re
 import os
 import shutil
@@ -25,10 +26,12 @@ def makedirs(ddir=None):
 
     if not os.path.isdir(ddir):
         os.mkdir(ddir)
-    shutil.copyfile(os.path.join("commonplugs", "__init__.py"), os.path.join(ddir, "__init__.py"))
+    source = pkg_resources.resource_filename('commonplugs', '')
+    shutil.copyfile(source + os.sep + "__init__.py", ddir + os.sep + '__init__.py')
     if not os.path.isdir(ddir + os.sep + 'myplugs'):
         os.mkdir(ddir + os.sep + 'myplugs')
-    shutil.copyfile(os.path.join("commonplugs", "__init__.py"), os.path.join(ddir, "myplugs", "__init__.py"))
+    source = pkg_resources.resource_filename('commonplugs', '')
+    shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
     if not os.path.isdir(ddir + '/config/'):
         os.mkdir(ddir + '/config/')
     if not os.path.isdir(ddir + '/users/'):
