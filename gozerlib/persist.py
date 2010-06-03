@@ -1,4 +1,4 @@
-# gozerlib/persist/persist.py
+# gozerlib/persist.py
 #
 #
 
