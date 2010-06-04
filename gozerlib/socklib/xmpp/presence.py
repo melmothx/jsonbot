@@ -24,8 +24,11 @@ class Presence(XMLDict):
 
     def __init__(self, nodedict={}):
         XMLDict.__init__(self, nodedict)
-        self.element = 'presence'
-        self.type = 'presence'
+        self.element = "presence"
+        self.jabber = True
+        self.cmnd = "PRESENCE"
+        self.cbtype = "PRESENCE"
+        self.bottype = "xmpp"
 
     def toirc(self):
         """ set ircevent compatible attributes """
