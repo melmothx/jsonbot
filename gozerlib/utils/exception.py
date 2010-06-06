@@ -37,7 +37,7 @@ def exceptionmsg():
             if i in ['gaeupload', 'jsonbot']:
                 break
             mod.append(i)
-            if i in ['gozerlib', 'waveapi', 'google']:
+            if i in ['gozerlib', 'waveapi', 'google', 'gozerdata']:
                 break
 
         ownname = '.'.join(mod[::-1])
