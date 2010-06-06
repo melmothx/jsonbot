@@ -29,7 +29,7 @@ class ConsoleEvent(EventBase):
         if self.checkqueues(result):
              return
         resp = self.makeresponse(txt, result, dot)
-        logging.info(u"console - out - %s - %s" % (self.userhost, unicode(resp)))
+        logging.info("console - out - %s - %s" % (self.userhost, str(resp)))
         self.bot._raw(resp)
         self.result.append(resp)  
         self.outqueue.put_nowait(resp)
@@ -37,7 +37,7 @@ class ConsoleEvent(EventBase):
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
-        self.console.push(u"=> " + txt)
+        self.console.push(u"=> " + unicode(txt))
 
     def parse(self, bot, input, console, *args, **kwargs):
         """ overload this. """
