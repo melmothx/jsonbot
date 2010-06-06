@@ -20,7 +20,16 @@ sys.path.insert(0, os.getcwd())
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import gethighest, dosed
+from gozerlib.utils.generic import gethighest, dosed, getversion
+
+## options
+
+from optparse import OptionParser
+parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+parser.add_option('-b', '--backup', action='store_true', default=False, dest='backup', help="remove backup dir")
+opts, args = parser.parse_args()
+opts.args = args
+
 
 if len(sys.argv) > 1:
      if not os.path.isdir('releases'):
@@ -116,3 +125,10 @@ except OSError, ex:
 
 if os.path.isdir('docs'):
     copyover('docs', release + os.sep + 'docs')
+
+
+if not opts.backup:
+    print "REMOVING BACKUP"
+    shutil.rmtree(backup)
+else:
+    print "CREATED BACKUP %s" % backup

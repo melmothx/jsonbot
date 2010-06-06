@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.eventbase import EventBase
-from gozerlib.utils.generic import splittxt
+from gozerlib.utils.generic import splittxt, fromenc
 from gozerlib.utils.xmpp import stripped
 
 ## gaelib imports
@@ -40,7 +40,7 @@ class WebEvent(EventBase):
             input = request.get('QUERY_STRING')
         self.isweb = True
         self.origtxt = input.strip()
-        self.txt = input
+        self.txt = fromenc(input)
         self.usercmnd = self.txt and self.txt.split()[0]
         self.groupchat = False
         self.response = response
@@ -70,14 +70,13 @@ class WebEvent(EventBase):
         logging.warn(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 
-    def _raw(self, txt, end=""):
+    def _raw(self, txt, end=u""):
         """ 
             put txt onto the reponse object .. adding end string if provided. 
             output is NOT escaped.
 
         """
-        txt = unicode(txt)
-        logging.info(u'web - out - %s - %s' % (self.userhost, txt))
+        logging.info('web - out - %s - %s' % (self.userhost, str(txt)))
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
@@ -92,7 +91,7 @@ class WebEvent(EventBase):
         else:
             self._raw(start + txt + end)
 
-    def reply(self, txt, resultlist=[], event=None, origin="", dot=", ", raw=False, *args, **kwargs):
+    def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):
         """ send reply to the web user. """
         if self.checkqueues(resultlist):
             return

@@ -156,7 +156,7 @@ class WaveEvent(EventBase):
         """ append to new blip, or one if already created. use annotations if provided. """
         if not self.target and self.blip:
             self.target = self.blip.reply()
-        self.result.append(unicode(item))
+        self.result.append(item)
         try:
             self.target.append(item)
         except Exception, ex:
@@ -183,7 +183,7 @@ class WaveEvent(EventBase):
             self.roottarget = self.rootblip.reply()
 
         self.roottarget.append(item)
-        self.result.append(unicode(item))
+        self.result.append(item)
 
         if self.chan:
             self.chan.data.seenblips += 1
@@ -194,7 +194,7 @@ class WaveEvent(EventBase):
     def appendtopper(self, item):
         """ top post. """
         self.rootblip.append(item)
-        self.result.append(unicode(item))
+        self.result.append(item)
 
         if self.chan:
             self.chan.data.seenblips += 1
@@ -212,7 +212,7 @@ class WaveEvent(EventBase):
         if not outtxt:
             return
 
-        self.result.append(unicode(outtxt))
+        self.result.append(outtxt)
         (res1, res2) = self.less(outtxt)
         self.write(res1)
         if res2:
@@ -228,7 +228,7 @@ class WaveEvent(EventBase):
         if not outtxt:
             return
 
-        self.result.append(unicode(outtxt))
+        self.result.append(outtxt)
         (res1, res2) = self.less(outtxt)
         self.write_root(res1)
         if res2:
@@ -236,7 +236,7 @@ class WaveEvent(EventBase):
 
     def write(self, outtxt, end="\n"):
         """ write outtxt to the server. """
-        logging.warn(u"wave - out - %s - %s" %  (self.userhost, unicode(outtxt)))
+        logging.warn("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
         try:
             annotations = []
             for url in re.findall(findurl, outtxt):
@@ -259,7 +259,7 @@ class WaveEvent(EventBase):
 
     def write_root(self, outtxt, end="\n", root=None):
         """ write to the root of a wave. """
-        logging.warn(u"wave - out - %s - %s" %  (self.userhost, unicode(outtxt)))
+        logging.warn("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
         self.append_root(outtxt + end)
         self.replied = True
         self.bot.outmonitor(self.origin, self.channel, outtxt, self)

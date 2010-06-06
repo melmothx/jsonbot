@@ -21,7 +21,7 @@ from less import Less
 from boot import boot
 from utils.locking import lockdec
 from exit import globalshutdown
-from utils.generic import splittxt
+from utils.generic import splittxt, toenc, fromenc
 from utils.trace import whichmodule
 from fleet import fleet
 
@@ -313,7 +313,7 @@ class BotBase(LazyDict):
         if self.state:
             self.state.save()
 
-    def makeresponse(self, txt, result=[], dot=u", ", *args, **kwargs):
+    def makeresponse(self, txt, result=[], dot=", ", *args, **kwargs):
         """ create a response from a string and result list. """
         res = []
         # check if there are list in list
@@ -323,12 +323,12 @@ class BotBase(LazyDict):
                 try:
                     res.append(dot.join(i))
                 except TypeError:
-                    res.extend(unicode(i))
+                    res.extend(i)
             else:   
-                res.append(unicode(i))
+                res.append(i)
 
         if txt: 
-            return txt + dot.join(res)   
+            return fromenc(txt) + dot.join(res)   
         elif result:
             return dot.join(res)
         return ""   
