@@ -645,11 +645,13 @@ class SXMPPBot(XMLStream, BotBase):
             message = Message({'to': printto, 'txt': txt, 'type': 'groupchat'})
         else:
             message = Message({'to': printto, 'txt': txt})
-        if origin:
+        if origin and '@' in origin:
             message.fromm = origin
+        else:
+            message.fromm = self.jid
 
         self.send(message)
-        if origin:
+        if origin and '@' in origin:
             self.outmonitor(origin, printto, txt, event)
         else:
             self.outmonitor(self.jid, printto, txt, event)

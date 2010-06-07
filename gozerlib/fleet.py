@@ -81,7 +81,9 @@ class Fleet(Persist):
     def getfirstjabber(self):
         """ return the first jabber bot of the fleet. """
         for bot in self.bots:
-            if bot.type == 'xmpp' or bot.type == 'jabber' or bot.type == 'sxmpp':
+            if bot.type == 'xmpp' or bot.type == 'jabber': 
+               return bot
+            elif bot.type == 'sxmpp':
                return bot
         
     def size(self):

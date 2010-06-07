@@ -191,6 +191,10 @@ class BotBase(LazyDict):
         print txt
         return self
 
+    def out(self, printto, txt, event, origin, groupchat):
+        pass
+
+
     def say(self, channel, txt, result=[], event=None, *args, **kwargs):
         self._raw(self.makeresponse(txt, result))
         return self
