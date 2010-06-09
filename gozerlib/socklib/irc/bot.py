@@ -306,8 +306,6 @@ class IRCBot(Irc):
 
     def save(self):
         """ saves channels and state. """
-        if self.channels:
-            self.channels.save()
         Irc.save(self)
 
     def stop(self):
@@ -573,8 +571,7 @@ class IRCBot(Irc):
             chan = ievent.channel
             # channel mode change has 2 arguments
             self.getchannelmode(chan)
-            if self.channels:
-                self.channels.set(chan, 'mode', ievent.arguments[1])    
+            ievent.chan.mode = ievent.arguments[1]
 
     def handle_311(self, ievent):
 
@@ -617,7 +614,8 @@ class IRCBot(Irc):
 
         """ handle mode request responses. """
 
-        self.channels.set(ievent.channel, 'mode', ievent.arguments[2])
+        ievent.chan.mode = ievent.arguments[2]
+        #self.channels.set(ievent.channel, 'mode', ievent.arguments[2])
 
     def handle_invite(self, ievent):
 

@@ -292,6 +292,10 @@ class BotBase(LazyDict):
         """ do a server reconnect. """
         pass
 
+    def invite(self, *args, **kwargs):
+        """ invite another user/bot. """
+        pass
+
     def donick(self, nick, *args, **kwargs):
         """ do a nick change. """
         pass

@@ -30,7 +30,11 @@ case.
 
 # $Id: xmlstream.py,v 1.45 2004/02/03 16:33:37 snakeru Exp $
 
-import time, sys, re, socket
+import time
+import sys
+import re
+import socket
+import logging
 from base64 import encodestring
 import xml.parsers.expat
 
@@ -44,6 +48,9 @@ BLOCK_SIZE  = 1024     ## Number of bytes to get at at time via socket
 
 def XMLescape(txt):
     "Escape XML entities"
+    #logging.debug("XMLescape - incoming - %s" % txt)
+    if not txt:
+        return txt
     txt = txt.replace("&", "&amp;")
     txt = txt.replace("<", "&lt;")
     txt = txt.replace(">", "&gt;")
@@ -51,6 +58,8 @@ def XMLescape(txt):
 
 def XMLunescape(txt):
     "Unescape XML entities"
+    if not txt:
+        return txt
     txt = txt.replace("&gt;", ">")
     txt = txt.replace("&lt;", "<")
     txt = txt.replace("&amp;", "&")

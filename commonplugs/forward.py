@@ -44,12 +44,14 @@ def forwardoutpre(bot, event):
 def forwardoutcb(bot, event):
     if not event.channel in forward.data.channels:
         return
-    container = Container(bot.jid, event.orig, 'forward')
+    e = cpy(event)
+    e.isremote = True
+    container = Container(bot.jid, e.dump(), 'forward')
     outbot = fleet.getfirstjabber()
     if outbot:
         for jid in forward.data.outs:
             logging.warn("forward - sending to %s" % jid)
-            outbot.out(jid, dumps(container), event, bot.jid, False)
+            outbot.out(jid, container.toxml(), event, bot.jid, False)
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
@@ -66,7 +68,10 @@ def forwardincb(bot, event):
     container = LazyDict(loads(eventin))
     remoteevent = cpy(event)
     bot = fleet.makebot(container.type, "incoming-%s" % container.type)
-    bot.remotein(container.payload)
+    event = loads(container.payload)
+    event.isremote = True
+    event.ttl = 1
+    bot.doevent(event)
 
 callbacks.add('MESSAGE', forwardincb, forwardinpre)
 
@@ -109,7 +114,7 @@ examples.add("forward-allow" , "allow an JID to forward to us", "forward-allow j
 def handle_forwardlist(bot, event):
     event.reply(forward.data.channels[event.channel])
 
-cmnds.add("forward-list", handle_forwardallow, 'OPER')
+cmnds.add("forward-list", handle_forwardlist, 'OPER')
 examples.add("forward-list" , "list all forwards of a channel", "forward-list")
 
 def handle_forward(bot, event):
@@ -125,3 +130,20 @@ def handle_forward(bot, event):
 
 cmnds.add("forward", handle_forward, 'OPER')
 examples.add("forward" , "forward a channel to provided JIDS", "forward jsoncloud@appspot.com")
+
+def handle_forwardstop(bot, event):
+    if not event.args:
+        event.missing("<JID>")
+        return
+
+    try:
+        del forward.data.channels[event.channel]
+        for jid in event.args:
+            del forward.data.outs[jid]
+        forward.save()
+        event.done()
+    except KeyError, ex:
+         event.reply("we are not forwarding %s" %  str(ex))
+
+cmnds.add("forward-stop", handle_forwardstop, 'OPER')
+examples.add("forward-stop" , "stop forwarding a channel to provided JIDS", "forward-stop jsoncloud@appspot.com")

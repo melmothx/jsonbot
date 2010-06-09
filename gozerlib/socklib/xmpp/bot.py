@@ -570,6 +570,12 @@ class SXMPPBot(XMLStream, BotBase):
 
         return False
 
+    def invite(self, jid):
+        pres = Presence({'to': jid, 'type': 'subscribe'})
+        self.send(pres)
+        time.sleep(2)
+        pres = Presence({'to': jid})
+        self.send(pres)
 
     def send(self, what):
         """ send stanza to the server. """
@@ -602,7 +608,7 @@ class SXMPPBot(XMLStream, BotBase):
             handle_exception()
             return
             #raise Exception("can't convert %s to xml .. bot.send()" % what) 
-
+        logging.warn("sxmpp - to outqueue - %s" % xml)
         self.outqueue.put(toenc(xml))
            
     def sendnocb(self, what):

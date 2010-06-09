@@ -14,7 +14,7 @@ def ncaptest(bot, ievent):
     """ test if user is splitted. """
     if '*.' in ievent.txt or bot.server in ievent.txt:
         return 0
-    if bot.orignick.lower() == ievent.nick.lower():
+    if bot.nick.lower() == ievent.nick.lower():
         return 1
     return 0
 

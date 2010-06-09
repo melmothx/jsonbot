@@ -121,7 +121,7 @@ class XMLDict(EventBase):
         gotsub = False
         if res.has_key('txt'):
             if res['txt']:
-                main += u"<body>%s</body>" % XMLescape(res['txt'])
+                main += u"<body>%s</body>" % XMLescape(unicode(res['txt']))
                 gotsub = True
 
         for subelement in subelements[elem]:
@@ -326,7 +326,7 @@ class XMLStream(NodeBuilder):
                 logging.error('sxmpp - invalid stanza: %s' % what)
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
-                logging.debug("_raw: %s" % what)
+                logging.info("_raw: %s" % what)
                 try:
                     self.connection.send(what + u"\r\n")
                 except AttributeError:
