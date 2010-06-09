@@ -67,11 +67,11 @@ def forwardincb(bot, event):
     
     container = LazyDict(loads(eventin))
     remoteevent = cpy(event)
-    bot = fleet.makebot(container.type, "incoming-%s" % container.type)
+    inbot = fleet.makebot(container.type, "incoming-%s" % container.type)
     event = loads(container.payload)
     event.isremote = True
     event.ttl = 1
-    bot.doevent(event)
+    callbacks.check(inbot, event)
 
 callbacks.add('MESSAGE', forwardincb, forwardinpre)
 
