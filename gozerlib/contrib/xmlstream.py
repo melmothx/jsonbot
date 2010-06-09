@@ -37,6 +37,8 @@ import socket
 import logging
 from base64 import encodestring
 import xml.parsers.expat
+import cgi
+from xml.sax.saxutils import unescape
 
 __version__ = VERSION = "0.5"
 
@@ -51,19 +53,19 @@ def XMLescape(txt):
     #logging.debug("XMLescape - incoming - %s" % txt)
     if not txt:
         return txt
-    txt = txt.replace("&", "&amp;")
-    txt = txt.replace("<", "&lt;")
-    txt = txt.replace(">", "&gt;")
-    return txt
+    #txt = txt.replace("&", "&amp;")
+    #txt = txt.replace("<", "&lt;")
+    #txt = txt.replace(">", "&gt;")
+    return cgi.escape(txt)
 
 def XMLunescape(txt):
     "Unescape XML entities"
     if not txt:
         return txt
-    txt = txt.replace("&gt;", ">")
-    txt = txt.replace("&lt;", "<")
-    txt = txt.replace("&amp;", "&")
-    return txt
+    #txt = txt.replace("&gt;", ">")
+    #txt = txt.replace("&lt;", "<")
+    #txt = txt.replace("&amp;", "&")
+    return unescape(txt)
 
 class error(object):
     def __init__(self, value):

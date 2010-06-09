@@ -39,6 +39,7 @@ import time
 import copy
 import logging
 import thread
+import cgi
 
 ## locks
 
@@ -256,7 +257,7 @@ class XMLStream(NodeBuilder):
         self._dispatch_depth = 2
 
         try:
-            self._parser.Parse(XMLunescape(data.strip()))
+            self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
                 logging.error("sxmpp.core - data is not well formed: %s" % str(data))
@@ -276,7 +277,7 @@ class XMLStream(NodeBuilder):
 
         while not self.stopped:
             try:
-                data = self.connection.read()
+                data = fromenc(self.connection.read(), self.encoding)
                 if data == "":
                     logging.error('remote disconnected')
                     self.error = 'disconnected'

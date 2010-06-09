@@ -110,7 +110,7 @@ class LazyDict(dict):
 
     def load(self, input):
         """ load from json string. """  
-        instr = unescape(input)
+        instr = input
         try:   
             temp = loads(instr)
         except ValueError:

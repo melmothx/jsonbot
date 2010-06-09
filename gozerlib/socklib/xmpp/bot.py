@@ -609,7 +609,7 @@ class SXMPPBot(XMLStream, BotBase):
             return
             #raise Exception("can't convert %s to xml .. bot.send()" % what) 
         logging.warn("sxmpp - to outqueue - %s" % xml)
-        self.outqueue.put(toenc(xml))
+        self.outqueue.put(xml)
            
     def sendnocb(self, what):
         """ send to server without calling callbacks/monitors. """
@@ -617,7 +617,7 @@ class SXMPPBot(XMLStream, BotBase):
             xml = what.toxml()
         except AttributeError:
             xml = what
-        self.outqueue.put(toenc(xml))
+        self.outqueue.put(xml)
 
     def action(self, printto, txt, fromm=None, groupchat=True):
         """ send an action. """
@@ -674,7 +674,7 @@ class SXMPPBot(XMLStream, BotBase):
         else:
             message.fromm = self.me
 
-        self.send(message)
+        self.sendnocb(message)
 
     def userwait(self, msg, txt):
         """ wait for user response. """
