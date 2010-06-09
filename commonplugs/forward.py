@@ -51,7 +51,7 @@ def forwardoutcb(bot, event):
     if outbot:
         for jid in forward.data.outs:
             logging.warn("forward - sending to %s" % jid)
-            outbot.out(jid, container, event, bot.jid, False)
+            outbot.saynocb(jid, e.dump())
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
@@ -65,12 +65,12 @@ def forwardincb(bot, event):
     if not forward_allow(event.channel):
         return
     
-    container = LazyDict(loads(event))
-    remoteevent = cpy(event)
+    container = LazyDict(loads(event.txt))
+    remoteevent = RemoteEvent()
     inbot = fleet.makebot(container.type, "incoming-%s" % container.type)
-    event = loads(container.payload)
-    event.ttl = 1
-    callbacks.check(inbot, event)
+    remoteevent.load(container.payload)
+    remotevent.isremote = True
+    callbacks.check(inbot, remoteevent)
 
 callbacks.add('MESSAGE', forwardincb, forwardinpre)
 

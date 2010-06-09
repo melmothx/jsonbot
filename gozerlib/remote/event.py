@@ -9,6 +9,7 @@
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt
 from gozerlib.utils.lazydict import LazyDict
+from gozerlib.socklib.xmpp.core import XMLDict
 
 ## simplejson imports
 
@@ -40,7 +41,7 @@ def getid(container):
 
 ## classes
 
-class Container(LazyDict):
+class Container(XMLDict):
 
     def __init__(self, origin, payload, type="event"):
         LazyDict.__init__(self)

@@ -664,7 +664,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def saynocb(self, printto, txt, fromm=None, groupchat=True, speed=5, type="normal", how=''):
         """ say txt to channel/JID without calling callbacks/monitors. """
-        txt = jabberstrip(txt)
+        #txt = jabberstrip(txt)
         if printto in self.state['joinedchannels'] and groupchat:
             message = Message({'to': printto, 'body': txt, 'type': 'groupchat'})
         else:
