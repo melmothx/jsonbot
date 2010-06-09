@@ -21,7 +21,7 @@ from gozerlib.utils.trace import whichmodule
 
 ## dom imports
 
-from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape
+from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape, XMLunescape
 
 ## for exceptions
 
@@ -256,7 +256,7 @@ class XMLStream(NodeBuilder):
         self._dispatch_depth = 2
 
         try:
-            self._parser.Parse(data.strip())
+            self._parser.Parse(XMLunescape(data.strip()))
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
                 logging.error("sxmpp.core - data is not well formed: %s" % str(data))
