@@ -194,6 +194,9 @@ class Callbacks(object):
 
         """
         try:
+            if event.ttl <= 0:
+                logging.debug("callback - event ttl is 0 .. ignoring")
+                return
             if event.status == "done":
                 logging.debug("callback - event is done .. ignoring")
                 return

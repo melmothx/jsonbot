@@ -46,7 +46,7 @@ class Container(LazyDict):
         LazyDict.__init__(self)
         self.createtime = time.time()
         self.origin = origin
-        self.payload = unicode(payload)
+        self.payload = payload
         self.type = str(type)
 
     def makeid(self):

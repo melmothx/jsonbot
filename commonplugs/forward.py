@@ -39,23 +39,23 @@ cpy = copy.deepcopy
 
 def forwardoutpre(bot, event):
     if not event.isremote:
-        return True
+        if event.channel in forward.data.channels and not event.isremote:
+            return True
 
 def forwardoutcb(bot, event):
-    if not event.channel in forward.data.channels:
-        return
     e = cpy(event)
     e.isremote = True
+    e.ttl = 1
     container = Container(bot.jid, e.dump(), 'forward')
     outbot = fleet.getfirstjabber()
     if outbot:
         for jid in forward.data.outs:
             logging.warn("forward - sending to %s" % jid)
-            outbot.out(jid, container.dump(), event, bot.jid, False)
+            outbot.out(jid, container, event, bot.jid, False)
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
-callbacks.add('ALL', forwardoutcb, forwardoutpre)
+callbacks.add('PRIVMSG', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
     if event.isremote:
@@ -65,11 +65,10 @@ def forwardincb(bot, event):
     if not forward_allow(event.channel):
         return
     
-    container = LazyDict(loads(eventin))
+    container = LazyDict(loads(event))
     remoteevent = cpy(event)
     inbot = fleet.makebot(container.type, "incoming-%s" % container.type)
     event = loads(container.payload)
-    event.isremote = True
     event.ttl = 1
     callbacks.check(inbot, event)
 

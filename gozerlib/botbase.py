@@ -127,6 +127,14 @@ class BotBase(LazyDict):
         if event.status == "done":
             logging.debug("botbase - event is done .. ignoring")
             return
+        if event.ttl <= 0:
+            logging.debug("botbase - ttl of event is 0 .. ignoring")
+            return
+        if event.isremote:
+            logging.debug("botbase - ttl of event is 0 .. ignoring")
+            return
+
+
         self.status = "dispatch"
         self.curevent = event
         go = False
@@ -166,8 +174,9 @@ class BotBase(LazyDict):
                 result =  []
         except NoSuchCommand:
             event.reply("no such command: %s" % event.usercmnd)
+            event.leave()
             result = []
-
+             
         if event.chan:
             if event.chan.data.lastedited > starttime:
                 event.chan.save()
