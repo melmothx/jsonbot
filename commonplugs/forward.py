@@ -51,7 +51,7 @@ def forwardoutcb(bot, event):
     if outbot:
         for jid in forward.data.outs:
             logging.warn("forward - sending to %s" % jid)
-            outbot.out(jid, container.toxml(), event, bot.jid, False)
+            outbot.out(jid, container.dump(), event, bot.jid, False)
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
