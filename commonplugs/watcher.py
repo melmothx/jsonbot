@@ -145,10 +145,10 @@ def watchcallback(bot, event):
 
             watchbot.saynocb(channel, txt)
 
-callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
-callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
-callbacks.add('OUTPUT', watchcallback, prewatchcallback)
-callbacks.add('MESSAGE', watchcallback, prewatchcallback)
+gn_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
+gn_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
+gn_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
+gn_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
 
 ## commands
 

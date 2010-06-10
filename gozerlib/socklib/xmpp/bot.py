@@ -14,7 +14,7 @@ from gozerlib.utils.pdod import Pdod
 from gozerlib.utils.dol import Dol
 from gozerlib.datadir import datadir
 from gozerlib.less import Less
-from gozerlib.callbacks import callbacks
+from gozerlib.callbacks import callbacks, gn_callbacks
 from gozerlib.threads import start_new_thread
 from gozerlib.fleet import fleet
 from gozerlib.botbase import BotBase
@@ -378,6 +378,12 @@ class SXMPPBot(XMLStream, BotBase):
         """ message handler. """
         m = Message(data)
         m.parse(self)
+        if m.txt.startswith("{"):
+            logging.warn("event is remote")
+            m.isremote = True
+            gn_callbacks.check(self, m)
+            return
+
         #logging.debug("sxmpp - handling message - %s" % str(m))
 
         if data.type == 'groupchat' and data.subject:

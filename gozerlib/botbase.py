@@ -130,9 +130,6 @@ class BotBase(LazyDict):
         if event.ttl <= 0:
             logging.debug("botbase - ttl of event is 0 .. ignoring")
             return
-        if event.isremote:
-            logging.debug("botbase - ttl of event is 0 .. ignoring")
-            return
 
 
         self.status = "dispatch"
@@ -158,6 +155,7 @@ class BotBase(LazyDict):
             logging.debug('doing REMOTE callback')
             gn_callbacks.check(self, e)
             e.leave()
+            return
         else:
             callbacks.check(self, e)
             e.leave()
@@ -173,7 +171,7 @@ class BotBase(LazyDict):
             else:
                 result =  []
         except NoSuchCommand:
-            event.reply("no such command: %s" % event.usercmnd)
+            logging.warn("no such command: %s" % event.usercmnd)
             event.leave()
             result = []
              

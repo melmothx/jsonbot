@@ -7,8 +7,8 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks
-from gozerlib.remote.event import Container
+from gozerlib.callbacks import callbacks, gn_callbacks
+from gozerlib.remote.event import Container, RemoteEvent
 from gozerlib.persist import PlugPersist
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.examples import examples
@@ -62,17 +62,17 @@ def forwardinpre(bot, event):
         return True
 
 def forwardincb(bot, event):
-    if not forward_allow(event.channel):
-        return
+    #if not forward_allow(event.channel):
+    #    return
     
-    container = LazyDict(loads(event.txt))
+    #container = LazyDict(loads(event.txt))
+    #inbot = fleet.makebot('xmpp', "incoming-xmpp")
     remoteevent = RemoteEvent()
-    inbot = fleet.makebot(container.type, "incoming-%s" % container.type)
-    remoteevent.load(container.payload)
-    remotevent.isremote = True
-    callbacks.check(inbot, remoteevent)
+    remoteevent.load(event.txt)
+    remoteevent.isremote = True
+    gn_callbacks.check(bot, remoteevent)
 
-callbacks.add('MESSAGE', forwardincb, forwardinpre)
+gn_callbacks.add('MESSAGE', forwardincb, forwardinpre)
 
 ## commands
 

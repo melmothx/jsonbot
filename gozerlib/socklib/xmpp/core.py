@@ -257,10 +257,11 @@ class XMLStream(NodeBuilder):
         self._dispatch_depth = 2
 
         try:
+            #data = XMLunescape(data.strip())
             self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
-                logging.error("sxmpp.core - data is not well formed: %s" % str(data))
+                logging.error("sxmpp.core - data is not well formed: %s" % data)
                 return {}
             logging.debug("sxmpp.core - ALERT: %s - %s" % (str(ex), data))
         except Exception, ex:
@@ -277,22 +278,29 @@ class XMLStream(NodeBuilder):
 
         while not self.stopped:
             try:
-                data = fromenc(self.connection.read(), self.encoding)
+                data = self.connection.read()
+                #logging.debug("sxmpp - incoming - %s" % data)
                 if data == "":
                     logging.error('remote disconnected')
                     self.error = 'disconnected'
                     self.disconnectHandler(Exception('remote %s disconnected' %  self.host))
                     break
                 if data:
-                    self.buffer += data
+                    if not data.endswith(">"):
+                        self.buffer += data
+                        continue
+                    else:
+                        self.buffer += data
                 else:
                     continue
 
                 self.buffer = self.buffer.strip()
 
-                logging.debug('sxmpp.core - trying: %s' % self.buffer)
+                #logging.debug('sxmpp.core - trying: %s' % self.buffer)
+                #buf = XMLunescape(self.buffer)
+                buf = self.buffer
                 if not self.loop_one(self.buffer):
-                    logging.error('failed to process %s' % self.buffer)
+                    logging.error('failed to process %s' % buf)
                 else:
                     self.buffer = ""
 
@@ -488,7 +496,6 @@ class XMLStream(NodeBuilder):
             self.final[parentname] = data
             if parentname == 'body':
                 self.final['txt'] = data
-
         attrs = dom.getAttributes()
         ns = dom.getNamespace()
         res[parentname] = LazyDict()
