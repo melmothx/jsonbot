@@ -12,7 +12,7 @@
 from gozerlib.eventbase import EventBase
 from gozerlib.datadir import datadir
 from gozerlib.config import Config
-from gozerlib.utils.generic import toenc, jabberstrip
+from gozerlib.utils.generic import toenc, jabberstrip, fromenc
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
@@ -122,7 +122,7 @@ class XMLDict(EventBase):
         gotsub = False
         if res.has_key('txt'):
             if res['txt']:
-                main += u"<body>%s</body>" % XMLescape(unicode(res['txt']))
+                main += u"<body>%s</body>" % XMLescape(res['txt'])
                 gotsub = True
 
         for subelement in subelements[elem]:
@@ -322,7 +322,8 @@ class XMLStream(NodeBuilder):
                 logging.debug('sxmpp - bot is stopped .. not sending')
                 return
 
-            what = toenc(jabberstrip(stanza), self.encoding)
+            #what = jabberstrip(stanza)
+            what = stanza
             if not what.endswith('>') or not what.startswith('<'):
                 logging.error('sxmpp - invalid stanza: %s' % what)
                 return

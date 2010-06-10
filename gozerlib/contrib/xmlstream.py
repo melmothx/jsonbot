@@ -56,6 +56,7 @@ def XMLescape(txt):
     #txt = txt.replace("&", "&amp;")
     #txt = txt.replace("<", "&lt;")
     #txt = txt.replace(">", "&gt;")
+    txt = txt.replace('"', "'")
     return cgi.escape(txt)
 
 def XMLunescape(txt):
