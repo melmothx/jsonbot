@@ -159,6 +159,7 @@ class BotBase(LazyDict):
         else:
             callbacks.check(self, e)
             e.leave()
+
         if event.isremote and not event.remotecmnd:
             logging.debug("event is remote but not command .. not dispatching")
             return

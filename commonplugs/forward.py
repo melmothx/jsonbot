@@ -56,6 +56,11 @@ def forwardoutcb(bot, event):
         logging.debug("forward - no xmpp bot found in fleet")
 
 callbacks.add('PRIVMSG', forwardoutcb, forwardoutpre)
+callbacks.add('JOIN', forwardoutcb, forwardoutpre)
+callbacks.add('PART', forwardoutcb, forwardoutpre)
+callbacks.add('QUIT', forwardoutcb, forwardoutpre)
+callbacks.add('NICK', forwardoutcb, forwardoutpre)
+callbacks.add('OUPUT', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
     if event.isremote:

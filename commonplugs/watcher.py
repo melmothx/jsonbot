@@ -147,6 +147,10 @@ def watchcallback(bot, event):
 
 gn_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
 gn_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
+gn_callbacks.add('JOIN', watchcallback, prewatchcallback)
+gn_callbacks.add('PART', watchcallback, prewatchcallback)
+gn_callbacks.add('QUIT', watchcallback, prewatchcallback)
+gn_callbacks.add('NICK', watchcallback, prewatchcallback)
 gn_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
 gn_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
 

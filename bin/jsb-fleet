@@ -36,6 +36,9 @@ if True:
     parser.add_option('-l', '--loglevel', type='string', default=False,
 dest='loglevel', 
                   help="loglevel of the bot .. the lower the more it logs")
+    parser.add_option('-r', '--resume', type='string', default=False, dest='doresume',
+                  metavar='PATH',
+                  help="resume the bot from the folder specified")
 
     opts, args = parser.parse_args()
     opts.args = args
@@ -50,5 +53,9 @@ from gozerlib.plugins import plugs
 plugs.loadall()
 
 fleet.loadall()
+if opts.doresume:
+    fleet.resume(opts.doresume)
+    os.unlink(opts.doresume) # bye
+
 fleet.startall()
 mainloop()
