@@ -186,6 +186,8 @@ class Wave(ChannelBase):
         self.data.lastedited = time.time()
         self.save()
 
+    saynocb = say
+
     def toppost(self, bot, txt):
         """ toppost some txt to the wave. """
         if self.data.json_data:

@@ -244,6 +244,7 @@ class XMLStream(NodeBuilder):
         except KeyError:
             return None
 
+    @inlocked
     def loop_one(self, data):
         """
             handle one xml stanza.
@@ -270,7 +271,6 @@ class XMLStream(NodeBuilder):
 
         return self.finish(data)
 
-    @inlocked
     def _doprocess(self):
         """ proces all incoming data. """
         logging.debug('starting readloop')
@@ -291,18 +291,10 @@ class XMLStream(NodeBuilder):
                         continue
                     else:
                         self.buffer += data
-                else:
-                    continue
 
-                self.buffer = self.buffer.strip()
-
-                #logging.debug('sxmpp.core - trying: %s' % self.buffer)
-                #buf = XMLunescape(self.buffer)
-                buf = self.buffer
-                if not self.loop_one(self.buffer):
-                    logging.error('failed to process %s' % buf)
-                else:
-                    self.buffer = ""
+                    #logging.debug('sxmpp.core - trying: %s' % self.buffer)
+                    #buf = XMLunescape(self.buffer)
+                    self.loop_one(self.buffer)
 
             except xml.parsers.expat.ExpatError, ex:
                 logging.error("sxmpp.core - %s: %s" % (str(ex), data))
@@ -465,6 +457,7 @@ class XMLStream(NodeBuilder):
         self.reslist = []
         self.tags = []
         self.subelements = []
+        self.buffer = ""
         return result
 
     def unknown_starttag(self,  tag, attrs):
