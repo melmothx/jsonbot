@@ -207,6 +207,10 @@ class BotBase(LazyDict):
         self._raw(self.makeresponse(txt, result))
         return self
 
+    def saynocb(self, channel, txt, result=[], event=None, *args, **kwargs):
+        self._raw(self.makeresponse(txt, result))
+        return self
+
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """
         e = EventBase()

@@ -38,3 +38,11 @@ class XMPPBot(BotBase):
 
         logging.warn('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
+
+    def saynocb(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False, extend=0):
+        """ output xmpp message. """
+        if type(jids) == types.StringType:
+            jids = [jids, ]
+
+        logging.warn('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
+        xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)

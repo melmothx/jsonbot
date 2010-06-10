@@ -1059,7 +1059,7 @@ def doperiodical(*args, **kwargs):
 
     """ rss periodical function. """
     names = watcher.data['names']
-    logging.debug("rss - periodical - luanching %s" % ", ".join(names))
+    logging.debug("rss - periodical - launching %s" % ", ".join(names))
     for feed in names:
         time.sleep(0.2)
         try:

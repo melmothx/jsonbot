@@ -178,7 +178,8 @@ class Callbacks(object):
  
         # check for CMND callbacks
         if self.cbs.has_key(type):
-            for cb in self.cbs[type]:
+            target = self.cbs[type]
+            for cb in target:
                 self.callback(cb, bot, event)
 
         return self
@@ -194,9 +195,9 @@ class Callbacks(object):
 
         """
         try:
-            if event.ttl <= 0:
-                logging.debug("callback - event ttl is 0 .. ignoring")
-                return
+            #if event.ttl <= 0:
+            #    logging.debug("callback - event ttl is 0 .. ignoring")
+            #    return
             if event.status == "done":
                 logging.debug("callback - event is done .. ignoring")
                 return
@@ -214,7 +215,7 @@ class Callbacks(object):
 
             # launch the callback
             cb.func(bot, event)
-            event.leave()
+            #event.leave()
             return True
 
         except Exception, ex:

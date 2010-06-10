@@ -38,9 +38,8 @@ cpy = copy.deepcopy
 ## callbacks
 
 def forwardoutpre(bot, event):
-    if not event.isremote:
-        if event.channel in forward.data.channels and not event.isremote:
-            return True
+    if event.channel in forward.data.channels and not event.isremote:
+        return True
 
 def forwardoutcb(bot, event):
     e = cpy(event)
@@ -48,6 +47,9 @@ def forwardoutcb(bot, event):
     e.ttl = 1
     container = Container(bot.jid, e.dump(), 'forward')
     outbot = fleet.getfirstjabber()
+    if not outbot and bot.isgae:
+        from gozerlib.gae.xmpp.bot import XMPPBot
+        outbot = XMPPBot()
     if outbot:
         for jid in forward.data.outs:
             logging.warn("forward - sending to %s" % jid)
@@ -55,6 +57,9 @@ def forwardoutcb(bot, event):
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
+callbacks.add('BLIP_SUBMITTED', forwardoutcb, forwardoutpre)
+callbacks.add('MESSAGE', forwardoutcb, forwardoutpre)
+callbacks.add('PRESENCE', forwardoutcb, forwardoutpre)
 callbacks.add('PRIVMSG', forwardoutcb, forwardoutpre)
 callbacks.add('JOIN', forwardoutcb, forwardoutpre)
 callbacks.add('PART', forwardoutcb, forwardoutpre)
