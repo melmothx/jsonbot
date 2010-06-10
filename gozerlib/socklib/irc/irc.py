@@ -461,6 +461,9 @@ realname))
         else:
             self.outmonitor(self.name, printto, what, event)
 
+    def saynocb(self, printto, what, event=None, how='msg', origin="", extend=0):
+        self.out(printto, what, how)
+
     def out(self, printto, what, how):
         # check for socket
 
