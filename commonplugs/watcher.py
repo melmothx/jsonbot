@@ -134,10 +134,10 @@ def watchcallback(bot, event):
         if watchbot:
             orig = event.nick or event.userhost
 
-            if event.cbtype == "OUTPUT":
-                txt = u"[%s] %s" % (event.ruserhost, event.txt)
-            else:
-                txt = u"[%s] %s" % (orig, event.txt)
+            #if event.cbtype == "OUTPUT":
+            #    txt = u"[%s] %s" % (event.nick or event.userhost, event.txt)
+            #else:
+            txt = u"[%s] %s" % (orig, event.txt)
 
             logging.debug("watcher - %s - %s" % (type, txt))
             if txt.find('] [') > 1:

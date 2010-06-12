@@ -155,6 +155,8 @@ class WaveBot(BotBase, robot.Robot):
         else:
             logging.warn("we are not joined into %s" % waveid)
 
+    saynocb = say
+
     def toppost(self, waveid, txt):
         """
             output to the root id. 

@@ -43,6 +43,7 @@ class WaveEvent(EventBase):
         self.rootreply = None
         self.gadget = None
         self.result = []
+        self.cbtype = "BLIP_SUBMITTED"
 
     def parse(self, bot, event, wavelet):
         """ parse properties and context into a WaveEvent. """
@@ -67,8 +68,8 @@ class WaveEvent(EventBase):
         else:
             #logging.debug("blip: %s" % dir(self.blip))
             self.contributors = self.blip._contributors
-            self.origtxt = self.blip._content
-            self.txt = self.origtxt.strip()
+            self.origtxt = self.blip._content.strip()
+            self.txt = self.origtxt
             if len(self.txt) >= 2:
                 self.usercmnd = self.txt[1:].split()[0]
             else:
@@ -104,7 +105,7 @@ class WaveEvent(EventBase):
         self.channel = self.waveid
         self.origin = self.channel
         self.title = self.root._title or self.channel 
-        self.cmnd = self.cbtype = event.type
+        self.cmnd = self.cbtype = str(event.type)
         
         if 'sandbox' in self.waveid:
             self.url = "https://wave.google.com/a/wavesandbox.com/#restored:wave:%s" % self.waveid.replace('w+','w%252B')
@@ -124,7 +125,7 @@ class WaveEvent(EventBase):
         """ send raw text to the server .. creates a blip on the root. """
         logging.info(u"wave - out - %s - %s" % (self.userhost, outtxt))
         self.append(outtxt)
-        self.bot.outmonitor(self.origin, self.channel, outtxt)
+        #self.bot.outmonitor(self.origin, self.channel, outtxt)
 
     def toppost(self, txt):
         """ append to rootblip. """
@@ -256,6 +257,28 @@ class WaveEvent(EventBase):
 
         self.replied = True
         self.bot.outmonitor(self.origin, self.channel, outtxt, self)
+
+    def writenocb(self, outtxt, end="\n"):
+        """ write outtxt to the server. """
+        logging.warn("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
+        try:
+            annotations = []
+            for url in re.findall(findurl, outtxt):
+                start = outtxt.find(url.strip())
+                if start:
+                    annotations.append((start+1, start+len(url), "link/manual", url.strip()))
+        except Exception, ex:
+            handle_exception()
+
+        if self.gadgetnr:
+            if self.cmndhow == 'output':
+                self.blip.at(self.gadgetnr).update_element({'text': outtxt, 'target': self.userhost})
+            elif self.cmndhow == 'status':
+                self.blip.at(self.gadgetnr).update_element({'status': outtxt, 'target': self.userhost})
+        else:
+            self.append(outtxt + end , annotations)
+
+        self.replied = True
 
     def write_root(self, outtxt, end="\n", root=None):
         """ write to the root of a wave. """

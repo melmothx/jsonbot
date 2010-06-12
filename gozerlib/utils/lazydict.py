@@ -35,12 +35,20 @@ def checkignore(element, ignore):
     return False
 
 def dumpelement(element, ignore=[], prev={}):
-    try:
-        newer = dict(prev) or {}
-    except:
+    #logging.warn("lazydict - in - %s - %s" % (str(element), str(prev)))
+    if element == prev:
         return str(type(prev))
     try:
-        for name in element:
+        newer = dict(prev) or {}
+    except (ValueError, KeyError):
+        if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+            return prev
+        else:
+            return str(type(prev))
+        newer = {}
+
+    for name in element:
+        try:
             if checkignore(name, ignore):
                 newer[name] = "jsonbot-ignored"
                 continue
@@ -52,21 +60,36 @@ def dumpelement(element, ignore=[], prev={}):
             if prop == None:
                 continue
             if checkignore(prop, ignore):
+                logging.warn("lazydict - dump - ignoring %s" % name)
                 newer[name] = str(type(prop))
-                continue
-                
+                continue                
             try:
-                dumps(prop)
-                newer[name] = prop
+                 if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+                     newer[name] = prop
+                 else:
+                     dumps(prop)
+                     newer[name] = prop
+                #     newer[name] = str(type(prop))
+                #dumps(prop)
+                #newer[name] = prop
             except (TypeError, AttributeError):
+                newer[name] = str(type(prop))
                 try:
-                    newer[name] = dumpelement(prop, ignore, prop)
+                    if prop != element:
+                        newer[name] = dumpelement(prop, ignore, prop)
+                    else:
+                        return str(type(prop))
                 except (TypeError, AttributeError):
-                    newer[name] = str(type(prop))
+                    if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+                        newer[name] =  prop
+                    else:
+                        newer[name] = str(type(prop))
 
-
-    except TypeError:
-        return str(type(element))
+        except TypeError:
+            #if type(element) in [types.DictType, types.ListType, types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+            #    newer[name] = element
+            #else:
+            newer[name] = str(type(element))
 
     for name in newer.keys():
         if checkignore(name, ignore):

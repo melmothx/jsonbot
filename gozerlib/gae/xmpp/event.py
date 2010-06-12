@@ -71,7 +71,7 @@ class XMPPEvent(EventBase):
         self.channel = stripped(self.userhost)
         self.chan = ChannelBase(self.channel)
         self.origin = self.channel
-        input = self.body or self.stanza
+        input = self.body.strip() or self.stanza.strip()
         self.origtxt = input
 
         if len(input) > 1 and input[0] == '!':

@@ -182,6 +182,7 @@ class Callbacks(object):
             for cb in target:
                 self.callback(cb, bot, event)
 
+        event.leave()
         return self
 
     def callback(self, cb, bot, event):

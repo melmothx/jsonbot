@@ -226,6 +226,7 @@ class BotBase(LazyDict):
         e.txt = txt
         e.cbtype = 'OUTPUT'
         e.iscmnd = False
+        e.ttl = 1
         callbacks.check(self, e)
         e.leave()
 

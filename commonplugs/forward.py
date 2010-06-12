@@ -8,6 +8,7 @@
 
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks, gn_callbacks
+from gozerlib.eventbase import EventBase
 from gozerlib.remote.event import Container, RemoteEvent
 from gozerlib.persist import PlugPersist
 from gozerlib.utils.lazydict import LazyDict
@@ -77,7 +78,7 @@ def forwardincb(bot, event):
     
     #container = LazyDict(loads(event.txt))
     #inbot = fleet.makebot('xmpp', "incoming-xmpp")
-    remoteevent = RemoteEvent()
+    remoteevent = EventBase()
     remoteevent.load(event.txt)
     remoteevent.isremote = True
     remoteevent.printto = event.printto
