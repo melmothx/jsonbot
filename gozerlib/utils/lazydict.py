@@ -22,15 +22,18 @@ import types
 
 ## defines
 
-defaultignore = ['_', 'pass', 'password', 'fsock', 'sock', 'handlers']
+defaultignore = ['pass', 'password', 'fsock', 'sock', 'handlers']
 
 cpy = copy.deepcopy
 
 ## functions
 
 def checkignore(element, ignore):
+    if str(element).startswith('_'):
+        return True
     for item in ignore:
         if item in str(element):
+            #logging.warn("lazydict - ignoring on %s - %s" % (item, str(element)))
             return True
     return False
 
@@ -44,8 +47,8 @@ def dumpelement(element, ignore=[], prev={}):
         if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
             return prev
         else:
+            logging.warn("lazydict - returning prev - type %s" % type(prev))
             return str(type(prev))
-        newer = {}
 
     for name in element:
         try:

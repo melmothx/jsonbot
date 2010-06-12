@@ -39,20 +39,20 @@ cpy = copy.deepcopy
 ## callbacks
 
 def forwardoutpre(bot, event):
-    if event.channel in forward.data.channels and not event.isremote:
+    if event.channel in forward.data.channels and not event.forwarded:
         return True
 
 def forwardoutcb(bot, event):
     e = cpy(event)
     e.isremote = True
-    e.ttl = 1
+    e.forwarded = True
     container = Container(bot.jid, e.dump(), 'forward')
     outbot = fleet.getfirstjabber()
     if not outbot and bot.isgae:
         from gozerlib.gae.xmpp.bot import XMPPBot
         outbot = XMPPBot()
     if outbot:
-        for jid in forward.data.outs:
+        for jid in forward.data.channels[event.channel]:
             logging.warn("forward - sending to %s" % jid)
             outbot.saynocb(jid, e.dump())
     else:
@@ -82,6 +82,7 @@ def forwardincb(bot, event):
     remoteevent.load(event.txt)
     remoteevent.isremote = True
     remoteevent.printto = event.printto
+    remoteevent.forwarded = True
     logging.warn(u"forward - incoming - %s" % unicode(remoteevent))
     gn_callbacks.check(bot, remoteevent)
 
@@ -124,7 +125,10 @@ cmnds.add("forward-allow", handle_forwardallow, 'OPER')
 examples.add("forward-allow" , "allow an JID to forward to us", "forward-allow jsoncloud@appspot.com")
 
 def handle_forwardlist(bot, event):
-    event.reply(forward.data.channels[event.channel])
+    try:
+        event.reply(forward.data.channels[event.channel])
+    except KeyError:
+        event.reply("no forwards for %s" % event.channel)
 
 cmnds.add("forward-list", handle_forwardlist, 'OPER')
 examples.add("forward-list" , "list all forwards of a channel", "forward-list")

@@ -456,10 +456,7 @@ realname))
 
     def say(self, printto, what, event=None, how='msg', origin="", extend=0):
         self.out(printto, what, how)
-        if origin:
-            self.outmonitor(origin, printto, what, event)
-        else:
-            self.outmonitor(self.name, printto, what, event)
+        self.outmonitor(origin or self.nick, printto, what, event)
 
     def saynocb(self, printto, what, event=None, how='msg', origin="", extend=0):
         self.out(printto, what, how)
@@ -476,7 +473,6 @@ realname))
                     return
                 raise
             return
-
         # normal
         if how == 'notice':
             self.notice(printto, what)

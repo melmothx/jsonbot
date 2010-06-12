@@ -105,7 +105,7 @@ class WaveEvent(EventBase):
         self.channel = self.waveid
         self.origin = self.channel
         self.title = self.root._title or self.channel 
-        self.cmnd = self.cbtype = str(event.type)
+        self.cmnd = self.cbtype = event.type
         
         if 'sandbox' in self.waveid:
             self.url = "https://wave.google.com/a/wavesandbox.com/#restored:wave:%s" % self.waveid.replace('w+','w%252B')
