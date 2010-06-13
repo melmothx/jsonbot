@@ -48,6 +48,7 @@ class Message(XMLDict):
         self.cmnd = "MESSAGE"
         self.cbtype = "MESSAGE"
         self.bottype = "xmpp"
+        self.type = "normal"
   
     def __copy__(self):
         return Message(self)

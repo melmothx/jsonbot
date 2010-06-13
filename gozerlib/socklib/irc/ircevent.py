@@ -174,7 +174,6 @@ class Ircevent(EventBase):
             return
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 365+extend)
-        print res1, res2
         target = to or self.printto
         self.bot.out(target, res1, 'msg')
         self.bot.outmonitor(self.userhost, target, res1, self)

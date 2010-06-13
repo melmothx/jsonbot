@@ -84,7 +84,7 @@ def forwardincb(bot, event):
     remoteevent.isremote = True
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
-    logging.warn(u"forward - incoming - %s" % unicode(remoteevent))
+    #logging.warn(u"forward - incoming - %s" % unicode(remoteevent))
     gn_callbacks.check(bot, remoteevent)
 
 gn_callbacks.add('MESSAGE', forwardincb, forwardinpre)

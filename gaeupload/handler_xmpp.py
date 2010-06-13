@@ -82,18 +82,10 @@ class XMPPHandler(webapp.RequestHandler):
 
         event = XMPPEvent().parse(self.request, self.response)
         event.bot = bot
-        remote = None
 
-        #if event.txt.startswith('{') or 'appspotchat.com' in event.to:
-        #    remote = RemoteEvent()
-        #    remote.fromstring(event.txt)
-        #    remote.isremote = True
-        #    remote.remoteout = event.userhost
-        #    remote.bot = RemoteBot()
-        #    remote.title = event.channel
-        #    logging.warn('gozernet - in - %s - %s' % (remote.userhost, remote.txt))
-        #    remote.bot.doevent(remote)
-        #else:
+        if event.txt and event.txt.startswith("{"):
+            event.isremote = True
+
         bot.doevent(event)
 
 application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler), ],

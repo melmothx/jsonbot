@@ -131,6 +131,18 @@ class BotBase(LazyDict):
             logging.debug("botbase - ttl of event is 0 .. ignoring")
             return
 
+        self.status = "callback"
+
+        starttime = time.time()
+        e = cpy(event)
+        if event.isremote:
+            logging.debug('doing REMOTE callback')
+            gn_callbacks.check(self, e)
+            e.leave()
+            return
+        else:
+            callbacks.check(self, e)
+            e.leave()
 
         self.status = "dispatch"
         self.curevent = event
@@ -149,16 +161,6 @@ class BotBase(LazyDict):
                 event.usercmnd = None
             event.makeargs()
             go = True
-        starttime = time.time()
-        e = cpy(event)
-        if event.isremote:
-            logging.debug('doing REMOTE callback')
-            gn_callbacks.check(self, e)
-            e.leave()
-            return
-        else:
-            callbacks.check(self, e)
-            e.leave()
 
         if event.isremote and not event.remotecmnd:
             logging.debug("event is remote but not command .. not dispatching")
