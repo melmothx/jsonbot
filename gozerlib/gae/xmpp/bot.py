@@ -7,6 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.botbase import BotBase
+from gozerlib.socklib.xmpp.presence import Presence
 
 ## google imports
 
@@ -46,3 +47,6 @@ class XMPPBot(BotBase):
 
         logging.warn('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
+
+    def invite(self, jid):
+        xmpp.send_invite(jid)
