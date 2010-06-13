@@ -28,6 +28,7 @@ from gozerlib.utils.url import posturl
 from gozerlib.errors import NoSuchBotType
 from gozerlib.gae.wave.waves import Wave
 from gozerlib.threads import start_new_thread
+from gozerlib.datadir import datadir
 
 ## basic imports
 
@@ -105,7 +106,7 @@ class HubbubItem(Persist):
 
 
     def __init__(self, name, url="", owner="", itemslist=['title', 'link'], watchchannels=[], running=1):
-        filebase = gozerdata + os.sep + 'plugs' + os.sep + 'waveplugs.hubbub' + os.sep + name
+        filebase = datadir + os.sep + 'plugs' + os.sep + 'waveplugs.hubbub' + os.sep + name
         Persist.__init__(self, filebase + os.sep + name + '.core')
 
         if not self.data:
