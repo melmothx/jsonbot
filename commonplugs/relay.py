@@ -88,7 +88,7 @@ def relaycallback(bot, event):
                     if txt.find('] [') != -1:
                         continue
 
-                    outbot.say(target, txt)
+                    outbot.saynocb(target, txt)
                 else:
                     logging.error("can't find %s bot" % type)
 

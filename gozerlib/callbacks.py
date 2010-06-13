@@ -195,6 +195,8 @@ class Callbacks(object):
             :param event: the event that triggered the callback
 
         """
+        #logging.warn("callbacks - registered in %s" % cb.modname)
+        event.calledfrom = cb.modname
         try:
             #if event.ttl <= 0:
             #    logging.debug("callback - event ttl is 0 .. ignoring")

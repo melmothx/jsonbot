@@ -108,6 +108,7 @@ class SXMPPBot(XMLStream, BotBase):
         logging.debug('sxmpp - starting outputloop')
         lastsend = time.time()
         charssend = 0
+        sleeptime = 0
 
         while not self.stopped:
             time.sleep(0.01)
@@ -121,7 +122,7 @@ class SXMPPBot(XMLStream, BotBase):
                     self._raw(what)
                 except Exception, ex:
                     self.error = str(ex)
-                    handle_exception
+                    handle_exception()
                     continue
                 lastsend = time.time()
                 charssend += len(what)
@@ -133,11 +134,11 @@ class SXMPPBot(XMLStream, BotBase):
                         handle_exception()
                         continue
                     lastsend = time.time()
-                    charssend = len(what) 
+                    charssend = len(what)
                     continue
-
-                charssend = 0
-                sleeptime = self.cfg['jabberoutsleep']
+                else:
+                    charssend = 0
+                    sleeptime = self.cfg['jabberoutsleep']
 
                 if not sleeptime:
                     sleeptime = 1
@@ -585,6 +586,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def send(self, what):
         """ send stanza to the server. """
+        #logging.warn("sxmpp - send - called from %s" % whichmodule(2))
         if not what:
             logging.debug("sxmpp - can't send empty message")
             return
@@ -614,11 +616,12 @@ class SXMPPBot(XMLStream, BotBase):
             handle_exception()
             return
             #raise Exception("can't convert %s to xml .. bot.send()" % what) 
-        logging.warn("sxmpp - to outqueue - %s" % xml)
+        #logging.warn("sxmpp - to outqueue - %s" % xml)
         self.outqueue.put(xml)
            
     def sendnocb(self, what):
         """ send to server without calling callbacks/monitors. """
+        #logging.warn("sxmpp - sendnocb - called from %s" % whichmodule(2))
         try:
             xml = what.toxml()
         except AttributeError:

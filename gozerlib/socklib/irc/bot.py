@@ -544,11 +544,12 @@ class IRCBot(Irc):
             if ievent.cmnd == 'JOIN' or ievent.msg:
                 if ievent.nick in self.nicks401:
                     self.nicks401.remove(ievent.nick)
-            i = Ircevent()
-            i.copyin(ievent)
-            i.bot = self
-            i.sock = self.sock
-            callbacks.check(self, i)
+            if ievent.cmnd != "PRIVMSG":
+                i = Ircevent()
+                i.copyin(ievent)
+                i.bot = self
+                i.sock = self.sock
+                callbacks.check(self, i)
         except:
             handle_exception()
  

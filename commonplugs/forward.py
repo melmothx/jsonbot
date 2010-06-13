@@ -44,6 +44,7 @@ def forwardoutpre(bot, event):
 
 def forwardoutcb(bot, event):
     e = cpy(event)
+    logging.warn("forward - cbtype is %s" % event.cbtype)
     e.isremote = True
     e.forwarded = True
     container = Container(bot.jid, e.dump(), 'forward')

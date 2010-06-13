@@ -313,6 +313,7 @@ class XMLStream(NodeBuilder):
 
     def _raw(self, stanza):
         """ output a xml stanza to the socket. """
+        #logging.warn("sxmpp.core - _raw - called from %s" % whichmodule())
         try:
             stanza = stanza.strip()
             if not stanza:
