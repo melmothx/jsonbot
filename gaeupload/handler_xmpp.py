@@ -96,8 +96,7 @@ class XMPPHandler(webapp.RequestHandler):
         #else:
         bot.doevent(event)
 
-application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler),
-                                      ('/_ah/xmpp/message/chat', XMPPHandler)],
+application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler), ],
                                       debug=True)
 
 def main():

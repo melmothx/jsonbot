@@ -354,7 +354,7 @@ class HubbubWatcher(PlugPersist):
                 counter += 1
 
         except Exception, ex:
-            handle_exception(txt=name)
+            handle_exception(txt=url)
 
         return True
 
