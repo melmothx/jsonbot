@@ -419,48 +419,10 @@ class IRCBot(Irc):
         if not cchar:
             cchar = "!"
 
-        # see if cchar matches, if so dispatch
-        ievent.speed = 5
-        if ievent.txt[0] in cchar:
-            ievent.cc = ievent.txt[0]
-            ievent.usercmnd = ievent.txt.split()[0]
-            try:
-                self.doevent(ievent)
-            except NoSuchCommand:
-                ievent.reply("no %s command found" % ievent.usercmnd)
-
-            return
-
-        # see if were adressed, if so dispatch
-        txtlist = ievent.txt.split(':', 1)
-        if txtlist[0]  == self.nick:
-            if len(txtlist) < 2:
-                return
-            ievent.txt = txtlist[1].strip()
-            ievent.usercmnd = ievent.txt.split()[0]
-            ievent.makeargs()
-            try:
-                self.doevent(ievent)
-            except NoSuchCommand:
-                ievent.reply("no %s command found" % ievent.usercmnd)
-            return
-
-        # habbie addressing mode
-        txtlist = ievent.txt.split(',', 1)
-        if txtlist[0] == self.nick:
-            if len(txtlist) < 2:
-                return
-            ievent.txt = txtlist[1].strip()
-            ievent.usercmnd = ievent.txt.split()[0]
-            ievent.makeargs()
-            try:
-                self.doevent(ievent)
-            except NoSuchCommand:
-                ievent.reply("no %s command found" % ievent.usercmnd)
-            return
-
-        # check for PRIVMSG waiting callback
-        self.privwait.check(ievent)
+        self.doevent(ievent)
+        if not ievent.iscmnd:
+            # check for PRIVMSG waiting callback
+            self.privwait.check(ievent)
 
     def handle_join(self, ievent):
 
@@ -549,6 +511,7 @@ class IRCBot(Irc):
                 i.copyin(ievent)
                 i.bot = self
                 i.sock = self.sock
+                ievent.nocb = True
                 callbacks.check(self, i)
         except:
             handle_exception()
