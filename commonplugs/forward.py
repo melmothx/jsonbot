@@ -39,7 +39,7 @@ cpy = copy.deepcopy
 ## callbacks
 
 def forwardoutpre(bot, event):
-    if event.channel in forward.data.channels and not event.forwarded:
+    if event.channel in forward.data.channels and not event.isremote:
         return True
 
 def forwardoutcb(bot, event):
@@ -47,7 +47,6 @@ def forwardoutcb(bot, event):
     logging.warn("forward - cbtype is %s" % event.cbtype)
     e.isremote = True
     e.forwarded = True
-    container = Container(bot.jid, e.dump(), 'forward')
     outbot = fleet.getfirstjabber()
     if not outbot and bot.isgae:
         from gozerlib.gae.xmpp.bot import XMPPBot
@@ -77,14 +76,12 @@ def forwardincb(bot, event):
     #if not forward_allow(event.channel):
     #    return
     
-    #container = LazyDict(loads(event.txt))
-    #inbot = fleet.makebot('xmpp', "incoming-xmpp")
     remoteevent = EventBase()
     remoteevent.load(event.txt)
     remoteevent.isremote = True
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
-    #logging.warn(u"forward - incoming - %s" % unicode(remoteevent))
+    logging.warn(u"forward - incoming - %s" % remoteevent.dump())
     gn_callbacks.check(bot, remoteevent)
 
 gn_callbacks.add('MESSAGE', forwardincb, forwardinpre)

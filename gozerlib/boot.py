@@ -116,10 +116,16 @@ def savecallbacktable():
  
     callbacktable.data = {}
   
-    from gozerlib.callbacks import callbacks
+    from gozerlib.callbacks import callbacks, gn_callbacks
     assert callbacks
 
     for type, cbs in callbacks.cbs.iteritems():
+        for c in cbs:
+            if not callbacktable.data.has_key(type):
+                callbacktable.data[type] = []
+            callbacktable.data[type].append(c.modname)
+
+    for type, cbs in gn_callbacks.cbs.iteritems():
         for c in cbs:
             if not callbacktable.data.has_key(type):
                 callbacktable.data[type] = []
