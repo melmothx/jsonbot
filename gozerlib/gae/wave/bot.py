@@ -81,7 +81,7 @@ class WaveBot(BotBase, robot.Robot):
                 self.cfg['domain'] = self.domain
                 self.cfg.save()
         self.type = 'wave'
-
+        self.nick = name or sname
         robot.Robot.__init__(self, name=sname, image_url=image_url, profile_url=profile_url)
         self.set_verification_token_info(credentials.verification_token[self.domain], credentials.verification_secret[self.domain])
         self.setup_oauth(credentials.Consumer_Key[self.domain], credentials.Consumer_Secret[self.domain],

@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from commands import cmnds
-from callbacks import callbacks
+from callbacks import callbacks, gn_callbacks
 from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
@@ -89,6 +89,11 @@ class Plugins(LazyDict):
 
         try:
             callbacks.unload(modname)
+        except KeyError:
+            return False
+
+        try:
+            gn_callbacks.unload(modname)
         except KeyError:
             return False
 

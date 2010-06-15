@@ -47,7 +47,8 @@ def forwardoutcb(bot, event):
     logging.warn("forward - cbtype is %s" % event.cbtype)
     e.isremote = True
     e.forwarded = True
-    e.nick = bot.nick or bot.name
+    #if not e.nick:
+    #    e.nick = bot.nick or bot.name
     outbot = fleet.getfirstjabber()
     if not outbot and bot.isgae:
         from gozerlib.gae.xmpp.bot import XMPPBot

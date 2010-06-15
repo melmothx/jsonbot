@@ -132,12 +132,14 @@ def watchcallback(bot, event):
         if not watchbot:
             watchbot = fleet.makebot(type, botname)
         if watchbot:
-            orig = event.nick or event.userhost
-
-            if event.cbtype == "OUTPUT":
-                txt = u"[%s] %s" % (bot.nick, event.txt)
+            if not event.nick:
+                orig = event.userhost
             else:
-                txt = u"[%s] %s" % (orig, event.txt)
+                orig = event.nick
+            #if event.cbtype == "OUTPUT":
+            #    txt = u"[%s] %s" % (bot.nick, event.txt)
+            #else:
+            txt = u"[%s] %s" % (orig, event.txt)
 
             logging.debug("watcher - %s - %s" % (type, txt))
             if txt.find('] [') > 1:

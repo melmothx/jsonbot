@@ -240,6 +240,7 @@ class BotBase(LazyDict):
         e.cbtype = 'OUTPUT'
         e.iscmnd = False
         e.ttl = 1
+        e.nick = self.nick or self.botname
         callbacks.check(self, e)
         e.leave()
 
