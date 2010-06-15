@@ -64,7 +64,7 @@ class ConsoleBot(BotBase):
                 input = console.raw_input("> ")
                 event = ConsoleEvent()
                 event.parse(self, input, console)
-                if input.startswith('#'):
+                if False and input.startswith('#'):
                     try:
                         env = {"bot": self, "event": event}
                         env.update(locals())
@@ -87,10 +87,12 @@ class ConsoleBot(BotBase):
             except NoInput:
                 continue
             except (KeyboardInterrupt, EOFError):
-                console.save_history()
-                return
+                break
             except Exception, ex:
                 handle_exception()
+
+        console.save_history()
+        globalshutdown()
                 
 
     def say(self, printto, txt, *args, **kwargs):

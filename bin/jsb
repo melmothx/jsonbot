@@ -85,4 +85,3 @@ elif opts.forward:
     forwardbot.start()
 
 bot.start()
-mainloop()

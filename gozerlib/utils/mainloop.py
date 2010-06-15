@@ -22,9 +22,11 @@ def mainloop():
             time.sleep(0.01)
             mainhandler.handle_one()
         except KeyboardInterrupt:
-            globalshutdown()
-            os._exit(0)
+            break
         except Exception, ex:
             handle_exception()
             globalshutdown()
             os._exit(1)
+
+        globalshutdown()
+        os._exit(0)

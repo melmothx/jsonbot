@@ -69,6 +69,7 @@ callbacks.add('PART', forwardoutcb, forwardoutpre)
 callbacks.add('QUIT', forwardoutcb, forwardoutpre)
 callbacks.add('NICK', forwardoutcb, forwardoutpre)
 callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
+callbacks.add('CONSOLE', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
     if event.isremote:
