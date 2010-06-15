@@ -38,6 +38,7 @@ from gozerlib.boot import boot
 from gozerlib.errors import NoOwnerSet
 from gozerlib.threads import start_new_thread
 from gozerlib.utils.opts import makeconfig, makeopts
+from gozerlib.fleet import fleet
 
 ## basic imports
 
@@ -62,8 +63,9 @@ boot()
 plugs = Plugins()
 plugs.loadall()
 users = Users()
-users.make_owner(getpass.getuser())
-cfg.owner = getpass.getuser() + "@console"
+userid = getpass.getuser() + '@' + cfg.uuid
+users.make_owner(userid)
+cfg.owner = userid
 cfg.type = "console"
 
 try:
@@ -77,8 +79,10 @@ if opts.command:
     result = bot.docmnd(cfg.owner, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
     time.sleep(3)
     os._exit(0)
-else:
-    bot.start()
+elif opts.forward:
+    #fleet.addbot(bot)
+    forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=cfg)
+    forwardbot.start()
 
+bot.start()
 mainloop()
-

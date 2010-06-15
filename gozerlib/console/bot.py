@@ -88,7 +88,7 @@ class ConsoleBot(BotBase):
                 continue
             except (KeyboardInterrupt, EOFError):
                 console.save_history()
-                globalshutdown()
+                return
             except Exception, ex:
                 handle_exception()
                 

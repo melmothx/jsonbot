@@ -32,12 +32,14 @@ def globalshutdown():
         pass
 
     runners_stop()
-    logging.debug('shutting down fleet')
+    logging.warn('shutting down fleet')
     fleet.exit()
-    logging.debug('shutting down plugins')
+    logging.warn('shutting down plugins')
     plugs.exit()
     logging.warn('done')
-    print "bye!"
+    sys.stdin.close()
+    sys.stdout.close()
     os._exit(0)
+    print "ltrs!"
 
 atexit.register(globalshutdown)

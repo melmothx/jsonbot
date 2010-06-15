@@ -23,7 +23,7 @@ def makeopts():
                   help="resume the bot from the folder specified")
     parser.add_option('-u', '--user', type='string', default=False,
 dest='user', 
-                  help="owner of the bot")
+                  help="JID of the bot")
     parser.add_option('-o', '--owner', type='string', default=False,
 dest='owner', 
                   help="owner of the bot")
@@ -33,7 +33,7 @@ dest='server',
     parser.add_option('-c', '--channel', type='string', default=False,
 dest='channel', 
                   help="channel to join")
-    parser.add_option('-l', '--loglevel', type='string', default=False,
+    parser.add_option('-l', '--loglevel', type='string', default="error",
 dest='loglevel', 
                   help="loglevel of the bot .. the lower the more it logs")
     parser.add_option('-p', '--password', type='string', default=False,
@@ -59,6 +59,8 @@ dest='nossl',
                   help="don't use ssl")
     parser.add_option('-x', '--exec', type='string', default="",
 dest='command', help="give a command to execute")
+    parser.add_option('-z', '--forward', action='store_true', default=False,
+dest='forward', help="enable forwarding bot")
 
     opts, args = parser.parse_args()
     opts.args = args
@@ -71,24 +73,20 @@ def makeconfig(opts):
 
     if opts.user:
         cfg.user = opts.user
-
-    if not cfg.user:
-        print "user needs to be set .. see the -u option."
-        os._exit(1)
+    else:
+        cfg.user = "%s@gozerbot.org" % cfg.uuid
 
     if opts.user:
         try:
             cfg.host = opts.user.split('@')[1]
         except ValueError:
             print "user is not in the nick@server format"
-            os._exit(1)
 
     if not cfg.host:
         try:
             cfg.host = cfg.user.split('@')[1]
         except ValueError:
             print "user is not in the nick@server format"
-            os._exit(1)
 
     if opts.password:
         cfg.password = opts.password

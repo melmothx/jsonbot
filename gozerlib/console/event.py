@@ -45,7 +45,7 @@ class ConsoleEvent(EventBase):
             raise NoInput()
         self.bot = bot
         self.console = console
-        self.auth = getpass.getuser()
+        self.auth = getpass.getuser() + '@' + bot.uuid
         self.userhost = self.auth
         self.origin = self.userhost
         self.txt = input
