@@ -48,6 +48,8 @@ eventlocked = lockdec(eventlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
+        if botname:
+            botname = stripname(botname)
         logging.debug("botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()

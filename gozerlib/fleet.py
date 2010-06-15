@@ -46,7 +46,7 @@ class Fleet(Persist):
     """
 
     def __init__(self):
-        Persist.__init__(self, datadir + os.sep + 'fleet' + os.sep + 'fleet.core')
+        Persist.__init__(self, datadir + os.sep + 'fleet' + os.sep + 'fleet.main')
         if not self.data.has_key('names'):
             self.data['names'] = []
         if not self.data.has_key('types'):

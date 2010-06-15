@@ -9,6 +9,7 @@
 from utils.trace import whichmodule
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
+from utils.name import stripname
 from datadir import datadir
 from errors import CantSaveConfig
 
@@ -43,6 +44,8 @@ class Config(LazyDict):
     def __init__(self, filename=None, verbose=False, *args, **kw):
         LazyDict.__init__(self, *args, **kw)
         #self.dir = os.path.abspath(os.path.dirname(os.path.realpath(__file__ + os.sep + '..')))
+        if filename:
+            filename = stripname(filename, os.sep)
         self.filename = filename or 'mainconfig'
         self.dir = datadir + os.sep + 'config'
         self.cfile = self.dir + os.sep + self.filename
@@ -120,6 +123,7 @@ class Config(LazyDict):
         curline = ""
         # read file and set config values to loaded JSON entries
         fname = filename
+        #fname = stripname(filename, os.sep)
         logging.info("config - fromfile - %s" % fname)
         if not os.path.exists(fname):
             return self
@@ -146,6 +150,8 @@ class Config(LazyDict):
         """ save config object to file. """
         if not filename:
             filename = self.cfile
+        else:
+            filename = stripname(filename, os.sep)
 
         try:
             from os import mkdir

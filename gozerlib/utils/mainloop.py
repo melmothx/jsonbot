@@ -28,5 +28,5 @@ def mainloop():
             globalshutdown()
             os._exit(1)
 
-        globalshutdown()
-        os._exit(0)
+    globalshutdown()
+    os._exit(0)

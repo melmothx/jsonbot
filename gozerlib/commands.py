@@ -57,6 +57,7 @@ class Command(LazyDict):
         self.perms = perms
         self.plugin = self.plugname
         self.threaded = threaded
+
 class Commands(LazyDict):
 
     """
