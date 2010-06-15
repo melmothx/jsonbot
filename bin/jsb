@@ -13,23 +13,11 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.utils.generic import getversion
 print getversion('CONSOLE')
 
-## parse options
+## make config from opts
 
-if True:
-    from optparse import OptionParser
-    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
-    parser.add_option('-o', '--owner', type='string', default=False,
-dest='owner', 
-                  help="owner of the bot")
-    parser.add_option('-l', '--loglevel', type='string', default="error",
-dest='loglevel', help="set loglevel")
-    parser.add_option('-c', '--channel', type='string', default="",
-dest='channel', help="channel to operate on")
-    parser.add_option('-x', '--exec', type='string', default="",
-dest='command', help="give a command to execute")
-
-    opts, args = parser.parse_args()
-    opts.args = args
+from gozerlib.utils.opts import makeopts, makeconfig
+opts = makeopts()
+cfg = makeconfig(opts)
 
 ## set loglevel
 
@@ -49,6 +37,7 @@ from gozerlib.users import Users
 from gozerlib.boot import boot
 from gozerlib.errors import NoOwnerSet
 from gozerlib.threads import start_new_thread
+from gozerlib.utils.opts import makeconfig, makeopts
 
 ## basic imports
 
@@ -61,6 +50,11 @@ import readline
 import atexit
 import os
 
+## parse options
+
+opts = makeopts()
+cfg = makeconfig(opts)
+
 ## start the bot
 
 makedirs()
@@ -69,8 +63,8 @@ plugs = Plugins()
 plugs.loadall()
 users = Users()
 users.make_owner(getpass.getuser())
-cfg = Config()
-cfg.owner = getpass.getuser()
+cfg.owner = getpass.getuser() + "@console"
+cfg.type = "console"
 
 try:
     bot = ConsoleBot(cfg, plugs=plugs, users=users)

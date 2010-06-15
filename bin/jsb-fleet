@@ -20,7 +20,7 @@ from gozerlib.boot import boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.fleet import fleet
 from gozerlib.utils.mainloop import mainloop
-
+from gozerlib.utils.opts import makeopts, makeconfig
 import gozerlib
 
 ## basic imports
@@ -30,18 +30,8 @@ import time
 
 ## options parser
 
-if True:
-    from optparse import OptionParser
-    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
-    parser.add_option('-l', '--loglevel', type='string', default=False,
-dest='loglevel', 
-                  help="loglevel of the bot .. the lower the more it logs")
-    parser.add_option('-r', '--resume', type='string', default=False, dest='doresume',
-                  metavar='PATH',
-                  help="resume the bot from the folder specified")
-
-    opts, args = parser.parse_args()
-    opts.args = args
+opts = makeopts()
+cfg = makeconfig(opts)
 
 if opts.loglevel:
     setloglevel(opts.loglevel)
