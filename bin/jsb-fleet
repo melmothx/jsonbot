@@ -45,6 +45,8 @@ dest='loglevel',
 
 if opts.loglevel:
     setloglevel(opts.loglevel)
+else:
+    setloglevel("warning")
 
 makedirs()
 boot()
