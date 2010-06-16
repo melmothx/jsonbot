@@ -11,7 +11,7 @@ from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
 from callbacks import callbacks, gn_callbacks
 from eventbase import EventBase
-from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet
+from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet
 from datadir import datadir
 from commands import Commands
 from config import Config
@@ -51,6 +51,8 @@ class BotBase(LazyDict):
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
         if botname:
             botname = stripname(botname)
+        else:
+            botname = cfg and cfg.botname
         logging.debug("botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()
@@ -61,7 +63,8 @@ class BotBase(LazyDict):
         if botname:
             self.botname = botname
         else:
-            self.botname = "default-%s" % str(type(self)).split('.')[-1][:-2]
+            raise NameNotSet()
+            #self.botname = "default-%s" % str(type(self)).split('.')[-1][:-2]
 
         self.fleetdir = 'fleet' + os.sep + self.botname
 

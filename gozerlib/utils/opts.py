@@ -69,13 +69,13 @@ dest='forward', help="enable forwarding bot")
     opts.args = args
     return opts
 
-def makeconfig(type, opts, name=None):
-    if not name:
-        name = opts.name or "default-%s" % str(type)
-    name = stripname(name)
-    cfg = Config('fleet' + os.sep + name + os.sep + 'config')
+def makeconfig(type, opts, botname=None):
+    if not botname:
+        botname = opts.name or "default-%s" % str(type)
+    botname = stripname(botname)
+    cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
     cfg.type = type
-    cfg.name = name
+    cfg.botname = botname
 
     if opts.user:
         cfg.user = opts.user

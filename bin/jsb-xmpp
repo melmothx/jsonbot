@@ -38,6 +38,7 @@ import os
 
 opts = makeopts()
 cfg = makeconfig('sxmpp', opts)
+cfg.save()
 
 ## runtime
 
