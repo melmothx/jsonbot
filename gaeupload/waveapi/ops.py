@@ -26,7 +26,7 @@ import util
 import sys
 
 
-PROTOCOL_VERSION = '0.2'
+PROTOCOL_VERSION = '0.21'
 
 # Operation Types
 WAVELET_APPEND_BLIP = 'wavelet.appendBlip'
@@ -187,7 +187,8 @@ class OperationQueue(object):
   def serialize(self):
     first = Operation(ROBOT_NOTIFY_CAPABILITIES_HASH,
                       '0',
-                      {'capabilitiesHash': self._capability_hash})
+                      {'capabilitiesHash': self._capability_hash,
+                       'protocolVersion': PROTOCOL_VERSION})
     operations = [first] + self.__pending
     res = util.serialize(operations)
     return res

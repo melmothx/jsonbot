@@ -148,17 +148,17 @@ def create_robot_webapp(robot, debug=False, extra_handlers=None):
   """Returns an instance of webapp.WSGIApplication with robot handlers."""
   if not extra_handlers:
     extra_handlers = []
-  return webapp.WSGIApplication([('/_wave/capabilities.xml',
+  return webapp.WSGIApplication([('.*/_wave/capabilities.xml',
                                   lambda: CapabilitiesHandler(
                                                      robot.capabilities_xml,
                                                      'application/xml')),
-                                 ('/_wave/robot/profile',
+                                 ('.*/_wave/robot/profile',
                                   lambda: ProfileHandler(
                                                      robot.profile_json,
                                                      'application/json')),
-                                 ('/_wave/robot/jsonrpc',
+                                 ('.*/_wave/robot/jsonrpc',
                                   lambda: RobotEventHandler(robot)),
-                                 ('/_wave/verify_token',
+                                 ('.*/_wave/verify_token',
                                   lambda: RobotVerifyTokenHandler(robot)),
                                 ] + extra_handlers,
                                 debug=debug)

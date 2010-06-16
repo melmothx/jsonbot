@@ -49,5 +49,19 @@ class TestOperation(unittest.TestCase):
     self.assertEqual('wave1', op.params['waveId'])
     self.assertEqual('wavelet1', op.params['waveletId'])
 
+class TestOperationQueue(unittest.TestCase):
+  """Test case for OperationQueue class."""
+
+  def testSerialize(self):
+    q = ops.OperationQueue()
+    q.set_capability_hash('hash')
+    op = q.wavelet_modify_tag('waveid', 'waveletid', 'tag')
+    json = q.serialize()
+    self.assertEqual(2, len(json))
+    self.assertEqual('robot.notifyCapabilitiesHash', json[0]['method'])
+    self.assertEqual('hash', json[0]['params']['capabilitiesHash'])
+    self.assertEqual(ops.PROTOCOL_VERSION, json[0]['params']['protocolVersion'])
+    self.assertEqual('wavelet.modifyTag', json[1]['method'])
+
 if __name__ == '__main__':
   unittest.main()

@@ -243,7 +243,8 @@ class Robot(object):
         url=oauth_request.to_url(),
         data=post_body,
         headers={'Content-Type': 'application/json'})
-    logging.info(oauth_request.to_url())
+    logging.info('Active URL: %s'  % oauth_request.to_url())
+    logging.info('Active Outgoing: %s' % post_body)
     if code != 200:
       logging.info(oauth_request.to_url())
       logging.info(content)
@@ -478,8 +479,8 @@ class Robot(object):
   def submit(self, wavelet_to_submit):
     """Submit the pending operations associated with wavelet_to_submit.
 
-    Typically the wavelet will be the result of open_wavelet, blind_wavelet
-    or new_wavelet.
+    Typically the wavelet will be the result of fetch_wavelet, blind_wavelet
+    or new_wave.
     """
     pending = wavelet_to_submit.get_operation_queue()
     res = self.make_rpc(pending)

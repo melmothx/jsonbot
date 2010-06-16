@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
 #
 # Copyright (C) 2009 Google Inc.
 #
@@ -102,11 +102,13 @@ class TestUtils(unittest.TestCase):
     b['c'] = None
     self.assertDictsEqual(a, util.non_none_dict(b))
 
-  def testForceString(self):
-    self.assertEquals("aaa", util.force_string("aaa"))
-    self.assertEquals("12", util.force_string(12))
+  def testForceUnicode(self):
+    self.assertEquals(u"aaa", util.force_unicode("aaa"))
+    self.assertEquals(u"12", util.force_unicode(12))
+    self.assertEquals(u"\u0430\u0431\u0432",
+                      util.force_unicode("\xd0\xb0\xd0\xb1\xd0\xb2"))
     self.assertEquals(u'\u30e6\u30cb\u30b3\u30fc\u30c9',
-                      util.force_string(u'\u30e6\u30cb\u30b3\u30fc\u30c9'))
+                      util.force_unicode(u'\u30e6\u30cb\u30b3\u30fc\u30c9'))
 
   def testSerializeAttributes(self):
 

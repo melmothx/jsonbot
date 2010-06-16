@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
 #
 # Copyright (C) 2009 Google Inc.
 #
@@ -22,6 +22,12 @@ CUSTOM_SERIALIZE_METHOD_NAME = 'serialize'
 
 MARKUP_RE = re.compile(r'<([^>]*?)>')
 
+
+def force_unicode(object):
+  """ Return the Unicode string version of object, with UTF-8 encoding. """
+  if isinstance(object, unicode):
+    return object
+  return unicode(str(object), 'utf-8')
 
 def parse_markup(markup):
   """Parses a bit of markup into robot compatible text.
@@ -74,13 +80,6 @@ def lower_camel_case(s):
 def non_none_dict(d):
   """return a copy of the dictionary without none values."""
   return dict([a for a in d.items() if not a[1] is None])
-
-def force_string(item):
-  """force into a string if it is not already a string or unicode."""
-  if not isinstance(item, basestring):
-    return str(item)
-  else:
-    return item
 
 def _serialize_attributes(obj):
   """Serializes attributes of an instance.

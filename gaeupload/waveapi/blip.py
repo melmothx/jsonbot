@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
 #
 # Copyright (C) 2009 Google Inc.
 #
@@ -415,7 +415,7 @@ class BlipRefs(object):
           next = what[next_index]
           next_index = (next_index + 1) % len(what)
         if isinstance(next, str):
-          next = next.decode('utf-8')
+          next = util.force_unicode(next)
         if modify_how == BlipRefs.ANNOTATE:
           key, value = next
           blip.annotations._add_internal(key, value, start, end)
@@ -483,7 +483,7 @@ class BlipRefs(object):
         what = matched
       if what:
         if not isinstance(next, element.Element):
-          modify_action['values'] = [util.force_string(value) for value in what]
+          modify_action['values'] = [util.force_unicode(value) for value in what]
         else:
           modify_action['elements'] = what
     elif modify_how == BlipRefs.ANNOTATE:
@@ -522,7 +522,7 @@ class BlipRefs(object):
 
     You can either specify both name and value to set the
     same annotation, or supply as the first parameter something
-    that yields name/value pairs.
+    that yields name/value pairs. The name and value should both be strings.
     """
     if value is None:
       what = name
@@ -684,6 +684,21 @@ class Blip(object):
     # if parent_blip_id is None, get will also return None
     return self._other_blips.get(self._parent_blip_id)
 
+  @property
+  def inline_blip_offset(self):
+    """The offset in the parent if this blip is inline or -1 if not.
+
+    If the parent is not in the context, this function will always
+    return -1 since it can't determine the inline blip status.
+    """
+    parent = self.parent_blip
+    if not parent:
+      return -1
+    for offset, el in parent._elements.items():
+      if el.type == element.Element.INLINE_BLIP_TYPE and el.id == self.blip_id:
+        return offset
+    return -1
+
   def is_root(self):
     """Returns whether this is the root blip of a wavelet."""
     return self._parent_blip_id is None
@@ -695,13 +710,12 @@ class Blip(object):
 
   @property
   def elements(self):
-    """The elements for this document.
-
-    The elements of a document are things like forms elements, gadgets
-    that cannot be expressed as plain text. The elements property of
-    a document is a dictionary like object from index in the document
-    to element instance. In the text of the document you'll typically
-    find a space as a place holder for the element.
+    """Returns a list of elements for this document.
+    The elements of a blip are things like forms elements and gadgets
+    that cannot be expressed as plain text. In the text of the blip, you'll
+    typically find a space as a place holder for the element.
+    If you want to retrieve the element at a particular index in the blip, use
+    blip[index].value().
     """
     return self._elements.values()
 
@@ -845,6 +859,7 @@ class Blip(object):
     Args:
       markup: The markup'ed text to append.
     """
+    markup = util.force_unicode(markup)
     self._operation_queue.document_append_markup(self.wave_id,
                                                  self.wavelet_id,
                                                  self.blip_id,
@@ -855,11 +870,15 @@ class Blip(object):
     """Inserts an inline blip into this blip at a specific position.
 
     Args:
-      position: Position to insert the blip at.
+      position: Position to insert the blip at. This has to be greater than 0.
 
     Returns:
       The JSON data of the blip that was created.
     """
+    if position <= 0:
+      raise IndexError(('Illegal inline blip position: %d. Position has to ' +
+                        'be greater than 0.') % position)
+
     blip_data = self._operation_queue.document_inline_blip_insert(
         self.wave_id,
         self.wavelet_id,

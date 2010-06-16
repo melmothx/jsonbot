@@ -281,6 +281,14 @@ class WaveletFetched(Event):
     self.message = self.properties['message']
 
 
+class WaveletTagsChanged(Event):
+  """Event triggered when the tags on a wavelet change."""
+  type = 'WAVELET_TAGS_CHANGED'
+
+  def __init__(self, json, wavelet):
+    super(WaveletTagsChanged, self).__init__(json, wavelet)
+
+
 def is_event(cls):
   """Returns whether the passed class is an event."""
   try:

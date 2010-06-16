@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
 #
 # Copyright (C) 2009 Google Inc.
 #
@@ -18,6 +18,7 @@
 
 import blip
 import errors
+import util
 
 
 class DataDocs(object):
@@ -66,8 +67,11 @@ class DataDocs(object):
 
 class Participants(object):
   """Class modelling a set of participants in pythonic way."""
-  
+
+  #: Designates full access (read/write) role.
   ROLE_FULL = "FULL"
+
+  #: Designates read-only role.
   ROLE_READ_ONLY = "READ_ONLY"
 
   def __init__(self, participants, roles, wave_id, wavelet_id, operation_queue):
@@ -93,11 +97,11 @@ class Participants(object):
     self._participants.add(participant_id)
 
   def get_role(self, participant_id):
-    """Return the role for the given participant_id"""
+    """Return the role for the given participant_id."""
     return self._roles.get(participant_id, Participants.ROLE_FULL)
 
   def set_role(self, participant_id, role):
-    """Return the role for the given participant_id"""
+    """Sets the role for the given participant_id."""
     if role != Participants.ROLE_FULL and role != Participants.ROLE_READ_ONLY:
       raise ValueError(role + ' is not a valid role')
     self._operation_queue.wavelet_modify_participant_role(
@@ -128,6 +132,7 @@ class Tags(object):
 
   def append(self, tag):
     """Appends a tag if it doesn't already exist."""
+    tag = util.force_unicode(tag)
     if tag in self._tags:
       return
     self._operation_queue.wavelet_modify_tag(
@@ -136,6 +141,7 @@ class Tags(object):
 
   def remove(self, tag):
     """Removes a tag if it exists."""
+    tag = util.force_unicode(tag)
     if not tag in self._tags:
       return
     self._operation_queue.wavelet_modify_tag(
@@ -253,6 +259,8 @@ class Wavelet(object):
     return self._title
 
   def _set_title(self, title):
+    title = util.force_unicode(title)
+
     if title.find('\n') != -1:
       raise errors.Error('Wavelet title should not contain a newline ' +
                          'character. Specified: ' + title)
@@ -319,6 +327,10 @@ class Wavelet(object):
     set. Any modifications made to this copy will be done using the
     proxy_for_id, i.e. the robot+<proxy_for_id>@appspot.com address will
     be used.
+
+    If the wavelet was retrieved using the Active Robot API, that is
+    by fetch_wavelet, then the address of the robot must be added to the
+    wavelet by setting wavelet.robot_address before calling proxy_for().
     """
     self.add_proxying_participant(proxy_for_id)
     operation_queue = self.get_operation_queue().proxy_for(proxy_for_id)
@@ -377,13 +389,14 @@ class Wavelet(object):
     """Replies to the conversation in this wavelet.
 
     Args:
-      initial_content: if set, start with this content.
+      initial_content: If set, start with this (string) content.
 
     Returns:
       A transient version of the blip that contains the reply.
     """
     if not initial_content:
-      initial_content = '\n'
+      initial_content = u'\n'
+    initial_content = util.force_unicode(initial_content)
     blip_data = self._operation_queue.wavelet_append_blip(
        self.wave_id, self.wavelet_id, initial_content)
 

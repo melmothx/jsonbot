@@ -17,6 +17,7 @@
 """Unit tests for the element module."""
 
 
+import base64
 import unittest
 
 import element
@@ -44,6 +45,12 @@ class TestElement(unittest.TestCase):
     self.assertEquals(image.width, 100)
     self.assertEquals(image.height, 100)
 
+  def testAttachment(self):
+    attachment = element.Attachment(caption='My Favorite', data='SomefakeData')
+    self.assertEquals(element.Attachment.class_type, attachment.type)
+    self.assertEquals(attachment.caption, 'My Favorite')
+    self.assertEquals(attachment.data, 'SomefakeData')
+
   def testGadget(self):
     gadget = element.Gadget('http://test.com/gadget.xml')
     self.assertEquals(element.Gadget.class_type, gadget.type)
@@ -65,6 +72,18 @@ class TestElement(unittest.TestCase):
     self.assertEquals(props['url'], 'http://test.com/image.png')
     self.assertEquals(props['width'], 100)
     self.assertEquals(props['height'], 100)
+
+  def testSerializeAttachment(self):
+    attachment = element.Attachment(caption='My Favorite', data='SomefakeData')
+    s = util.serialize(attachment)
+    k = s.keys()
+    k.sort()
+    # we should really have two things to serialize
+    props = s['properties']
+    self.assertEquals(len(props), 2)
+    self.assertEquals(props['caption'], 'My Favorite')
+    self.assertEquals(props['data'], base64.encodestring('SomefakeData'))
+    self.assertEquals(attachment.data, 'SomefakeData')
 
   def testSerializeLine(self):
     line = element.Line(element.Line.TYPE_H1, alignment=element.Line.ALIGN_LEFT)
@@ -125,6 +144,30 @@ class TestElement(unittest.TestCase):
     self.assertEquals(attachment_id, image.attachmentId)
     self.assertEquals(caption, image.caption)
 
+  def testAttachmentElementFromJson(self):
+    caption = 'fake caption'
+    data = 'fake data'
+    mime_type = 'fake mime'
+    attachment_id = 'fake id'
+    attachment_url = 'fake URL'
+    json = {
+      'type': element.Attachment.class_type,
+      'properties': {
+        'caption': caption,
+        'data': data,
+        'mimeType': mime_type,
+        'attachmentId': attachment_id,
+        'attachmentUrl': attachment_url,
+      }
+    }
+    attachment = element.Element.from_json(json)
+    self.assertEquals(element.Attachment.class_type, attachment.type)
+    self.assertEquals(caption, attachment.caption)
+    self.assertEquals(data, attachment.data)
+    self.assertEquals(mime_type, attachment.mimeType)
+    self.assertEquals(attachment_id, attachment.attachmentId)
+    self.assertEquals(attachment_url, attachment.attachmentUrl)
+
   def testFormElementFromJson(self):
     name = 'button'
     value = 'value'
@@ -158,7 +201,8 @@ class TestElement(unittest.TestCase):
                         direction='d'),
            element.Gadget(url='test.com/gadget.xml',
                           props={'key1': 'val1', 'key2': 'val2'}),
-           element.Image(url='test.com/image.png', width=100, height=200)]
+           element.Image(url='test.com/image.png', width=100, height=200),
+           element.Attachment(caption='fake caption', data='fake data')]
     types_constructed = set([type(x) for x in bag])
     types_required = set(element.ALL.values())
     missing_required = types_constructed.difference(types_required)
