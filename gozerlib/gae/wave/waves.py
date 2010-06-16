@@ -9,6 +9,7 @@
 from gozerlib.channelbase import ChannelBase
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
+from gozerlib.utils.generic import strippedtxt
 
 ## simplejson imports
 
@@ -166,7 +167,7 @@ class Wave(ChannelBase):
             handle_exception()
 
         logging.warn("annotations used: %s", annotations)
-        reply = wavelet.reply(txt)
+        reply = wavelet.reply(strippedtxt(txt))
         if annotations:
             for ann in annotations:
                 if ann[0]:

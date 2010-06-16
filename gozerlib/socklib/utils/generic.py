@@ -30,6 +30,7 @@ import os
 import random
 import socket
 import Queue 
+import logging
 
 def jsonstring(s):
     if type(s) == types.TupleType:
@@ -276,9 +277,9 @@ def decodeperchar(txt, encoding='utf-8', what=""):
 
     if nogo:
         if what:
-            rlog(10, 'generic', "%s: can't decode %s characters to %s" % (what, nogo, encoding))
+            logging.debug("generic - %s: can't decode %s characters to %s" % (what, nogo, encoding))
         else:
-            rlog(10, 'generic', "can't decode %s characters to %s" % (nogo, encoding))
+            logging.debug("generic - can't decode %s characters to %s" % (nogo, encoding))
 
     return u"".join(res)
 
@@ -289,7 +290,7 @@ def toenc(what, encoding='utf-8'):
         w = unicode(what)
         return w.encode(encoding)
     except UnicodeEncodeError:
-        rlog(10, 'generic', "can't encode %s to %s" % (what, encoding))
+        logging.debug("generic - can't encode %s to %s" % (what, encoding))
         return u""
 
 def fromenc(txt, encoding='utf-8', what=""):
