@@ -108,7 +108,7 @@ class Callbacks(object):
         # delete callbacks
         for callback in unload[::-1]:
             self.cbs.delete(callback[0], callback[1])
-            logging.debug('callbacks - unloaded %s' % callback[0])
+            logging.debug('callbacks - unloaded %s (%s)' % (callback[0], modname))
 
         return self
 

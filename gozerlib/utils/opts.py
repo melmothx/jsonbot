@@ -92,7 +92,7 @@ def makeconfig(opts):
     if opts.password:
         cfg.password = opts.password
     else:
-        cfg.password = str(uuid.uuid4())
+        cfg.password = cfg.password or str(uuid.uuid4())
 
     if opts.ssl:
         cfg.ssl = True

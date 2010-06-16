@@ -80,7 +80,8 @@ if opts.command:
     time.sleep(3)
     os._exit(0)
 elif opts.forward:
-    #fleet.addbot(bot)
+    fleet.addbot(bot)
+    print "starting forward bot (%s)" % str(cfg)
     forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=cfg)
     forwardbot.start()
 

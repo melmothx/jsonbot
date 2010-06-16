@@ -24,6 +24,7 @@ from exit import globalshutdown
 from utils.generic import splittxt, toenc, fromenc
 from utils.trace import whichmodule
 from fleet import fleet
+from utils.name import stripname
 
 ## basic imports
 

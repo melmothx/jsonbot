@@ -292,9 +292,9 @@ class SXMPPBot(XMLStream, BotBase):
         if iq.error:
             logging.warn('sxmpp - register FAILED - %s' % iq.error)
             if iq.error.code == "405":
-                logging.warn("sxmpp - this server doesn't allow registration by the bot, you need to create an account for it yourself")
+                logging.error("sxmpp - this server doesn't allow registration by the bot, you need to create an account for it yourself")
             else:
-                logging.warn("sxmpp - %s" % xmpperrors[iq.error.code])
+                logging.error("sxmpp - %s" % xmpperrors[iq.error.code])
             self.error = iq.error
             return False
         logging.warn('sxmpp - register ok')

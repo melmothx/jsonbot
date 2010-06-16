@@ -76,7 +76,7 @@ class ConsoleBot(BotBase):
                         handle_exception()
                         continue
                 try:
-                    result = self.plugs.dispatch(self, event)
+                    result = self.doevent(event)
                     if not result:
                             continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)

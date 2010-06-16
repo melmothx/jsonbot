@@ -155,6 +155,7 @@ gn_callbacks.add('QUIT', watchcallback, prewatchcallback)
 gn_callbacks.add('NICK', watchcallback, prewatchcallback)
 gn_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
 gn_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
+gn_callbacks.add('CONSOLE', watchcallback, prewatchcallback)
 
 ## commands
 
@@ -166,9 +167,9 @@ def handle_watcherstart(bot, event):
         target = event.rest
 
     # you can only watch yourself on xmpp/wave
-    if '@' in target and not event.userhost == target:
-        event.reply('you are not allowed to watch %s' % target)
-        return
+    #if '@' in target and not event.userhost == target:
+    #    event.reply('you are not allowed to watch %s' % target)
+    #    return
 
     watched.subscribe(bot.name, bot.type, event.rest, event.channel)
     event.done()
