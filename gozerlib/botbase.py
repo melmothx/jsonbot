@@ -60,6 +60,7 @@ class BotBase(LazyDict):
         self.type = "base"
         self.status = "init"
 
+
         if botname:
             self.botname = botname
         else:
@@ -72,6 +73,13 @@ class BotBase(LazyDict):
             self.update(cfg)
         else:
             self.cfg = Config(self.fleetdir + os.sep + 'config')
+
+        if not self.uuid:
+            if self.cfg and self.cfg.uuid:
+                self.uuid = self.cfg.uuid
+            else:
+                self.uuid = self.cfg.uuid = uuid.uuid4()
+                self.cfg.save()
 
         # set datadir to datadir/fleet/<botname>
         self.datadir = datadir + os.sep + self.fleetdir
@@ -88,6 +96,8 @@ class BotBase(LazyDict):
         self.plugs = plugs or coreplugs 
         self.outcache = Less(1)
         self.userhosts = {}
+        if not self.nick:
+            self.nick = self.botname
 
         try:
             if not os.isdir(self.datadir):

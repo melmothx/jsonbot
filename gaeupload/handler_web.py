@@ -103,8 +103,7 @@ class DispatchHandler(webapp.RequestHandler):
         login = loginurl(self.response)
         logout = logouturl(self.response)
 
-        event = WebEvent().parse(self.response, self.request)
-        event.bot = bot
+        event = WebEvent(bot=bot).parse(self.response, self.request)
         event.cbtype = "WEB"
 
         self.response.out.write('<br>')

@@ -26,7 +26,7 @@ def finduser():
 
     return "" 
 
-def checkuser(response, request):
+def checkuser(response, request, event=None):
     """
         check for user based on web response. first try google 
         otherwise return 'notath@IP' 
@@ -40,6 +40,10 @@ def checkuser(response, request):
     u = "notauth"
     nick = "notauth"
     user = gusers.get_current_user()
+    if event:
+        hostid = "%s-%s" % (request.remote_addr, event.bot.uuid)
+    else:
+        hostid = request.remote_addr
 
     if not user:
         try:
@@ -54,14 +58,14 @@ def checkuser(response, request):
             if auth_domain:
                 userhost = nick = "%s@%s" % (who, auth_domain)
             else:
-                userhost = nick = "%s@%s" % (who, request.remote_addr)
+                userhost = nick = "%s@%s" % (who, hostid)
 
         except KeyError:
-            userhost = nick = "notauth@%s" % request.remote_addr
+            userhost = nick = "notauth@%s" % hostid
     else:
         userhost = user.email() 
         if not userhost:
-            userhost = nick = "notauth@%s" % request.remote_addr
+            userhost = nick = "notauth@%s" % hostid
         nick = user.nickname()
         u = userhost
 

@@ -31,9 +31,11 @@ class EventBase(LazyDict):
 
     """ basic event class. """
 
-    def __init__(self, input=None):
+    def __init__(self, input=None, bot=None):
         """ EventBase constructor """
         LazyDict.__init__(self)
+        if bot:
+            self.bot = bot
         if input:
             self.copyin(input)
         self.result = []

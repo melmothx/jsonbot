@@ -22,8 +22,8 @@ import logging
 
 class WebEvent(EventBase):
 
-    def __init__(self): 
-        EventBase.__init__(self)
+    def __init__(self, bot=None): 
+        EventBase.__init__(self, bot=bot)
         self.bottype = "web"
 
     def __deepcopy__(self, a):
@@ -45,7 +45,7 @@ class WebEvent(EventBase):
         self.groupchat = False
         self.response = response
         self.request = request
-        (userhost, user, u, nick) = checkuser(response, request)
+        (userhost, user, u, nick) = checkuser(response, request, self)
         self.user = user
         self.userhost = userhost
         self.nick = nick
