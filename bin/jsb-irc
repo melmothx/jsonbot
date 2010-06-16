@@ -39,7 +39,7 @@ import os
 ## options parser
 
 opts = makeopts()
-cfg = makeconfig(opts)
+cfg = makeconfig('irc', opts)
 cfg.name = opts.name or 'default-IRCBot'
 cfg.type = "irc"
 cfg.save()

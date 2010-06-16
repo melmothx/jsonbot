@@ -37,9 +37,7 @@ import os
 ## options parser
 
 opts = makeopts()
-cfg = makeconfig(opts)
-cfg.type = "sxmpp"
-cfg.save()
+cfg = makeconfig('sxmpp', opts)
 
 ## runtime
 

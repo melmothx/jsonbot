@@ -31,7 +31,6 @@ import time
 ## options parser
 
 opts = makeopts()
-cfg = makeconfig(opts)
 
 if opts.loglevel:
     setloglevel(opts.loglevel)

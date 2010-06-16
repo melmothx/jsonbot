@@ -6,8 +6,10 @@
 
 ## gozerlib imports
 
+from gozerlib.errors import NameNotSet
 from gozerlib.config import Config
 from gozerlib.utils.generic import getversion
+from gozerlib.utils.name import stripname
 
 ## basic imports
 
@@ -67,9 +69,12 @@ dest='forward', help="enable forwarding bot")
     opts.args = args
     return opts
 
-def makeconfig(opts):
-    name = opts.name or 'default-SXMPPBot'
+def makeconfig(type, opts, name=None):
+    if not name:
+        name = opts.name or "default-%s" % str(type)
+    name = stripname(name)
     cfg = Config('fleet' + os.sep + name + os.sep + 'config')
+    cfg.type = type
     cfg.name = name
 
     if opts.user:

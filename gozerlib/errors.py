@@ -28,6 +28,9 @@ class CantSaveConfig(JsonBotError):
 class NoOwnerSet(JsonBotError):
     pass
 
+class NameNotSet(JsonBotError):
+    pass
+
 class NoSuchUser(JsonBotError):
     pass
 
