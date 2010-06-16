@@ -140,7 +140,6 @@ def tolatin1(what):
 def strippedtxt(what, allowed=[]):
     """ strip control characters from txt. """
     txt = []
-    allowed = allowed + ['\001', '\002', '\003', '\t']
     for i in what:
         if ord(i) > 31 or (allowed and i in allowed):
             txt.append(i)

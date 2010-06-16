@@ -284,7 +284,7 @@ class Irc(BotBase):
                     rr = fromenc(r, self.encoding)
                     if not rr:
                         continue
-                    res = strippedtxt(rr)
+                    res = strippedtxt(rr, ['\001', '\002', '\003', '\t'])
                     res = rr
                     logging.debug(u"irc - %s" % res)
                     # parse txt read into an ircevent
@@ -854,7 +854,7 @@ realname))
             if timetosleep > 0 and not self.nolimiter and not (time.time() - self.connecttime < 5):
                 logging.debug('irc - flood protect')
                 time.sleep(timetosleep)
-            txt = toenc(strippedtxt(txt))
+            txt = toenc(strippedtxt(txt, ['\001', '\002', '\003', '\t']))
             txt = txt.rstrip()
             self._raw(txt)
             try:
