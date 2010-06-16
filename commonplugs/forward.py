@@ -47,6 +47,7 @@ def forwardoutcb(bot, event):
     logging.warn("forward - cbtype is %s" % event.cbtype)
     e.isremote = True
     e.forwarded = True
+    e.source = bot.jid
     #if not e.nick:
     #    e.nick = bot.nick or bot.name
     outbot = fleet.getfirstjabber()
@@ -54,6 +55,7 @@ def forwardoutcb(bot, event):
         from gozerlib.gae.xmpp.bot import XMPPBot
         outbot = XMPPBot()
     if outbot:
+        e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
             logging.warn("forward - sending to %s" % jid)
             outbot.saynocb(jid, e.dump())
@@ -84,6 +86,7 @@ def forwardincb(bot, event):
     remoteevent.isremote = True
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
+    remoteevent.source = bot.jid
     logging.warn(u"forward - incoming - %s" % remoteevent.dump())
     gn_callbacks.check(bot, remoteevent)
 
