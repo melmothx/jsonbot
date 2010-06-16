@@ -11,7 +11,7 @@ import os
 
 ## define
 
-allowednamechars = string.ascii_letters + string.digits + '!.@-+'
+allowednamechars = string.ascii_letters + string.digits + '!.@-+#'
 
 ## functions
 

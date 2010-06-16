@@ -123,7 +123,7 @@ class Config(LazyDict):
         """
         curline = ""
         # read file and set config values to loaded JSON entries
-        fname = filename
+        fname = stripname(filename)
         #fname = stripname(filename, os.sep)
         logging.info("config - fromfile - %s" % fname)
         if not os.path.exists(fname):
@@ -152,7 +152,7 @@ class Config(LazyDict):
         if not filename:
             filename = self.cfile
         else:
-            filename = stripname(filename, os.sep)
+            filename = stripname(filename)
 
         try:
             from os import mkdir
