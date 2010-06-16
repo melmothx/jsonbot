@@ -63,8 +63,7 @@ class BotBase(LazyDict):
         if botname:
             self.botname = botname
         else:
-            raise NameNotSet()
-            #self.botname = "default-%s" % str(type(self)).split('.')[-1][:-2]
+            self.botname = "default-%s" % str(type(self)).split('.')[-1][:-2]
 
         self.fleetdir = 'fleet' + os.sep + self.botname
 
