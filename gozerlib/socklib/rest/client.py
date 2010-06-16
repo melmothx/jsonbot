@@ -161,7 +161,7 @@ class RestClientAsync(RestClient, asynchat.async_chat):
                 pass
             self.error = str(excvalue)
         else:
-            rlog(10, self.name, exceptionmsg())
+            logging.error("%s - %s" % (self.name, exceptionmsg()))
             self.error = exceptionmsg()
         self.buffer = ''
         result = RestResult(self.url, self.name)
