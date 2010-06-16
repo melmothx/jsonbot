@@ -65,7 +65,9 @@ plugs.loadall()
 users = Users()
 userid = getpass.getuser() + '@' + cfg.uuid
 users.make_owner(userid)
-cfg.owner = userid
+
+if userid not in cfg.owner:
+    cfg.owner.append(userid)
 cfg.type = "console"
 
 try:

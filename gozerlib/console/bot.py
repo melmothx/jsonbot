@@ -57,8 +57,14 @@ console = HistoryConsole()
 
 class ConsoleBot(BotBase):
 
+    def __init__(self, cfg=None, users=None, plugs=None, botname=None, *args, **kwargs):
+        BotBase.__init__(self, cfg, users, plugs, botname, *args, **kwargs)
+        self.type = "console"
+        self.nick = botname or "console"
+
     def start(self):
         time.sleep(0.1)
+        print "bot nick is %s" % self.nick
         while 1: 
             try: 
                 input = console.raw_input("> ")

@@ -67,6 +67,9 @@ class Config(LazyDict):
 
         self.init()
 
+        if not self.owner:
+            self.owner = []
+
         if not self.uuid:
             self.uuid = str(uuid.uuid4())
             self.save()

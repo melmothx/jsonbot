@@ -156,7 +156,7 @@ class BotBase(LazyDict):
             cc = event.chan.data.cc
         if not cc:
             cc = "!"
-        logging.debug("cc for %s is %s" % (event.title or event.channel, cc))
+        logging.debug("cc for %s is %s (%s)" % (event.title or event.channel, cc, self.nick))
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
             if event.txt:
@@ -165,7 +165,15 @@ class BotBase(LazyDict):
                 event.usercmnd = None
             event.makeargs()
             go = True
-
+        elif event.txt and (event.txt.startswith(self.nick + u": ") or event.txt.startswith(self.nick + u", ")):
+            event.txt = event.txt[len(self.nick) + 2:]
+            if event.txt:
+                event.usercmnd = event.txt.split()[0]
+            else:
+                event.usercmnd = None
+            event.makeargs()
+            go = True
+     
         if event.isremote and not event.remotecmnd:
             logging.debug("event is remote but not command .. not dispatching")
             return
