@@ -759,7 +759,8 @@ realname))
         # set original
         if setorig:
             self.orignick = nick
-
+            self.cfg.orignick = nick
+            
         # save nick to state and config file
         if save:
             self.state['nick'] = nick

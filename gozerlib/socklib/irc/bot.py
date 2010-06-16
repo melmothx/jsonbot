@@ -66,7 +66,7 @@ class IRCBot(Irc):
         if self.state:
             if not self.state.has_key('opchan'):
                 self.state['opchan'] = []
-        self.userchannels = Dol()
+        #self.userchannels = Dol()
 
         if not self.state.has_key('joinedchannels'):
             self.state['joinedchannels'] = []
@@ -444,8 +444,8 @@ class IRCBot(Irc):
 
         # sync joined user with userhosts cache
         self.userhosts[nick] = ievent.userhost
-        if self.userchannels:
-            self.userchannels.adduniq(nick, chan)
+        #if self.userchannels:
+        #    self.userchannels.adduniq(nick, chan)
 
     def handle_kick(self, ievent):
 
@@ -472,14 +472,14 @@ class IRCBot(Irc):
         nick = ievent.txt
         self.userhosts[nick] = ievent.userhost
 
-        if ievent.nick == self.nick:
+        if ievent.nick == self.nick or ievent.nick == self.orignick:
             self.cfg['nick'] = nick
             self.cfg.save()
 
-        try:
-            self.userchannels[nick] = self.userchannels[ievent.nick]
-        except:
-           raise
+        #try:
+        #    self.userchannels[nick] = self.userchannels[ievent.nick]
+        #except:
+        #   raise
 
     def handle_part(self, ievent):
 
@@ -560,8 +560,8 @@ class IRCBot(Irc):
         userhost = "%s@%s" % (user, host)
         logging.debug('adding %s to userhosts: %s' % (nick, userhost))
         self.userhosts[nick] = userhost
-        if self.userchannels:
-            self.userchannels.adduniq(nick, channel)
+        #if self.userchannels:
+        #    self.userchannels.adduniq(nick, channel)
 
     def handle_353(self, ievent):
 
