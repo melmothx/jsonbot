@@ -24,7 +24,7 @@ import logging
 def globalshutdown():
     """ shutdown the bot. """
     sys.stdout.write("\n")
-    logging.warning('shutting down')
+    logging.error('shutting down')
 
     try:
         os.remove('gozerlib.pid')

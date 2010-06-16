@@ -30,22 +30,23 @@ class ConsoleEvent(EventBase):
              return
         resp = self.makeresponse(txt, result, dot)
         logging.info("console - out - %s - %s" % (self.userhost, str(resp)))
-        self.bot._raw(resp)
+        self._raw(resp)
         self.result.append(resp)  
         self.outqueue.put_nowait(resp)
-        self.bot.outmonitor(self.origin, self.printto, resp, self)
+        self.bot.outmonitor(self.origin, self.channel, resp, self)
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
-        self.console.push(u"=> " + unicode(txt))
-
+        self.console.write(u"=> " + unicode(txt) + "\n")
+        
     def parse(self, bot, input, console, *args, **kwargs):
         """ overload this. """
         if not input:
             raise NoInput()
         self.bot = bot
         self.console = console
-        self.auth = getpass.getuser() + '@' + bot.uuid
+        self.nick = getpass.getuser()
+        self.auth = self.nick + '@' + bot.uuid
         self.userhost = self.auth
         self.origin = self.userhost
         self.txt = input

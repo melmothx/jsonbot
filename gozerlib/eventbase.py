@@ -40,7 +40,8 @@ class EventBase(LazyDict):
         self.outqueue = Queue.Queue()
         self.bottype = "botbase"
         self.closequeue = True
-        self.printto = None
+        self.printto = self.channel
+        self.origin = self.userhost
         self.isremote = False
         self.iscmnd = False
         self.ttl = 1

@@ -101,6 +101,7 @@ class ConsoleBot(BotBase):
             return
         if getpass.getuser() == printto:
             self._raw(strippedtxt(txt))
+            self.outmonitor(self.name, printto, txt)
 
     def _raw(self, txt):
         sys.stdout.write("=> ")
