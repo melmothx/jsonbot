@@ -153,7 +153,7 @@ class Wave(ChannelBase):
         if not wavelet:
             logging.error("cant get wavelet")
             return
-
+        txt = txt.strip()
         logging.warn('wave - out - %s - %s' % (self.data.title, txt))
         try:
             annotations = []
@@ -163,9 +163,9 @@ class Wave(ChannelBase):
                     logging.warn("wave - found url - %s" % str(url))
                     start = txt.find(url)
                     if url.endswith(">"):
-                        annotations.append((start+2, start+len(url), "link/manual", url[1:-1]))
+                        annotations.append((start+2, start+len(url)-1, "link/manual", url[1:-1]))
                     else:
-                        annotations.append((start+1, start+len(url), "link/manual", url))
+                        annotations.append((start, start+len(url), "link/manual", url))
 
         except Exception, ex:
             handle_exception()
