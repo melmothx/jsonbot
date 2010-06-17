@@ -28,6 +28,7 @@ def stripname(name, allowed=""):
 
     res = res.replace(os.sep, '+')
     res = res.replace("@", '+')
+    res = res.replace("#", '+')
     return res
 
 def testname(name):
