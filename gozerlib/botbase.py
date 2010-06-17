@@ -49,10 +49,9 @@ eventlocked = lockdec(eventlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
-        if botname:
-            botname = stripname(botname)
-        else:
+        if not botname:
             botname = cfg and cfg.botname
+
         logging.debug("botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()
@@ -66,7 +65,7 @@ class BotBase(LazyDict):
         else:
             self.botname = "default-%s" % str(type(self)).split('.')[-1][:-2]
 
-        self.fleetdir = 'fleet' + os.sep + self.botname
+        self.fleetdir = 'fleet' + os.sep + stripname(self.botname)
 
         if cfg:
             self.cfg = cfg

@@ -158,11 +158,15 @@ class Wave(ChannelBase):
         try:
             annotations = []
             for url in txt.split():
-                if url.startswith("http://"):
+                got = url.find("http://")
+                if got != -1:
                     logging.warn("wave - found url - %s" % str(url))
                     start = txt.find(url)
-                    if start:
+                    if url.endswith(">"):
+                        annotations.append((start+2, start+len(url), "link/manual", url[1:-1]))
+                    else:
                         annotations.append((start+1, start+len(url), "link/manual", url))
+
         except Exception, ex:
             handle_exception()
 
