@@ -46,7 +46,7 @@ class Config(LazyDict):
         #self.dir = os.path.abspath(os.path.dirname(os.path.realpath(__file__ + os.sep + '..')))
         self.filename = filename or 'mainconfig'
         self.dir = datadir + os.sep + 'config'
-        self.cfile = self.dir + os.sep + self.filename
+        self.cfile = self.dir + os.sep + stripname(self.filename)
         self.jsondb = None
 
         try:
@@ -123,7 +123,7 @@ class Config(LazyDict):
         """
         curline = ""
         # read file and set config values to loaded JSON entries
-        fname = stripname(filename)
+        fname = filename
         #fname = stripname(filename, os.sep)
         logging.info("config - fromfile - %s" % fname)
         if not os.path.exists(fname):
@@ -151,8 +151,6 @@ class Config(LazyDict):
         """ save config object to file. """
         if not filename:
             filename = self.cfile
-        else:
-            filename = stripname(filename)
 
         try:
             from os import mkdir

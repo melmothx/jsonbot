@@ -97,7 +97,7 @@ class BotBase(LazyDict):
         self.outcache = Less(1)
         self.userhosts = {}
         if not self.nick:
-            self.nick = self.botname
+            self.nick = 'jsonbot'
 
         try:
             if not os.isdir(self.datadir):
