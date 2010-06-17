@@ -48,7 +48,7 @@ class XMPPEvent(EventBase):
 
         if txt:
             xmpp.send_message([self.userhost, ], txt)
-            self.bot.outmonitor(self.origin, self.userhost, txt, self)
+            self.bot.outmonitor(self.origin, self.channel, txt, self)
 
     def parse(self, request, response):
 
@@ -112,4 +112,4 @@ class XMPPEvent(EventBase):
                 xmpp.send_message([self.userhost, ], cgi.escape(txt))
             else:
                 xmpp.send_message([self.userhost, ], txt)
-            self.bot.outmonitor(self.origin, self.userhost, txt, self)
+            self.bot.outmonitor(self.origin, self.channel, txt, self)

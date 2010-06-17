@@ -39,6 +39,8 @@ class XMPPBot(BotBase):
 
         logging.warn('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
+        for jid in jids:
+            self.outmonitor(self.nick, jid, body)
 
     def saynocb(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False, extend=0):
         """ output xmpp message. """

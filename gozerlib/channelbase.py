@@ -31,8 +31,7 @@ class ChannelBase(Persist):
     """
 
     def __init__(self, id, type="notset"):
-        id = stripname(id)
-        Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + id)
+        Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + stripname(id))
         self.id = id
         self.type = type
         self.lastmodified = time.time()
