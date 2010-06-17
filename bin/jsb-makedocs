@@ -20,10 +20,10 @@ from gozerlib.plugins import plugs, Plugins
 from gozerlib.examples import examples
 from gozerlib.users import Users
 from gozerlib.commands import cmnds
-from gozerlib.config import Config
 from gozerlib.threads import start_new_thread
 from gozerlib.boot import boot
 from gozerlib.botbase import BotBase
+from gozerlib.datadir import makedirs
 
 ## basic imports
 
@@ -244,11 +244,7 @@ def domods(dir):
 
 if __name__ == '__main__':
     threads = []
-    domods('gozerlib')
-    domods('commonplugs')
-    domods('waveplugs')
-    domods('socketplugs')
-    domods('myplugs')
+    makedirs()
 
     try:
         os.mkdir('docs' + os.sep + 'plugins')
@@ -298,7 +294,13 @@ if __name__ == '__main__':
     for thread in threads:
         thread.join()
 
+    domods('gozerlib')
+    domods('commonplugs')
+    domods('waveplugs')
+    domods('socketplugs')
+    domods('gozerdata')
+
     import shutil
     shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'mindex.txt', 'docs' + os.sep + 'gozerlib' + os.sep + 'index.txt')
     #shutil.copyfile('pindex.txt', 'plugdoc' + os.sep + 'index.txt')
-    shutil.copyfile('docs' + os.sep + 'plugsdocindex.txt', 'docs' + os.sep + 'plugins' + os.sep + 'index.txt')
+    shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'plugsdocindex.txt', 'docs' + os.sep + 'plugins' + os.sep + 'index.txt')

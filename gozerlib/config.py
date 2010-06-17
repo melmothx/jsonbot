@@ -53,14 +53,15 @@ class Config(LazyDict):
             try:
                 self.fromfile(self.cfile)
             except IOError:
-                pass
-            import waveapi
-            from persist import Persist
-            self.jsondb = Persist(self.cfile)
-            self.update(self.jsondb.data)
-            self.isdb = True
-            logging.debug("config - fromdb - %s - %s" % (self.cfile, str(self)))
+                logging.warn("can't read config from %s" % self.cfile) 
+                import waveapi
+                from persist import Persist
+                self.jsondb = Persist(self.cfile)
+                self.update(self.jsondb.data)
+                self.isdb = True
+                logging.debug("config - fromdb - %s - %s" % (self.cfile, str(self)))
         except ImportError:
+            handle_exception()
             self.isdb = False
 
         self.init()
