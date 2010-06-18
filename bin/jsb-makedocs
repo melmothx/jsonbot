@@ -298,7 +298,6 @@ if __name__ == '__main__':
     domods('commonplugs')
     domods('waveplugs')
     domods('socketplugs')
-    domods('gozerdata')
 
     import shutil
     shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'mindex.txt', 'docs' + os.sep + 'gozerlib' + os.sep + 'index.txt')
