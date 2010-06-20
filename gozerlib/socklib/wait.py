@@ -69,7 +69,7 @@ class Wait(object):
         time.sleep(float(timeout))
         self.delete(ticket)
 
-    @locked
+    #@locked
     def delete(self, ticket):
 
         """ delete wait item with ticket nr. """
