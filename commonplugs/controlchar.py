@@ -1,9 +1,9 @@
-# commonplugs/controlchar.pu
+# commonplugs/controlchar.py
 #
 #
 
 """
-     command to control the control (command) characters. The cc is a string 
+    command to control the control (command) characters. The cc is a string 
     containing the allowed control characters.
 
 """

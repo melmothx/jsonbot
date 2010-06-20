@@ -10,6 +10,7 @@ import os
 import sys
 sys.path.insert(0, os.getcwd())
 sys.path.append(os.getcwd() + os.sep + 'gozerlib')
+sys.path.append(os.path.abspath("~") + os.sep + 'google_appengine')
 sys.path.insert(0, "..")
 
 ## gozerlib imports
@@ -52,6 +53,7 @@ except Exception, ex:
 ## functions
 
 def gendoc(mod, f, output):
+    mod = mod.replace(os.sep, '.')
     base = os.path.abspath(f).split(os.sep)[-1].replace('.py','')
     plugin = mod + '.' + base
     output.write('=' * (len(base)+2) + '\n')
@@ -171,6 +173,7 @@ def gendoc(mod, f, output):
     print "DONE %s" % f 
 
 def doindexfile(mod):
+    mod = mod.replace(os.sep, '.')
     return """
 %s
 %s
@@ -183,6 +186,7 @@ def doindexfile(mod):
 """ % (mod, "=" * (len(mod)))
 
 def domodfile(module, dir):
+    module = module.replace(os.sep, '.')
     if not os.path.isdir('docs' + os.sep + dir):
         os.mkdir('docs' + os.sep + dir)
     plugin = dir.split(os.sep)[-1]
@@ -295,6 +299,7 @@ if __name__ == '__main__':
         thread.join()
 
     domods('gozerlib')
+    domods('gozerlib' + os.sep + 'plugs')
     domods('commonplugs')
     domods('waveplugs')
     domods('socketplugs')

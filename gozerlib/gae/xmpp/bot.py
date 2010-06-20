@@ -11,7 +11,6 @@ from gozerlib.socklib.xmpp.presence import Presence
 
 ## google imports
 
-from google.appengine.api import xmpp
 
 ## basic imports
 
@@ -32,23 +31,30 @@ class XMPPBot(BotBase):
         self.isgae = True
         self.type = "xmpp"
 
-    def say(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False, extend=0):
+    def say(self, jids, body, from_jid=None, message_type=None, raw_xml=False, extend=0):
         """ output xmpp message. """
+        if not message_type:
+            message_type = xmpp.MESSAGE_TYPE_CHAT
         if type(jids) == types.StringType:
             jids = [jids, ]
 
         logging.warn('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
+        from google.appengine.api import xmpp
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
         for jid in jids:
             self.outmonitor(self.nick, jid, body)
 
-    def saynocb(self, jids, body, from_jid=None, message_type=xmpp.MESSAGE_TYPE_CHAT, raw_xml=False, extend=0):
+    def saynocb(self, jids, body, from_jid=None, message_type=None, raw_xml=False, extend=0):
         """ output xmpp message. """
+        if not message_type:
+            message_type = xmpp.MESSAGE_TYPE_CHAT
         if type(jids) == types.StringType:
             jids = [jids, ]
 
         logging.warn('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
+        from google.appengine.api import xmpp
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
     def invite(self, jid):
+        from google.appengine.api import xmpp
         xmpp.send_invite(jid)

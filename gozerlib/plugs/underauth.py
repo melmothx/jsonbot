@@ -2,7 +2,7 @@
 #
 #
 
-"""Handle non-ident connection on undernet. """
+""" Handle non-ident connection on undernet. """
 
 __copyright__ = 'this file is in the public domain'
 __author__ = 'aafshar@gmail.com'
@@ -16,11 +16,11 @@ from gozerlib.callbacks import callbacks
 import logging
 
 def pre_underauth_cb(bot, ievent):
-    """
-    Only respond to the message like:
+    """ 
+        Only respond to the message like:
+        NOTICE AUTH :*** Your ident is disabled or broken, to continue
+        to connect you must type /QUOTE PASS 16188
 
-    NOTICE AUTH :*** Your ident is disabled or broken, to continue
-    to connect you must type /QUOTE PASS 16188
     """
     args = ievent.arguments
 
@@ -33,7 +33,7 @@ def pre_underauth_cb(bot, ievent):
 
 def underauth_cb(bot, ievent):
     """
-    Send the raw command to the server
+        Send the raw command to the server
     """
     # last two elements of the arguments list are PASS <id>
     logging.debug("underauth - sending response")

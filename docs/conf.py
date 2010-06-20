@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib' + os.sep + 'socket
 sys.path.insert(0, os.path.abspath('..' + os.sep + 'socketplugs'))
 sys.path.insert(0, os.path.abspath('..' + os.sep + 'commonplugs'))
 sys.path.insert(0, os.path.abspath('..' + os.sep + 'waveplugs'))
-sys.path.insert(0, os.path.abspath("~" + os.sep + "google_appengine" + os.sep + "google"))
+sys.path.insert(0, os.path.abspath("~" + os.sep + "google_appengine"))
 print sys.path
 # General configuration
 # ---------------------

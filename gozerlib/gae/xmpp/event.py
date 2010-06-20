@@ -17,7 +17,7 @@ from gozerlib.gae.utils.auth import checkuser
 
 ## google imports
 
-from google.appengine.api import xmpp
+
 
 ## basic imports
 
@@ -47,6 +47,7 @@ class XMPPEvent(EventBase):
         logging.warn(u"xmpp - out - %s - %s" (self.userhost, txt))
 
         if txt:
+            from google.appengine.api import xmpp
             xmpp.send_message([self.userhost, ], txt)
             self.bot.outmonitor(self.origin, self.channel, txt, self)
 

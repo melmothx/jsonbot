@@ -19,6 +19,7 @@ gozerlib
     socklib/rest/index
     socklib/utils/index
     socklib/plugs/index
+    socklib/xmpp/index
     utils/index
 
     *

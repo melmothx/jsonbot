@@ -1,11 +1,8 @@
-# gozerbot/utils/reboot.py
+# gozerlib/reboot.py
 #
 #
 
-"""
-     reboot code. 
-
-"""
+""" reboot code. """
 
 ## gozerlib imports
 
@@ -22,14 +19,7 @@ import tempfile
 import logging
 
 def reboot():
-
-    """
-        reboot the bot.
-
-        .. literalinclude:: ../../gozerbot/reboot.py
-            :pyobject: reboot
-
-    """
+    """ reboot the bot. """
     logging.warn("reboot - rebooting")
     os.execl(sys.argv[0], *sys.argv)
 
@@ -46,9 +36,6 @@ def reboot_stateful(bot, ievent, fleet, partyline):
         :param partyline: partyline of the bot
         :type partyline: gozerbot.partyline.PartyLine
 
-        .. literalinclude:: ../../gozerbot/reboot.py
-            :pyobject: reboot_stateful
-
     """
     logging.warn("reboot - doing statefull reboot")
     session = {'bots': {}, 'name': bot.name, 'channel': ievent.channel, 'partyline': []}
@@ -59,7 +46,6 @@ def reboot_stateful(bot, ievent, fleet, partyline):
     session['partyline'] = partyline._resumedata()
     sessionfile = tempfile.mkstemp('-session', 'gozerbot-')[1]
     dump(session, open(sessionfile, 'w'))
-    #fleet.save()
-    #fleet.exit()
+    fleet.save()
+    fleet.exit()
     os.execl(sys.argv[0], sys.argv[0], '-r', sessionfile)
-
