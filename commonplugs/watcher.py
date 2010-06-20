@@ -107,6 +107,17 @@ class Watched(PlugPersist):
 
 watched = Watched('channels')
 
+## functions
+
+def writeout(botname, type, channel, txt):
+    if True:
+        watchbot = fleet.byname(botname)
+        if not watchbot:
+            watchbot = fleet.makebot(type, botname)
+
+        if watchbot:
+            watchbot.saynocb(channel, txt)
+
 ## callbacks
 
 def prewatchcallback(bot, event):
@@ -128,24 +139,22 @@ def watchcallback(bot, event):
         except ValueError:
             continue
 
-        watchbot = fleet.byname(botname)
-        if not watchbot:
-            watchbot = fleet.makebot(type, botname)
-        if watchbot:
-            if not event.nick:
-                orig = event.userhost
-            else:
-                orig = event.nick
-            #if event.cbtype == "OUTPUT":
-            #    txt = u"[%s] %s" % (bot.nick, event.txt)
-            #else:
-            txt = u"[%s] %s" % (orig, event.txt)
+        if not event.nick:
+            orig = event.userhost
+        else:
+            orig = event.nick
 
-            logging.debug("watcher - %s - %s" % (type, txt))
-            if txt.find('] [') > 1:
-                continue
+        txt = u"[%s] %s" % (orig, event.txt)
+        logging.debug("watcher - %s - %s" % (type, txt))
+        if txt.find('] [') > 2:
+            continue
 
-            watchbot.saynocb(channel, txt)
+        if bot.isgae:
+            from google.appengine.ext.deferred import defer
+            defer(writeout, botname, type, channel, txt)
+        else:
+            writeout(botname, type, channel, txt)
+
 
 gn_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
 gn_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
