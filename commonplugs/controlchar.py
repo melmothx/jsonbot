@@ -61,7 +61,7 @@ def handle_ccadd(bot, ievent):
         try:
             ievent.chan.data.cc += what
         except (KeyError, TypeError):
-            ievent.reply("no channel %s in database" % chan)
+            ievent.reply("no channel %s in database" % ievent.channel)
             return
 
         ievent.chan.save()
@@ -86,16 +86,10 @@ def handle_ccdel(bot, ievent):
             ievent.reply("only one character is allowed")
             return
 
-        try:
+        if ievent.chan.data.cc:
             ievent.chan.data.cc = ievent.chan.data.cc.replace(what, '')
-        except KeyError:
-            ievent.reply("no channel %s in database")
-            return
-        except TypeError:
-            ievent.reply("no channel %s in database" % chan)
-            return
+            ievent.chan.save()
 
-        ievent.chan.save()
         ievent.reply('control char %s deleted' % what)
 
     except IndexError:
