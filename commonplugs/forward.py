@@ -73,6 +73,7 @@ callbacks.add('QUIT', forwardoutcb, forwardoutpre)
 callbacks.add('NICK', forwardoutcb, forwardoutpre)
 callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 callbacks.add('CONSOLE', forwardoutcb, forwardoutpre)
+callbacks.add('WEB', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
     if event.isremote:

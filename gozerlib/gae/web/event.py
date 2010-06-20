@@ -9,6 +9,7 @@
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt, fromenc
 from gozerlib.utils.xmpp import stripped
+from gozerlib.outputcache import add
 
 ## gaelib imports
 

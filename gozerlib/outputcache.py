@@ -6,6 +6,7 @@
 
 from persist import Persist
 from utils.name import stripname
+from datadir import datadir
 
 ## basic imports
 
@@ -15,7 +16,7 @@ import os
 
 def add(target, txtlist):
     """ add list of txt to target entry. """
-    cache = Persist('outputcache' + os.sep + stripname(target))
+    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     d = cache.data
     if not d.has_key('msg'):
         d['msg'] = []
@@ -26,7 +27,7 @@ def add(target, txtlist):
 
 def set(target, txtlist):
     """ set target entry to list. """
-    cache = Persist('outputcache' + os.sep + stripname(target))
+    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     if not cache.data.has_key('msg'):
         cache.data['msg'] = []
     cache.data['msg'] = txtlist
@@ -34,7 +35,7 @@ def set(target, txtlist):
 
 def get(target):
     """ get output for target. """
-    cache = Persist('outputcache' + os.sep + stripname(target))
+    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     try:
         result = cache.data['msg']
         if result:

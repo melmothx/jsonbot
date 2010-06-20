@@ -201,16 +201,6 @@ class BotBase(LazyDict):
             event.leave()
             result = []
 
-        if False:
-            if event.isremote:
-                logging.debug('doing REMOTE callback')
-                gn_callbacks.check(self, e)
-                e.leave()
-                return
-            else:
-                callbacks.check(self, e)
-                e.leave()
-             
         if event.chan:
             if event.chan.data.lastedited > starttime:
                 event.chan.save()

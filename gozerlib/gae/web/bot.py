@@ -26,4 +26,7 @@ class WebBot(BotBase):
         """ saying on a webbot add it to the output cache. """
         
         add(channel, [txt, ])
+        self.outmonitor(self.name, channel, txt)
 
+    def saynocb(self, channel, txt, *args, **kwargs):
+        add(channel, [txt, ])
