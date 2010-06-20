@@ -173,6 +173,9 @@ class Ircevent(EventBase):
         if self.checkqueues(result):
             return
         restxt = self.makeresponse(txt, result, dot)
+        if self.isdcc:
+            self.sock.send(unicode(restxt) + u"\n")
+            return
         res1, res2 = self.less(restxt, 365+extend)
         target = to or self.printto
         self.bot.out(target, res1, 'msg')
