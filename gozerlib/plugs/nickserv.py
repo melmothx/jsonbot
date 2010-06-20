@@ -31,7 +31,7 @@ class NSAuth(Pdod):
     def __init__(self):
         self.registered = False
         Pdod.__init__(self, datadir + os.sep + 'plugs' + os.sep + \
-'nickserv' + os.sep + 'nickserv')
+'gozerlib.plugs.nickserv' + os.sep + 'nickserv')
 
     def add(self, bot, **kwargs):
 

@@ -29,7 +29,7 @@ cfg.define('tz', '+0100')
 
 class Seen(Pdod):
     def __init__(self):
-        self.datadir = datadir + os.sep + 'plugs' + os.sep + 'seen'
+        self.datadir = datadir + os.sep + 'plugs' + os.sep + 'commonplugs.seen'
         Pdod.__init__(self, os.path.join(self.datadir, 'seen.data'))
 
     def handle_seen(self, bot, ievent):

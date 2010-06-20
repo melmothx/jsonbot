@@ -72,8 +72,8 @@ class EventBase(LazyDict):
             logging.error("no event given in copyin")
             return self
         self.update(eventin)
-        if eventin.sock:
-            self.sock = eventin.sock
+        if eventin.has_key("sock"):
+            self.sock = eventin['sock']
         
         if eventin.has_key('queues'):
             if eventin['queues']:
