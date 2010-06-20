@@ -39,6 +39,7 @@ cpy = copy.deepcopy
 ## callbacks
 
 def forwardoutpre(bot, event):
+    logging.warn("forward - pre - %s" % event.channel)
     if event.channel in forward.data.channels and not event.isremote:
         return True
 

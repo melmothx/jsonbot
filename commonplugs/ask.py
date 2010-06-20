@@ -74,7 +74,8 @@ def askcallback(bot, event):
         logging.debug("ask - %s %s %s %s" % (botname, type, userhost, channel))
 
         if askbot:
-            askbot.say(channel, "%s says: %s" % (event.userhost, txt))
+            for jid in channel:
+                askbot.say(channel, "%s says: %s" % (event.userhost, txt))
         else:
             logging.warn("ask - can't find %s bot in fleet" % type)
             continue
@@ -134,7 +135,8 @@ def handle_ask(bot, event):
     except ImportError:
         xmppbot = bot
 
-    xmppbot.say(expertslist, "%s (%s) asks you: %s" % (event.userhost, bot.name, question))
+    for expert in expertslist:
+        xmppbot.say(expert, "%s (%s) asks you: %s" % (event.userhost, bot.name, question))
 
     # register the question so we can wait for the response
 

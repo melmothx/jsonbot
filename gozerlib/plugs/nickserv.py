@@ -20,6 +20,7 @@ from gozerlib.config import cfg as config
 
 import os
 import time
+import logging
 
 ## classes
 

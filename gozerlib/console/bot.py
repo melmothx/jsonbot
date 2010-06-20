@@ -105,9 +105,8 @@ class ConsoleBot(BotBase):
         if not txt:
             logging.warn("console - %s - no txt provided" % printto)
             return
-        if getpass.getuser() == printto:
-            self._raw(strippedtxt(txt))
-            self.outmonitor(self.name, printto, txt)
+        self._raw(strippedtxt(txt))
+        self.outmonitor(self.name, printto, txt)
 
     def _raw(self, txt):
         sys.stdout.write("=> ")
