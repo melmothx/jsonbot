@@ -151,7 +151,7 @@ class IRCBot(Irc):
                 logging.debug("irc - dcc - %s got %s" % (userhost, res))
                 # if res == "" than the otherside had disconnected
                 if self.stopped or not res:
-                    logging.info('irc - closing dcc with ' + nick)
+                    logging.warn('irc - closing dcc with ' + nick)
                     partyline.del_party(nick)
                     return
             except socket.timeout:
@@ -171,7 +171,7 @@ class IRCBot(Irc):
             except Exception, ex:
                 # other exception occured .. close connection
                 handle_exception()
-                logging.info('irc - closing dcc with ' + nick)
+                logging.warn('irc - closing dcc with ' + nick)
                 partyline.del_party(nick)
                 return
             try:
@@ -290,7 +290,6 @@ class IRCBot(Irc):
                     key = channel.getpass()
                 else:
                     key=None
-                logging.warn('irc - join %s' % i.split()[0])
                 start_new_thread(self.join, (i, key))
                 time.sleep(1)
             except Exception, ex:
@@ -432,11 +431,12 @@ class IRCBot(Irc):
              logging.debug("irc - %s is available again" % ievent.nick)
              self.nicks401.remove(ievent.nick)
         chan = ievent.channel
-        logging.warn("joining %s channel" % chan)
+        logging.warn("irc - joining %s channel" % chan)
         nick = ievent.nick
 
         # see if its the bot who is joining
         if nick == self.nick:
+            logging.warn("irc - joined %s" % ievent.channel)
             # check if we already have a channels object, if not init it
             time.sleep(0.5)
             self.who(chan)
@@ -475,11 +475,7 @@ class IRCBot(Irc):
         if ievent.nick == self.nick or ievent.nick == self.orignick:
             self.cfg['nick'] = nick
             self.cfg.save()
-
-        #try:
-        #    self.userchannels[nick] = self.userchannels[ievent.nick]
-        #except:
-        #   raise
+            logging.warn("irc - joined %s" % ievent.channel)
 
     def handle_part(self, ievent):
 

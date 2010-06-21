@@ -171,7 +171,7 @@ class Irc(BotBase):
             try:
                 self.oldsock.bind((elite, 0))
             except socket.gaierror:
-                logging.info("irc - %s - can't bind to %s" % (self.name, elite))
+                logging.warn("irc - %s - can't bind to %s" % (self.name, elite))
                 # resolve the IRC server and pick a random server
                 if not server:
                     # valid IPv6 ip?
@@ -331,7 +331,7 @@ class Irc(BotBase):
                 timeout += 1
                 if timeout > 2:
                     doreconnect = 1
-                    logging.info('irc - no pong received')
+                    logging.warn('irc - no pong received')
                     break
                 logging.error("irc - socket timeout")
                 pingsend = self.ping()
@@ -425,12 +425,12 @@ class Irc(BotBase):
 
         # if password is provided send it
         if self.password:
-            logging.warn('irc - sending password')
+            logging.debug('irc - sending password')
             self._raw("PASS %s" % self.password)
 
         # register with irc server
-        logging.warn('irc - registering with %s using nick %s' % (self.server, self.nick))
-        logging.warn('irc - this may take a while')
+        logging.debug('irc - registering with %s using nick %s' % (self.server, self.nick))
+        logging.debug('irc - this may take a while')
 
         # check for username and realname
         username = self.nick or 'jsonbot'
@@ -948,7 +948,7 @@ realname))
             if ievent.cmnd == 'JOIN' or ievent.msg:
                 if ievent.nick in self.nicks401:
                     self.nicks401.remove(ievent.nick)
-                    logging.warn('irc - %s joined .. unignoring' % ievent.nick)
+                    logging.debug('irc - %s joined .. unignoring' % ievent.nick)
             # see if the irc object has a method to handle the ievent
             method = getattr(self,'handle_' + ievent.cmnd.lower())
             # try to call method
@@ -982,7 +982,7 @@ realname))
         # check for alternick
         alternick = self.state['alternick']
         if alternick and not self.nickchanged:
-            logging.warn('irc - using alternick %s' % alternick)
+            logging.debug('irc - using alternick %s' % alternick)
             self.donick(alternick)
             self.nickchanged = 1
             return
