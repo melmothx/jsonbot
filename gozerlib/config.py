@@ -126,7 +126,7 @@ class Config(LazyDict):
         # read file and set config values to loaded JSON entries
         fname = filename
         #fname = stripname(filename, os.sep)
-        logging.info("config - fromfile - %s" % fname)
+        logging.debug("config - fromfile - %s" % fname)
         if not os.path.exists(fname):
             return self
  
@@ -165,7 +165,7 @@ class Config(LazyDict):
             d.append(p)
             ddir = os.sep.join(d)
             if not os.path.isdir(ddir):
-                logging.warn("persist - creating %s dir" % ddir)
+                logging.debug("persist - creating %s dir" % ddir)
                 try:
                     os.mkdir(ddir)
                 except OSError, ex:

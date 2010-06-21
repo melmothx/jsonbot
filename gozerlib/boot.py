@@ -43,7 +43,7 @@ rundir = datadir + os.sep + "run"
 def boot(force=False):
     """ initialize the bot. """
     global loaded
-    logging.warn("boot - starting ..")
+    logging.debug("boot - starting ..")
 
     global cmndtable
     if not cmndtable:
@@ -77,7 +77,7 @@ def boot(force=False):
         for plug in default_plugins:
             plugs.load(plug)
 
-    logging.warn("boot - booting done")
+    logging.debug("boot - booting done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """

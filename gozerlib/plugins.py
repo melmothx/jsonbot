@@ -23,7 +23,6 @@ import logging
 import Queue
 import copy
 import sys
-import logging
 
 ## defines
 
@@ -216,7 +215,7 @@ class Plugins(LazyDict):
             from boot import getcmndtable
             plugin = getcmndtable()[event.usercmnd.lower()]
         except KeyError:
-            logging.info("plugins - can't find plugin to reload for %s" % event.usercmnd)
+            logging.debug("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return
 
         #logging.warn('cmnd: %s plugin: %s' % (event.usercmnd, plugin))
@@ -224,7 +223,7 @@ class Plugins(LazyDict):
         if plugin in self:
             return False
 
-        logging.warn("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
+        logging.debug("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
         plugloaded = self.reload(plugin)
         return plugloaded
 

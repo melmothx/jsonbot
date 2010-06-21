@@ -64,7 +64,6 @@ class ConsoleBot(BotBase):
 
     def start(self):
         time.sleep(0.1)
-        print "bot nick is %s" % self.nick
         while 1: 
             try: 
                 input = console.raw_input("> ")

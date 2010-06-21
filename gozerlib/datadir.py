@@ -21,7 +21,7 @@ def makedirs(ddir=None):
     """ make subdirs in datadir. """
     ddir = ddir or datadir
     curdir = os.getcwd()
-    logging.warn("make dirs in %s" % ddir)
+    logging.debug("making dirs in %s" % ddir)
 
     if not os.path.isdir(ddir):
         os.mkdir(ddir)

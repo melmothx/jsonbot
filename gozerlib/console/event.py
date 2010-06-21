@@ -29,7 +29,7 @@ class ConsoleEvent(EventBase):
         if self.checkqueues(result):
              return
         resp = self.makeresponse(txt, result, dot)
-        logging.info("console - out - %s - %s" % (self.userhost, str(resp)))
+        logging.debug("console - out - %s - %s" % (self.userhost, str(resp)))
         self._raw(resp)
         self.result.append(resp)  
         self.outqueue.put_nowait(resp)

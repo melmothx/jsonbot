@@ -269,7 +269,7 @@ sleeptime=30*60, running=0):
                 #dtt = datetime.datetime.fromtimestamp(time.mktime(dt))
 
                 if not dt:
-                    logging.info("rss - %s feed .. can't determine time out of string %s" % (self.data.name, res.updated))
+                    logging.warn("rss - %s feed .. can't determine time out of string %s" % (self.data.name, res.updated))
                     return False
 
                 dtt = time.mktime(dt)
@@ -464,7 +464,7 @@ class Rsswatcher(Rssdict):
         """ get data of rss feed. """
 
         result = feedparser.parse(url, agent=useragent())
-        logging.debug("rss - fetch - got result from %s" % url)
+        logging.warn("rss - fetch - got result from %s" % url)
         
         if result and result.has_key('bozo_exception'):
             event.reply('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
@@ -516,7 +516,7 @@ class Rsswatcher(Rssdict):
                 try:
                     (botname, type, channel) = item
                 except:
-                    logging.info('rss - %s is not in the format (botname,channel)' % str(item))
+                    logging.debug('rss - %s is not in the format (botname,channel)' % str(item))
 
                 bot = fleet.byname(botname)
 
@@ -625,7 +625,7 @@ class Rsswatcher(Rssdict):
             try:
                 self.watch(name)
             except Exception, ex:
-                logging.info('rss - %s feed error: %s' % (name, str(ex)))
+                logging.warn('rss - %s feed error: %s' % (name, str(ex)))
                 if not rssitem.data.running:
                     break
             else:
@@ -716,7 +716,7 @@ class Rsswatcher(Rssdict):
                         resultstr += u"%s - " % item.strip()
 
                 except (KeyError, AttributeError, TypeError), ex:
-                    logging.info('rss - %s - %s' % (name, str(ex)))
+                    logging.warn('rss - %s - %s' % (name, str(ex)))
                     continue
 
             resultstr = resultstr[:-3]
@@ -758,7 +758,7 @@ class Rsswatcher(Rssdict):
                     try:
                         (botname, type, channel) = item
                     except:
-                        logging.info('rss - %s is not in the format (botname, type, channel)' % str(item))
+                        logging.debug('rss - %s is not in the format (botname, type, channel)' % str(item))
                         continue
 
                 try:
@@ -1002,7 +1002,7 @@ class Rsswatcher(Rssdict):
         rssitem.data.stoprunning = 0
         rssitem.save()
         watcher.watch(name)
-        logging.debug("started %s feed in %s channel" % (name, channel))
+        logging.warn("started %s feed in %s channel" % (name, channel))
         return True
 
     def stop(self, botname, name, channel):
@@ -1014,7 +1014,7 @@ class Rsswatcher(Rssdict):
         try:
             rssitem.data.watchchannels.remove([botname, channel])
             rssitem.save()
-            logging.debug("stopped %s feed in %s channel" % (name, channel))
+            logging.warn("stopped %s feed in %s channel" % (name, channel))
         except ValueError:
             return False
 
@@ -1053,7 +1053,7 @@ def dosync(feedname):
            localwatcher.peek(feedname)
 
     except RssException, ex:
-       logging.info("rss - %s - error: %s" % (feedname, str(ex)))
+       logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
 def doperiodical(*args, **kwargs):
 

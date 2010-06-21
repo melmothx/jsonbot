@@ -39,13 +39,13 @@ cpy = copy.deepcopy
 ## callbacks
 
 def forwardoutpre(bot, event):
-    logging.warn("forward - pre - %s" % event.channel)
+    logging.debug("forward - pre - %s" % event.channel)
     if event.channel in forward.data.channels and not event.isremote:
         return True
 
 def forwardoutcb(bot, event):
     e = cpy(event)
-    logging.warn("forward - cbtype is %s" % event.cbtype)
+    logging.debug("forward - cbtype is %s" % event.cbtype)
     e.isremote = True
     e.forwarded = True
     e.source = bot.jid
@@ -58,7 +58,7 @@ def forwardoutcb(bot, event):
     if outbot:
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
-            logging.warn("forward - sending to %s" % jid)
+            logging.debug("forward - sending to %s" % jid)
             outbot.saynocb(jid, e.dump())
     else:
         logging.debug("forward - no xmpp bot found in fleet")
@@ -89,7 +89,7 @@ def forwardincb(bot, event):
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
     remoteevent.source = bot.jid
-    logging.warn(u"forward - incoming - %s" % remoteevent.dump())
+    logging.debug(u"forward - incoming - %s" % remoteevent.dump())
     gn_callbacks.check(bot, remoteevent)
 
 gn_callbacks.add('MESSAGE', forwardincb, forwardinpre)

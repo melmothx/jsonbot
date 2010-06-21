@@ -119,7 +119,7 @@ class TimedLoop(ThreadLoop):
         self.sleepsec = sleepsec
 
     def _loop(self):
-        logging.info('%s - starting timedloop (%s seconds)' % (self.name, self.sleepsec))
+        logging.debug('%s - starting timedloop (%s seconds)' % (self.name, self.sleepsec))
         self.stopped = False
         self.running = True
 

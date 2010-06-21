@@ -50,12 +50,12 @@ server = None
 
 def startserver(force=False):
     if not enable:
-        logging.info("rest server is disabled")
+        logging.debug("rest server is disabled")
         return
 
     global server 
     if server and not force:
-        logging.info("REST server is already running. ")
+        logging.debug("REST server is already running. ")
         return server
 
     try:
@@ -82,7 +82,7 @@ def stopserver():
 
     try:
         if not server:
-            logging.warn('restserver - server is already stopped')
+            logging.debug('restserver - server is already stopped')
             return
 
         server.shutdown()
