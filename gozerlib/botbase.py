@@ -90,7 +90,7 @@ class BotBase(LazyDict):
             self.owner = mainconfig.owner
 
         self.setusers(usersin)
-        logging.warn("botbase - owner is %s" % self.owner)
+        logging.info("botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
         self.outcache = Less(1)
@@ -197,7 +197,7 @@ class BotBase(LazyDict):
             else:
                 result =  []
         except NoSuchCommand:
-            logging.warn("no such command: %s" % event.usercmnd)
+            logging.info("no such command: %s" % event.usercmnd)
             event.leave()
             result = []
 
@@ -303,7 +303,7 @@ class BotBase(LazyDict):
         # see if we need to store output in less cache
         result = ""
         if len(txtlist) > 2:
-            logging.warn("addding %s lines to %s outputcache" % (len(txtlist), who))
+            logging.debug("addding %s lines to %s outputcache" % (len(txtlist), who))
             self.outcache.add(who, txtlist[1:])
             size = len(txtlist) - 2
             result = txtlist[1:2][0]

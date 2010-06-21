@@ -11,6 +11,7 @@ import logging
 LEVELS = {'debug': logging.DEBUG,
           'info': logging.INFO,
           'warning': logging.WARNING,
+          'warn': logging.WARNING,
           'error': logging.ERROR,
           'critical': logging.CRITICAL}
 
@@ -24,4 +25,4 @@ def setloglevel(level_name):
     logging.basicConfig(level=level,
                     format='%(asctime)s - %(message)s - <%(funcName)s:%(lineno)s>')
     root.setLevel(level)
-    logging.warn("loglevel is %s (%s)" % (str(level), level_name))
+    logging.info("loglevel is %s (%s)" % (str(level), level_name))

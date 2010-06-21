@@ -431,7 +431,6 @@ class IRCBot(Irc):
              logging.debug("irc - %s is available again" % ievent.nick)
              self.nicks401.remove(ievent.nick)
         chan = ievent.channel
-        logging.warn("irc - joining %s channel" % chan)
         nick = ievent.nick
 
         # see if its the bot who is joining
@@ -442,6 +441,7 @@ class IRCBot(Irc):
             self.who(chan)
             return
 
+        logging.info("%s joined %s" % (ievent.nick, ievent.channel))
         # sync joined user with userhosts cache
         self.userhosts[nick] = ievent.userhost
         #if self.userchannels:
@@ -475,7 +475,6 @@ class IRCBot(Irc):
         if ievent.nick == self.nick or ievent.nick == self.orignick:
             self.cfg['nick'] = nick
             self.cfg.save()
-            logging.warn("irc - joined %s" % ievent.channel)
 
     def handle_part(self, ievent):
 

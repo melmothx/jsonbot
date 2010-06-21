@@ -24,7 +24,7 @@ import logging
 def globalshutdown():
     """ shutdown the bot. """
     sys.stdout.write("\n")
-    logging.error('shutting down')
+    logging.info('shutting down')
 
     try:
         os.remove('gozerlib.pid')
@@ -32,11 +32,11 @@ def globalshutdown():
         pass
 
     runners_stop()
-    logging.warn('shutting down fleet')
+    logging.info('shutting down fleet')
     fleet.exit()
-    logging.warn('shutting down plugins')
+    logging.info('shutting down plugins')
     plugs.exit()
-    logging.warn('done')
+    logging.info('done')
     #sys.stdin.close()
     #sys.stdout.close()
     print "ltrs!"

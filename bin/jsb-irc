@@ -49,7 +49,6 @@ cfg.save()
 setloglevel(cfg.loglevel)
 
 makedirs()
-logging.warn("irc - owner is %s" % cfg.owner)
 boot()
 
 from gozerlib.plugins import plugs
