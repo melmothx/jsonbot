@@ -108,7 +108,6 @@ class XMLDict(EventBase):
         if not res:
             raise Exception("%s .. toxml() can't convert empty dict" % self.name)
 
-        #logging.debug("sxmpp.core - toxml input: %s" % res)
         elem = self['element']
         main = "<%s" % self['element']
 
@@ -194,7 +193,7 @@ class XMLStream(NodeBuilder):
 
     def handle_proceed(self, data):
         """ default stream handler. """
-        logging.warn("sxmpp.core - proceeding")
+        logging.debug("sxmpp.core - proceeding")
 
     def handle_stream(self, data):
         """ default stream handler. """
@@ -202,7 +201,7 @@ class XMLStream(NodeBuilder):
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        logging.debug("sxmpp.core - STREAMERROR: %s" % data)
+        logging.error("sxmpp.core - STREAMERROR: %s" % data)
         self.exit()
 
     def handle_streamfeatures(self, data):
@@ -309,7 +308,7 @@ class XMLStream(NodeBuilder):
                 self.disconnectHandler(ex)
                 break
 
-        logging.warn('sxmpp.core - stopping readloop .. %s' % (self.error or 'error not set'))
+        logging.info('sxmpp.core - stopping readloop .. %s' % (self.error or 'error not set'))
 
     def _raw(self, stanza):
         """ output a xml stanza to the socket. """
@@ -329,7 +328,7 @@ class XMLStream(NodeBuilder):
                 logging.error('sxmpp - invalid stanza: %s' % what)
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
-                logging.info("_raw: %s" % what)
+                logging.debug("_raw: %s" % what)
                 try:
                     self.connection.send(what + u"\r\n")
                 except AttributeError:
@@ -385,10 +384,10 @@ class XMLStream(NodeBuilder):
         """ enable ssl on the socket. """
         try:
             import ssl
-            logging.warn("sxmpp.core - wrapping ssl socket")
+            logging.debug("sxmpp.core - wrapping ssl socket")
             self.connection = ssl.wrap_socket(self.sock)
         except ImportError:
-            logging.warn("sxmpp.core - making ssl socket")
+            logging.debug("sxmpp.core - making ssl socket")
             self.connection = socket.ssl(self.sock)
         if self.connection:
             return True
@@ -525,7 +524,7 @@ class XMLStream(NodeBuilder):
 
     def reconnect(self):
         """ reconnect to the server. """
-        logging.warn('reconnect')
+        logging.warn('reconnecting')
         self.exit()
         logging.warn('sleeping 15 seconds')
         time.sleep(15)

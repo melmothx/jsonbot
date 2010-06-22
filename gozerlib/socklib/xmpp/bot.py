@@ -143,7 +143,7 @@ class SXMPPBot(XMLStream, BotBase):
                 if not sleeptime:
                     sleeptime = 1
 
-                logging.info('sxmpp - jabberoutsleep .. sleeping %s seconds' % sleeptime)
+                logging.debug('sxmpp - jabberoutsleep .. sleeping %s seconds' % sleeptime)
                 time.sleep(sleeptime)
 
                 try:
@@ -328,7 +328,7 @@ class SXMPPBot(XMLStream, BotBase):
         logging.debug('sxmpp - auth: ' + result)
 
         if iq.error:
-            logging.warn('sxmpp - auth FAILED - %s' % iq.error)
+            logging.warn('sxmpp - auth failed - %s' % iq.error)
             if iq.error.code == "401":
                 logging.warn("sxmpp - wrong user or password")
             else:
@@ -376,7 +376,7 @@ class SXMPPBot(XMLStream, BotBase):
         m = Message(data)
         m.parse(self)
         if m.txt.startswith("{"):
-            logging.warn("event is remote")
+            logging.debug("event is remote")
             m.isremote = True
             gn_callbacks.check(self, m)
             return
