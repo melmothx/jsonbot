@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.eventbase import EventBase
-from gozerlib.utils.generic import splittxt, fromenc
+from gozerlib.utils.generic import splittxt, fromenc, toenc
 from gozerlib.utils.xmpp import stripped
 from gozerlib.outputcache import add
 
@@ -40,20 +40,20 @@ class WebEvent(EventBase):
         if not input:
             input = request.get('QUERY_STRING')
         self.isweb = True
-        self.origtxt = input.strip()
-        self.txt = fromenc(input)
+        self.origtxt = fromenc(input.strip())
+        self.txt = self.origtxt
         self.usercmnd = self.txt and self.txt.split()[0]
         self.groupchat = False
         self.response = response
         self.request = request
         (userhost, user, u, nick) = checkuser(response, request, self)
         self.user = user
-        self.userhost = userhost
-        self.nick = nick
-        self.auth = userhost
-        self.stripped = stripped(userhost)
+        self.userhost = fromenc(userhost)
+        self.nick = fromenc(nick)
+        self.auth = fromenc(userhost)
+        self.stripped = stripped(self.auth)
         self.domain = None
-        self.waveid = request.get('waveid')
+        self.waveid = fromenc(request.get('waveid'))
 
         if self.waveid:
             self.channel = self.waveid
@@ -63,12 +63,12 @@ class WebEvent(EventBase):
 
         if self.waveid:
             self.isgadget = True
-            logging.debug('web - setting channel to %s' % self.waveid)
+            logging.debug(u'web - setting channel to %s' % unicode(self.waveid))
             self.channel = self.waveid
 
         self.chan = Wave(self.channel)
         self.makeargs()
-        logging.debug(u'web - in - %s - %s' % (self.userhost, self.txt)) 
+        #logging.debug(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 
     def _raw(self, txt, end=u""):
@@ -77,7 +77,7 @@ class WebEvent(EventBase):
             output is NOT escaped.
 
         """
-        logging.debug('web - out - %s - %s' % (self.userhost, str(txt)))
+        logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 

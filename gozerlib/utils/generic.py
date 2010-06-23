@@ -122,8 +122,8 @@ def fromenc(txt, encoding='utf-8', what=""):
     try:
         #if type(txt) == types.UnicodeType:
         #    t = txt.encode(encoding)
-        t = unicode(txt)
-        return t.encode(encoding)
+        #t = unicode(txt)
+        return txt.encode(encoding)
     except UnicodeDecodeError:
         logging.debug("%s - can't encode %s" % (whichmodule(), encoding))
         raise

@@ -52,7 +52,7 @@ class BotBase(LazyDict):
         if not botname:
             botname = cfg and cfg.botname
 
-        logging.debug("botbase - %s - %s" % (str(cfg), botname))
+        logging.debug(u"botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()
         self.isgae = False
@@ -63,15 +63,15 @@ class BotBase(LazyDict):
         if botname:
             self.botname = botname
         else:
-            self.botname = "default-%s" % str(type(self)).split('.')[-1][:-2]
+            self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
 
-        self.fleetdir = 'fleet' + os.sep + stripname(self.botname)
+        self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
 
         if cfg:
             self.cfg = cfg
             self.update(cfg)
         else:
-            self.cfg = Config(self.fleetdir + os.sep + 'config')
+            self.cfg = Config(self.fleetdir + os.sep + u'config')
 
         if not self.uuid:
             if self.cfg and self.cfg.uuid:
@@ -85,18 +85,18 @@ class BotBase(LazyDict):
         self.name = self.botname
         self.owner = self.cfg.owner
         if not self.owner:
-            logging.warn("owner is not set in %s - using mainconfig" % self.cfg.cfile)
+            logging.warn(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
             from config import cfg as mainconfig
             self.owner = mainconfig.owner
 
         self.setusers(usersin)
-        logging.info("botbase - owner is %s" % self.owner)
+        logging.info(u"botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
         self.outcache = Less(1)
         self.userhosts = {}
         if not self.nick:
-            self.nick = 'jsonbot'
+            self.nick = u'jsonbot'
 
         try:
             if not os.isdir(self.datadir):
@@ -168,6 +168,8 @@ class BotBase(LazyDict):
         if not cc:
             cc = "!"
         logging.debug("cc for %s is %s (%s)" % (event.title or event.channel, cc, self.nick))
+        matchnick = unicode(self.nick + u",")
+        logging.warn(event.txt)        
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
             if event.txt:
@@ -176,14 +178,14 @@ class BotBase(LazyDict):
                 event.usercmnd = None
             event.makeargs()
             go = True
-        elif event.txt and (event.txt.startswith(self.nick + u": ") or event.txt.startswith(self.nick + u", ")):
-            event.txt = event.txt[len(self.nick) + 2:]
-            if event.txt:
-                event.usercmnd = event.txt.split()[0]
-            else:
-                event.usercmnd = None
-            event.makeargs()
-            go = True
+        #elif event.txt.startswith(matchnick) or event.txt.startswith(matchnick):
+        #    event.txt = event.txt[len(matchnick) + 1:]
+        #    if event.txt:
+        #        event.usercmnd = event.txt.split()[0]
+        #    else:
+        #        event.usercmnd = None
+        #    event.makeargs()
+        #    go = True
      
         if event.isremote and not event.remotecmnd:
             logging.debug("event is remote but not command .. not dispatching")

@@ -29,10 +29,10 @@ cpy = copy.deepcopy
 ## functions
 
 def checkignore(element, ignore):
-    if str(element).startswith('_'):
+    if unicode(element).startswith('_'):
         return True
     for item in ignore:
-        if item in str(element):
+        if item in unicode(element):
             #logging.warn("lazydict - ignoring on %s - %s" % (item, str(element)))
             return True
     return False
@@ -40,7 +40,7 @@ def checkignore(element, ignore):
 def dumpelement(element, ignore=[], prev={}):
     #logging.warn("lazydict - in - %s - %s" % (str(element), str(prev)))
     if element == prev:
-        return str(type(prev))
+        return unicode(type(prev))
     try:
         newer = dict(prev) or {}
     except (ValueError, KeyError):
@@ -48,7 +48,7 @@ def dumpelement(element, ignore=[], prev={}):
             return prev
         else:
             logging.debug("lazydict - returning prev - type %s" % type(prev))
-            return str(type(prev))
+            return unicode(type(prev))
 
     for name in element:
         try:
@@ -64,7 +64,7 @@ def dumpelement(element, ignore=[], prev={}):
                 continue
             if checkignore(prop, ignore):
                 logging.debug("lazydict - dump - ignoring %s" % name)
-                newer[name] = str(type(prop))
+                newer[name] = unicode(type(prop))
                 continue                
             try:
                  if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
@@ -76,7 +76,7 @@ def dumpelement(element, ignore=[], prev={}):
                 #dumps(prop)
                 #newer[name] = prop
             except (TypeError, AttributeError):
-                newer[name] = str(type(prop))
+                newer[name] = unicode(type(prop))
                 try:
                     if prop != element:
                         newer[name] = dumpelement(prop, ignore, prop)
