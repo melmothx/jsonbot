@@ -9,7 +9,7 @@
 from gozerlib.channelbase import ChannelBase
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
-from gozerlib.utils.generic import strippedtxt
+from gozerlib.utils.generic import strippedtxt, toenc
 
 ## simplejson imports
 
@@ -153,8 +153,8 @@ class Wave(ChannelBase):
         if not wavelet:
             logging.error("cant get wavelet")
             return
-        txt = strippedtxt(txt.strip())
-        logging.debug('wave - out - %s - %s' % (self.data.title, txt))
+        txt = toenc(strippedtxt(txt.strip()))
+        logging.debug(u'wave - out - %s - %s' % (self.data.title, txt))
         try:
             annotations = []
             for url in txt.split():
