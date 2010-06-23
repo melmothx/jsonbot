@@ -213,7 +213,7 @@ class Callbacks(object):
             if not cb.func:
                 return
 
-            logging.info('callbacks - excecuting callback %s' % str(cb.func))
+            logging.info('callbacks - %s - %s - excecuting callback %s' % (bot.type, event.userhost, str(cb.func)))
             event.iscallback = True
 
             # launch the callback
