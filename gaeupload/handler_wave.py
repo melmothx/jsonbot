@@ -22,7 +22,7 @@ import os
 
 ## defines
 
-logging.warn(getversion('WAVE'))
+logging.info(getversion('GAE WAVE'))
 boot()
 
 # the bot

@@ -49,7 +49,7 @@ import os
 import logging
 
 ## init
-logging.warn(getversion('WEB'))
+logging.info(getversion('GAE WEB'))
 boot()
 
 ## define

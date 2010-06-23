@@ -68,7 +68,7 @@ class WaveBot(BotBase, robot.Robot):
 
     """
 
-    def __init__(self, cfg=None, users=None, plugs=None, name=None, domain=None,
+    def __init__(self, cfg=None, users=None, plugs=None, name="gae-wave", domain=None,
                  image_url='http://jsonbot.appspot.com/assets/favicon.png',
                  profile_url='http://jsonbot.appspot.com/', *args, **kwargs):
         sname = 'jsonbot'

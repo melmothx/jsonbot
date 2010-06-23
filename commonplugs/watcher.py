@@ -146,7 +146,8 @@ def watchcallback(bot, event):
 
         txt = u"[%s] %s" % (orig, event.txt)
         logging.debug("watcher - %s - %s" % (type, txt))
-        if txt.find('] [') > 2:
+        if txt.count('] [') > 2:
+            logging.debug("watcher - %s - skipping %s" % (type, txt))
             continue
 
         if bot.isgae:

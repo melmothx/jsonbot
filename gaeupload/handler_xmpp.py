@@ -44,7 +44,7 @@ import time
 import types
 import logging
 
-logging.warn(getversion('XMPP'))
+logging.info(getversion('GAE XMPP'))
 boot()
 
 ## define

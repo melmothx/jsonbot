@@ -23,9 +23,9 @@ class XMPPBot(BotBase):
 
     """ XMPPBot just inherits from BotBase for now. """
 
-    def __init__(self, cfg=None, users=None, plugs=None, jid="jsonbot@appspot.com", *args, **kwargs):
-        BotBase.__init__(self, cfg, users, plugs, jid, *args, **kwargs)
-        self.jid = jid
+    def __init__(self, cfg=None, users=None, plugs=None, botname="gae-xmpp", *args, **kwargs):
+        BotBase.__init__(self, cfg, users, plugs, botname, *args, **kwargs)
+        self.jid = "jsonbot@appspot.com"
         if self.cfg:
             self.cfg['type'] = 'xmpp'
         self.isgae = True
