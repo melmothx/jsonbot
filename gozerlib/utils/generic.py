@@ -7,7 +7,7 @@
 ## lib imports 
 
 from exception import handle_exception
-from trace import calledfrom
+from trace import calledfrom, whichmodule
 from lazydict import LazyDict
 from gozerlib.datadir import datadir
 
@@ -97,7 +97,7 @@ def decodeperchar(txt, encoding='utf-8', what=""):
         if what:
             logging.debug("%s: can't decode %s characters to %s" % (what, nogo, encoding))
         else:
-            logging.debug("can't decode %s characters to %s" % (nogo, encoding))
+            logging.debug("%s - can't decode %s characters to %s" % (whichmodule(), nogo, encoding))
 
     return u"".join(res)
 
@@ -107,11 +107,12 @@ def toenc(what, encoding='utf-8'):
         what=  u""
 
     try:
-        w = unicode(what)
-        return w.encode(encoding)
-    except UnicodeEncodeError:
-        logging.debug("can't encode %s to %s" % (what, encoding))
-        return u""
+        #w = unicode(what)
+        return what.decode(encoding)
+    except UnicodeDecodeError:
+        logging.debug("%s - can't encode %s to %s" % (whichmodule(2), what, encoding))
+        raise
+        #return u""
 
 def fromenc(txt, encoding='utf-8', what=""):
     """ convert from encoding. """
@@ -119,12 +120,14 @@ def fromenc(txt, encoding='utf-8', what=""):
         txt = u""
 
     try:
-        if type(txt) == types.UnicodeType:
-            t = txt.encode(encoding)
+        #if type(txt) == types.UnicodeType:
+        #    t = txt.encode(encoding)
         t = unicode(txt)
-        return unicode(t.decode(encoding))
+        return t.encode(encoding)
     except UnicodeDecodeError:
-        return decodeperchar(txt, encoding, what)
+        logging.debug("%s - can't encode %s" % (whichmodule(), encoding))
+        raise
+        #return decodeperchar(txt, encoding, what)
 
 def toascii(what):
     """ convert to ascii. """

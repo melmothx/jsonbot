@@ -283,27 +283,6 @@ def decodeperchar(txt, encoding='utf-8', what=""):
 
     return u"".join(res)
 
-def toenc(what, encoding='utf-8'):
-    if not what:
-        return u""
-    try:
-        w = unicode(what)
-        return w.encode(encoding)
-    except UnicodeEncodeError:
-        logging.debug("generic - can't encode %s to %s" % (what, encoding))
-        return u""
-
-def fromenc(txt, encoding='utf-8', what=""):
-    if not txt:
-        return u""
-    try:
-        if type(txt) == types.UnicodeType:
-            t = txt.encode(encoding)
-        t = unicode(txt)
-        return unicode(t.decode(encoding))
-    except UnicodeDecodeError:
-        return decodeperchar(txt, encoding, what)
-
 def toascii(what):
     what = what.encode('ascii', 'replace')
     return what

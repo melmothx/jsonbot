@@ -11,7 +11,8 @@
 ## gozerlib imports
 
 from gozerlib.utils.exception import handle_exception
-from gozerlib.socklib.utils.generic import getrandomnick, toenc, fromenc, strippedtxt
+from gozerlib.utils.generic import toenc, fromenc
+from gozerlib.socklib.utils.generic import getrandomnick, strippedtxt
 from gozerlib.socklib.utils.generic import fix_format, splittxt, waitforqueue, uniqlist
 from gozerlib.utils.locking import lockdec
 from gozerlib.config import cfg as config
@@ -281,7 +282,11 @@ class Irc(BotBase):
                     intxt = intxt[:-1]
                 for r in intxt:
                     r = r.rstrip()
-                    rr = fromenc(r, self.encoding)
+                    try:
+                        rr = unicode(fromenc(r, self.encoding))
+                    except UnicodeDecodeError:
+                        logging.warn("irc - decode error - using raw")
+                        rr = toenc(r, self.encoding)
                     if not rr:
                         continue
                     res = strippedtxt(rr, ['\001', '\002', '\003', '\t'])

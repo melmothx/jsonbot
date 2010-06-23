@@ -22,7 +22,8 @@ from gozerlib.exit import globalshutdown
 
 ## gozerlib.socket imports
 
-from gozerlib.socklib.utils.generic import waitforqueue, toenc, fromenc, jabberstrip, getrandomnick
+from gozerlib.socklib.utils.generic import waitforqueue, jabberstrip, getrandomnick
+from gozerlib.utils.generic import toenc, fromenc
 
 ## xmpp imports
 
