@@ -1,4 +1,4 @@
-# gozerlib/xmpp/bot.py
+# gozerlib/gae/xmpp/bot.py
 #
 #
 

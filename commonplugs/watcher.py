@@ -140,7 +140,7 @@ def watchcallback(bot, event):
             continue
 
         if not event.nick:
-            orig = event.userhost
+            orig = event.stripped or event.userhost
         else:
             orig = event.nick
 

@@ -70,6 +70,7 @@ class XMPPEvent(EventBase):
         self.jid = self['from']
         self.to = stripped(self['to'])
         self.channel = stripped(self.userhost)
+        self.stripped = stripped(self.userhost)
         self.chan = ChannelBase(self.channel)
         self.origin = self.channel
         input = self.body or self.stanza

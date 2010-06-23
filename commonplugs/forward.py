@@ -52,9 +52,9 @@ def forwardoutcb(bot, event):
     #if not e.nick:
     #    e.nick = bot.nick or bot.name
     outbot = fleet.getfirstjabber()
-    if not outbot and bot.isgae:
-        from gozerlib.gae.xmpp.bot import XMPPBot
-        outbot = XMPPBot()
+    #if not outbot and bot.isgae:
+    #    from gozerlib.gae.xmpp.bot import XMPPBot
+    #    outbot = XMPPBot()
     if outbot:
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
