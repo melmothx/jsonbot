@@ -74,7 +74,7 @@ class SXMPPBot(XMLStream, BotBase):
 
         self.username = self.user.split('@')[0]
         XMLStream.__init__(self, self.host, self.port, self.name)   
-        self.type = 'xmpp'
+        self.type = 'sxmpp'
         self.outqueue = Queue.Queue()
         self.sock = None
         self.me = self.user
