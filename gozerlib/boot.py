@@ -153,7 +153,7 @@ def savepluginlist():
 
     for cmndname, c in cmnds.iteritems():
         if not c.plugname:
-            logging.warn("boot - not adding %s to pluginlist" % cmndname)
+            logging.info("boot - not adding %s to pluginlist" % cmndname)
             continue
         if c.plugname not in pluginlist.data:
             pluginlist.data.append(c.plugname)
