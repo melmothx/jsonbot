@@ -69,7 +69,7 @@ class Wave(ChannelBase):
         else:
             parts = list(event.root.participants)
         newwave = bot.newwave(event.domain, parts)
-        logging.warn("wave - clone - populating wave with %s" % str(parts))
+        logging.info("wave - clone - populating wave with %s" % str(parts))
         for id in parts:
             newwave.participants.add(id)
         if title:
@@ -98,7 +98,7 @@ class Wave(ChannelBase):
             newwave._root_blip.append("PROTECTED WAVE")
 
         wavelist = bot.submit(newwave)
-        logging.warn("wave - clone - %s - submit returned %s" % (list(newwave.participants), str(wavelist)))
+        logging.info("wave - clone - %s - submit returned %s" % (list(newwave.participants), str(wavelist)))
 
         if not wavelist:
             logging.warn("submit of new wave failed")
@@ -112,7 +112,7 @@ class Wave(ChannelBase):
                 except (KeyError, ValueError):
                     continue
         
-            logging.warn("wave - newwave id is %s" % waveid)
+            logging.info("wave - newwave id is %s" % waveid)
             if not waveid:
                 logging.error("can't extract waveid from submit data")
                 return
@@ -154,13 +154,13 @@ class Wave(ChannelBase):
             logging.error("cant get wavelet")
             return
         txt = strippedtxt(txt.strip())
-        logging.warn('wave - out - %s - %s' % (self.data.title, txt))
+        logging.debug('wave - out - %s - %s' % (self.data.title, txt))
         try:
             annotations = []
             for url in txt.split():
                 got = url.find("http://")
                 if got != -1:
-                    logging.warn("wave - found url - %s" % str(url))
+                    logging.debug("wave - found url - %s" % str(url))
                     start = txt.find(url.strip())
                     if url.endswith(">"):
                         annotations.append((start+2, start+len(url)-1, "link/manual", url[1:-1]))
@@ -170,7 +170,7 @@ class Wave(ChannelBase):
         except Exception, ex:
             handle_exception()
 
-        logging.warn("annotations used: %s", annotations)
+        logging.debug("annotations used: %s", annotations)
         reply = wavelet.reply(txt)
         if annotations:
             for ann in annotations:
@@ -180,7 +180,7 @@ class Wave(ChannelBase):
                     except Exception, ex:
                         handle_exception()
 
-        logging.warn("submitting to server: %s" % wavelet.serialize())
+        logging.info("submitting to server: %s" % wavelet.serialize())
         try:
             import google
             bot.submit(wavelet)
@@ -205,7 +205,7 @@ class Wave(ChannelBase):
             logging.error("cant get wavelet")
             return
 
-        logging.warn('wave - out - %s - %s' % (self.data.title, txt))
+        logging.debug('wave - out - %s - %s' % (self.data.title, txt))
         try:
             import google
             blip = wavelet._root_blip.reply()

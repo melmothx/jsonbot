@@ -1,13 +1,17 @@
-# gozerlib/web/bot.py
+# gozerlib/gae/web/bot.py
 #
 #
 
-""" web bot. """
+""" GAE web bot. """
 
 ## gozerlib imports
 
 from gozerlib.botbase import BotBase
 from gozerlib.outputcache import add
+
+## basic imports
+
+import logging
 
 ## classes
 
@@ -24,9 +28,9 @@ class WebBot(BotBase):
 
     def say(self, channel, txt, *args, **kwargs):
         """ saying on a webbot add it to the output cache. """
-        
-        add(channel, [txt, ])
+        self.saynocb(channel, txt, *args, **kwargs)        
         self.outmonitor(self.name, channel, txt)
 
     def saynocb(self, channel, txt, *args, **kwargs):
+        logging.debug("web - out - %s - %s" % (channel, txt))
         add(channel, [txt, ])

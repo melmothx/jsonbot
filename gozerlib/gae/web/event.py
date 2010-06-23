@@ -63,12 +63,12 @@ class WebEvent(EventBase):
 
         if self.waveid:
             self.isgadget = True
-            logging.warn('web - setting channel to %s' % self.waveid)
+            logging.debug('web - setting channel to %s' % self.waveid)
             self.channel = self.waveid
 
         self.chan = Wave(self.channel)
         self.makeargs()
-        logging.warn(u'web - in - %s - %s' % (self.userhost, self.txt)) 
+        logging.debug(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 
     def _raw(self, txt, end=u""):
@@ -77,7 +77,7 @@ class WebEvent(EventBase):
             output is NOT escaped.
 
         """
-        logging.info('web - out - %s - %s' % (self.userhost, str(txt)))
+        logging.debug('web - out - %s - %s' % (self.userhost, str(txt)))
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 

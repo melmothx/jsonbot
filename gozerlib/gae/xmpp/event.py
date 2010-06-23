@@ -44,7 +44,7 @@ class XMPPEvent(EventBase):
         """ output data to user. txt is NOT escaped. """
 
         txt = unicode(txt)
-        logging.warn(u"xmpp - out - %s - %s" (self.userhost, txt))
+        logging.debug(u"xmpp - out - %s - %s" (self.userhost, txt))
 
         if txt:
             from google.appengine.api import xmpp
@@ -65,7 +65,7 @@ class XMPPEvent(EventBase):
         else:
             self.auth = stripped(self.userhost)
 
-        logging.warn('xmpp - auth is %s' % self.auth)
+        logging.info('xmpp - auth is %s' % self.auth)
         self.resource = resource(self['from'])
         self.jid = self['from']
         self.to = stripped(self['to'])
@@ -82,7 +82,7 @@ class XMPPEvent(EventBase):
         self.txt = input
         self.usercmnd = self.txt.split()[0].lower()
         self.makeargs()
-        logging.warn(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
+        logging.debug(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 
     def reply(self, txt, resultlist=[], event=None, origin="", dot=", ", extend=0, raw=True, *args, **kwargs):
@@ -107,8 +107,9 @@ class XMPPEvent(EventBase):
         """ output txt to the user .. output IS escaped. """
 
         if txt:
+            from google.appengine.api import xmpp
             txt = unicode(txt)
-            logging.warn(u"xmpp - out - %s - %s" % (self.userhost, txt))
+            logging.debug(u"xmpp - out - %s - %s" % (self.userhost, txt))
             if not raw:
                 xmpp.send_message([self.userhost, ], cgi.escape(txt))
             else:

@@ -47,7 +47,7 @@ def dumpelement(element, ignore=[], prev={}):
         if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
             return prev
         else:
-            logging.warn("lazydict - returning prev - type %s" % type(prev))
+            logging.debug("lazydict - returning prev - type %s" % type(prev))
             return str(type(prev))
 
     for name in element:
@@ -63,7 +63,7 @@ def dumpelement(element, ignore=[], prev={}):
             if prop == None:
                 continue
             if checkignore(prop, ignore):
-                logging.warn("lazydict - dump - ignoring %s" % name)
+                logging.debug("lazydict - dump - ignoring %s" % name)
                 newer[name] = str(type(prop))
                 continue                
             try:

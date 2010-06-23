@@ -59,7 +59,7 @@ class Fleet(Persist):
         if not self.data.names:
             logging.error("fleet - no bots in fleet")
         else:
-            logging.warn("fleet - loading %s" % " .. ".join(self.data.names))
+            logging.debug("fleet - loading %s" % " .. ".join(self.data.names))
 
         for name in self.data.names:
             if not name:
@@ -94,7 +94,7 @@ class Fleet(Persist):
         """ set the type of a bot. """
         cfg = Config('fleet' + os.sep + name + os.sep + 'config')
         cfg['name'] = name
-        logging.warn("fleet - %s - setting type to %s" % (self.cfile, type))
+        logging.debug("fleet - %s - setting type to %s" % (self.cfile, type))
         cfg.type = type
         cfg.save()
 
@@ -118,7 +118,7 @@ class Fleet(Persist):
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
             cfg['name'] = name
         if not cfg.type and type:
-            logging.warn("fleet - %s - setting type to %s" % (cfg.cfile, type))
+            logging.debug("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
         if not cfg['type']:
             try:
@@ -180,7 +180,7 @@ class Fleet(Persist):
             :type cfg: gozerlib.config.Config
 
         """
-        logging.info('fleet - making %s (%s) wave bot - %s' % (domain, 'wave', str(cfg)))
+        logging.debug('fleet - making %s (%s) wave bot - %s' % (domain, 'wave', str(cfg)))
         bot = None
         type = 'wave'
         name = domain
@@ -193,7 +193,7 @@ class Fleet(Persist):
             cfg['domain'] = domain
             cfg.save()
         if not cfg.type:
-            logging.warn("fleet - %s - setting type to %s" % (cfg.cfile, type))
+            logging.debug("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
             cfg.save()
         if not cfg['type']:
@@ -277,7 +277,7 @@ class Fleet(Persist):
                 logging.debug('fleet - removing %s from fleet' % bot.botname)
                 del self.bots[i]
 
-        logging.warn('fleet - adding %s' % bot.botname)
+        logging.info('fleet - adding %s' % bot.botname)
         self.bots.append(bot)
         if bot.botname and bot.botname not in self.data['names']:
             self.data['names'].append(bot.botname)

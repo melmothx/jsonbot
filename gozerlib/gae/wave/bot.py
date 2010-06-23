@@ -101,12 +101,12 @@ class WaveBot(BotBase, robot.Robot):
         if not whitelist:
             whitelist = wevent.chan.data.whitelist = []
         participants = event.participants_added
-        logging.warning("wave - %s - %s joined - owner is %s" % (wevent.chan.data.title, participants, wevent.chan.data.owner))
+        logging.warning("wave - %s - %s joined" % (wevent.chan.data.title, participants))
 
         if wevent.chan.data.protected:
             for target in participants:
                 if target not in whitelist and target != 'jsonbot@appspot.com' and target != wevent.chan.data.owner:
-                    logging.warn("waves - %s - setting %s to read-only" % (wevent.chan.data.title, target))
+                    logging.warn("wave - %s - setting %s to read-only" % (wevent.chan.data.title, target))
                     wevent.root.participants.set_role(target, waveapi.wavelet.Participants.ROLE_READ_ONLY)
 
         callbacks.check(self, wevent)
@@ -116,7 +116,7 @@ class WaveBot(BotBase, robot.Robot):
         logging.warn('wave - joined "%s" (%s) wave' % (wavelet._wave_id, wavelet._title))
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-        logging.warn("wave - owner is %s" % wevent.chan.data.owner)
+        logging.debug("wave - owner is %s" % wevent.chan.data.owner)
         wevent.chan.save()
         wevent.reply("Welcome to %s (see !help) or http://jsonbot.appspot.com/docs/" % getversion())
         callbacks.check(self, wevent)
@@ -145,7 +145,7 @@ class WaveBot(BotBase, robot.Robot):
         if not self.domain in self._server_rpc_base:
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
-            logging.warn("waves - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
+            logging.debug("waves - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
 
         resp = self.makeresponse(txt, result, dot)
 
@@ -180,7 +180,7 @@ class WaveBot(BotBase, robot.Robot):
 
     def newwave(self, domain=None, participants=None, submit=False):
         """ create a new wave. """
-        logging.warn("wave - new wave on domain %s" % domain)
+        logging.info("wave - new wave on domain %s" % domain)
         newwave = self.new_wave(domain or self.domain, participants=participants, submit=submit)
         return newwave
 
