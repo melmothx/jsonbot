@@ -29,9 +29,10 @@ def handle_aliassearch(bot, ievent):
     result = []
     res = []
     aliases = ievent.userstate.data.aliases
-    for i, j in aliases.iteritems():
-        if what in i or what in j:
-            result.append((i, j))
+    if aliases:
+        for i, j in aliases.iteritems():
+            if what in i or what in j:
+                result.append((i, j))
 
     if not result:
         ievent.reply('no %s found' % what)

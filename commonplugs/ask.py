@@ -129,15 +129,14 @@ def handle_ask(bot, event):
             expertslist = [defaultJID, ]
 
     # ask the question (send xmpp msg to experts)
-    try:
-        from gozerlib.gae.xmpp.bot import XMPPBot
-        xmppbot = XMPPBot()
-    except ImportError:
-        xmppbot = bot
+    xmppbot = fleet.getfirstjabber()
 
-    for expert in expertslist:
-        xmppbot.say(expert, "%s (%s) asks you: %s" % (event.userhost, bot.name, question))
-
+    if xmppbot:
+        for expert in expertslist:
+            xmppbot.say(expert, "%s (%s) asks you: %s" % (event.userhost, bot.name, question))
+    else:
+        logging.warn("ask - can't find jabber bot in fleet")
+        return
     # register the question so we can wait for the response
 
     asker = event.userhost
