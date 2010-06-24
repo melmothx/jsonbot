@@ -117,11 +117,14 @@ class Irc(BotBase):
 
         try:
             self.lastoutput = time.time()
-            itxt = toenc(outputmorphs.do(txt), self.encoding)
+            itxt = fromenc(outputmorphs.do(txt), self.encoding)
             if self.cfg.has_key('ssl') and self.cfg['ssl']:
                 self.sock.write(itxt + '\n')
             else:
                 self.sock.send(itxt[:500] + '\n')
+        except UnicodeEncodeError, ex:
+            logging.error("irc - encoding error: %s" % str(ex))
+            return
         except Exception, ex:
             # check for broken pipe error .. if so ignore 
             # used for nonblocking sockets
@@ -688,16 +691,14 @@ realname))
         """ reconnect to the irc server. """
 
         try:
-            if self.stopped:
-                return 0
             # determine how many seconds to sleep
             if self.reconnectcount > 0:
                 reconsleep = self.reconnectcount*15
                 logging.warn('irc - sleeping %s seconds for reconnect' % reconsleep)
                 time.sleep(reconsleep)
-                if self.stopped:
-                    logging.warn('irc - stopped.. not reconnecting')
-                    return 1
+                #if self.stopped:
+                #    logging.warn('irc - stopped.. not reconnecting')
+                #    return 1
                 if self.connected:
                     logging.warn('irc - already connected .. not reconnecting')
                     return 1
@@ -859,7 +860,7 @@ realname))
             if timetosleep > 0 and not self.nolimiter and not (time.time() - self.connecttime < 5):
                 logging.debug('irc - flood protect')
                 time.sleep(timetosleep)
-            txt = toenc(strippedtxt(txt, ['\001', '\002', '\003', '\t']))
+            txt = strippedtxt(txt, ['\001', '\002', '\003', '\t'])
             txt = txt.rstrip()
             self._raw(txt)
             try:

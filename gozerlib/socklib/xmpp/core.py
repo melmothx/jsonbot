@@ -323,7 +323,7 @@ class XMLStream(NodeBuilder):
                 return
 
             #what = jabberstrip(stanza)
-            what = stanza
+            what = toenc(stanza)
             if not what.endswith('>') or not what.startswith('<'):
                 logging.error('sxmpp - invalid stanza: %s' % what)
                 return

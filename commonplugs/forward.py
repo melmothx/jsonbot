@@ -58,7 +58,7 @@ def forwardoutcb(bot, event):
     if outbot:
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
-            logging.debug("forward - sending to %s" % jid)
+            logging.info("forward - sending to %s" % jid)
             outbot.saynocb(jid, e.dump())
     else:
         logging.debug("forward - no xmpp bot found in fleet")
@@ -132,7 +132,7 @@ examples.add("forward-allow" , "allow an JID to forward to us", "forward-allow j
 
 def handle_forwardlist(bot, event):
     try:
-        event.reply(forward.data.channels[event.channel])
+        event.reply("forwards for %s: " % event.channel, forward.data.channels[event.channel])
     except KeyError:
         event.reply("no forwards for %s" % event.channel)
 
