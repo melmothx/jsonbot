@@ -1,0 +1,1 @@
+kill -s TERM `cat gozerdata/run/jsonbot.pid`

@@ -54,20 +54,29 @@ def boot(force=False, encoding="utf-8", umask=None):
     except AttributeError:
         pass
 
-    # write pid to pidfile  
-    k = open(rundir + os.sep + 'jsonbot.pid','w')
-    k.write(str(os.getpid()))
-    k.close()
+    try:
+        # write pid to pidfile  
+        k = open(rundir + os.sep + 'jsonbot.pid','w')
+        k.write(str(os.getpid()))
+        k.close()
+    except:
+        pass
 
-    # set default settings
-    reload(sys)
-    sys.setdefaultencoding(encoding)
+    try:
+        # set default settings
+        reload(sys)
+        sys.setdefaultencoding(encoding)
+    except:
+        pass
 
-    # set umask of gozerdata dir
-    if not umask:
-        checkpermissions('gozerdata', 0700) 
-    else:
-        checkpermissions('gozerdata', umask)  
+    try:
+        # set umask of gozerdata dir
+        if not umask:
+            checkpermissions('gozerdata', 0700) 
+        else:
+            checkpermissions('gozerdata', umask)  
+    except:
+        pass
 
     global loaded
     global cmndtable
