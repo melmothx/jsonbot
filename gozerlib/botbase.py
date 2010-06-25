@@ -377,7 +377,7 @@ class BotBase(LazyDict):
                 res.append(i)
 
         if txt: 
-            return fromenc(txt) + dot.join(res)   
+            return txt + dot.join(res)   
         elif result:
             return dot.join(res)
         return ""   

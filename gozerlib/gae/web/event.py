@@ -77,7 +77,7 @@ class WebEvent(EventBase):
             output is NOT escaped.
 
         """
-        logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
+        #logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 

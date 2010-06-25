@@ -8,6 +8,7 @@
 
 from gozerlib.utils.generic import checkpermissions
 from gozerlib.persist import Persist
+from gozerlib.utils.exception import handle_exception
 from gozerlib.datadir import datadir
 import users
 
@@ -24,9 +25,12 @@ sys.path.insert(0, os.getcwd() + os.sep + '..')
 
 ## defines
 
+ongae = False
+
 try:
     import waveapi
     plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs']
+    ongae = True
 except ImportError:
     plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs', 'socketplugs']
 
@@ -59,14 +63,15 @@ def boot(force=False, encoding="utf-8", umask=None):
         k = open(rundir + os.sep + 'jsonbot.pid','w')
         k.write(str(os.getpid()))
         k.close()
-    except:
+    except IOError:
         pass
 
     try:
         # set default settings
-        reload(sys)
-        sys.setdefaultencoding(encoding)
-    except:
+        if not ongae:
+            reload(sys)
+            sys.setdefaultencoding(encoding)
+    except AttributeError:
         pass
 
     try:
@@ -76,7 +81,7 @@ def boot(force=False, encoding="utf-8", umask=None):
         else:
             checkpermissions('gozerdata', umask)  
     except:
-        pass
+        handle_exception()
 
     global loaded
     global cmndtable
