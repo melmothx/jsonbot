@@ -1,5 +1,5 @@
 # gozerlib/plugs/test.py
-#
+# encoding: utf-8
 #
 
 """ test plugin. """
@@ -27,7 +27,7 @@ donot = ['quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
 'snarf', 'validate', 'popcon', 'twitter', 'tinyurl', 'whois', 'rblcheck', \
 'wowwiki', 'wikipedia', 'tr', 'translate', 'serie', 'sc', 'shoutcast', 'mash', \
 'gcalc', 'identi', 'mail', 'part', 'cycle', 'exception', 'fleet', 'rss', 'ln', 'markov-learn', 'pit', 'bugtracker', 'tu', 'banner', 'test', 'cloud', 'dispatch', 'lns', 'loglevel', \
-'hb-register', 'hb-subscribe', 'hb-cloneurl']
+'hb-register', 'hb-subscribe', 'hb-cloneurl', 'hb-clone']
 
 def dummy(a, b=None):
     return ""
@@ -110,3 +110,8 @@ def handle_tojson(bot, ievent):
     ievent.reply(str(ievent.dump()))
 
 cmnds.add('test-json', handle_tojson, 'OPER')
+
+def handle_testunicode(bot, ievent):
+    ievent.reply(u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ .. AВы хотите говорить на русском языке, товарищ?")
+
+cmnds.add('test-unicode', handle_testunicode, 'OPER')

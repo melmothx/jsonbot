@@ -1077,9 +1077,9 @@ pingtime2)
 
         try:
             nick = ievent.arguments[1]
-            if nick not in self.nicks401:
-                logging.warn('irc - 401 on %s .. ignoring' % nick)
-                self.nicks401.append(nick)
+            #if nick not in self.nicks401:
+            #    logging.warn('irc - 401 on %s .. ignoring' % nick)
+            #    self.nicks401.append(nick)
         except:
             pass
 

@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from gozerlib.utils.generic import checkpermissions
 from gozerlib.persist import Persist
 from gozerlib.datadir import datadir
 import users
@@ -15,6 +16,8 @@ import users
 import logging
 import os
 import sys
+
+## paths
 
 sys.path.insert(0, os.getcwd())
 sys.path.insert(0, os.getcwd() + os.sep + '..')
@@ -40,11 +43,33 @@ rundir = datadir + os.sep + "run"
 
 ## functions
 
-def boot(force=False):
+def boot(force=False, encoding="utf-8", umask=None):
     """ initialize the bot. """
-    global loaded
-    logging.debug("boot - starting ..")
+    logging.warn("booting ..")
 
+    try:
+        if os.getuid() == 0:
+            print "don't run the bot as root"
+            os._exit(1)
+    except AttributeError:
+        pass
+
+    # write pid to pidfile  
+    k = open(rundir + os.sep + 'jsonbot.pid','w')
+    k.write(str(os.getpid()))
+    k.close()
+
+    # set default settings
+    reload(sys)
+    sys.setdefaultencoding(encoding)
+
+    # set umask of gozerdata dir
+    if not umask:
+        checkpermissions('gozerdata', 0700) 
+    else:
+        checkpermissions('gozerdata', umask)  
+
+    global loaded
     global cmndtable
     if not cmndtable:
         cmndtable = Persist(rundir + os.sep + 'cmndtable')
@@ -77,7 +102,7 @@ def boot(force=False):
         for plug in default_plugins:
             plugs.load(plug)
 
-    logging.debug("boot - booting done")
+    logging.warn("boot - done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """

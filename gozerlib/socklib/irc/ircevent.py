@@ -12,7 +12,6 @@ __copyright__ = 'this file is in the public domain'
 from gozerlib.utils.generic import toenc, fromenc
 from gozerlib.socklib.utils.generic import fix_format, stripident, makeargrest
 from gozerlib.eventbase import EventBase
-#from gozerlib.utils.generic import makeargrest
 from gozerlib.config import cfg as config
 from gozerlib.channelbase import ChannelBase
 
@@ -175,7 +174,8 @@ class Ircevent(EventBase):
             return
         restxt = self.makeresponse(txt, result, dot)
         if self.isdcc:
-            self.sock.send(unicode(restxt) + u"\n")
+            self.sock.send(restxt)
+            self.sock.send("\n")
             return
         res1, res2 = self.less(restxt, 365+extend)
         target = to or self.printto

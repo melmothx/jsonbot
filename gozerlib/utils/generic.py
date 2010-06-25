@@ -17,6 +17,7 @@ from simplejson import dumps
 
 ## generic imports
 
+from stat import ST_UID, ST_MODE, S_IMODE
 import time
 import sys
 import re
@@ -28,6 +29,29 @@ import Queue
 import logging
 
 ## functions
+
+def checkpermissions(ddir, umode):
+    try:
+        uid = os.getuid()
+        gid = os.getgid()
+    except AttributeError:
+        return
+    try:
+        stat = os.stat(ddir)
+    except OSError:
+        return
+    if stat[ST_UID] != uid:
+        try:
+            os.chown(ddir, uid, gid)
+        except:
+            pass
+    if S_IMODE(stat[ST_MODE]) != umode:
+        try:
+            os.chmod(ddir, umode)
+        except:
+            handle_exception()
+            pass
+
 
 def jsonstring(s):
     if type(s) == types.TupleType:
