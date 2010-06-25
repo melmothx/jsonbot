@@ -22,6 +22,7 @@ from socketplugs.restserver import startserver, stopserver
 
 ## simplejson imports
 
+import simplejson
 from simplejson import dumps
 
 ## basic imports
@@ -37,13 +38,13 @@ server = None
 
 def json_GET(server, request):
     try:
-        path = request.path.split("jsondata")[1]
+        path = request.path.split("gozerdata")[1]
     except (ValueError, IndexError):
         return dumps("can't find datapointer in path %s" % request.path)
 
     logging.warn("json.server - got path %s" % path)
     if len(path) > 2:
-        path = 'jsondata' + os.sep + path[1:]
+        path = 'gozerdata' + os.sep + path[1:]
         if '..' in path:
             return request.send_error(404)
         if not os.path.exists(path):
@@ -54,19 +55,21 @@ def json_GET(server, request):
         try:
             logging.warn("json.server - attempting to construct %s" % path)
             try:
-                result = Persist(path)
-                if result.data and result.data.public:
-                    try:
+                try:
+                    result = Persist(path)
+                    if result.data and result.data.public:
                         return dumps(result.data)
-                    except TypeError:
-                        result = Config(path)
-                        logging.warn("json.server - got config - %s" % str(result))
-                        if result and result.public:
-                            try:
-                                return dumps(result.data)
-                            except TypeError:
-                                request.send_error(404)
-            except IOError:
+                    else:
+                        request.send_error(404)
+                except (TypeError, simplejson.decoder.JSONDecodeError):
+                    result = Config(path)
+                    logging.warn("json.server - got config - %s" % str(result))
+                    if result and result.public:
+                        try:
+                            return dumps(result)
+                        except TypeError:
+                            request.send_error(404)
+            except (IOError, TypeError):
                 handle_exception()
                 request.send_error(404)
                 return
@@ -88,9 +91,9 @@ def start():
     if not server:
         return
     try:
-        server.addhandler('/jsondata/', 'GET', json_GET)
+        server.addhandler('/gozerdata/', 'GET', json_GET)
         server.addhandler('/favicon.ico', 'GET', json_GET)
-        server.enable('/jsondata/')
+        server.enable('/gozerdata/')
     except Exception, ex:
         handle_exception()
      
@@ -102,10 +105,10 @@ def init():
 def shutdown():
     global server
     if server:
-        server.disable('/jsondata/')
+        server.disable('/gozerdata/')
 
 def handle_jsonserver_start(bot, event):
-    """ add the /jsondata/ mountpoints to the REST server. """
+    """ add the /gozerdata/ mountpoints to the REST server. """
     init()
     event.done()
 
@@ -113,7 +116,7 @@ cmnds.add('jsonserver-start', handle_jsonserver_start, 'OPER')
 examples.add('jsonserver-start', 'initialize the JSONBOT remote json data network server', 'jsonserver-start')
 
 def handle_jsonserver_stop(bot, event):
-    """ remove the /jsondata/ mountpoints from the REST server. """
+    """ remove the /gozerdata/ mountpoints from the REST server. """
     shutdown()
     event.done()
 

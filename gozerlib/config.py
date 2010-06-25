@@ -46,7 +46,10 @@ class Config(LazyDict):
         #self.dir = os.path.abspath(os.path.dirname(os.path.realpath(__file__ + os.sep + '..')))
         self.filename = filename or 'mainconfig'
         self.dir = datadir + os.sep + 'config'
-        self.cfile = self.dir + os.sep + self.filename
+        if datadir not in self.filename:
+            self.cfile = self.dir + os.sep + self.filename
+        else:
+            self.cfile = self.filename
         self.jsondb = None
 
         try:
@@ -277,7 +280,7 @@ class Config(LazyDict):
             self.setdefault('auto_register', 0)
             self.setdefault('ondemand', 1)
 
-        self['version'] = "JSONBOT 0.2 BETA2"
+        self['version'] = "JSONBOT 0.2 RELEASE"
         self['createdfrom'] = whichmodule()
 
         return self
