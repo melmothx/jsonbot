@@ -1,4 +1,4 @@
-# gozerlib/wave/event.py
+# gozerlib/gae/wave/event.py
 #
 #
 
@@ -123,7 +123,7 @@ class WaveEvent(EventBase):
 
     def _raw(self, outtxt, root=None):
         """ send raw text to the server .. creates a blip on the root. """
-        logging.debug(u"wave - out - %s - %s" % (self.userhost, outtxt))
+        #logging.debug(u"wave - out - %s - %s" % (self.userhost, outtxt))
         self.append(outtxt)
         #self.bot.outmonitor(self.origin, self.channel, outtxt)
 
@@ -237,7 +237,7 @@ class WaveEvent(EventBase):
 
     def write(self, outtxt, end="\n"):
         """ write outtxt to the server. """
-        logging.debug("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
+        #logging.debug("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
         try:
             annotations = []
             for url in re.findall(findurl, outtxt):
@@ -260,7 +260,7 @@ class WaveEvent(EventBase):
 
     def writenocb(self, outtxt, end="\n"):
         """ write outtxt to the server. """
-        logging.debug("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
+        #logging.debug("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
         try:
             annotations = []
             for url in re.findall(findurl, outtxt):
@@ -282,7 +282,7 @@ class WaveEvent(EventBase):
 
     def write_root(self, outtxt, end="\n", root=None):
         """ write to the root of a wave. """
-        logging.debug("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
+        #logging.debug("wave - out - %s - %s" %  (self.userhost, str(outtxt)))
         self.append_root(outtxt + end)
         self.replied = True
         self.bot.outmonitor(self.origin, self.channel, outtxt, self)
