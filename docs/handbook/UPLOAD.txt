@@ -21,7 +21,5 @@ now you should be able to do the following:
 1) visit the website at http://<yourbotname>.appspot.com
 2) add the bot as Jabber buddy at <yourbotname>@appspot.com
 3) the same as wave bot
-4) on joining a wave the bot loads a gadget from http://<yourbotname>.appspot.com/gadget.xml
-5) manifest to add your bot to the waves newwave menu use http://<yourbotname>.appspot.com/feeder.xml
 
 JSONBOT is open source (MIT license) and free to clone when needed, patches welcomed though ;]

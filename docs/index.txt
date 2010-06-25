@@ -7,8 +7,7 @@ Standalone programms are provided for IRC, XMPP and console. Both clientside
 and GAE side communicate through JSON either over XMPP. This makes relaying
 IRC to Wave or Jabber to Wave or or Jabber to IRC and vice versa possible.
 
-note: JSONBOT is in ALPHA stage right now and still subject to change of
-      protocols and API.
+note: JSONBOT is in ALPHA stage right now and still subject to change of protocols and API.
 
 see http://jsonbot.googlecode.com
 
