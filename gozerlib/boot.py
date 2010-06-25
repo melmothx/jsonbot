@@ -49,7 +49,7 @@ rundir = datadir + os.sep + "run"
 
 def boot(force=False, encoding="utf-8", umask=None):
     """ initialize the bot. """
-    logging.warn("booting ..")
+    logging.info("booting ..")
 
     try:
         if os.getuid() == 0:
@@ -116,7 +116,7 @@ def boot(force=False, encoding="utf-8", umask=None):
         for plug in default_plugins:
             plugs.load(plug)
 
-    logging.warn("boot - done")
+    logging.info("boot - done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """

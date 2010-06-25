@@ -169,7 +169,7 @@ class BotBase(LazyDict):
             cc = "!"
         logging.debug("cc for %s is %s (%s)" % (event.title or event.channel, cc, self.nick))
         matchnick = unicode(self.nick + u",")
-        logging.warn(event.txt)        
+        #logging.warn(event.txt)        
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
             if event.txt:
