@@ -83,6 +83,10 @@ def json_GET(server, request):
         return
 
 def start():
+    ## we skip this for now as the server could still expose data that we dont want
+    if True:
+        return
+
     global server
     try:
         server = startserver()
