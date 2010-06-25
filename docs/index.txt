@@ -3,16 +3,19 @@ Welcome to JSONBOT
 
 JSONBOT is a bot that stores all its data in json format. It runs on the 
 Google Application Engine and can thus support wave, web and XMPP.
-Standalone programms are provided for IRC, XMPP and console, the goal is to 
-let both clientside and GAE side communicate through JSON either over XMPP or 
-HTTP POST.
+Standalone programms are provided for IRC, XMPP and console. Both clientside 
+and GAE side communicate through JSON either over XMPP. This makes relaying
+IRC to Wave or Jabber to Wave or or Jabber to IRC and vice versa possible.
+
+note: JSONBOT is in ALPHA stage right now and still subject to change of
+      protocols and API.
 
 see http://jsonbot.googlecode.com
 
 JSONBOT is free code (MIT) and can be cloned where needed. 
 
 * Source code: http://jsonbot.googlecode.com
-* Live demo: http://jsonbot.appspot.com (web)
+* Web: http://jsonbot.appspot.com (web)
 * Wave/Jabber: jsonbot@appspot.com
 
 this bot needs google_appengine installed in your home dir
@@ -20,9 +23,15 @@ this bot needs google_appengine installed in your home dir
 jsonbot provides the following programs:
 
 * jsb - console version of jsonbot
-* jsb-irc - IRC version of jsonbot
+* jsb-import - import data from another bot
+* jsb-installplug - install remote plugins
+* jsb-irc - IRC version of jsonbot (socket)
+* jsb-xmpp - XMPP version of jsonbot (socket)
+* jsb-fleet - mix IRC and XMPP bots
 * jsb-release - create a new release directory
+* jsb-rollback - rollback a release
 * jsb-run - run a release in the GAE dev_appserver
+* jsb-stop - stop a running bot
 * jsb-upload - upload a release to the GAE
 
 see docs/UPLOAD on how to upload your own bot.
@@ -42,8 +51,7 @@ contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
 * email: bthate@gmail.com
-* preview: bthate@googlewave.com
-* sandbox: bthate@wavesandbox.com
+* wave: bthate@googlewave.com
 
 You can reach me by joining #dunkbots on FreeNode or IRCNet. If we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
 
@@ -74,7 +82,6 @@ gozerlib code
         commonplugs/index
         waveplugs/index
         socketplugs/index
-        myplugs/index
         
 indices and tables
 ~~~~~~~~~~~~~~~~~~
