@@ -82,12 +82,16 @@ def handle_delalias(bot, ievent):
 
     # del alias and save
     aliases = ievent.userstate.data.aliases
-    try:
-        del aliases[what]
-        ievent.userstate.save()
-        ievent.reply('alias deleted')
+    try: 
+        if aliases:
+            del aliases[what]
+            ievent.userstate.save()
+            ievent.reply('alias deleted')
+            return
     except KeyError:
-        ievent.reply('there is no %s alias' % what)
+        pass
+
+    ievent.reply('there is no %s alias' % what)
 
 cmnds.add('alias-del', handle_delalias, 'USER')
 examples.add('alias-del', 'alias-del <what> .. delete alias', 'alias-del ll')
@@ -95,7 +99,10 @@ examples.add('alias-del', 'alias-del <what> .. delete alias', 'alias-del ll')
 def handle_getaliases(bot, ievent):
     """ aliases .. show aliases. (per user) """
     aliases = ievent.userstate.data.aliases
-    ievent.reply("aliases: %s" % str(aliases))
+    if aliases:
+        ievent.reply("aliases: %s" % str(aliases))
+    else:
+        ievent.reply("no aliases yet")
 
 cmnds.add('aliases', handle_getaliases, 'USER')
 examples.add('aliases', 'aliases <what> .. get aliases', 'aliases')

@@ -10,6 +10,7 @@ from gozerlib.utils.name import stripname
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.persist import Persist
 from gozerlib.datadir import datadir
+from gozerlib.utils.trace import whichmodule
 
 ## basic imports
 
@@ -37,6 +38,7 @@ class ChannelBase(Persist):
         self.lastmodified = time.time()
         self.data.feeds = self.data.feeds or []
         self.data.passwords = self.data.passwords or {}
+        self.data.createdfrom = whichmodule()
 
     def setpass(self, type, key):
         """ set channel password based on type. """
