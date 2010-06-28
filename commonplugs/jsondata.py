@@ -4,7 +4,8 @@
 
 """ 
     expose data through the jsonserver plugin. this is done by adding a 
-    "public" attribute on the data. 
+    "public" attribute on the data. Note jsonserver plugin is disabled 
+    right now. 
 
 """
 

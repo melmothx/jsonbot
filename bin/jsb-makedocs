@@ -161,7 +161,9 @@ def gendoc(mod, f, output):
                             break
                         output.write('        <output> %s' % j + '\n')
                         teller2 += 1
-                    output.write('\n\n')
+                    if teller2 == 1:
+                        output.write('        <output> no output\n')
+                        output.write('\n\n')
                 except Exception, ex:
                     handle_exception()
         teller += 1

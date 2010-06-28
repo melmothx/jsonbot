@@ -2,9 +2,11 @@
 #
 #
 
-""" this alias plugin allows aliases for commands to be added. aliases are in
+""" 
+    this alias plugin allows aliases for commands to be added. aliases are in
     the form of <alias> -> <command> .. aliases to aliases are not allowed, 
     aliases are per user.
+
 """
 
 ## gozerbot imports
