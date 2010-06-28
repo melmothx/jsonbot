@@ -10,6 +10,9 @@ import sys
 class JsonBotError(Exception):
     pass
 
+class NoChannelProvided(JsonBotError):
+    pass
+
 class NoInput(JsonBotError):
     pass
 

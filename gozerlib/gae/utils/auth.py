@@ -8,10 +8,6 @@
 
 from gozerlib.utils.trace import whichmodule
 
-## google imports
-
-from google.appengine.api import users as gusers
-
 ## basic imports
 
 import logging
@@ -20,6 +16,7 @@ import logging
 
 def finduser():
     """ try to find the email of the current logged in user. """
+    from google.appengine.api import users as gusers
     user = gusers.get_current_user()
     if user:
         return user.email()
@@ -36,6 +33,7 @@ def checkuser(response, request, event=None):
         :rtype: tuple of (userhost, gmail user, bot user , nick)
 
     """
+    from google.appengine.api import users as gusers
     userhost = "notauth"
     u = "notauth"
     nick = "notauth"

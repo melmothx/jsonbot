@@ -146,9 +146,9 @@ class BotBase(LazyDict):
             return
 
         self.status = "callback"
-
         starttime = time.time()
         e = cpy(event)
+
         if not event.nocb:
             if event.isremote:
                 logging.debug('doing REMOTE callback')
@@ -158,17 +158,20 @@ class BotBase(LazyDict):
             else:
                 callbacks.check(self, e)
                 e.leave()
+
         event.callbackdone = True
         self.status = "dispatch"
         self.curevent = event
         go = False
         cc = "!"
+
         if event.chan:
             cc = event.chan.data.cc
         if not cc:
             cc = "!"
+
         logging.debug("cc for %s is %s (%s)" % (event.title or event.channel, cc, self.nick))
-        matchnick = unicode(self.nick + u",")
+        matchnick = unicode(self.nick + u":")
         #logging.warn(event.txt)        
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
@@ -178,14 +181,14 @@ class BotBase(LazyDict):
                 event.usercmnd = None
             event.makeargs()
             go = True
-        #elif event.txt.startswith(matchnick) or event.txt.startswith(matchnick):
-        #    event.txt = event.txt[len(matchnick) + 1:]
-        #    if event.txt:
-        #        event.usercmnd = event.txt.split()[0]
-        #    else:
-        #        event.usercmnd = None
-        #    event.makeargs()
-        #    go = True
+        elif event.txt.startswith(matchnick):
+            event.txt = event.txt[len(matchnick) + 1:]
+            if event.txt:
+                event.usercmnd = event.txt.split()[0]
+            else:
+                event.usercmnd = None
+            event.makeargs()
+            go = True
      
         if event.isremote and not event.remotecmnd:
             logging.debug("event is remote but not command .. not dispatching")
@@ -255,6 +258,8 @@ class BotBase(LazyDict):
         e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname
+        e.chan = ChannelBase(e.channel)
+        e.finish()
         callbacks.check(self, e)
         e.leave()
 
@@ -274,7 +279,7 @@ class BotBase(LazyDict):
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
         e.cbtype = 'DOCMND'
-        e.makeargs()
+        e.finish()
 
         if self.plugs:
             try:

@@ -62,9 +62,15 @@ class EventBase(LazyDict):
         """ put rawstring to the server .. overload this """
         pass
 
-    def parse(self, *args, **kwargs):
+    def parse(self, event, *args, **kwargs):
         """ overload this. """
-        pass
+        self.bot = event.bot
+        self.origin = event.origin
+        self.ruserhost = self.origin
+        self.auth = self.origin
+        self.userhost = self.origin
+        self.channel = event.channel
+        self.chan = ChannelBase(self.channel)
 
     def copyin(self, eventin):
         """ copy in an event. """

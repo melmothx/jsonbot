@@ -28,13 +28,11 @@ from waveapi import robot
 from waveapi import element
 from waveapi import ops
 from waveapi import blip
-from google.appengine.ext import webapp
 from waveapi import appengine_robot_runner
-from django.utils import simplejson
-from google.appengine.api import urlfetch
+
+import simplejson
 
 import gozerdata.config.credentials as credentials
-import google
 import waveapi
 
 ## generic imports

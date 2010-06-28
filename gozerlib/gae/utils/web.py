@@ -12,11 +12,6 @@ from gozerlib.utils.generic import fromenc, getversion
 
 from auth import finduser
 
-## google imports
-
-from google.appengine.api import users as gusers
-from google.appengine.ext.webapp import template
-
 ## basic imports
 
 import os
@@ -26,6 +21,7 @@ import time
 
 def mini(response, input={}):
     """ display start html so that bot output can follow. """
+    from google.appengine.ext.webapp import template
     inputdict = {'version': getversion()}
     if input:
         inputdict.update(input)
@@ -35,6 +31,7 @@ def mini(response, input={}):
 
 def start(response, input={}):
     """ display start html so that bot output can follow. """
+    from google.appengine.ext.webapp import template
     inputdict = {'version': getversion()}
     if input:
         inputdict.update(input)
@@ -67,8 +64,10 @@ def closer(response):
 
 def loginurl(response):
     """ return google login url. """
+    from google.appengine.api import users as gusers
     return gusers.create_login_url("/")
 
 def logouturl(response):
     """ return google login url. """
+    from google.appengine.api import users as gusers
     return gusers.create_logout_url("/")

@@ -2,8 +2,9 @@
 #
 #
 
-""" the fleet makes it possible to run multiple bots in one gozerbot.
-    this can both be irc and jabber bots
+""" 
+    The fleet makes it possible to run multiple bots in one running instance.
+    It is a list of bots.
 """
 
 ## gozerlib imports

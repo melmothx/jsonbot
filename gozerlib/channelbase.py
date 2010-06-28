@@ -11,6 +11,7 @@ from gozerlib.utils.lazydict import LazyDict
 from gozerlib.persist import Persist
 from gozerlib.datadir import datadir
 from gozerlib.utils.trace import whichmodule
+from gozerlib.errors import NoChannelProvided
 
 ## basic imports
 
@@ -32,6 +33,8 @@ class ChannelBase(Persist):
     """
 
     def __init__(self, id, type="notset"):
+        if not id:
+            raise NoChannelSet()
         Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + stripname(id))
         self.id = id
         self.type = type

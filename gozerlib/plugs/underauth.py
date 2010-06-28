@@ -19,7 +19,7 @@ def pre_underauth_cb(bot, ievent):
     """ 
         Only respond to the message like:
         NOTICE AUTH :*** Your ident is disabled or broken, to continue
-        to connect you must type /QUOTE PASS 16188
+        to connect you must type /QUOTE PASS 16188.
 
     """
     args = ievent.arguments
@@ -33,7 +33,8 @@ def pre_underauth_cb(bot, ievent):
 
 def underauth_cb(bot, ievent):
     """
-        Send the raw command to the server
+        Send the raw command to the server.
+
     """
     # last two elements of the arguments list are PASS <id>
     logging.debug("underauth - sending response")
