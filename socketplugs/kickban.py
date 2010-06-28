@@ -47,6 +47,8 @@ def get_bans(bot, channel):
         bans[bot.name] = {}
     bans[bot.name][channel] = []
     queue368 = Queue.Queue()
+    if not bot.wait:
+        return
     bot.wait.register('368', channel, queue368)
     bot.sendraw('MODE %s +b' % (channel, ))
     # wait for End of Channel Ban List

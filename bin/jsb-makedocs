@@ -36,7 +36,7 @@ import re
 donot = []
 bot = BotBase()
 bot.allowall = True
-plugs.loadall(['gozerlib.plugs', 'commonplugs', 'wavelugs', 'scoketplugs'], force=True)
+plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
 print plugs
 users = Users()
 
@@ -251,6 +251,14 @@ def domods(dir):
 if __name__ == '__main__':
     threads = []
     makedirs()
+    import shutil
+    from gozerlib.socklib.utils.generic import touch
+    try:
+        shutil.copyfile(os.path.expanduser("~") + os.sep + 'jsonregs' + os.sep + 'jsonbot' + os.sep + 'credentials.py', os.getcwd() + 'gozerdata' + os.sep + 'config' + os.sep + 'credentials.py')
+        touch(os.getcwd() + 'gozerdata' + os.sep + 'config' + os.sep + '__init__.py')
+    except:
+        print "CAN'T COPY OVER ~/jsonregs/jsonbot/credentials.py"
+        handle_exception()
 
     try:
         os.mkdir('docs' + os.sep + 'plugins')
@@ -306,7 +314,12 @@ if __name__ == '__main__':
     domods('waveplugs')
     domods('socketplugs')
 
-    import shutil
     shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'mindex.txt', 'docs' + os.sep + 'gozerlib' + os.sep + 'index.txt')
     #shutil.copyfile('pindex.txt', 'plugdoc' + os.sep + 'index.txt')
     shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'plugsdocindex.txt', 'docs' + os.sep + 'plugins' + os.sep + 'index.txt')
+    try:
+        shutil.copyfile(os.path.expanduser("~") + os.sep + 'jsonregs' + os.sep + 'jsonbot' + os.sep + 'credentials.py', os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + 'credentials.py')
+        touch(os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + '__init__.py')
+    except:
+        print "CAN'T COPY OVER ~/jsonregs/jsonbot/credentials.py"
+        handle_exception()

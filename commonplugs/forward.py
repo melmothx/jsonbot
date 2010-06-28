@@ -33,6 +33,8 @@ if not forward.data.channels:
     forward.data.channels = {}
 if not forward.data.outs:
     forward.data.outs = {}
+if not forward.data.whitelist:
+    forward.data.whitelist = {}
 
 cpy = copy.deepcopy
 
@@ -80,8 +82,8 @@ def forwardinpre(bot, event):
         return True
 
 def forwardincb(bot, event):
-    #if not forward_allow(event.channel):
-    #    return
+    if not forward_allow(event.channel):
+        return
     
     remoteevent = EventBase()
     remoteevent.load(event.txt)
@@ -123,8 +125,9 @@ def handle_forwardallow(bot, event):
     if not event.rest:
         event.missing("<JID>")
         return
-    forward.data.whitelist[event.rest] = bot.type
-    forward.save()
+    if forward.data.whitelist.has_key(event.rest):
+        forward.data.whitelist[event.rest] = bot.type
+        forward.save()
     event.done()
 
 cmnds.add("forward-allow", handle_forwardallow, 'OPER')

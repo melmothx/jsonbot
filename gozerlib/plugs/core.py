@@ -392,4 +392,4 @@ def handle_threads(bot, ievent):
     ievent.reply("threads running: ", result)
 
 cmnds.add('threads', handle_threads, ['USER', 'OPER'])
-examples.add('threads', 'show running threads', 'thread')
+examples.add('threads', 'show running threads', 'threads')

@@ -5,7 +5,7 @@ JSONBOT is a bot that stores all its data in json format. It runs on the
 Google Application Engine and can thus support wave, web and XMPP.
 Standalone programms are provided for IRC, XMPP and console. Both clientside 
 and GAE side communicate through JSON either over XMPP. This makes relaying
-IRC to Wave or Jabber to Wave or or Jabber to IRC and vice versa possible.
+IRC <-> Wave or Jabber <-> Wave or Jabber <-> IRC possible.
 
 note: JSONBOT is in ALPHA stage right now and still subject to change of protocols and API.
 

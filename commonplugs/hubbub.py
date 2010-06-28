@@ -826,7 +826,7 @@ def handle_hubbubstopall(bot, ievent):
     feeds = watcher.getfeeds(target)
     if feeds:
         for feed in feeds:
-            if watcher.stop(bot.name, feed, target):
+            if watcher.stop(bot.name, bot.type, feed, target):
                 if name in ievent.chan.data.feeds:
                     ievent.chan.data.feeds.remove(name)
                     ievent.chan.save()

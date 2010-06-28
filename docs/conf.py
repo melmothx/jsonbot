@@ -29,7 +29,11 @@ sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerlib' + os.sep + 'socket
 sys.path.insert(0, os.path.abspath('..' + os.sep + 'socketplugs'))
 sys.path.insert(0, os.path.abspath('..' + os.sep + 'commonplugs'))
 sys.path.insert(0, os.path.abspath('..' + os.sep + 'waveplugs'))
-sys.path.insert(0, os.path.abspath("~" + os.sep + "google_appengine"))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gaeupload'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerdata'))
+sys.path.insert(0, os.path.abspath('..' + os.sep + 'gaeupload' + os.sep + 'waveapi'))
+sys.path.insert(0, os.path.abspath(os.path.expanduser("~") + os.sep + "google_appengine"))
+sys.path.insert(0, os.path.abspath(os.path.expanduser("~") + os.sep + "google_appengine" + os.sep +'google'))
 print sys.path
 # General configuration
 # ---------------------

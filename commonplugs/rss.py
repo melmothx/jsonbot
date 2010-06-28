@@ -1340,7 +1340,7 @@ def handle_rssstopall(bot, ievent):
        target = ievent.rest
     stopped = []
 
-    feeds = watcher.getfeeds(bot.name, target)
+    feeds = watcher.getfeeds(bot.name, bot.type, target)
 
     if feeds:
 
@@ -1616,7 +1616,7 @@ def handle_rssdelmarkup(bot, ievent):
         ievent.reply("can't remove %s from %s feed's markup" %  (item, name))
         return
 
-    watcher.markup.save()
+    rssitem.markup.save()
     ievent.reply('%s removed from (%s,%s) markuplist' % (item, name, target))
 
 cmnds.add('rss-delmarkup', handle_rssdelmarkup, ['RSS', 'USER'])
