@@ -23,6 +23,7 @@ from gozerlib.utils.pdod import Pdod
 from gozerlib.channelbase import ChannelBase
 from gozerlib.morphs import inputmorphs, outputmorphs
 from gozerlib.exit import globalshutdown
+from gozerlib.fleet import fleet
 
 ## gozerlib.irc imports
 
@@ -157,7 +158,7 @@ class Irc(BotBase):
         self.stopped = 0
         self.connecting = True
         self.connectok.clear()
-        self.connectlock.acquire()
+        #self.connectlock.acquire()
 
         # create socket
         if self.ipv6:
@@ -239,17 +240,21 @@ class Irc(BotBase):
         return 1
 
     def start(self):
+        logging.warn("irc - connect")
         self._connect()
         # start input and output loops
+        logging.warn("irc - starting loops")
         start_new_thread(self._readloop, ())
         start_new_thread(self._outloop, ())
 
         # logon and start monitor
+        logging.warn("irc - logon")
         self._logon()
         self.nickchanged = 0
         self.reconnectcount = 0
         self.connectok.wait()
         logging.warn("irc - logged on!")
+        return True
 
     def _readloop(self):
 
@@ -257,7 +262,7 @@ class Irc(BotBase):
 
         self.stopreadloop = 0
         self.stopped = 0
-        doreconnect = 0
+        doreconnect = 1
         timeout = 1
         logging.debug('irc - starting readloop')
         prevtxt = ""
@@ -347,15 +352,20 @@ class Irc(BotBase):
                     doreconnect = 1
                     break
                 continue
-
             except IOError, ex:
                 if self.blocking and 'temporarily' in str(ex):
                     time.sleep(0.5)
                     continue
                 handle_exception()
-                reconnect = 1
+                doreconnect = 1
                 break
-
+            except socket.error:
+                if self.blocking and 'temporarily' in str(ex):
+                    time.sleep(0.5)
+                    continue
+                handle_exception()
+                doreconnect = 1
+                break
             except Exception, ex:
                 if self.stopped or self.stopreadloop:
                     break
@@ -616,19 +626,23 @@ realname))
         res = 0
 
         try:
-            res = self._connect()
-            if res:
-                self.connectok.wait()
-                self._onconnect()
-                self.connected = True
-                logging.warn('logged on !')
+            self.connectlock.release()
+            res = self.start()
+            logging.warn("waiting for connectok")
+            self.connectok.wait()
+            self._onconnect()
+            self.connected = True
+            logging.warn('logged on !')
             self.connecting = False
         except AlreadyConnecting:
             return 0 
         except AlreadyConnected:
             return 0
         except Exception, ex:
-            self.connectlock.release()
+            try:
+                self.connectlock.release()
+            except thread.error:
+                pass
             if self.stopped:
                 return 0
             logging.error('connecting error: %s' % str(ex))
@@ -638,8 +652,8 @@ realname))
             raise
 
         # add bot to the fleet
-        #if not fleet.byname(self.name):
-        #    fleet.addbot(self)
+        if not fleet.byname(self.name):
+            fleet.addbot(self)
         self.connectlock.release()
         return res
 
@@ -705,7 +719,7 @@ realname))
             self.reconnectcount += 1
             self.exit()
             logging.warn('reconnecting')
-            result = self.connect()
+            result = self.start()
             return result
         except Exception, ex:
             handle_exception()

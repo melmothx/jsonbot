@@ -14,6 +14,7 @@ from gozerlib.persist import PlugPersist
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.examples import examples
 from gozerlib.fleet import fleet
+from gozerlib.config import cfg
 
 ## basic imports
 
@@ -82,7 +83,7 @@ def forwardinpre(bot, event):
         return True
 
 def forwardincb(bot, event):
-    if not forward_allow(event.channel):
+    if cfg.strictforward and not forward_allow(event.channel):
         return
     
     remoteevent = EventBase()

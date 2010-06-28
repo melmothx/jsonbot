@@ -83,12 +83,13 @@ def handle_testplugs(bot, event):
     event.outqueue.put_nowait(None)
 
 cmnds.add('test-plugs', handle_testplugs, ['USER', ], threaded=True)
+examples.add('test-plugs', 'test all plugins by running there examples', 'test-plugs')
 
 def handle_forcedreconnect(bot, ievent):
     if bot.type == "sxmpp":
         bot.disconnectHandler(Exception('test exception for reconnect'))
     else:
-        bot.sock.close()
+        bot.sock.shutdown(2)
 
 cmnds.add('test-forcedreconnect', handle_forcedreconnect, 'OPER')
 
@@ -96,6 +97,7 @@ def handle_forcedexception(bot, ievent):
     raise Exception('test exception')
 
 cmnds.add('test-forcedexception', handle_forcedexception, 'OPER')
+examples.add('test-forcedexception', 'throw an exception as test', 'test-forcedexception')
 
 def handle_testwrongxml(bot, ievent):
     if not bot.type == "sxmpp":
@@ -110,8 +112,18 @@ def handle_tojson(bot, ievent):
     ievent.reply(str(ievent.dump()))
 
 cmnds.add('test-json', handle_tojson, 'OPER')
+examples.add('test-json', "dump the event as json", "test-json")
 
 def handle_testunicode(bot, ievent):
-    ievent.reply(u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ .. AВы хотите говорить на русском языке, товарищ?")
+    outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ .. AВы хотите говорить на русском языке, товарищ?"
+    ievent.reply(outtxt)
+    bot.say(ievent.channel, outtxt)
 
 cmnds.add('test-unicode', handle_testunicode, 'OPER')
+examples.add('test-unicode', 'test if unicode output path is clear', 'test-unicode')
+
+def handle_testdocmnd(bot, ievent):
+    bot.docmnd(ievent.origin, ievent.channel, ievent.rest)
+
+cmnds.add('test-docmnd', handle_testdocmnd, 'OPER')
+examples.add('test-docmnd', 'test the bot.docmnd() method', 'test-docmnd version')
