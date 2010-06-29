@@ -426,6 +426,7 @@ class Fleet(Persist):
         cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
 
         # make the bot and resume (IRC) or reconnect (Jabber)
+        logging.warn("fleet - resuming bot .. %s" % str(data))
         bot = self.makebot(data['type'], botname, cfg)
 
         if bot:
@@ -434,7 +435,7 @@ class Fleet(Persist):
             else:
                 self.bots.append(bot)
 
-            if not bot.type == "xmpp":
+            if not bot.type == "sxmpp":
                 bot._resume(data, printto)
             else:
                 start_new_thread(bot.connectwithjoin, ())

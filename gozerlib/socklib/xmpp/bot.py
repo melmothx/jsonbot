@@ -102,7 +102,15 @@ class SXMPPBot(XMLStream, BotBase):
 
     def _resumedata(self):
         """ return data needed for resuming. """
-        return {self.name: [self.server, self.user, self.password, self.port]}
+
+        return {self.name: {
+            'type': self.type,
+            'nick': self.nick,
+            'server': self.server,
+            'port': self.port,
+            'password': self.password,
+            'ipv6': self.ipv6,
+            }}
 
     def _outputloop(self):
         """ loop to take care of output to the server. """
