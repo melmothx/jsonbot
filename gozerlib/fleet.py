@@ -307,16 +307,20 @@ class Fleet(Persist):
         except ValueError:
             return False
 
-    def exit(self, name=None):
+    def exit(self, name=None, jabber=False):
         """ call exit on all bots. """
         if not name:
             threads = []
             for bot in self.bots:
+                if jabber and bot.type != 'sxmpp' and bot.type != 'jabber':
+                    continue
                 bot.exit()
             return
 
         for bot in self.bots:
             if bot.botname == name:
+                if jabber and bot.type != 'sxmpp' and bot.type != 'jabber':
+                    continue
                 try:
                     bot.exit()
                 except:
@@ -419,10 +423,10 @@ class Fleet(Persist):
             oldbot.exit()
 
         # recreate config file of the bot
-        #cfg = Config(datadir + os.sep + 'fleet' + os.sep + botname, 'config')
+        cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
 
         # make the bot and resume (IRC) or reconnect (Jabber)
-        bot = self.makebot(data['type'], botname)
+        bot = self.makebot(data['type'], botname, cfg)
 
         if bot:
             if oldbot:

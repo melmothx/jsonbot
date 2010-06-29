@@ -10,6 +10,7 @@ __author__ = 'Aim'
 
 ## gozerlib imports
 
+from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.threads import start_new_thread
 

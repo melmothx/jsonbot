@@ -39,7 +39,7 @@ cpy = copy.deepcopy
 
 def handle_reboot(bot, ievent):
     if bot.isgae:
-        ievent.reply("this command doesnt work on the GAE")
+        ievent.reply("this command doesn't work on the GAE")
         return
     ievent.reply("rebooting")
     time.sleep(5)

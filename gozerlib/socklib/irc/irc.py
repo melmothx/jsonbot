@@ -241,7 +241,11 @@ class Irc(BotBase):
 
     def start(self):
         logging.warn("irc - connect")
-        self._connect()
+        try:
+            self._connect()
+        except (AlreadyConnected, AlreadyConnecting):
+            logging.warn("irc - already connected")
+            return 
         # start input and output loops
         logging.warn("irc - starting loops")
         start_new_thread(self._readloop, ())
@@ -511,10 +515,13 @@ realname))
             pass
 
         try:
+            logging.warn("irc - resume - file descriptor is %s" % data['fd'])
             fd = int(data['fd'])
         except (TypeError, ValueError):
             fd = None
-
+            logging.error("irc - can't determine file descriptor")
+            return 0
+ 
         self.connecting = False # we're already connected
         self.nick = data['nick']
         self.orignick = self.nick
@@ -580,6 +587,7 @@ realname))
         try:
             fd = self.sock.fileno()
         except AttributeError, ex:
+            logging.error("can't detect fileno of socket")
             fd = None
             self.exit()
         return {self.name: {

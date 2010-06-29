@@ -15,6 +15,7 @@ print getversion('SOCKET IRC')
 
 ## gozerlib imports
 
+from gozerlib.utils.exception import handle_exception
 from gozerlib.socklib.partyline import partyline
 from gozerlib.socklib.irc.bot import IRCBot
 from gozerlib.datadir import makedirs
@@ -55,18 +56,10 @@ from gozerlib.plugins import plugs
 plugs.loadall()
 
 if opts.doresume and os.path.isfile(opts.doresume):
-    if fleet.size():
+    logging.warn("irc - resuming from %s" % opts.doresume)
+    if True:
         fleet.resume(opts.doresume)
         fleet.startok.wait()
-    else:
-        #  resume bot from session file
-        session = load(open(opts.doresume))
-        for name in session['bots'].keys():
-            reto = None
-            if name == session['name']:
-                reto = session['channel']
-        bot = IRCBot(cfg)
-        bot._resume(session['bots'][name], reto)
 
     partyline.resume(opts.doresume)
     os.unlink(opts.doresume) # bye

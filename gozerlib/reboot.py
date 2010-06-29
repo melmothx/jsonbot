@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from gozerlib.datadir import datadir
 from gozerlib.fleet import fleet
 from gozerlib.config import cfg as config
 
@@ -41,11 +42,12 @@ def reboot_stateful(bot, ievent, fleet, partyline):
     session = {'bots': {}, 'name': bot.name, 'channel': ievent.channel, 'partyline': []}
 
     for i in fleet.bots:
+        logging.warn("reboot - updating %s" % i.name)
         session['bots'].update(i._resumedata())
-    session['bots'].update(bot._resumedata())
+
     session['partyline'] = partyline._resumedata()
     sessionfile = tempfile.mkstemp('-session', 'gozerbot-')[1]
     dump(session, open(sessionfile, 'w'))
     fleet.save()
-    fleet.exit()
+    fleet.exit(jabber=True)
     os.execl(sys.argv[0], sys.argv[0], '-r', sessionfile)

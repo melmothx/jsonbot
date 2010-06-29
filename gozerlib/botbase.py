@@ -250,6 +250,7 @@ class BotBase(LazyDict):
         if e.status == "done":
             logging.debug("botbase - outmonitor - event is done .. ignoring")
             return
+        e.bot = self
         e.origin = origin
         e.ruserhost = self.botname
         e.userhost = self.botname
