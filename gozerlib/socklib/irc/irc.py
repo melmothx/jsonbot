@@ -111,8 +111,9 @@ class Irc(BotBase):
  
         """ send raw text to the server. """
 
-        if not txt:
-            return
+        if not txt or self.stopped:
+            logging.warn("irc - bot is stopped .. not sending.")
+            return 0
 
         logging.debug("irc - sending %s" % txt)
 
@@ -240,12 +241,17 @@ class Irc(BotBase):
         return 1
 
     def start(self):
+        """ start the bot. """
+        if self.stopped:
+            logging.warn("irc - bot is stopped .. not starting.")
+            return 0
+
         logging.warn("irc - connect")
         try:
             self._connect()
         except (AlreadyConnected, AlreadyConnecting):
             logging.warn("irc - already connected")
-            return 
+            return 0
         # start input and output loops
         logging.warn("irc - starting loops")
         start_new_thread(self._readloop, ())
@@ -636,11 +642,12 @@ realname))
         try:
             self.connectlock.release()
             res = self.start()
-            logging.warn("waiting for connectok")
-            self.connectok.wait()
-            self._onconnect()
-            self.connected = True
-            logging.warn('logged on !')
+            if res:
+                logging.warn("waiting for connectok")
+                self.connectok.wait()
+                self._onconnect()
+                self.connected = True
+                logging.warn('logged on !')
             self.connecting = False
         except AlreadyConnecting:
             return 0 
