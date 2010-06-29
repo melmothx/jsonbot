@@ -105,7 +105,8 @@ class BotBase(LazyDict):
             pass
 
         self.setstate()
-        fleet.bots.append(self)
+        if not self in fleet.bots:
+            fleet.bots.append(self)
 
     def setstate(self, state=None):
         """ set state on the bot. """
