@@ -9,7 +9,7 @@
 from gozerlib.channelbase import ChannelBase
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
-from gozerlib.utils.generic import strippedtxt, toenc
+from gozerlib.utils.generic import strippedtxt, toenc, fromenc
 
 ## simplejson imports
 
@@ -145,7 +145,7 @@ class Wave(ChannelBase):
     def say(self, bot, txt):
         """ output some txt to the wave. """
         if self.data.json_data:
-            logging.debug("wave - say - using BLIND - %s" % self.data.json_data) 
+            #logging.debug("wave - say - using BLIND - %s" % self.data.json_data) 
             wavelet = bot.blind_wavelet(self.data.json_data)
         else:
             logging.info("did not join channel %s" % self.id)
@@ -153,7 +153,7 @@ class Wave(ChannelBase):
         if not wavelet:
             logging.error("cant get wavelet")
             return
-        txt = toenc(strippedtxt(txt.strip()))
+        txt = unicode(strippedtxt(txt.strip()))
         logging.debug(u'wave - out - %s - %s' % (self.data.title, txt))
         try:
             annotations = []
