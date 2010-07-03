@@ -8,10 +8,7 @@
 
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.trace import whichmodule
-
-## xmpp imports
-
-from core import XMLDict
+from gozerlib.gozerevent import GozerEvent
 
 ## basic imports
 
@@ -20,10 +17,10 @@ import logging
 
 ## classes
 
-class Presence(XMLDict):
+class Presence(GozerEvent):
 
     def __init__(self, nodedict={}):
-        XMLDict.__init__(self, nodedict)
+        GozerEvent.__init__(self, nodedict)
         self.element = "presence"
         self.jabber = True
         self.cmnd = "PRESENCE"

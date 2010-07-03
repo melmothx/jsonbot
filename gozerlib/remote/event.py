@@ -9,7 +9,8 @@
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt
 from gozerlib.utils.lazydict import LazyDict
-from gozerlib.socklib.xmpp.core import XMLDict
+from gozerlib.container import Container
+from gozerlib.gozerevent import GozerEvent
 
 ## simplejson imports
 
@@ -21,43 +22,17 @@ import cgi
 import logging
 import copy
 import time
-import uuid
 
 ## defines
 
 cpy = copy.deepcopy
-idattributes = ['origin', 'type', 'payload', 'idtime']
-
-## functions
-
-def getid(container):
-    name = ""
-    for attr in idattributes:
-        try:
-            name += str(container[attr])
-        except KeyError:
-            pass
-    return uuid.uuid3(uuid.NAMESPACE_URL, name).hex
 
 ## classes
 
-class Container(XMLDict):
-
-    def __init__(self, origin, payload, type="event"):
-        LazyDict.__init__(self)
-        self.createtime = time.time()
-        self.origin = origin
-        self.payload = payload
-        self.type = str(type)
-
-    def makeid(self):
-        self.idtime = time.time()
-        self.id = getid(self)
-
-class RemoteEvent(EventBase):
+class RemoteEvent(GozerEvent):
 
     def __init__(self): 
-        EventBase.__init__(self)
+        GozerEvent.__init__(self)
         self.type = "remote"
 
     def __deepcopy__(self, a):
@@ -81,7 +56,8 @@ class RemoteEvent(EventBase):
             origin = str(request.remote_addr)
         #logging.info(eventin)
         logging.warn(u"remote.event - %s - parsing %s" % (origin, unicode(eventin)))
-        container = LazyDict(loads(eventin))
+        container = Container()
+        container.load(event.txt)
         self.load(container.payload)
         self.isremote = True
         self.response = response

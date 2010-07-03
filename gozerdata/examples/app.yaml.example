@@ -100,7 +100,4 @@ handlers:
 
 inbound_services:
 
-- xmpp_message
-
-derived_file_type:
-- python_precompiled
+- xmpp_message   

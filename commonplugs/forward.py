@@ -15,11 +15,13 @@ from gozerlib.utils.lazydict import LazyDict
 from gozerlib.examples import examples
 from gozerlib.fleet import fleet
 from gozerlib.config import cfg
+from gozerlib.container import Container
 
 ## basic imports
 
 import logging
 import copy
+import time
 
 ## simpljejson imports
 
@@ -62,7 +64,7 @@ def forwardoutcb(bot, event):
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
             logging.info("forward - sending to %s" % jid)
-            outbot.saynocb(jid, e.dump())
+            outbot.saynocb(jid, Container(bot.jid, e).dump())
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
@@ -85,13 +87,15 @@ def forwardinpre(bot, event):
 def forwardincb(bot, event):
     if cfg.strictforward and not forward_allow(event.channel):
         return
-    
+
+    container = Container()
+    container.load(event.txt)     
     remoteevent = EventBase()
-    remoteevent.load(event.txt)
+    remoteevent.copyin(container.payload)
     remoteevent.isremote = True
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
-    remoteevent.source = bot.jid
+    #remoteevent.source = bot.jid
     logging.debug(u"forward - incoming - %s" % remoteevent.dump())
     gn_callbacks.check(bot, remoteevent)
 

@@ -16,10 +16,7 @@ from gozerlib.eventbase import EventBase
 from gozerlib.config import cfg
 from gozerlib.channelbase import ChannelBase
 from gozerlib.errors import BotNotSetInEvent
-
-## xmpp imports
-
-from core import XMLDict
+from gozerlib.gozerevent import GozerEvent
 
 ## basic imports
 
@@ -37,12 +34,12 @@ if cfg['dotchars']:
 else:
     dotchars = ' .. '
 
-class Message(XMLDict):
+class Message(GozerEvent):
 
     """ jabber message object. """
 
     def __init__(self, nodedict={}):
-        XMLDict.__init__(self, nodedict)
+        GozerEvent.__init__(self, nodedict)
         self.element = "message"
         self.jabber = True
         self.cmnd = "MESSAGE"

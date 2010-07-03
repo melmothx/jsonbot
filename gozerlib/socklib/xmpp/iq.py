@@ -8,20 +8,17 @@
 
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.trace import whichmodule
-
-## xmpp imports
-
-from core import XMLDict
+from gozerlib.gozerevent import GozerEvent
 
 ## basic imports
 
 import logging
 import time
  
-class Iq(XMLDict):
+class Iq(GozerEvent):
 
     def __init__(self, nodedict={}):
-        XMLDict.__init__(self, nodedict)
+        GozerEvent.__init__(self, nodedict)
         self.element = "iq"
         self.jabber = True
         self.cmnd = "IQ"

@@ -18,18 +18,11 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
 from gozerlib.threads import start_new_thread
 from gozerlib.utils.trace import whichmodule
+from gozerlib.gozerevent import GozerEvent
 
-## dom imports
+## xmpp import
 
 from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape, XMLunescape
-
-## for exceptions
-
-import  xml.parsers.expat
-
-## xmpp imports
-
-from namespace import attributes, subelements
 
 ## basic imports
 
@@ -52,104 +45,6 @@ connectlocked = lockdec(connectlock)
 
 ## classes
 
-class XMLDict(EventBase):
-
-
-    """
-        dictionairy to store xml stanza attributes.
-
-        :params input: optional dict to init with
-        :type input: dict
-
-    """
-
-    def __init__(self, input={}):
-        if input == None:
-            EventBase.__init__(self)
-        else:
-            EventBase.__init__(self, input)
-        try:
-            self['fromm'] = self['from']
-        except (KeyError, TypeError):
-            self['fromm'] = ''
-
-    def __getattr__(self, name):
-
-        """
-            override getattribute so nodes in payload can be accessed.
-
-        """
-
-        if not self.has_key(name) and self.has_key('subelements'):
-
-            for i in self['subelements']:
-
-                if name in i:
-                    return i[name]
-
-        return LazyDict.__getattr__(self, name, default="")
-
-    def get(self, name):
-
-        """ get a attribute by name. """
-        if self.has_key('subelements'):
-            for i in self['subelements']:
-                if name in i:
-                    return i[name]
-
-        if self.has_key(name):
-            return self[name]
-
-        return LazyDict()
-
-    def toxml(self):
-        """ convert the dictionary to xml. """
-        res = dict(self)
-        if not res:
-            raise Exception("%s .. toxml() can't convert empty dict" % self.name)
-
-        elem = self['element']
-        main = "<%s" % self['element']
-
-        for attribute in attributes[elem]: 
-            if attribute in res:
-                if res[attribute]:
-                    main += u" %s='%s'" % (attribute, XMLescape(res[attribute]))
-                continue
-
-        main += ">"
-        gotsub = False
-        if res.has_key('txt'):
-            if res['txt']:
-                main += u"<body>%s</body>" % XMLescape(res['txt'])
-                gotsub = True
-
-        for subelement in subelements[elem]:
-            try:
-                data = res[subelement]
-                if data:
-                    main += "<%s>%s</%s>" % (subelement, XMLescape(data), subelement)
-                    gotsub = True
-            except KeyError:
-                pass
-
-        if gotsub:
-            main += "</%s>" % elem
-        else:
-            main = main[:-1]
-            main += "/>"
-
-        return main
-
-    def str(self):
-        """ convert to string. """
-        result = ""
-        elem = self['element']
-        for item, value in dict(self).iteritems():
-            if item in attributes[elem] or item in subelements[elem] or item == 'txt':
-                result += "%s='%s' " % (item, value)
-        return result
- 
 class XMLStream(NodeBuilder):
 
     """
@@ -420,7 +315,7 @@ class XMLStream(NodeBuilder):
                 if not method:
                     continue
                 try:
-                    result = XMLDict(subelement)
+                    result = GozerEvent(subelement)
                     result.bot = self
                     result.orig = data
                     result.jabber = True
@@ -440,7 +335,7 @@ class XMLStream(NodeBuilder):
 
         if method:
             try:
-                result = XMLDict(self.final)
+                result = GozerEvent(self.final)
                 result.bot = self
                 result.orig = data
                 result.jabber = True
