@@ -23,6 +23,7 @@ import types
 ## defines
 
 defaultignore = ['pass', 'password', 'fsock', 'sock', 'handlers']
+raw = ['payload']
 
 cpy = copy.deepcopy
 
@@ -55,6 +56,9 @@ def dumpelement(element, ignore=[], prev={}):
             if checkignore(name, ignore):
                 newer[name] = "jsonbot-ignored"
                 continue
+            if name in raw:
+                newer[name] = getattr(element, name)
+                continue
             try:
                 prop = getattr(element, name)
             except AttributeError:
@@ -63,7 +67,7 @@ def dumpelement(element, ignore=[], prev={}):
             if prop == None:
                 continue
             if checkignore(prop, ignore):
-                logging.debug("lazydict - dump - ignoring %s" % name)
+                logging.debug("lazydict - dump - ignoring %s" % prop)
                 newer[name] = unicode(type(prop))
                 continue                
             try:

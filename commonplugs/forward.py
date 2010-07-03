@@ -22,6 +22,7 @@ from gozerlib.container import Container
 import logging
 import copy
 import time
+import types
 
 ## simpljejson imports
 
@@ -64,7 +65,7 @@ def forwardoutcb(bot, event):
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
             logging.info("forward - sending to %s" % jid)
-            outbot.saynocb(jid, Container(bot.jid, e).dump())
+            outbot.saynocb(jid, Container(bot.jid, e.dump()).dump())
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
@@ -91,7 +92,12 @@ def forwardincb(bot, event):
     container = Container()
     container.load(event.txt)     
     remoteevent = EventBase()
-    remoteevent.copyin(container.payload)
+    logging.debug("forward - using payload - %s" % container.payload)
+    try:
+        remoteevent.copyin(loads(container.payload))
+    except TypeError:
+        logging.error("forward - can't load payload - %s" % container.payload)
+        return
     remoteevent.isremote = True
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
