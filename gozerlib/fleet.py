@@ -267,6 +267,13 @@ class Fleet(Persist):
                 self.bots[i] = bot
                 return
 
+    def enable(self, cfg):
+        if cfg.botname and cfg.botname not in self.data['names']:
+            self.data['names'].append(cfg.botname)
+            self.data['types'][cfg.botname] = cfg.type
+            self.save()
+        return True
+
     def addbot(self, bot):
         """
             add a bot to the fleet .. remove all existing bots with the 

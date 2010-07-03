@@ -48,18 +48,22 @@ except Exception, ex:
     print "can't make config from file %s - %s" % (filename, str(ex))
     os._exit(1)
 
-print cfg.dump()
-
 try:
     attr = opts.args[1]
     value = opts.args[2]
     cfg[attr] = loads(value)
 except IndexError, ex:
     print "no values to set"
-    os._exit(0)
 except TypeError, ex:
     print u"can't parse %s - %s" % (unicode(value), unicode(ex))
     os._exit(1)
+else:
+    cfg.save()
+    print "%s of %s set to %s" % (attr, filename, value)
 
-cfg.save()
-print "%s of %s set to %s" % (attr, filename, value)
+if opts.fleet:
+    print "enabling fleet on %s" % configfile
+    from gozerlib.fleet import fleet
+    fleet.enable(cfg)
+
+print cfg.dump()
