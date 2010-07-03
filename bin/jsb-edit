@@ -36,22 +36,26 @@ if len(opts.args) < 1:
     os._exit(1)
 
 filename = opts.args[0]
-try:
-    ## gozerlib imports
+configfile = "gozerdata" + os.sep + "config" + os.sep + filename
+if os.path.isdir(configfile):
+    print "available - %s" % os.listdir(configfile)
+    os._exit(1)
 
+try:
     from gozerlib.config import Config
     cfg = Config(filename)
-    print cfg.dump()
 except Exception, ex:
     print "can't make config from file %s - %s" % (filename, str(ex))
     os._exit(1)
+
+print cfg.dump()
 
 try:
     attr = opts.args[1]
     value = opts.args[2]
     cfg[attr] = loads(value)
 except IndexError, ex:
-    print "no values to set - %s" % str(ex)
+    print "no values to set"
     os._exit(0)
 except TypeError, ex:
     print u"can't parse %s - %s" % (unicode(value), unicode(ex))
