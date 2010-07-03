@@ -62,6 +62,8 @@ dest='nossl',
                   help="don't use ssl")
     parser.add_option('-x', '--exec', type='string', default="",
 dest='command', help="give a command to execute")
+    parser.add_option('-t', '--type', type='string', default="console",
+dest='type', help="define type of the bot")
     parser.add_option('-z', '--forward', action='store_true', default=False,
 dest='forward', help="enable forwarding bot")
 

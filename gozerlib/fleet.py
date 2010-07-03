@@ -159,6 +159,9 @@ class Fleet(Persist):
         elif type == 'irc':
             from gozerlib.socklib.irc.bot import IRCBot
             bot = IRCBot(cfg)
+        elif type == 'console':
+            from gozerlib.console.bot import ConsoleBot
+            bot = ConsoleBot(cfg)
         else:
             raise NoSuchBotType('%s bot .. unproper type %s' % (name, type))
 

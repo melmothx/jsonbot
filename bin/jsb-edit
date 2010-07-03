@@ -23,7 +23,7 @@ print getversion('EDIT')
 
 ## make config from opts
 
-from gozerlib.utils.opts import makeopts
+from gozerlib.utils.opts import makeopts, makeconfig
 opts = makeopts()
 
 ## set loglevel
@@ -64,6 +64,11 @@ else:
 if opts.fleet:
     print "enabling fleet on %s" % configfile
     from gozerlib.fleet import fleet
-    fleet.enable(cfg)
+    if not cfg.type and not opts.type:
+        print "bot type not defined .. use -t option"
+        os._exit(1)        
+    cfg.type = opts.type or cfg.type
+    botcfg = makeconfig(cfg.type, cfg)
+    fleet.enable(botcfg)
 
 print cfg.dump()
