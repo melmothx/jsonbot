@@ -45,6 +45,7 @@ setup(
                'bin/jsb-release',
                'bin/jsb-rollback',
                'bin/jsb-run',
+               'bin/jsb-setup',
                'bin/jsb-stop',
                'bin/jsb-upload'],
     packages=['gozerlib', 
