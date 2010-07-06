@@ -572,13 +572,14 @@ class SXMPPBot(XMLStream, BotBase):
         logging.warn('sxmpp -reconnecting .. sleeping 15 seconds')
         self.exit()
         time.sleep(15)
-        newbot = SXMPPBot(self.cfg, self.users, self.plugs, self.jid)
+        botjid = self.jid
+        newbot = SXMPPBot(self.cfg, self.users, self.plugs, botjid)
 
         if newbot.connect():
             self.jid += '.old'
             newbot.joinchannels()
-            fleet.replace(self.jid, newbot)
-            return True
+            if fleet.replace(botjid, newbot):
+                return True
 
         return False
 

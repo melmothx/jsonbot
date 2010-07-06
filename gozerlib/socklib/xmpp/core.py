@@ -289,7 +289,6 @@ class XMLStream(NodeBuilder):
         else:
             return False
 
-
     def logon(self):
         """ called upon logon on the server. """
         start_new_thread(self._doprocess, ())

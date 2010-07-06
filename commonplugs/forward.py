@@ -55,12 +55,7 @@ def forwardoutcb(bot, event):
     e.isremote = True
     e.forwarded = True
     e.source = bot.jid
-    #if not e.nick:
-    #    e.nick = bot.nick or bot.name
     outbot = fleet.getfirstjabber()
-    #if not outbot and bot.isgae:
-    #    from gozerlib.gae.xmpp.bot import XMPPBot
-    #    outbot = XMPPBot()
     if outbot:
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
@@ -91,7 +86,7 @@ def forwardincb(bot, event):
 
     container = Container()
     container.load(event.txt)     
-    remoteevent = EventBase()
+    remoteevent = RemoteEvent()
     logging.debug("forward - using payload - %s" % container.payload)
     try:
         remoteevent.copyin(loads(container.payload))
@@ -101,7 +96,6 @@ def forwardincb(bot, event):
     remoteevent.isremote = True
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
-    #remoteevent.source = bot.jid
     logging.debug(u"forward - incoming - %s" % remoteevent.dump())
     gn_callbacks.check(bot, remoteevent)
 

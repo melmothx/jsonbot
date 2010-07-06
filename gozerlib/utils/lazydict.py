@@ -23,7 +23,7 @@ import types
 ## defines
 
 defaultignore = ['pass', 'password', 'fsock', 'sock', 'handlers']
-raw = ['payload']
+raw = ['payload', ]
 
 cpy = copy.deepcopy
 

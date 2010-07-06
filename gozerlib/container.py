@@ -10,6 +10,7 @@ from gozerlib.gozerevent import GozerEvent
 
 ## basic imports
 
+import hmac
 import uuid
 import time
 

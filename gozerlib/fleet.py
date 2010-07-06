@@ -268,7 +268,7 @@ class Fleet(Persist):
         for i in range(len(self.bots)):
             if name == self.bots[i].name:
                 self.bots[i] = bot
-                return
+                return True
 
     def enable(self, cfg):
         if cfg.botname and cfg.botname not in self.data['names']:
