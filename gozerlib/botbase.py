@@ -196,7 +196,7 @@ class BotBase(LazyDict):
             return
 
         try:
-            if go or event.bottype in ['web', 'xmpp', ]:
+            if go:
                 event.finish()
                 result = self.plugs.dispatch(self, event)
                 event.leave()
