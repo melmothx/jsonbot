@@ -34,7 +34,7 @@ try:
 except ImportError:
     plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs', 'socketplugs']
 
-default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.outputcache']
+default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.outputcache']
 
 # these are set in gozerlib/boot.py
 

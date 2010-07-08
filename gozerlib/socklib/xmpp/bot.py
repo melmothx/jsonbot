@@ -423,41 +423,6 @@ class SXMPPBot(XMLStream, BotBase):
         if self.me in m.fromm:
             logging.debug("message to self .. ignoring")
             return 0
-        go = 0
-
-        try:
-            cc = self.channels[m.channel]['cc']
-        except (TypeError, KeyError):
-            cc = self.cfg['defaultcc'] or '!'
-
-        try:
-            channick = self.channels[m.channel]['nick']
-        except (TypeError, KeyError):
-            channick = self.nick
-
-        if m.msg and not self.cfg['noccinmsg']:
-            go = 1
-        elif not m.txt:
-            go = 0
-        elif m.txt[0] in cc:
-            go = 1
-        elif m.txt.startswith("%s: " % channick):
-            m.txt = m.txt.replace("%s: " % channick, "")
-            go = 1
-        elif m.txt.startswith("%s, " % channick):
-            m.txt = m.txt.replace("%s, " % channick, "")
-            go = 1
-
-        if m.txt and m.txt[0] in cc:
-            m.txt = m.txt[1:]
-
-        if go:
-            try:
-                self.doevent(m)
-            except:
-                handle_exception()
-        else:
-            logging.debug("no command in %s" % m.txt)
 
         try:
             if m.type == 'error':

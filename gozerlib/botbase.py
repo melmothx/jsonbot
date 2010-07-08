@@ -161,57 +161,6 @@ class BotBase(LazyDict):
                 e.leave()
 
         event.callbackdone = True
-        self.status = "dispatch"
-        self.curevent = event
-        go = False
-        cc = "!"
-
-        if event.chan:
-            cc = event.chan.data.cc
-        if not cc:
-            cc = "!"
-
-        logging.debug("cc for %s is %s (%s)" % (event.title or event.channel, cc, self.nick))
-        matchnick = unicode(self.nick + u":")
-        #logging.warn(event.txt)        
-        if event.txt and event.txt[0] in cc:
-            event.txt = event.txt[1:]
-            if event.txt:
-                event.usercmnd = event.txt.split()[0]
-            else:
-                event.usercmnd = None
-            event.makeargs()
-            go = True
-        elif event.txt.startswith(matchnick):
-            event.txt = event.txt[len(matchnick) + 1:]
-            if event.txt:
-                event.usercmnd = event.txt.split()[0]
-            else:
-                event.usercmnd = None
-            event.makeargs()
-            go = True
-     
-        if event.isremote and not event.remotecmnd:
-            logging.debug("event is remote but not command .. not dispatching")
-            return
-
-        try:
-            if go:
-                event.finish()
-                result = self.plugs.dispatch(self, event)
-                event.leave()
-            else:
-                result =  []
-        except NoSuchCommand:
-            logging.info("no such command: %s" % event.usercmnd)
-            event.leave()
-            result = []
-
-        if event.chan:
-            if event.chan.data.lastedited > starttime:
-                event.chan.save()
-
-        return result
 
     def ownercheck(self, userhost):
         """ check if provided userhost belongs to an owner. """
