@@ -54,7 +54,7 @@ boot()
 
 ## define
 
-bot = WebBot()
+bot = WebBot(name='webbot')
 
 ## classes
 
@@ -74,7 +74,11 @@ class DispatchHandler(webapp.RequestHandler):
         else:
             self.response.starttime = time.time()
 
-        (userhost, user, u, nick) = checkuser(self.response, self.request)
+        event = WebEvent(bot=bot).parse(self.response, self.request)
+        event.cbtype = "WEB"
+
+        (userhost, user, u, nick) = checkuser(self.response, self.request, event)
+        #logging.warn("web_handler - in")
         login = loginurl(self.response)
         logout = logouturl(self.response)
         self.response.out.write('<br>')
@@ -86,6 +90,7 @@ class DispatchHandler(webapp.RequestHandler):
 
         self.response.out.write('<br><div class="body"><i>"enter a command in the box above."</i><br></div>')
         #closer(self.response)
+        #logging.warn("web_handler - out")
 
     def post(self):
 
@@ -106,8 +111,6 @@ class DispatchHandler(webapp.RequestHandler):
         event = WebEvent(bot=bot).parse(self.response, self.request)
         event.cbtype = "WEB"
 
-        self.response.out.write('<br>')
-
         if not event.user:
             start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'login', 'loginurl': login, 'logouturl': logout, 'onload': 'putFocus(0,0);'})
         else:
@@ -116,7 +119,7 @@ class DispatchHandler(webapp.RequestHandler):
 
         try:
             bot.doevent(event)
-            #self.response.out.write('</div>')
+            self.response.out.write('</div>')
         except NoSuchCommand:
             self.response.out.write("sorry no %s command found." % event.usercmnd)
         except Exception, ex:

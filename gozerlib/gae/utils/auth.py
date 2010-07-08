@@ -42,13 +42,14 @@ def checkuser(response, request, event=None):
         hostid = "%s-%s" % (request.remote_addr, event.bot.uuid)
     else:
         hostid = request.remote_addr
+    logging.warn("auth - in")
 
     if not user:
         try:
             email = request.get('USER_EMAIL')
             if not email:
                 email = "notauth"
-            #logging.debug("gae.utils.auth - using %s" % str(request))
+            logging.debug("gae.utils.auth - using %s" % str(request))
             auth_domain = request.get('AUTH_DOMAIN')
             who = request.get('who')
             if not who:
