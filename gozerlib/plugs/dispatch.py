@@ -45,7 +45,8 @@ if True:
 
         logging.debug("cc for %s is %s (%s)" % (event.title or event.channel or event.userhost, cc, bot.nick))
         matchnick = unicode(bot.nick + u":")
-        #logging.warn(event.txt)        
+        logging.warn("dispatch - %s" % event.txt)        
+
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
             if event.txt:
@@ -62,7 +63,6 @@ if True:
                 event.usercmnd = None
             event.makeargs()
             go = True
-     
 
         try:
             if go:
@@ -70,6 +70,7 @@ if True:
                 result = bot.plugs.dispatch(bot, event)
                 event.leave()
             else:
+                logging.warning("dispatch - no go for %s (%s)" % (event.txt, event.userhost))
                 result =  []
         except NoSuchCommand:
             logging.info("no such command: %s" % event.usercmnd)

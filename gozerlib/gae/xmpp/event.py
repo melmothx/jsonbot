@@ -76,10 +76,6 @@ class XMPPEvent(EventBase):
         input = self.body or self.stanza
         input = input.strip()
         self.origtxt = input
-
-        if len(input) > 1 and input[0] == '!':
-            input = input[1:]
-            
         self.txt = input
         self.usercmnd = self.txt.split()[0].lower()
         self.makeargs()

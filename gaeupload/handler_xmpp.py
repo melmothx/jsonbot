@@ -83,9 +83,6 @@ class XMPPHandler(webapp.RequestHandler):
         event = XMPPEvent().parse(self.request, self.response)
         event.bot = bot
 
-        if event.txt and event.txt.startswith("{"):
-            event.isremote = True
-
         bot.doevent(event)
 
 application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler), ],
