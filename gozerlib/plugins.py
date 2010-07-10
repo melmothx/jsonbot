@@ -71,7 +71,7 @@ class Plugins(LazyDict):
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
         if modname == "gozerlib.plugs.dispatch":
-            logging.warn("plugins - can't unload dispatcher plugin")
+            logging.debug("plugins - can't unload dispatcher plugin")
             return
         logging.debug("plugins - unloading %s" % modname)
 

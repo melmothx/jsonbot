@@ -45,7 +45,7 @@ if True:
 
         logging.debug("cc for %s is %s (%s)" % (event.title or event.channel or event.userhost, cc, bot.nick))
         matchnick = unicode(bot.nick + u":")
-        logging.warn("dispatch - %s" % event.txt)        
+        logging.debug("dispatch - %s" % event.txt)        
 
         if event.txt and event.txt[0] in cc:
             event.txt = event.txt[1:]
