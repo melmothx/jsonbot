@@ -149,15 +149,8 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         e = cpy(event)
-
-        if event.isremote:
-            logging.debug('doing REMOTE callback')
-            gn_callbacks.check(self, e)
-            e.leave()
-            return
-        else:
-            callbacks.check(self, e)
-            e.leave()
+        callbacks.check(self, e)
+        e.leave()
 
         event.callbackdone = True
 
