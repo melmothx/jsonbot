@@ -16,6 +16,7 @@ from gozerlib.examples import examples
 from gozerlib.fleet import fleet
 from gozerlib.config import cfg
 from gozerlib.container import Container
+from gozerlib.errors import NoProperDigest
 
 ## basic imports
 
@@ -23,6 +24,8 @@ import logging
 import copy
 import time
 import types
+import hmac 
+import hashlib
 
 ## simpljejson imports
 
@@ -60,7 +63,9 @@ def forwardoutcb(bot, event):
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
             logging.info("forward - sending to %s" % jid)
-            outbot.saynocb(jid, Container(bot.jid, e.dump()).dump())
+            container = Container(outbot.jid, e.dump())
+            container.isremote = True
+            outbot.saynocb(jid, container.dump()) 
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
@@ -86,17 +91,24 @@ def forwardincb(bot, event):
 
     container = Container()
     container.load(event.txt)     
+    container.isremote = True
     remoteevent = RemoteEvent()
-    logging.debug("forward - using payload - %s" % container.payload)
-    try:
-        remoteevent.copyin(loads(container.payload))
-    except TypeError:
-        logging.error("forward - can't load payload - %s" % container.payload)
-        return
     remoteevent.isremote = True
     remoteevent.printto = event.printto
     remoteevent.forwarded = True
-    logging.debug(u"forward - incoming - %s" % remoteevent.dump())
+    try:
+        digest = hmac.new(container.hashkey, container.payload, hashlib.sha512).hexdigest()
+        logging.debug("forward - digest is %s" % digest)
+        if container.digest == digest:
+            #logging.debug("forward - using payload - %s" % container.payload)
+            remoteevent.copyin(loads(container.payload))
+        else:
+            raise NoProperDigest()
+
+    except TypeError:
+        logging.error("forward - can't load payload - %s" % container.payload)
+        return
+    #logging.debug(u"forward - incoming - %s" % remoteevent.dump())
     gn_callbacks.check(bot, remoteevent)
 
 gn_callbacks.add('MESSAGE', forwardincb, forwardinpre)

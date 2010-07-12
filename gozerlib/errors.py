@@ -10,6 +10,9 @@ import sys
 class JsonBotError(Exception):
     pass
 
+class NoProperDigest(JsonBotError):
+     pass
+
 class NoChannelProvided(JsonBotError):
     pass
 

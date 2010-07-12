@@ -13,10 +13,11 @@ from gozerlib.gozerevent import GozerEvent
 import hmac
 import uuid
 import time
+import hashlib
 
 ## defines
 
-idattributes = ['origin', 'type', 'payload', 'idtime']
+idattributes = ['createtime', 'origin', 'type', 'idtime', 'payload']
 
 ## functions
 
@@ -33,14 +34,23 @@ def getid(container):
 
 class Container(GozerEvent):
 
-    def __init__(self, origin=None, payload=None, type="event"):
+    def __init__(self, origin=None, payload=None, type="event", key=None):
         GozerEvent.__init__(self)
         self.createtime = time.time()
         self.origin = origin
-        self.payload = payload
         self.type = str(type) 
+        self.payload = payload
         self.makeid()
+        if key:
+            self.makehmac(key)
+        else:
+            self.makehmac(self.id)
 
     def makeid(self):
         self.idtime = time.time()
         self.id = getid(self)
+
+    def makehmac(self, key):
+        self.hash = "sha512"
+        self.hashkey = key
+        self.digest = hmac.new(key, self.payload, hashlib.sha512).hexdigest()

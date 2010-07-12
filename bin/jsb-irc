@@ -82,6 +82,13 @@ else:
     if opts.fleet:
         fleet.addbot(bot)
 
+    if opts.forward:
+        fleet.addbot(bot)
+        print "starting forward bot (%s)" % str(cfg)
+        forwardcfg = makeconfig('sxmpp', opts, 'forwardbot') # sxmpp for the forward bo
+        forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
+        forwardbot.start()
+
     bot.start()
 
 mainloop()
