@@ -49,16 +49,20 @@ eventlocked = lockdec(eventlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
-        if not botname:
-            botname = cfg and cfg.botname
-
+        if not botname and cfg:
+            botname = cfg.botname
+        if cfg:
+            self.cfg = cfg
+            self.update(cfg)
+        else:
+            self.cfg = Config(self.fleetdir + os.sep + u'config')
         logging.debug(u"botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         self.starttime = time.time()
         self.isgae = False
         self.type = "base"
         self.status = "init"
-
+        self.networkname = cfg.networkname or botname or ""
 
         if botname:
             self.botname = botname
@@ -66,12 +70,6 @@ class BotBase(LazyDict):
             self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
 
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
-
-        if cfg:
-            self.cfg = cfg
-            self.update(cfg)
-        else:
-            self.cfg = Config(self.fleetdir + os.sep + u'config')
 
         if not self.uuid:
             if self.cfg and self.cfg.uuid:
@@ -196,8 +194,10 @@ class BotBase(LazyDict):
         e.ruserhost = self.botname
         e.userhost = self.botname
         e.channel = channel
+        e.origtxt = txt
         e.txt = txt
         e.cbtype = 'OUTPUT'
+        e.botoutput = True
         e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname

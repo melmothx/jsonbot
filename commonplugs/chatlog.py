@@ -3,12 +3,12 @@
 #
 
 """
-    log irc channels to [hour:min] <nick> txt format 
-    The db backend expects the following table structure
-    $dbtable(time, network, target, nick, type, message)
+    log irc channels to [hour:min] <nick> txt format, only 
+    logging to files is supported right now. 
+
 """
 
-__copyright__ = 'this file is in the public domain'
+## gozerlib imports
 
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks, gn_callbacks
@@ -20,10 +20,21 @@ from gozerlib.socklib.irc.ircevent import Ircevent
 from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
 
+## basic imports
+
 import time
 import os
+import logging
+import thread
 from os import path
 from datetime import datetime
+
+## locks
+
+outlock = thread.allocate_lock()
+outlocked = lockdec(outlock)
+
+## defines
 
 cfg = PersistConfig()
 cfg.define('channels', [])
@@ -75,6 +86,8 @@ formats = {
     }
 }
 
+## functions
+
 # Get a format opt in the currently cfg'd format
 def format_opt(name):
     simple_format = formats['simple']
@@ -86,7 +99,6 @@ def init():
     global stopped
     stopped = False
     callbacks.add('ALL', chatlogcb, prechatlogcb)
-    callbacks.add('OUTPUT', chatlogcb, prechatlogcb)
     return 1
 
 def shutdown():
@@ -99,6 +111,7 @@ def shutdown():
 def timestr(dt):
     return dt.strftime(format_opt('timestamp_format'))
 
+@outlocked
 def write(m): 
     """m is a dict with the following properties:
       datetime
@@ -118,7 +131,7 @@ def file_write(m):
         return
     args = {
         'target': m.get('target'), 
-        'network': m.get('network'), 
+        'network': m.get('network') 
     }
     if args['target'].startswith('#'):
         args['channel_name'] = args['target'][1:]
@@ -167,35 +180,7 @@ def file_write(m):
 
 backends['file'] = file_write
 
-def init_db():
-    try:
-        Session, engine = dbstart(mainconfig=cfg, base=IrclogsBase) 
-    except:
-        Session, engine = dbstart(base=IrclogsBase) 
-    create_all('chatlog', base=IrclogsBase)
-    return (Session, engine)
-
-if cfg['backend'] == 'db':
-    Session, engine = init_db()
-
-def db_write(m):
-    try:
-        db = Session()
-        db.begin()
-        row = {
-                'time' : m.get('datetime'),
-                'network' : m.get('network'),
-                'target' : m.get('target'),
-                'nick' : m.get('nick'),
-                'type' : m.get('type'),
-                'message' : m.get('txt')
-        }
-        db.add(ChatLog(**row))
-        db.commit()
-    except Exception, e:
-        rlog(10, 'chatlog', 'failed to log to db: %s'%(str(e)))
-    
-backends['db'] = db_write
+## callbacks
 
 def log(bot, ievent):
     m = {
@@ -207,7 +192,12 @@ def log(bot, ievent):
         'target': ievent.channel,
     }
 
-    if ievent.cmnd == 'PRIVMSG':
+    if ievent.type == "OUTPUT":
+        m.update({
+            'type': 'output',
+            'txt': ievent.txt
+        })
+    elif ievent.cmnd == 'PRIVMSG':
         if ievent.txt.startswith('\001ACTION'):
             m.update({
                 'type': 'action',
@@ -276,28 +266,12 @@ def log(bot, ievent):
                     })
                     write(m)
         return
-    if m.get('txt'):
-        write(m)
-
-def jabberlog(bot, ievent):
-    if ievent.botoutput:
-        chan = ievent.to
-    else:
-        chan = ievent.channel
-    m = {
-        'datetime': datetime.now(),
-        'separator': format_opt('separator'),
-        'event_prefix': format_opt('event_prefix'),
-        'network': bot.networkname,
-        'nick': ievent.nick,
-        'target': chan,
-    }
-    if ievent.cmnd == 'Message':
+    elif ievent.cmnd == 'MESSAGE':
             m.update({
                 'type': 'comment',
                 'txt': ievent.txt.strip(),
             })
-    elif ievent.cmnd == 'Presence':
+    elif ievent.cmnd == 'PRESENCE':
             if ievent.type == 'unavailable':
                 m.update({
                     'type': 'part',
@@ -308,7 +282,7 @@ def jabberlog(bot, ievent):
                     'type': 'join',
                     'txt': "%s joined"%ievent.nick
                 })
-    if m['txt']:
+    if m.get('txt'):
         write(m)
 
 def prechatlogcb(bot, ievent):
@@ -325,6 +299,8 @@ def prechatlogcb(bot, ievent):
 
 def chatlogcb(bot, ievent):
     log(bot, ievent)
+
+## commands
 
 def handle_chatlogon(bot, ievent):
     chan = ievent.channel

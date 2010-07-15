@@ -167,14 +167,17 @@ class Callbacks(object):
             :param event: event that needs to be checked
 
         """
-        # check for "ALL" callbacks
-        if self.cbs.has_key('ALL'):
-            for cb in self.cbs['ALL']:
-                self.callback(cb, bot, event)
 
         type = event.cbtype or event.cmnd
         self.reloadcheck(event)
         logging.debug("callbacks - %s - %s" % (event.userhost, type))
+
+        # check for "ALL" callbacks
+        if self.cbs.has_key('ALL'):
+            for cb in self.cbs['ALL']:
+                self.callback(cb, bot, event)
+            #event.leave()
+            #return self
  
         # check for CMND callbacks
         if self.cbs.has_key(type):
