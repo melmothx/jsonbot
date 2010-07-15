@@ -99,6 +99,7 @@ def init():
     global stopped
     stopped = False
     callbacks.add('ALL', chatlogcb, prechatlogcb)
+    gn_callbacks.add('ALL', chatlogcb, prechatlogcb)
     return 1
 
 def shutdown():
@@ -282,6 +283,11 @@ def log(bot, ievent):
                     'type': 'join',
                     'txt': "%s joined"%ievent.nick
                 })
+    elif ievent.cmnd == 'BLIP_SUBMITTED':
+            m.update({
+                'type': 'blip',
+                'txt': ievent.txt.strip(),
+            })
     if m.get('txt'):
         write(m)
 
