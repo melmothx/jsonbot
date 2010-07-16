@@ -246,13 +246,14 @@ def log(bot, ievent):
             'txt': '%s (%s) has left'%(ievent.nick, ievent.userhost),
         })
     elif ievent.cmnd in ('QUIT', 'NICK'):
+        if not ievent.user or not ievent.user.channels:
+            logging.debug("chatlog - can't find joined channels for %s" % ievent.userhost)
+            return
         cmd = ievent.cmnd
         nick = cmd == 'NICK' and ievent.txt or ievent.nick
-        if not bot.userchannels.has_key(nick.lower()):
-            return
-        for c in bot.userchannels[nick.lower()]:
+        for c in event.user.channels:
             if [bot.name, c] in cfg.get('channels'):
-                if c in bot.state['joinedchannels']:
+                if True:
                     if cmd == 'NICK':
                         m['txt'] = '%s (%s) is now known as %s'%(
                             ievent.nick, ievent.userhost, ievent.txt
