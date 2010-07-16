@@ -24,7 +24,7 @@ cmnds.add("data-chan", handle_datachan, "OPER")
 examples.add('data-chan', 'dump channel data', 'data-chan')
 
 def handle_databot(bot, event):
-    event.reply(bot.data.dump())
+    event.reply(bot.dump())
 
 cmnds.add("data-bot", handle_databot, "OPER")
 examples.add('data-bot', 'dump bot data', 'data-bot')
