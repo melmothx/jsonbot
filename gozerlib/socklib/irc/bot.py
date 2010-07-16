@@ -177,17 +177,13 @@ class IRCBot(Irc):
             try:
                 # see if user provided channel
                 res = strippedtxt(res.strip())
-                chan = checkchan(self, res)
-                if chan != None:
-                    (channel, res) = chan
-                else:
-                    channel = nick
                 # create ircevent
                 ievent = Ircevent()
                 ievent.printto = sock
                 ievent.bottype = "irc"
                 ievent.nick = nick
                 ievent.userhost = userhost
+                ievent.auth = userhost
                 ievent.channel = channel or ievent.userhost
                 ievent.chan = ChannelBase(ievent.channel)
                 ievent.origtxt = res

@@ -85,3 +85,4 @@ if True:
     callbacks.add('BLIP_SUBMITTED', dispatch, predispatch)
     callbacks.add('WEB', dispatch, predispatch)
     callbacks.add('CONSOLE', dispatch, predispatch)
+    callbacks.add('DCC', dispatch, predispatch)
