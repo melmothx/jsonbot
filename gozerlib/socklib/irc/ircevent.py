@@ -149,7 +149,7 @@ class Ircevent(EventBase):
             # jabber compat .. this is userhost on irc
             self.stripped = self.userhost
             # determine user
-            self.user = stripident(self.userhost).split('@')[0]
+            #self.user = stripident(self.userhost).split('@')[0]
             self.auth = self.userhost
 
         self.origtxt = self.txt

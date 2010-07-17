@@ -59,6 +59,8 @@ def forwardoutcb(bot, event):
     e.forwarded = True
     e.source = bot.jid
     outbot = fleet.getfirstjabber()
+    if bot.isgae and not outbot:
+        outbot = fleet.makebot('xmpp', 'forwardbot')
     if outbot:
         e.source = outbot.jid
         for jid in forward.data.channels[event.channel]:
