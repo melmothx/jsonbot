@@ -82,7 +82,7 @@ class BotBase(LazyDict):
         self.name = self.botname
         self.owner = self.cfg.owner
         if not self.owner:
-            logging.warn(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
+            logging.info(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
             from config import cfg as mainconfig
             self.owner = mainconfig.owner
 

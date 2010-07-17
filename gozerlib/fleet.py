@@ -162,6 +162,9 @@ class Fleet(Persist):
         elif type == 'console':
             from gozerlib.console.bot import ConsoleBot
             bot = ConsoleBot(cfg)
+        elif type == 'base':
+            from gozerlib.botbase import BotBase
+            bot = BotBase(cfg)
         else:
             raise NoSuchBotType('%s bot .. unproper type %s' % (name, type))
 
