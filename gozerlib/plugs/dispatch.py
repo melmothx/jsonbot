@@ -68,13 +68,11 @@ if True:
             if go:
                 event.finish()
                 result = bot.plugs.dispatch(bot, event)
-                event.leave()
             else:
                 logging.debug("dispatch - no go for %s (%s)" % (event.txt, event.userhost))
                 result =  []
         except NoSuchCommand:
             logging.info("no such command: %s" % event.usercmnd)
-            event.leave()
             result = []
 
         return result

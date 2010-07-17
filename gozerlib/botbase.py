@@ -147,7 +147,7 @@ class BotBase(LazyDict):
         starttime = time.time()
         e = cpy(event)
         callbacks.check(self, e)
-        e.leave()
+        #e.leave()
 
         event.callbackdone = True
 
