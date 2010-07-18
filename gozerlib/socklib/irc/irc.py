@@ -399,7 +399,7 @@ class Irc(BotBase):
         self.connected = False
 
         # see if we need to reconnect
-        if doreconnect:
+        if doreconnect and not self.stopped:
             time.sleep(2)
             self.reconnect()
 
