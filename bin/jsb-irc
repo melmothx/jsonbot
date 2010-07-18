@@ -27,6 +27,7 @@ from gozerlib.errors import NoOwnerSet
 from gozerlib.fleet import fleet
 from gozerlib.utils.mainloop import mainloop
 from gozerlib.utils.opts import makeconfig, makeopts
+from gozerlib.threads import start_new_thread
 import gozerlib.users as users
 import gozerlib
 
@@ -87,7 +88,7 @@ else:
         print "starting forward bot (%s)" % str(cfg)
         forwardcfg = makeconfig('sxmpp', opts, 'forwardbot') # sxmpp for the forward bo
         forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
-        forwardbot.start()
+        start_new_thread(forwardbot.start, ())
 
     bot.start()
 

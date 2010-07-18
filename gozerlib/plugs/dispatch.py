@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.callbacks import first_callbacks
+from gozerlib.callbacks import last_callbacks
 from gozerlib.errors import NoSuchCommand
 
 ## basic logging
@@ -78,9 +78,9 @@ if True:
         return result
 
 
-    first_callbacks.add('PRIVMSG', dispatch, predispatch)
-    first_callbacks.add('MESSAGE', dispatch, predispatch)
-    first_callbacks.add('BLIP_SUBMITTED', dispatch, predispatch)
-    first_callbacks.add('WEB', dispatch, predispatch)
-    first_callbacks.add('CONSOLE', dispatch, predispatch)
-    first_callbacks.add('DCC', dispatch, predispatch)
+    last_callbacks.add('PRIVMSG', dispatch, predispatch)
+    last_callbacks.add('MESSAGE', dispatch, predispatch)
+    last_callbacks.add('BLIP_SUBMITTED', dispatch, predispatch)
+    last_callbacks.add('WEB', dispatch, predispatch)
+    last_callbacks.add('CONSOLE', dispatch, predispatch)
+    last_callbacks.add('DCC', dispatch, predispatch)

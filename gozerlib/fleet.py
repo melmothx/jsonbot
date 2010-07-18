@@ -327,7 +327,9 @@ class Fleet(Persist):
             for bot in self.bots:
                 if jabber and bot.type != 'sxmpp' and bot.type != 'jabber':
                     continue
-                bot.exit()
+                threads.append(start_new_thread(bot.exit, ()))
+            for thread in threads: 
+                thread.join()
             return
 
         for bot in self.bots:

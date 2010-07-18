@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks, gn_callbacks, last_callbacks
+from gozerlib.callbacks import callbacks, gn_callbacks, last_callbacks, first_callbacks
 from gozerlib.eventbase import EventBase
 from gozerlib.remote.event import Container, RemoteEvent
 from gozerlib.persist import PlugPersist
@@ -71,17 +71,17 @@ def forwardoutcb(bot, event):
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 
-callbacks.add('BLIP_SUBMITTED', forwardoutcb, forwardoutpre)
-callbacks.add('MESSAGE', forwardoutcb, forwardoutpre)
-callbacks.add('PRESENCE', forwardoutcb, forwardoutpre)
-callbacks.add('PRIVMSG', forwardoutcb, forwardoutpre)
-callbacks.add('JOIN', forwardoutcb, forwardoutpre)
-callbacks.add('PART', forwardoutcb, forwardoutpre)
-callbacks.add('QUIT', forwardoutcb, forwardoutpre)
-callbacks.add('NICK', forwardoutcb, forwardoutpre)
-callbacks.add('CONSOLE', forwardoutcb, forwardoutpre)
-callbacks.add('WEB', forwardoutcb, forwardoutpre)
-last_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
+first_callbacks.add('BLIP_SUBMITTED', forwardoutcb, forwardoutpre)
+first_callbacks.add('MESSAGE', forwardoutcb, forwardoutpre)
+first_callbacks.add('PRESENCE', forwardoutcb, forwardoutpre)
+first_callbacks.add('PRIVMSG', forwardoutcb, forwardoutpre)
+first_callbacks.add('JOIN', forwardoutcb, forwardoutpre)
+first_callbacks.add('PART', forwardoutcb, forwardoutpre)
+first_callbacks.add('QUIT', forwardoutcb, forwardoutpre)
+first_callbacks.add('NICK', forwardoutcb, forwardoutpre)
+first_callbacks.add('CONSOLE', forwardoutcb, forwardoutpre)
+first_callbacks.add('WEB', forwardoutcb, forwardoutpre)
+first_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
     if event.isremote:
