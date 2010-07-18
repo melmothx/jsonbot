@@ -9,7 +9,7 @@
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
-from callbacks import callbacks, gn_callbacks
+from callbacks import callbacks, gn_callbacks, first_callbacks, last_callbacks
 from eventbase import EventBase
 from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet
 from datadir import datadir
@@ -146,7 +146,9 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         e = cpy(event)
+        first_callbacks.check(self, e)
         callbacks.check(self, e)
+        last_callbacks.check(self, e)
         #e.leave()
 
         event.callbackdone = True
@@ -202,8 +204,8 @@ class BotBase(LazyDict):
         e.nick = self.nick or self.botname
         e.chan = ChannelBase(e.channel)
         e.finish()
-        callbacks.check(self, e)
-        e.leave()
+        last_callbacks.check(self, e)
+        #e.leave()
 
     def docmnd(self, origin, channel, txt, event=None):
         """ do a command. """

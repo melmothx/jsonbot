@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.callbacks import callbacks
+from gozerlib.callbacks import first_callbacks
 from gozerlib.errors import NoSuchCommand
 
 ## basic logging
@@ -69,7 +69,7 @@ if True:
                 event.finish()
                 result = bot.plugs.dispatch(bot, event)
             else:
-                logging.debug("dispatch - no go for %s (%s)" % (event.txt, event.userhost))
+                logging.debug("dispatch - no go for %s" % event.userhost)
                 result =  []
         except NoSuchCommand:
             logging.info("no such command: %s" % event.usercmnd)
@@ -78,9 +78,9 @@ if True:
         return result
 
 
-    callbacks.add('PRIVMSG', dispatch, predispatch)
-    callbacks.add('MESSAGE', dispatch, predispatch)
-    callbacks.add('BLIP_SUBMITTED', dispatch, predispatch)
-    callbacks.add('WEB', dispatch, predispatch)
-    callbacks.add('CONSOLE', dispatch, predispatch)
-    callbacks.add('DCC', dispatch, predispatch)
+    first_callbacks.add('PRIVMSG', dispatch, predispatch)
+    first_callbacks.add('MESSAGE', dispatch, predispatch)
+    first_callbacks.add('BLIP_SUBMITTED', dispatch, predispatch)
+    first_callbacks.add('WEB', dispatch, predispatch)
+    first_callbacks.add('CONSOLE', dispatch, predispatch)
+    first_callbacks.add('DCC', dispatch, predispatch)

@@ -89,7 +89,6 @@ class Callbacks(object):
             self.cbs.insert(nr, what, Callback(modname, func, prereq, kwargs, threaded, speed))
         else:
             self.cbs.add(what, Callback(modname, func, prereq, kwargs, threaded, speed))
-
         logging.debug('callbacks - added %s (%s)' % (what, modname))
         return self
 
@@ -258,5 +257,7 @@ class Callbacks(object):
 
 ## define
 
+first_callbacks = Callbacks()
 callbacks = Callbacks()
 gn_callbacks = Callbacks()
+last_callbacks = Callbacks()

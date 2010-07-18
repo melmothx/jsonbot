@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks, gn_callbacks
+from gozerlib.callbacks import callbacks, gn_callbacks, last_callbacks
 from gozerlib.eventbase import EventBase
 from gozerlib.remote.event import Container, RemoteEvent
 from gozerlib.persist import PlugPersist
@@ -79,9 +79,9 @@ callbacks.add('JOIN', forwardoutcb, forwardoutpre)
 callbacks.add('PART', forwardoutcb, forwardoutpre)
 callbacks.add('QUIT', forwardoutcb, forwardoutpre)
 callbacks.add('NICK', forwardoutcb, forwardoutpre)
-callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 callbacks.add('CONSOLE', forwardoutcb, forwardoutpre)
 callbacks.add('WEB', forwardoutcb, forwardoutpre)
+last_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
     if event.isremote:
