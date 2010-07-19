@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from commands import cmnds
-from callbacks import callbacks, gn_callbacks
+from callbacks import callbacks, gn_callbacks, first_callbacks, last_callbacks
 from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
@@ -90,7 +90,17 @@ class Plugins(LazyDict):
             return False
 
         try:
+            first_callbacks.unload(modname)
+        except KeyError:
+            return False
+
+        try:
             callbacks.unload(modname)
+        except KeyError:
+            return False
+
+        try:
+            last_callbacks.unload(modname)
         except KeyError:
             return False
 
@@ -98,7 +108,6 @@ class Plugins(LazyDict):
             gn_callbacks.unload(modname)
         except KeyError:
             return False
-
 
         return True
 
@@ -145,7 +154,7 @@ class Plugins(LazyDict):
 
         return self[modname]
 
-    def reload(self, modname, force=False):
+    def reload(self, modname, force=True):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname):
             self.unload(modname)

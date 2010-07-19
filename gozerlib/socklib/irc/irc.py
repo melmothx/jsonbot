@@ -303,8 +303,9 @@ class Irc(BotBase):
                     try:
                         rr = unicode(fromenc(r, self.encoding))
                     except UnicodeDecodeError:
-                        logging.warn("irc - decode error - using raw")
-                        rr = toenc(r, self.encoding)
+                        logging.warn("irc - decode error - ignoring")
+                        continue
+                        #rr = toenc(r, self.encoding)
                     if not rr:
                         continue
                     res = strippedtxt(rr, ['\001', '\002', '\003', '\t'])
