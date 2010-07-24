@@ -66,6 +66,7 @@ class DispatchHandler(webapp.RequestHandler):
     def get(self):
 
         """ show basic page. """
+        logging.warn("web_handler - in")
         global starttime
 
         if starttime:
@@ -78,10 +79,8 @@ class DispatchHandler(webapp.RequestHandler):
         event.cbtype = "WEB"
 
         (userhost, user, u, nick) = checkuser(self.response, self.request, event)
-        #logging.warn("web_handler - in")
         login = loginurl(self.response)
         logout = logouturl(self.response)
-        self.response.out.write('<br>')
 
         if not user:
             start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'login', 'loginurl': login, 'logouturl': logout, 'onload': 'void(0);'})
@@ -89,13 +88,15 @@ class DispatchHandler(webapp.RequestHandler):
             start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'void(0);'})
 
         self.response.out.write('<br><div class="body"><i>"enter a command in the box above."</i><br></div>')
-        #closer(self.response)
-        #logging.warn("web_handler - out")
+        self.response.out.write('</div>')
+        closer(self.response)
+        logging.warn("web_handler - out")
 
     def post(self):
 
         """ this is where the command get disaptched. """
 
+        logging.debug("web - incoming - %s" % self.request.remote_addr)
         global starttime
 
         if starttime:
@@ -104,7 +105,6 @@ class DispatchHandler(webapp.RequestHandler):
         else:
             self.response.starttime = time.time()
 
-        logging.debug("web - incoming - %s" % self.request.remote_addr)
         login = loginurl(self.response)
         logout = logouturl(self.response)
 
