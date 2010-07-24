@@ -8,6 +8,7 @@
 
 from gozerlib.utils.generic import fromenc, toenc, getversion
 from gozerlib.utils.xmpp import stripped
+from gozerlib.utils.url import getpostdata
 from gozerlib.plugins import plugs
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
@@ -46,7 +47,7 @@ import logging
 logging.warn(getversion('GADGETEXEC'))
 
 #webbot = WebBot()
-wavebot = WaveBot()
+bot = WebBot()
 
 class HB_Handler(webapp.RequestHandler):
 
@@ -60,14 +61,14 @@ class HB_Handler(webapp.RequestHandler):
         """ this is where the command get disaptched. """
 
         logging.debug("HBEXEC incoming: %s" % self.request.remote_addr)
-        event = WebEvent().parse(self.response, self.request)
-        event.bot = wavebot
-        event.cbtype = 'HBEXEC'
-        event.iswave = True
-        event.isgadget = True
-
+        #logging.debug(str(self.request))
+        event = WebEvent(bot=bot).parse(self.response, self.request)
+        logging.debug(dir(self.request))
+        logging.debug(self.request.params)
+        event.type = "WEB"
+        logging.debug(event.dump())
         try:
-            wavebot.doevent(event)
+            bot.doevent(event)
 
         except NoSuchCommand:
             event.reply("no %s command found" % event.usercmnd)

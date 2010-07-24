@@ -10,6 +10,8 @@ from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt, fromenc, toenc
 from gozerlib.utils.xmpp import stripped
 from gozerlib.outputcache import add
+from gozerlib.utils.url import getpostdata
+from gozerlib.utils.exception import handle_exception
 
 ## gaelib imports
 
@@ -26,6 +28,7 @@ class WebEvent(EventBase):
     def __init__(self, bot=None): 
         EventBase.__init__(self, bot=bot)
         self.bottype = "web"
+        self.cbtype = "WEB"
 
     def __deepcopy__(self, a):
         e = WebEvent()
@@ -38,7 +41,14 @@ class WebEvent(EventBase):
         #logging.warn(str(request.environ))
         input = request.get('content')
         if not input:
-            input = request.get('QUERY_STRING')
+            try:
+                 input = getpostdata(request)['content']
+            except Exception, ex:
+                 input = ""
+                 handle_exception()
+        #else:
+        #    input = request.get('QUERY_STRING')
+        logging.warn("web - input is %s" % input)
         self.isweb = True
         self.origtxt = fromenc(input.strip())
         self.txt = self.origtxt
