@@ -63,10 +63,10 @@ class HB_Handler(webapp.RequestHandler):
         logging.debug("HBEXEC incoming: %s" % self.request.remote_addr)
         #logging.debug(str(self.request))
         event = WebEvent(bot=bot).parse(self.response, self.request)
-        logging.debug(dir(self.request))
-        logging.debug(self.request.params)
+        #logging.debug(dir(self.request))
+        #logging.debug(self.request.params)
         event.type = "WEB"
-        logging.debug(event.dump())
+        #logging.debug(event.dump())
         try:
             bot.doevent(event)
 

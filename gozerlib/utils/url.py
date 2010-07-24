@@ -210,7 +210,7 @@ def getpostdata(event):
     try:
         ctype, pdict = cgi.parse_header(event.headers.getheader('content-type'))
     except AttributeError:
-        ctype, pdict = cgi.parse_header(event.headers.ge('content-type'))
+        ctype, pdict = cgi.parse_header(event.headers.get('content-type'))
     body = cgi.FieldStorage(fp=event.rfile, headers=event.headers, environ = {'REQUEST_METHOD':'POST'}, keep_blank_values = 1)
     result = {}
     for name in dict(body):

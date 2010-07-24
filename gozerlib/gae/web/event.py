@@ -42,7 +42,9 @@ class WebEvent(EventBase):
         input = request.get('content')
         if not input:
             try:
-                 input = getpostdata(request)['content']
+                 input = request.params.getone('content')
+            except KeyError:
+                 input = ""
             except Exception, ex:
                  input = ""
                  handle_exception()
