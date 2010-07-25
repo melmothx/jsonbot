@@ -1,6 +1,6 @@
       // vars
 
-      var url = "https://jsonbot.appspot.com/gadgetexec/";
+      var url = "http://jsonbot.appspot.com/gadgetexec/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
@@ -9,9 +9,10 @@
       var viewer = "";
       var hostid = "";
       var viewerid = "";
+      var parameters = ""
       var identtime = new Date();
-      var consoletxt = '<form><b>&gt; </b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /></form><b>&gt; </b><b><i>results:</i></b><br><br><div class="body" align="left" id="content_div"><i>no command given yet.</i></div>';
-      var feedstxt = '<form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><b>&gt; <i>results:</i></b><br><br><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
+      var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div>';
+      var feedstxt = '<form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="center" id="content_div"><i>no feeds entered yet.</i></div>';
       var request = new window.XMLHttpRequest();
 
       // utils functions
@@ -123,20 +124,18 @@
       // response functions
 
       function response() {
-          if (request.readyState) {
-              statusadd(" " + request.readyState.toString())
-          }
+          statusadd(" - " + request.readyState.toString())
           if (request.readyState==4){
-              statusadd(" - " + request.status.toString())
+              statusadd(" - " + request.status)
               if (request.status==200) {
-                   statusadd(" - response ok")
+                   statusadd(" - response ok");
                    output(request.responseText);
               }
               else {
-                   statusadd(" - response NOT ok")
+                   statusadd(" - response NOT ok");
+                   output("no result");
               }
           }
-          return false
       }
 
       function dotop(obj) {
@@ -148,11 +147,12 @@
       }
 
       function doCmnd(cmnd, resp, how) {
-        status("sending command");
-        var parameters="content="+encodeURIComponent(cmnd)
-        request.onreadystatechange = resp;
+        status("sending command ");
+        parameters="content="+encodeURIComponent(cmnd);
+        request.onreadystatechange = response;
         request.open("POST", url);
-        //request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.setRequestHeader("Cache-Control", "no-cache");
         request.send(parameters);
       }
 
