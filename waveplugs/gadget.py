@@ -144,9 +144,13 @@ def handle_gadgetconsole(bot, event):
 
     from waveapi import element
 
+    #url = gadgeturls.data['loadiframe'] + "?&iframeurl=https://jsonbot.appspot.com"
+    #event.reply('loading %s' % url)
+    #load(event, url)
+
     event.append("\n")
     event.append(
-        element.Gadget('http://jsonbot.appspot.com/console.xml'))
+        element.Gadget('http://jsonbot.appspot.com/console.xml?gadget_cache=0'))
 
 cmnds.add("gadget-console", handle_gadgetconsole, 'OPER')
 examples.add("gadget-console", "load the console gadget", "gadget-console")

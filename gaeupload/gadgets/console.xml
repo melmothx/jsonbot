@@ -1,20 +1,47 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+?xml version="1.0" encoding="UTF-8" ?>
 <Module>
   <ModulePrefs title="jsonbot" 
     author = "Bart Thate"
     author_email = "bthate@gmail.com"
-    description = "The hubbub bot of the future!"
+    description = "The JSON everywhere bot !"
     screenshot = "http://jsonbot.appspot.com/assets/screenshot.png"
     thumbnail = "http://jsonbot.appspot.com/assets/favicon.png">
-    <Require feature="locked-domain" /> 
     <Require feature="wave-preview" />
-    <Require feature="minimessage" />
     <Require feature="dynamic-height" />
+    <Require feature="minimessage" />
   </ModulePrefs>
 <Content type="html">
 <![CDATA[ 
-</html>
-    
-    ]]> 
+<html>
+<head>
+    <link rel="stylesheet" href="http://jsonbot.appspot.com/_static/style.css" type="text/css" />
+    <script type="text/javascript" src="http://jsonbot.appspot.com/_static/console.js" />
+</head>
+<body>
+    <div class="related">
+      <ul> 
+        <li class="right" style="margin-right: 10px">
+          <a href="{{ logouturl }}" title="logout">logout</i></a></li>
+        <li class="right" style="margin-right: 10px">
+          <a href="{{ loginurl }}" title="login">{{ who }}</i></a> |</li>
+        <li><a href="http://jsonbot.googlecode.com" onclick='window.open("http://jsonbot.googlecode.com"); return false'>home</a></li>
+        <li>-</li>
+        <li><a href="/docs/" onclick='window.open("/docs/"); return false'>docs</a></li>
+        <li>-</li>
+          <a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
+        <li>-</li>
+          <a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
+      </ul>
+    </div> 
+    <div class="body" align="center">
+        <div><h1>JSONBOT</h1></div><br>
+        <div id="topper_div"></div><br>  
+        <div id="screen_div"></div>
+    </div>
+    <div class="footer" id="status_div"></div>
+  </body>
+  <body onLoad="consoleinit();">
+</html>  
+    ]]>
   </Content>
-</Module>
+</Module>   

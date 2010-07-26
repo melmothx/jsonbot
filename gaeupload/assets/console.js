@@ -24,13 +24,55 @@
         return diff;
       }
 
+      // state 
+
+      function stateUpdated() {
+        hostid = wave.getHost().getId();
+        viewerid = wave.getViewer().getId();
+        topper(hostid + ' ' + viewerid)
+      }
+
+      // INIT
+
+      function init() {
+      }
+
+      // start function .. call on load of applet
+
+      function start() {
+        if (!viewerid) {
+          viewerid = window.location.host;
+        }
+        if (!waveid) {
+          waveid = wave.getWaveId();
+        }
+
+        var txt = "enter a command in the box above.";
+        output(txt);
+
+        if (wave && wave.isInWaveContainer()) {
+           doCmnd("hb-welcome", dotop);
+        }
+
+        statusadd('done');
+        // gadgets.window.adjustHeight();
+      }
+
+
       // INIT
 
       function consoleinit() {
+        statusadd("initialising ... ");
         doconsole();
+        setInterval("loop();", 60000)
         status("booting");
         setCookie();
         // showfeeds();
+        if (wave) {
+            waveid = wave.getWaveId();
+            wave.setStateCallback(stateUpdated);
+            setTimeout("start();", 500);
+        }
         statusadd(" .. done");
       }
 
@@ -146,21 +188,43 @@
         status(obj.text);
       }
 
-      function doCmnd(cmnd, resp, how) {
-        status("sending command ");
-        parameters="content="+encodeURIComponent(cmnd);
-        request.onreadystatechange = response;
-        request.open("POST", url);
-        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        request.setRequestHeader("Cache-Control", "no-cache");
-        request.send(parameters);
+      if (wave) {
+          function doCmnd(cmnd, resp, how) {
+              var params = {}   
+              var postdata = {  
+                  content : cmnd, 
+                  waveid : waveid,
+                  who : viewerid
+                  }
+
+              params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
+              params[gadgets.io.RequestParameters.POST_DATA] = gadgets.io.encodeValues(postdata);
+
+              if (resp) {
+                  gadgets.io.makeRequest(url, resp, params);
+              }
+              else {
+                  gadgets.io.makeRequest(url, response, params);
+              }
+          }
+      }
+      else {
+          function doCmnd(cmnd, resp, how) {
+              status("sending command ");
+              parameters="content="+encodeURIComponent(cmnd);
+              request.onreadystatechange = response;
+              request.open("POST", url);
+              request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+              request.setRequestHeader("Cache-Control", "no-cache");
+              request.send(parameters);
+          }
       }
 
       function doconsole() {
         doscreen(consoletxt);
         status(viewerid);
         //showplugins();
-        topper("enter a command.")
+        topper("enter a command.");
       }
 
       function dofeeds() {
@@ -169,3 +233,14 @@
         // showfeeds();
         topper("enter a feed name and url.")
       }
+
+     function loop(sleep) {
+        status("last polled at " + lpdate.toUTCString());
+        doCmnd("outputcache", dotop); 
+        lastpolled = new Date();
+        lpdate = lastpolled.getTime();
+     }
+
+     if (gadgets) { 
+         gadgets.util.registerOnLoadHandler(init);
+     }
