@@ -52,9 +52,6 @@ if os.path.isdir(release):
     print "MOVING %s TO %s" % (release, backup)
     os.rename(release, backup)
 
-#sys.path.insert(0, os.getcwd())
-#pkg_resources.require("jsonbot>=0.1")
-
 ## define
 
 orig = 'jsonbot'
@@ -110,6 +107,13 @@ try:
     shutil.move(release + os.sep + 'gozerdata' + os.sep + 'config', release + os.sep + 'gozerdata' + os.sep + 'config.bck')
 except IOError, ex:
     print "TAKE NOTE ! no %s dir available" % os.path.join(release, "gozerdata", "config")    
+
+if not os.path.isdir(homedir + os.sep + 'jsonregs'):
+   os.mkdir(homedir + os.sep + 'jsonregs')
+
+if not os.path.isdir(homedir + os.sep + 'jsonregs' + os.sep + targetin):
+   os.mkdir(homedir + os.sep + 'jsonregs' + os.sep + targetin)
+
 try:
     copyover(homedir + os.sep + 'jsonregs' + os.sep + targetin, release + os.sep + 'gozerdata' + os.sep + 'config')
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'app.yaml', release + os.sep + 'app.yaml')

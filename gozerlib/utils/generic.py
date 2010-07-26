@@ -277,7 +277,10 @@ def dosed(filename, sedstring):
     to = seds[2].replace('\\', '')
     try:
         for line in f:
-            l = line.replace(fr,to)
+            if 'doc' in line or 'home' in line:
+                l = line
+            else:
+                l = line.replace(fr,to)
             fout.write(l)
     finally:
         fout.flush()

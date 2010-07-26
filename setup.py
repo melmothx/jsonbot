@@ -29,7 +29,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.2',
+    version='0.2.1',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
@@ -94,5 +94,6 @@ setup(
                ('gaeupload/templates', uploadlist('gaeupload/templates')),
                ('gaeupload/waveapi', uploadlist('gaeupload/waveapi')),
                ('gaeupload/waveapi/oauth', uploadlist('gaeupload/waveapi/oauth')),
+               ('gaeupload/waveapi/simplejson', uploadlist('gaeupload/waveapi/simplejson')),
                ('gaeupload/gadgets', uploadlist('gaeupload/gadgets'))],
 )
