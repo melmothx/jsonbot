@@ -53,27 +53,26 @@ class HB_Handler(webapp.RequestHandler):
 
     """ the bots exec command dispatcher. """
 
-    def get(self):
-        commandbox(self.response, "/gadgetexec/")
-
     def post(self):
 
         """ this is where the command get disaptched. """
 
-        logging.debug("HBEXEC incoming: %s" % self.request.remote_addr)
-        #logging.debug(str(self.request))
-        event = WebEvent(bot=bot).parse(self.response, self.request)
-        #logging.debug(dir(self.request))
-        #logging.debug(self.request.params)
-        event.type = "WEB"
-        #logging.debug(event.dump())
         try:
-            bot.doevent(event)
+            logging.debug("EXEC incoming: %s" % self.request.remote_addr)
+            #logging.debug(str(self.request))
+            event = WebEvent(bot=bot).parse(self.response, self.request)
+            #logging.debug(dir(self.request))
+            #logging.debug(self.request.params)
+            event.type = "GADGET"
+            logging.debug(event.dump())
 
-        except NoSuchCommand:
-            event.reply("no %s command found" % event.usercmnd)
+            try:
+                bot.doevent(event)
+            except NoSuchCommand:
+                event.reply("no %s command found" % event.usercmnd)
+
         except Exception, ex:
-            handle_exception(event)
+            handle_exception()
 
 # the application 
 
