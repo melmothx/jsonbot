@@ -86,6 +86,7 @@ setup(
    zip_safe=False, 
    test_suite = 'nose.collector',
    data_files=[('gozerdata', uploadlist('gozerdata')),
+               ('gozerdata/examples', uploadlist('gozerdata/examples')),
                ('gozerdata/myplugs', uploadlist('gozerdata/myplugs')),
                ('tests', uploadlist('tests')),
                ('simplejson', uploadlist('simplejson')),

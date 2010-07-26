@@ -111,14 +111,14 @@ except IOError, ex:
 if not os.path.isdir(homedir + os.sep + 'jsonregs'):
    os.mkdir(homedir + os.sep + 'jsonregs')
 
-if not os.path.isdir(homedir + os.sep + 'jsonregs' + os.sep + targetin):
-   os.mkdir(homedir + os.sep + 'jsonregs' + os.sep + targetin)
+#if not os.path.isdir(homedir + os.sep + 'jsonregs' + os.sep + targetin):
+#   os.mkdir(homedir + os.sep + 'jsonregs' + os.sep + targetin)
 
 try:
     copyover(homedir + os.sep + 'jsonregs' + os.sep + targetin, release + os.sep + 'gozerdata' + os.sep + 'config')
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'cron.yaml', release + os.sep + 'cron.yaml')
-except OSError, ex:
+except (OSError, IOError), ex:
     print "TAKE NOTE ! no %s available .. %s" % (os.path.join(homedir, 'jsonregs', targetin), str(ex))
     try:
         copyover(release + os.sep + 'gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
@@ -126,6 +126,7 @@ except OSError, ex:
     except OSError, ex:
         print str(ex)
         os._exit(1)
+
 
 if os.path.isdir('docs'):
     copyover('docs', release + os.sep + 'docs')
