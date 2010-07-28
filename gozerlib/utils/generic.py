@@ -277,7 +277,7 @@ def dosed(filename, sedstring):
     to = seds[2].replace('\\', '')
     try:
         for line in f:
-            if 'doc' in line or 'home' in line:
+            if 'googlecode' in line:
                 l = line
             else:
                 l = line.replace(fr,to)
