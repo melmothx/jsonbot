@@ -64,16 +64,11 @@
       function consoleinit() {
         statusadd("initialising ... ");
         doconsole();
-        setInterval("loop();", 60000)
         status("booting");
         setCookie();
         // showfeeds();
-        if (wave) {
-            waveid = wave.getWaveId();
-            wave.setStateCallback(stateUpdated);
-            setTimeout("start();", 500);
-        }
-        statusadd(" .. done");
+        statusadd(" - done");
+        setInterval("loop();", 60000)
       }
 
       function setCookie() {
@@ -82,7 +77,7 @@
             val = identtime.getTime();
             localStorage && localStorage.setItem("jsb_cookie", val);
         }
-        statusadd(" (" + val + ")");
+        statusadd(" - " + val);
       } 
 
       // function to launch on enter in the command box
@@ -181,11 +176,33 @@
       }
 
       function dotop(obj) {
-        topper(obj.text);
+          statusadd(" - " + request.readyState.toString())
+          if (request.readyState==4){
+              statusadd(" - " + request.status)
+              if (request.status==200) {
+                   statusadd(" - response ok");
+                   topper(request.responseText);
+              }
+              else {
+                   statusadd(" - response NOT ok");
+                   topper("no result");
+              }
+          }
       }
 
       function dostatus(obj) {
-        status(obj.text);
+          statusadd(" - " + request.readyState.toString())
+          if (request.readyState==4){
+              statusadd(" - " + request.status)
+              if (request.status==200) {
+                   statusadd(" - response ok");
+                   status(request.responseText);
+              }
+              else {
+                   statusadd(" - response NOT ok");
+                   status("no result");
+              }
+          }
       }
 
       if (wave) {
@@ -212,7 +229,7 @@
           function doCmnd(cmnd, resp, how) {
               status("sending command ");
               parameters="content="+encodeURIComponent(cmnd);
-              request.onreadystatechange = response;
+              request.onreadystatechange = resp;
               request.open("POST", url);
               request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
               request.setRequestHeader("Cache-Control", "no-cache");
