@@ -87,6 +87,15 @@ class DispatchHandler(webapp.RequestHandler):
         else:
             start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
 
+        try:
+            bot.doevent(event)
+            self.response.out.write('</div>')
+        except NoSuchCommand:
+            self.response.out.write("sorry no %s command found." % event.usercmnd)
+        except Exception, ex:
+            handle_exception(event)
+               
+        closer(self.response)
         #self.response.out.write('<br><div class="body"><i>"enter a command in the box above."</i><br></div>')
         #self.response.out.write('</div>')
         #closer(self.response)

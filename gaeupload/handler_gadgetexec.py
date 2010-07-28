@@ -74,6 +74,9 @@ class HB_Handler(webapp.RequestHandler):
         except Exception, ex:
             handle_exception()
 
+
+    get = post
+
 # the application 
 
 application = webapp.WSGIApplication([('/gadgetexec', HB_Handler),

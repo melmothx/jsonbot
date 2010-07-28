@@ -42,14 +42,19 @@ class WebEvent(EventBase):
         input = request.get('content')
         if not input:
             try:
-                 input = request.params.getone('content')
+                input = request.params.getone('content')
             except KeyError:
-                 input = ""
+                input = ""
             except Exception, ex:
-                 input = ""
-                 handle_exception()
-        #else:
-        #    input = request.get('QUERY_STRING')
+                input = ""
+                handle_exception()
+            if not input:
+                try:
+                    input = request.GET['content']
+                except KeyError:
+                    self.error(500)
+                    return
+        logging.warn(dir(request))
         logging.warn("web - input is %s" % input)
         self.isweb = True
         self.origtxt = fromenc(input.strip())
