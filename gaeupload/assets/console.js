@@ -257,7 +257,3 @@
         lastpolled = new Date();
         lpdate = lastpolled.getTime();
      }
-
-     if (gadgets) { 
-         gadgets.util.registerOnLoadHandler(init);
-     }

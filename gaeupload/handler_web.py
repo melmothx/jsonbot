@@ -83,9 +83,9 @@ class DispatchHandler(webapp.RequestHandler):
         logout = logouturl(self.response)
 
         if not user:
-            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'login', 'loginurl': login, 'logouturl': logout, 'onload': 'void(0);'})
+            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'login', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
         else:
-            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'void(0);'})
+            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
 
         #self.response.out.write('<br><div class="body"><i>"enter a command in the box above."</i><br></div>')
         #self.response.out.write('</div>')
