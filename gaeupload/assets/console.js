@@ -77,7 +77,7 @@
       }
 
       function setCookie() {
-        val = localStorage && localStorage.getItem("jsb_cookie");
+        var val = localStorage && localStorage.getItem("jsb_cookie");
         if (!val) {
             val = identtime.getTime();
             localStorage && localStorage.setItem("jsb_cookie", val);
@@ -215,55 +215,36 @@
           }
       }
 
-      if (wave) {
-          function doCmnd(cmnd, resp, how) {
-              var params = {}   
-              var postdata = {  
-                  content : cmnd, 
-                  waveid : waveid,
-                  who : viewerid
-                  }
-
-              params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
-              params[gadgets.io.RequestParameters.POST_DATA] = gadgets.io.encodeValues(postdata);
-
-              if (resp) {
-                  gadgets.io.makeRequest(url, resp, params);
-              }
-              else {
-                  gadgets.io.makeRequest(url, response, params);
-              }
+      function doCmnd(cmnd, resp, how) {
+          var request = false;
+          if (window.XMLHttpRequest) {
+              request = new XMLHttpRequest();
           }
-      }
-      else {
-          function doCmnd(cmnd, resp, how) {
-              var request = false;
-              if (window.XMLHttpRequest) { // Mozilla, Safari,...
-                  request = new XMLHttpRequest();
-              }
-              else if (window.ActiveXObject) { // IE
+          else if (window.ActiveXObject) { 
+              try {
+                  request = new ActiveXObject("Msxml2.XMLHTTP");
+              } catch (e) {
                   try {
-                      request = new ActiveXObject("Msxml2.XMLHTTP");
-                  } catch (e) {
-                      try {
-                          request = new ActiveXObject("Microsoft.XMLHTTP");
-                      } catch (e) {}
-                  }
+                      request = new ActiveXObject("Microsoft.XMLHTTP");
+                  } catch (e) {}
               }
-              if (!request) {
-                  topper('Cannot create XMLHTTP instance');
-                  return false;
-              }
-
-              request.onreadystatechange = function () {
-                  resp(request);
-              }
-              request.open("POST", url);
-              request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-              request.setRequestHeader("Cache-Control", "no-cache");
-              parameters="content="+encodeURIComponent(cmnd);
-              request.send(parameters);
           }
+          if (!request) {
+              topper("can't make connection to server");
+              return false;
+          }
+
+          request.onreadystatechange = function () {
+              resp(request);
+          }
+
+          request.open("POST", url, true);
+          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          request.setRequestHeader("Content-Length", parameters.length);
+          request.setRequestHeader("Cache-Control", "no-cache");
+          parameters="content="+encodeURIComponent(cmnd);
+          request.send(parameters);
+          return true;
       }
 
       function showplugins() {

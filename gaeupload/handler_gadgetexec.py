@@ -80,7 +80,7 @@ class HB_Handler(webapp.RequestHandler):
             #logging.debug(self.request.params)
             event.type = "GADGET"
             logging.debug(event.dump())
-            self.response.headers.add_header('Access-Control-Allow-Origin', self.request.headers['Origin'])
+            self.response.headers.add_header('Access-Control-Allow-Origin', '*')
 
             try:
                 bot.doevent(event)
