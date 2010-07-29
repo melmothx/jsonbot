@@ -111,6 +111,7 @@
            cmnd = form.cmnd.value;           
            status("sending command ");
            doCmnd(cmnd, response, "output");
+           form.cmnd.value = "";
            form.focus();
            return false;
         }
@@ -271,6 +272,7 @@
 
       function doconsole() {
         doscreen(consoletxt);
+        document.forms[0].cmnd.focus();
         doCmnd('version', dotop);
         showplugins();
       }
