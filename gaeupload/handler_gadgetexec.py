@@ -8,7 +8,7 @@
 
 from gozerlib.utils.generic import fromenc, toenc, getversion
 from gozerlib.utils.xmpp import stripped
-from gozerlib.utils.url import getpostdata
+from gozerlib.utils.url import getpostdata, useragent
 from gozerlib.plugins import plugs
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
@@ -46,12 +46,27 @@ import logging
 
 logging.warn(getversion('GADGETEXEC'))
 
-#webbot = WebBot()
 bot = WebBot()
 
 class HB_Handler(webapp.RequestHandler):
 
     """ the bots exec command dispatcher. """
+
+    def options(self):
+         logging.warn(dir(self.request))
+         #logging.warn(self.request)
+         logging.warn(dir(self.response))
+         #self.response.headers.add_header('Content-Type', 'application/x-www-form-urlencoded')
+         #self.response.headers.add_header("Cache-Control", "private")
+         self.response.headers.add_header("Server", getversion())
+         self.response.headers.add_header("Public", "*")
+         self.response.headers.add_header('Accept', '*')
+         self.response.headers.add_header('Access-Control-Allow-Origin', self.request.headers['Origin'])
+         #self.response.headers.add_header('Access-Control-Allow-Origin', '*') 
+         #self.response.headers.add_header('Content-Length', '0') 
+         self.response.out.write("Allow: *")
+         self.response.out.write('Access-Control-Allow-Origin: *') 
+         logging.warn("gadgetexec - optins response send to %s - %s" % (self.request.remote_addr, str(self.request.headers)))
 
     def post(self):
 
@@ -65,6 +80,7 @@ class HB_Handler(webapp.RequestHandler):
             #logging.debug(self.request.params)
             event.type = "GADGET"
             logging.debug(event.dump())
+            self.response.headers.add_header('Access-Control-Allow-Origin', self.request.headers['Origin'])
 
             try:
                 bot.doevent(event)
@@ -73,7 +89,6 @@ class HB_Handler(webapp.RequestHandler):
 
         except Exception, ex:
             handle_exception()
-
 
     get = post
 

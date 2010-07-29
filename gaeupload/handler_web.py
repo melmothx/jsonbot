@@ -63,6 +63,9 @@ class DispatchHandler(webapp.RequestHandler):
     """ the bots web command dispatcher. """
 
 
+    def options(self):
+        self.response.headers.add_header("Allow: *")
+        
     def get(self):
 
         """ show basic page. """
@@ -89,13 +92,12 @@ class DispatchHandler(webapp.RequestHandler):
 
         try:
             bot.doevent(event)
-            self.response.out.write('</div>')
+            #self.response.out.write('</div>')
         except NoSuchCommand:
             self.response.out.write("sorry no %s command found." % event.usercmnd)
         except Exception, ex:
             handle_exception(event)
-               
-        closer(self.response)
+
         #self.response.out.write('<br><div class="body"><i>"enter a command in the box above."</i><br></div>')
         #self.response.out.write('</div>')
         #closer(self.response)
@@ -128,13 +130,13 @@ class DispatchHandler(webapp.RequestHandler):
 
         try:
             bot.doevent(event)
-            self.response.out.write('</div>')
+            #self.response.out.write('</div>')
         except NoSuchCommand:
             self.response.out.write("sorry no %s command found." % event.usercmnd)
         except Exception, ex:
             handle_exception(event)
                
-        closer(self.response)
+        #closer(self.response)
 
 class FeedListHandler(webapp.RequestHandler):
 

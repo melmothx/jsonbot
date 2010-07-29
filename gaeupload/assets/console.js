@@ -12,7 +12,7 @@
       var parameters = ""
       var identtime = new Date();
       var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div>';
-      var feedstxt = '<form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="center" id="content_div"><i>no feeds entered yet.</i></div>';
+      var feedstxt = '<div align"left"><form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="center" id="content_div"><i>no feeds entered yet.</i></div>';
       var request = new window.XMLHttpRequest();
 
       // utils functions
@@ -176,30 +176,22 @@
       }
 
       function dotop(obj) {
-          statusadd(" - " + request.readyState.toString())
-          if (request.readyState==4){
-              statusadd(" - " + request.status)
+          if (request.readyState==4) {
               if (request.status==200) {
-                   statusadd(" - response ok");
-                   topper(request.responseText);
+                  topper(request.responseText);
               }
               else {
-                   statusadd(" - response NOT ok");
-                   topper("no result");
+                  topper("no result");
               }
           }
       }
 
       function dostatus(obj) {
-          statusadd(" - " + request.readyState.toString())
-          if (request.readyState==4){
-              statusadd(" - " + request.status)
-              if (request.status==200) {
-                   statusadd(" - response ok");
+           if (request.readyState==4) {
+               if (request.status==200) {
                    status(request.responseText);
               }
               else {
-                   statusadd(" - response NOT ok");
                    status("no result");
               }
           }
@@ -241,7 +233,7 @@
         doscreen(consoletxt);
         status(viewerid);
         //showplugins();
-        topper("enter a command.");
+        doCmnd('!cc', dotop);
       }
 
       function dofeeds() {

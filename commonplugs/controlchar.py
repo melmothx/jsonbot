@@ -37,7 +37,7 @@ def handle_cc(bot, ievent):
         # no argument given .. show cc of channel command is given in
         try:
             cchar = ievent.chan.data.cc
-            ievent.reply('control character(s) for channel %s are/is %s' % (ievent.channel, cchar))
+            ievent.reply('controlchar are/is %s' % cchar)
         except (KeyError, TypeError):
             ievent.reply("default cc is %s" % bot.cfg['defaultcc'])
 

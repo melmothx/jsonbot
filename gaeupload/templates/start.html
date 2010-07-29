@@ -4,7 +4,7 @@
     <script type="text/javascript" src="assets/console.js" /></script>
 </head>
 <body>
-    <div class="related">
+    <div class="related" onLoad="consoleinit();" >
       <ul> 
         <li class="right" style="margin-right: 10px">
           <a href="{{ logouturl }}" title="logout">logout</i></a></li>
@@ -21,7 +21,7 @@
         <div id="screen_div"></div>
     </div>
     <div class="footer" id="status_div"></div>
-    <div><a href="/docs/html/index.html"><i><b>DOCS</b></i></a></div>
+    <div><a href="/docs/html/index.html"><i><b>DOCS</b></i></a></div><br>
 </body>
-<body onLoad="consoleinit();">
-</html>  
+<body onLoad="consoleinit();" />
+</html>

@@ -39,10 +39,10 @@ class WebEvent(EventBase):
         """ parse request/response into a WebEvent. """
         #logging.warn('%s %s' % (dir(request), dir(response)))
         #logging.warn(str(request.environ))
-        input = request.get('content')
+        input = request.get('content') or request.get('cmnd')
         if not input:
             try:
-                input = request.params.getone('content')
+                input = request.params.getone('content') or request.params.getone('cmnd')
             except KeyError:
                 input = ""
             except Exception, ex:
@@ -50,11 +50,10 @@ class WebEvent(EventBase):
                 handle_exception()
             if not input:
                 try:
-                    input = request.GET['content']
+                    input = request.GET['content'] or request.GET['cmnd']
                 except KeyError:
-                    self.error(500)
-                    return
-        logging.warn(dir(request))
+                    pass
+        #logging.warn(dir(request))
         logging.warn("web - input is %s" % input)
         self.isweb = True
         self.origtxt = fromenc(input.strip())

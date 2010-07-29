@@ -47,7 +47,7 @@ if True:
         matchnick = unicode(bot.nick + u":")
         #logging.debug("dispatch - %s" % event.txt)        
 
-        if event.txt and event.txt[0] in cc:
+        if event.txt and event.txt[0] in cc or event.type == "GADGET":
             event.txt = event.txt[1:]
             if event.txt:
                 event.usercmnd = event.txt.split()[0]
