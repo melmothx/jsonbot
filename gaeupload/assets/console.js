@@ -4,7 +4,8 @@
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
-      var sleeptime = 300000;
+      var lpdate = lastpolled.getTime();
+      var sleeptime = 60000;
       var host = "";
       var viewer = "";
       var hostid = "";
@@ -12,8 +13,7 @@
       var parameters = ""
       var identtime = new Date();
       var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div>';
-      var feedstxt = '<div align"left"><form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="center" id="content_div"><i>no feeds entered yet.</i></div>';
-      var request = new window.XMLHttpRequest();
+      var feedstxt = '<div class="bndy" align="left"><form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div></div>';
 
       // utils functions
 
@@ -30,11 +30,6 @@
         hostid = wave.getHost().getId();
         viewerid = wave.getViewer().getId();
         topper(hostid + ' ' + viewerid)
-      }
-
-      // INIT
-
-      function init() {
       }
 
       // start function .. call on load of applet
@@ -58,17 +53,27 @@
         // gadgets.window.adjustHeight();
       }
 
+      // mainloop
+
+     function loop() {
+        doCmnd("outputcache", dobottom); 
+        lastpolled = new Date();
+        //var lpdate = lastpolled.getTime();
+        status("last polled at " + lastpolled.toUTCString());
+     }
+
 
       // INIT
 
       function consoleinit() {
-        statusadd("initialising ... ");
         doconsole();
         status("booting");
         setCookie();
         // showfeeds();
         statusadd(" - done");
         setInterval("loop();", 60000)
+        bottom("started main loop")
+        showplugins()
       }
 
       function setCookie() {
@@ -104,6 +109,7 @@
         else return true;
         if (keycode == 13) {
            cmnd = form.cmnd.value;           
+           status("sending command ");
            doCmnd(cmnd, response, "output");
            form.focus();
            return false;
@@ -153,6 +159,15 @@
         element.innerHTML = html;
       }
 
+      function bottom(text) {
+        var html = "<b>";
+        html += text;
+        html += "</b>";
+
+        var element = document.getElementById("bottom_div");  
+        element.innerHTML = html;
+      }
+
       function doscreen(screentxt) {
         var element = document.getElementById("screen_div");  
         element.innerHTML = screentxt;
@@ -160,13 +175,13 @@
 
       // response functions
 
-      function response() {
-          statusadd(" - " + request.readyState.toString())
-          if (request.readyState==4){
-              statusadd(" - " + request.status)
-              if (request.status==200) {
+      function response(obj) {
+          statusadd(" - " + obj.readyState.toString())
+          if (obj.readyState==4){
+              statusadd(" - " + obj.status)
+              if (obj.status==200) {
                    statusadd(" - response ok");
-                   output(request.responseText);
+                   output(obj.responseText);
               }
               else {
                    statusadd(" - response NOT ok");
@@ -176,23 +191,25 @@
       }
 
       function dotop(obj) {
-          if (request.readyState==4) {
-              if (request.status==200) {
-                  topper(request.responseText);
-              }
-              else {
-                  topper("no result");
+          if (obj.readyState==4) {
+              if (obj.status==200) {
+                  topper(obj.responseText);
               }
           }
       }
 
       function dostatus(obj) {
-           if (request.readyState==4) {
-               if (request.status==200) {
-                   status(request.responseText);
+           if (obj.readyState==4) {
+               if (obj.status==200) {
+                   status(obj.responseText);
               }
-              else {
-                   status("no result");
+          }
+      }
+
+      function dobottom(obj) {
+           if (obj.readyState==4) {
+               if (obj.status==200) {
+                   bottom(obj.responseText);
               }
           }
       }
@@ -219,33 +236,47 @@
       }
       else {
           function doCmnd(cmnd, resp, how) {
-              status("sending command ");
-              parameters="content="+encodeURIComponent(cmnd);
-              request.onreadystatechange = resp;
+              var request = false;
+              if (window.XMLHttpRequest) { // Mozilla, Safari,...
+                  request = new XMLHttpRequest();
+              }
+              else if (window.ActiveXObject) { // IE
+                  try {
+                      request = new ActiveXObject("Msxml2.XMLHTTP");
+                  } catch (e) {
+                      try {
+                          request = new ActiveXObject("Microsoft.XMLHTTP");
+                      } catch (e) {}
+                  }
+              }
+              if (!request) {
+                  topper('Cannot create XMLHTTP instance');
+                  return false;
+              }
+
+              request.onreadystatechange = function () {
+                  resp(request);
+              }
               request.open("POST", url);
               request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
               request.setRequestHeader("Cache-Control", "no-cache");
+              parameters="content="+encodeURIComponent(cmnd);
               request.send(parameters);
           }
       }
 
+      function showplugins() {
+        doCmnd('list', dobottom);
+      }
+
       function doconsole() {
         doscreen(consoletxt);
-        status(viewerid);
-        //showplugins();
-        doCmnd('!cc', dotop);
+        doCmnd('version', dotop);
+        showplugins();
       }
 
       function dofeeds() {
         doscreen(feedstxt);
-        status(viewerid);
-        // showfeeds();
-        topper("enter a feed name and url.")
+        doCmnd("feeds", dotop);
       }
 
-     function loop(sleep) {
-        status("last polled at " + lpdate.toUTCString());
-        doCmnd("outputcache", dotop); 
-        lastpolled = new Date();
-        lpdate = lastpolled.getTime();
-     }

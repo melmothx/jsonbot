@@ -29,6 +29,7 @@ def handle_outputcachepollerweb(bot, event):
          event.reply(result)
 
 callbacks.add('WEB', handle_outputcachepollerweb)
+callbacks.add('GADGET', handle_outputcachepollerweb)
 
 ## commands
 
@@ -38,8 +39,6 @@ def handle_outputcache(bot, event):
     if res:
         for result in res:
             event.reply(result)
-    else:
-        event.reply('no data in cache')
 
 cmnds.add('outputcache', handle_outputcache, 'USER')
 examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache')
