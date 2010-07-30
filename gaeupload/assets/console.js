@@ -13,7 +13,7 @@
       var parameters = ""
       var identtime = new Date();
       var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div>';
-      var feedstxt = '<div class="bndy" align="left"><form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div></div>';
+      var feedstxt = '<div class="bndy" align="left"><form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return doenter(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div></div>';
 
       // utils functions
 
@@ -101,8 +101,9 @@
         else return true;
         if (keycode == 13)
         {
-           cmnd = "hb-register " + form.name.value + " " + form.url.value;           
-           doCmnd(cmnd, response, "output");
+           cmnd = "rss-register " + form.name.value + " " + form.url.value;           
+           status("sending command ");
+           doCmnd(cmnd, response);
            return false;
         }
         else
@@ -115,9 +116,9 @@
            else if (e) keycode = e.which;
         else return true;
         if (keycode == 13) {
-           cmnd = form.cmnd.value;           
+           cmnd = form.cmnd.value; 
            status("sending command ");
-           doCmnd(cmnd, response, "output");
+           doCmnd(cmnd, response);
            form.cmnd.value = "";
            form.focus();
            return false;
@@ -282,8 +283,8 @@
       function dofeeds() {
         doscreen(feedstxt);
         document.forms[0].name.focus();
-        doCmnd('version', dotop);
-        doCmnd('perms', dobottom);
-        doCmnd('statusline', doinfo);
+        doCmnd('rss-feeds', dotop);
+        doCmnd('perms', doinfo);
+        doCmnd('statusline', dobottom);
       }
 
