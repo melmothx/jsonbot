@@ -655,7 +655,7 @@ tt {
       var viewerid = "";
       var parameters = ""
       var identtime = new Date();
-      var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div></div>';
+      var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div>';
       var feedstxt = '<div class="body" align="left"><form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return dosubmit(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
 
       // utils functions
@@ -687,14 +687,7 @@ tt {
 
           var txt = "enter a command in the box above.";
           output(txt);
-
-          if (wave && wave.isInWaveContainer()) {
-             doCmnd("hb-welcome", dotop);
-          }
-
-          statusadd('done');
           setCookie();
-          // showfeeds();
           setInterval("loop();", 300000);
       }
 
@@ -744,7 +737,6 @@ tt {
       // INIT
 
       function init() {
-        status("initialising ... ");
         if (wave) {
           wave.setStateCallback(stateUpdated);
         }        
@@ -860,18 +852,25 @@ tt {
 
       function response(obj) {   
           output(obj.text);
+          status("done")
+          gadgets.window.adjustHeight();
       }
 
       function dotop(obj) {
           topper(obj.text);
+          status("done")
+          gadgets.window.adjustHeight();
       }
 
       function dostatus(obj) {
           status(obj.text);
+          gadgets.window.adjustHeight();
       }
 
       function dobottom(obj) {
           bottom(obj.text);
+          status("done")
+          gadgets.window.adjustHeight();
       }
 
       // remote command 
@@ -902,9 +901,9 @@ tt {
       function doconsole() {
         doscreen(consoletxt);
         // document.forms[0].cmnd.focus();
-        //doCmnd('version', dotop);
-        //showplugins();
-        status(waveid + " - " + viewerid);
+        doCmnd('version', dotop);
+        showplugins();
+        status(viewerid);
         gadgets.window.adjustHeight();
       }
 
@@ -936,7 +935,6 @@ tt {
     <div id="doc_div"><a href="http://jsonbot.appspot.com/docs/html/index.html" title="docs" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false;'><i><b>DOCS</b></i></a></div>
     <div class="footer" id="bottom_div"></div>
 </body>
-<body onLoad="doconsole();">
 </html>
     ]]>
   </Content>
