@@ -310,7 +310,7 @@ dd {
 }
 
 dt:target, .highlight {
-    background-color: #fbe54e;
+    background-color: #ffffff;
 }
 
 dl.glossary dt {
@@ -643,7 +643,7 @@ tt {
 
       // vars
 
-      var url = "http://jsonbot.appspot.com/gadgetexec/";
+      var url = "https://jsonbot.appspot.com/gadgetexec/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
@@ -744,8 +744,10 @@ tt {
       }
 
       function consolestart() {
+          status("booting");
           doconsole();
           start();
+          status("booting done");
           gadgets.window.adjustHeight();
       }
 
@@ -755,7 +757,6 @@ tt {
             val = identtime.getTime();
             localStorage && localStorage.setItem("jsb_cookie", val);
         }
-        statusadd(" - " + val);
       } 
 
       // function to launch on enter in the command box
@@ -767,7 +768,7 @@ tt {
         else return true;
         if (keycode == 13)
         {
-           cmnd = "hb-register " + form.name.value + " " + form.url.value;           
+           cmnd = "rss-register " + form.name.value + " " + form.url.value;           
            doCmnd(cmnd, response, "output");
            return false;
         }
@@ -782,8 +783,7 @@ tt {
         else return true;
         if (keycode == 13) {
            cmnd = form.cmnd.value;           
-           status("sending command ");
-           doCmnd(cmnd, response, "output");
+           doCmnd(cmnd, response);
            form.cmnd.value = "";
            form.focus();
            return false;
@@ -842,6 +842,24 @@ tt {
         element.innerHTML = html;
       }
 
+      function footer(text) {
+        var html = "<i>";
+        html += text;
+        html += "</i>";
+
+        var element = document.getElementById("footer_div");  
+        element.innerHTML = html;
+      }
+
+      function info(text) {
+        var html = "<i>";
+        html += text;
+        html += "</i>";
+
+        var element = document.getElementById("info_div");  
+        element.innerHTML = html;
+      }
+
       function doscreen(screentxt) {
         var element = document.getElementById("screen_div");  
         element.innerHTML = screentxt;
@@ -852,13 +870,11 @@ tt {
 
       function response(obj) {   
           output(obj.text);
-          status("done")
           gadgets.window.adjustHeight();
       }
 
       function dotop(obj) {
           topper(obj.text);
-          status("done")
           gadgets.window.adjustHeight();
       }
 
@@ -869,7 +885,11 @@ tt {
 
       function dobottom(obj) {
           bottom(obj.text);
-          status("done")
+          gadgets.window.adjustHeight();
+      }
+
+      function doinfo(obj) {
+          info(obj.text);
           gadgets.window.adjustHeight();
       }
 
@@ -902,14 +922,18 @@ tt {
         doscreen(consoletxt);
         // document.forms[0].cmnd.focus();
         doCmnd('version', dotop);
-        showplugins();
-        status(viewerid);
+        doCmnd('perms', dobottom);
+        doCmnd('statusline', doinfo);
+        topper(viewerid);
         gadgets.window.adjustHeight();
       }
 
       function dofeeds() {
         doscreen(feedstxt);
-        doCmnd("feeds", dotop);
+        // document.forms[0].name.focus();
+        doCmnd('version', dotop);
+        doCmnd('perms', dobottom);
+        doCmnd('statusline', doinfo);
         gadgets.window.adjustHeight();
       }
 
@@ -926,6 +950,7 @@ tt {
         <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
       </ul>
     </div> 
+    <div class="footer" id="info_div"></div>
     <div class="body" align="center">
         <div><h1>JSONBOT</h1></div><br>
         <div id="topper_div"></div><br>  

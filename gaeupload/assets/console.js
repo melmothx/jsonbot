@@ -65,15 +65,23 @@
 
       // INIT
 
-      function consoleinit() {
-        doconsole();
-        status("booting");
-        setCookie();
-        // showfeeds();
-        statusadd(" - done");
-        setInterval("loop();", 300000)
-        bottom("started main loop")
-        showplugins()
+     function start() {
+          var txt = "enter a command in the box above.";
+          output(txt);
+          setCookie();
+          setInterval("loop();", 300000);
+      }
+
+
+      function init() {
+        setTimeout("consolestart();", 1000)
+      }
+
+      function consolestart() {
+          status("booting");
+          doconsole();
+          start();
+          status("booting done");
       }
 
       function setCookie() {
@@ -82,7 +90,6 @@
             val = identtime.getTime();
             localStorage && localStorage.setItem("jsb_cookie", val);
         }
-        statusadd(" - " + val);
       } 
 
       // function to launch on enter in the command box
@@ -124,6 +131,15 @@
       function output(text) {
         var html = text;
         var element = document.getElementById("content_div");  
+        element.innerHTML = html;
+      }
+
+      function info(text) {
+        var html = "<i>";
+        html += text;
+        html += "</i>";
+
+        var element = document.getElementById("info_div");  
         element.innerHTML = html;
       }
 
@@ -215,6 +231,14 @@
           }
       }
 
+      function doinfo(obj) {
+           if (obj.readyState==4) {
+               if (obj.status==200) {
+                   info(obj.responseText);
+              }
+          }
+      }
+
       function doCmnd(cmnd, resp, how) {
           var request = false;
           if (window.XMLHttpRequest) {
@@ -247,19 +271,19 @@
           return true;
       }
 
-      function showplugins() {
-        doCmnd('list', dobottom);
-      }
-
       function doconsole() {
         doscreen(consoletxt);
         document.forms[0].cmnd.focus();
         doCmnd('version', dotop);
-        showplugins();
+        doCmnd('perms', dobottom);
+        doCmnd('statusline', doinfo);
       }
 
       function dofeeds() {
         doscreen(feedstxt);
-        doCmnd("feeds", dotop);
+        document.forms[0].name.focus();
+        doCmnd('version', dotop);
+        doCmnd('perms', dobottom);
+        doCmnd('statusline', doinfo);
       }
 

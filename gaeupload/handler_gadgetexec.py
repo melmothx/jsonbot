@@ -46,6 +46,8 @@ import logging
 
 logging.warn(getversion('GADGETEXEC'))
 
+boot()
+
 bot = WebBot()
 
 class HB_Handler(webapp.RequestHandler):
