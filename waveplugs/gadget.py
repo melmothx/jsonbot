@@ -147,10 +147,10 @@ def handle_gadgetconsole(bot, event):
     #url = gadgeturls.data['loadiframe'] + "?&iframeurl=https://jsonbot.appspot.com"
     #event.reply('loading %s' % url)
     event.append("loading ...\n")
-    load(event, "http://jsonbot.appspot.com/iframe.xml")
+    #load(event, "http://jsonbot.appspot.com/iframe.xml")
 
-    #event.append(
-    #    element.Gadget('http://jsonbot.appspot.com/console.xml?gadget_cache=0'))
+    event.append(
+        element.Gadget('http://jsonbot.appspot.com/console.xml?gadget_cache=0'))
 
 cmnds.add("gadget-console", handle_gadgetconsole, 'OPER')
 examples.add("gadget-console", "load the console gadget", "gadget-console")

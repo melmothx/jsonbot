@@ -71,7 +71,7 @@
         setCookie();
         // showfeeds();
         statusadd(" - done");
-        setInterval("loop();", 60000)
+        setInterval("loop();", 300000)
         bottom("started main loop")
         showplugins()
       }
