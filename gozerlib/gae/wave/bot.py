@@ -116,7 +116,7 @@ class WaveBot(BotBase, robot.Robot):
         wevent.parse(self, event, wavelet)
         logging.debug("wave - owner is %s" % wevent.chan.data.owner)
         wevent.chan.save()
-        wevent.reply("Welcome to %s (see !help) or http://jsonbot.appspot.com/docs/" % getversion())
+        wevent.reply("Welcome to %s (see !help) or http://jsonbot.appspot.com/docs/html/index.html" % getversion())
         callbacks.check(self, wevent)
 
     def OnBlipSubmitted(self, event, wavelet):
