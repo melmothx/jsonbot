@@ -922,9 +922,9 @@ tt {
         doscreen(consoletxt);
         // document.forms[0].cmnd.focus();
         doCmnd('version', dotop);
-        doCmnd('perms', dobottom);
-        doCmnd('statusline', doinfo);
-        topper(viewerid);
+        doCmnd('perms', doinfo);
+        doCmnd('statusline', dobottom);
+        setTimeout("info(viewerid);", 15000);
         gadgets.window.adjustHeight();
       }
 
@@ -932,8 +932,8 @@ tt {
         doscreen(feedstxt);
         // document.forms[0].name.focus();
         doCmnd('version', dotop);
-        doCmnd('perms', dobottom);
-        doCmnd('statusline', doinfo);
+        doCmnd('perms', doinfo);
+        doCmnd('statusline', dobottom);
         gadgets.window.adjustHeight();
       }
 

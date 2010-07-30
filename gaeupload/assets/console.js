@@ -275,8 +275,8 @@
         doscreen(consoletxt);
         document.forms[0].cmnd.focus();
         doCmnd('version', dotop);
-        doCmnd('perms', dobottom);
-        doCmnd('statusline', doinfo);
+        doCmnd('perms', doinfo);
+        doCmnd('statusline', dobottom);
       }
 
       function dofeeds() {
