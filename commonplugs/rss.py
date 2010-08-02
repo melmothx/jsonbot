@@ -1155,8 +1155,34 @@ def handle_rssadd(bot, ievent):
         ievent.reply('%s is not valid' % url)
 
 cmnds.add('rss-add', handle_rssadd, 'USER')
-examples.add('rss-add', 'rss-add <name> <url> to the rsswatcher', 'rss-add \
-gozerbot http://core.gozerbot.org/hg/dev/0.9/rss-log')
+examples.add('rss-add', 'rss-add <name> <url> to the rsswatcher', 'rss-add jsonbot http://code.google.com/feeds/p/jsonbot/hgchanges/basic')
+
+def handle_rssregister(bot, ievent):
+
+    """ rss-register <name> <url> .. register and start a rss item. """
+
+    try:
+        (name, url) = ievent.args
+    except ValueError:
+        ievent.missing('<name> <url>')
+        return
+
+    if watcher.byname(name):
+        ievent.reply('we already have a feed with %s name .. plz choose a different name' % name)
+        return
+
+    if watcher.checkfeed(url, ievent):
+        watcher.add(name, url, ievent.userhost)
+        watcher.start(bot.name, bot.type, name, ievent.channel)
+        if name not in ievent.chan.data.feeds:
+            ievent.chan.data.feeds.append(name)
+            ievent.chan.save()
+        ievent.reply('rss item added')
+    else:
+        ievent.reply('%s is not valid' % url)
+
+cmnds.add('rss-register', handle_rssregister, 'USER')
+examples.add('rss-register', 'rss-register <name> <url> - register and start a rss feed', 'rss-register jsonbot-hg http://code.google.com/feeds/p/jsonbot/hgchanges/basic')
 
 def handle_rssdel(bot, ievent):
 

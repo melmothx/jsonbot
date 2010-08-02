@@ -13,7 +13,7 @@
       var parameters = ""
       var identtime = new Date();
       var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div>';
-      var feedstxt = '<div class="bndy" align="left"><form name="feeddata" action="return dosubmit(this.form, event);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return doenter(this.form, event);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div></div>';
+      var feedstxt = '<div class="body" align="left"><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div></div>';
 
       // utils functions
 
@@ -90,6 +90,15 @@
             val = identtime.getTime();
             localStorage && localStorage.setItem("jsb_cookie", val);
         }
+      } 
+
+      // submit feed url to the server
+
+      function submitfeed(form) {
+           cmnd = "rss-register " + form.name.value + " " + form.url.value;           
+           status("sending command ");
+           doCmnd(cmnd, response);
+           return false;
       } 
 
       // function to launch on enter in the command box
