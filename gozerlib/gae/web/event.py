@@ -112,7 +112,7 @@ class WebEvent(EventBase):
         if "http://" in txt:
             for item in re_url_match.findall(txt):
                  logging.debug("web - raw - found url - %s" % item)
-                 txt = re.sub(item, r'<a href="%s">%s</a>' % (item, item), txt)
+                 txt = re.sub(item, '<a href="%s" onclick="window.open(\'%s\'); return false;">%s</a>' % (item, item, item), txt)
         self._raw(start + txt + end)
 
     def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):
