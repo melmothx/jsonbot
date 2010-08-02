@@ -10,7 +10,7 @@ from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt, fromenc, toenc
 from gozerlib.utils.xmpp import stripped
 from gozerlib.outputcache import add
-from gozerlib.utils.url import getpostdata
+from gozerlib.utils.url import getpostdata, re_url_match
 from gozerlib.utils.exception import handle_exception
 
 ## gaelib imports
@@ -23,10 +23,6 @@ from gozerlib.gae.wave.waves import Wave
 import cgi
 import logging
 import re
-
-## defines
-
-urlmatch = re.compile('http://(.*)')
 
 ## classes
 
@@ -102,9 +98,12 @@ class WebEvent(EventBase):
 
         """
         #logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
-        result = urlmatch.sub('<a href="http://\1">\1</a>', txt)
-        self.response.out.write(result + end)
-        self.bot.outmonitor(self.userhost, self.channel, result, self)
+        if "http://" in txt:
+            for item in re_url_match.findall(txt):
+                 logging.debug("web - raw - found url - %s" % item)
+                 txt = re.sub(item, r'<a href="%s">%s</a>' % (item, item), txt)
+        self.response.out.write(txt + end)
+        self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
     def write(self, txt, start=u"", end=u"<br>", raw=False):
         """ 

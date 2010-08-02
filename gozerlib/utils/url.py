@@ -34,6 +34,8 @@ import cgi
 
 ## defines
 
+re_url_match  = re.compile(u'((?:http|https)://\S+)')
+
 try:
     import chardet
 except ImportError:
