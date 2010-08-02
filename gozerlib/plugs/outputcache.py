@@ -19,7 +19,7 @@ def handle_outputcachepollerwave(bot, event):
      for result in res:
          event.reply(result)
 
-callbacks.add('POLLER', handle_outputcachepollerwave)
+#callbacks.add('POLLER', handle_outputcachepollerwave)
 
 def handle_outputcachepollerweb(bot, event):
      """ send outputcache when WEB event is triggered. """
@@ -28,8 +28,8 @@ def handle_outputcachepollerweb(bot, event):
      for result in res:
          event.reply(result)
 
-callbacks.add('WEB', handle_outputcachepollerweb)
-callbacks.add('GADGET', handle_outputcachepollerweb)
+#callbacks.add('WEB', handle_outputcachepollerweb)
+#callbacks.add('GADGET', handle_outputcachepollerweb)
 
 ## commands
 
@@ -42,6 +42,14 @@ def handle_outputcache(bot, event):
 
 cmnds.add('outputcache', handle_outputcache, 'USER')
 examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache')
+
+def handle_outputcacheclear(bot, event):
+    """ <channel or JID> .. flush outputcache of a channel. """
+    set(event.channel, [])
+    event.done()
+
+cmnds.add('outputcache-clear', handle_outputcacheclear, 'USER')
+examples.add('outputcache-clear', 'flush output cache of a channel', 'outputcache-clear')
 
 def handle_outputcacheflush(bot, event):
     """ <channel or JID> .. flush outputcache of a user. """

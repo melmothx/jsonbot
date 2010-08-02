@@ -22,6 +22,14 @@ from gozerlib.gae.wave.waves import Wave
 
 import cgi
 import logging
+import re
+
+## defines
+
+urlmatch = re.compile('http://(.*)')
+
+## classes
+
 
 class WebEvent(EventBase):
 
@@ -94,8 +102,9 @@ class WebEvent(EventBase):
 
         """
         #logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
-        self.response.out.write(txt + end)
-        self.bot.outmonitor(self.userhost, self.channel, txt, self)
+        result = urlmatch.sub('<a href="http://\1">\1</a>', txt)
+        self.response.out.write(result + end)
+        self.bot.outmonitor(self.userhost, self.channel, result, self)
 
     def write(self, txt, start=u"", end=u"<br>", raw=False):
         """ 
@@ -112,6 +121,8 @@ class WebEvent(EventBase):
         """ send reply to the web user. """
         if self.checkqueues(resultlist):
             return
+
+        
 
         result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
         (res1, res2) = self.less(result)

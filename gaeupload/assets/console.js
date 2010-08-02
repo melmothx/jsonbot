@@ -55,17 +55,17 @@
 
       // mainloop
 
-     function loop() {
-        doCmnd("outputcache", dobottom); 
-        lastpolled = new Date();
-        //var lpdate = lastpolled.getTime();
-        status("last polled at " + lastpolled.toUTCString());
-     }
+      function loop() {
+          doCmnd("outputcache", dobottom); 
+          lastpolled = new Date();
+          //var lpdate = lastpolled.getTime();
+          status("last polled at " + lastpolled.toUTCString());
+      }
 
 
       // INIT
 
-     function start() {
+      function start() {
           var txt = "enter a command in the box above.";
           output(txt);
           setCookie();
@@ -98,6 +98,7 @@
            cmnd = "rss-register " + form.name.value + " " + form.url.value;           
            status("sending command ");
            doCmnd(cmnd, response);
+           setTimeout("update();", 5000);
            return false;
       } 
 
@@ -113,6 +114,7 @@
            cmnd = "rss-register " + form.name.value + " " + form.url.value;           
            status("sending command ");
            doCmnd(cmnd, response);
+           setTimeout("update();", 5000);
            return false;
         }
         else
@@ -130,6 +132,7 @@
            doCmnd(cmnd, response);
            form.cmnd.value = "";
            form.focus();
+           setTimeout("update();", 5000);
            return false;
         }
         else
@@ -281,19 +284,28 @@
           return true;
       }
 
+      function update(what) {
+        if (what=="console") {
+            doCmnd('rss-feeds', doinfo);
+            doCmnd('statusline', dotop);
+            coCmnd('outputcache', dobottom);
+        }
+        else {
+            doCmnd('perms', doinfo);
+            doCmnd('statusline', dotop);
+            coCmnd('outputcache', dobottom);
+        }
+      }
+
       function doconsole() {
         doscreen(consoletxt);
         document.forms[0].cmnd.focus();
-        doCmnd('version', dotop);
-        doCmnd('perms', doinfo);
-        doCmnd('statusline', dobottom);
+        setTimeout("update();", 5000);
       }
 
       function dofeeds() {
         doscreen(feedstxt);
         document.forms[0].name.focus();
-        doCmnd('rss-feeds', dotop);
-        doCmnd('perms', doinfo);
-        doCmnd('statusline', dobottom);
+        setTimeout("update();", 5000);
       }
 
