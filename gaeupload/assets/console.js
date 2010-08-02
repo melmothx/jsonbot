@@ -66,10 +66,12 @@
       // INIT
 
       function start() {
-          var txt = "enter a command in the box above.";
+          var txt = "enter a command in the box above - see !help";
           output(txt);
           setCookie();
           setInterval("loop();", 300000);
+          setTimeout("update();", 5000);
+          loop()
       }
 
 
@@ -300,12 +302,10 @@
       function doconsole() {
         doscreen(consoletxt);
         document.forms[0].cmnd.focus();
-        setTimeout("update();", 5000);
       }
 
       function dofeeds() {
         doscreen(feedstxt);
         document.forms[0].name.focus();
-        setTimeout("update();", 5000);
       }
 

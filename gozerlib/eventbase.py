@@ -57,6 +57,7 @@ class EventBase(LazyDict):
     def finish(self):
         self.user = self.bot.users.getuser(self.auth or self.userhost)
         self.makeargs()
+        logging.info(" ==> EVENT - %s - %s - %s - %s" % (self.type, self.cbtype, self.usercmnd, self.userhost))
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """

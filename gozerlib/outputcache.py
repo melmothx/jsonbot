@@ -14,6 +14,21 @@ import os
 
 ## functions
 
+def clear(target):
+    """ clear target's outputcache. """
+    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
+    try:
+        result = cache.data['msg']
+        if result:
+            cache.data['msg'] = []
+            cache.save()
+            return result
+
+    except KeyError:
+        return []
+
+    return []
+
 def add(target, txtlist):
     """ add list of txt to target entry. """
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
@@ -21,7 +36,7 @@ def add(target, txtlist):
     if not d.has_key('msg'):
         d['msg'] = []
     d['msg'].extend(txtlist)
-    while len(d['msg']) > 30:
+    while len(d['msg']) > 10:
         d['msg'].pop(0)
     cache.save()
 
@@ -39,8 +54,6 @@ def get(target):
     try:
         result = cache.data['msg']
         if result:
-            cache.data['msg'] = []
-            cache.save()
             return result
 
     except KeyError:

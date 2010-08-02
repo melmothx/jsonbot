@@ -98,10 +98,6 @@ class WebEvent(EventBase):
 
         """
         #logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
-        if "http://" in txt:
-            for item in re_url_match.findall(txt):
-                 logging.debug("web - raw - found url - %s" % item)
-                 txt = re.sub(item, r'<a href="%s">%s</a>' % (item, item), txt)
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
@@ -112,9 +108,12 @@ class WebEvent(EventBase):
 
         """
         if not raw:
-            self._raw(start + cgi.escape(txt) + end)
-        else:
-            self._raw(start + txt + end)
+            txt = cgi.escape(txt)
+        if "http://" in txt:
+            for item in re_url_match.findall(txt):
+                 logging.debug("web - raw - found url - %s" % item)
+                 txt = re.sub(item, r'<a href="%s">%s</a>' % (item, item), txt)
+        self._raw(start + txt + end)
 
     def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):
         """ send reply to the web user. """
