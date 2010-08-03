@@ -287,14 +287,14 @@
       }
 
       function update(what) {
-        if (what=="console") {
-            doCmnd('rss-feeds', doinfo);
-            doCmnd('statusline', dotop);
+        if (what=="feeds") {
+            doCmnd('rss-feeds', dotop);
+            doCmnd('statusline', doinfo);
             coCmnd('outputcache', dobottom);
         }
         else {
-            doCmnd('perms', doinfo);
-            doCmnd('statusline', dotop);
+            doCmnd('perms', dotop);
+            doCmnd('statusline', doinfo);
             coCmnd('outputcache', dobottom);
         }
       }
