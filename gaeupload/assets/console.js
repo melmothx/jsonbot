@@ -66,12 +66,13 @@
       // INIT
 
       function start() {
-          var txt = "enter a command in the box above - see <b>!list</b> for  a list of plugins or <b>!commands</b> for a list of commands";
+          var txt = "enter a command in the box above";
           output(txt);
+          update();
           setCookie();
           setInterval("loop();", 300000);
-          setTimeout("update();", 2000);
-          loop()
+          setTimeout("doCmnd('help', response);", 8000);
+          loop();
       }
 
 
@@ -288,14 +289,14 @@
 
       function update(what) {
         if (what=="feeds") {
-            doCmnd('rss-feeds', dotop);
-            doCmnd('statusline', doinfo);
             doCmnd('outputcache', dobottom);
+            doCmnd('statusline', doinfo);
+            doCmnd('rss-feeds', dotop);
         }
         else {
+            doCmnd('outputcache', dobottom);
             doCmnd('perms', dotop);
             doCmnd('statusline', doinfo);
-            doCmnd('outputcache', dobottom);
         }
       }
 
