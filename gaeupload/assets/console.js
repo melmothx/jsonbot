@@ -66,11 +66,11 @@
       // INIT
 
       function start() {
-          var txt = "enter a command in the box above - see !help";
+          var txt = "enter a command in the box above - see <b>!list</b> for  a list of plugins or <b>!commands</b> for a list of commands";
           output(txt);
           setCookie();
           setInterval("loop();", 300000);
-          setTimeout("update();", 5000);
+          setTimeout("update();", 2000);
           loop()
       }
 
@@ -290,12 +290,12 @@
         if (what=="feeds") {
             doCmnd('rss-feeds', dotop);
             doCmnd('statusline', doinfo);
-            coCmnd('outputcache', dobottom);
+            doCmnd('outputcache', dobottom);
         }
         else {
             doCmnd('perms', dotop);
             doCmnd('statusline', doinfo);
-            coCmnd('outputcache', dobottom);
+            doCmnd('outputcache', dobottom);
         }
       }
 
