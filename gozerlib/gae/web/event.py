@@ -117,11 +117,12 @@ class WebEvent(EventBase):
 
     def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):
         """ send reply to the web user. """
+
         if self.checkqueues(resultlist):
             return
 
-        
-
+        if raw:
+            txt = "<b>" + txt + "</b>"
         result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
         (res1, res2) = self.less(result)
         self.write(res1, raw=raw)

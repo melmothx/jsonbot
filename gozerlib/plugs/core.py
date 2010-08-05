@@ -119,7 +119,7 @@ def handle_list(bot, ievent):
 
 def handle_available(bot, ievent):
     """ show available plugins .. to enable use !reload. """
-    ievent.reply("available plugins: ", getpluginlist())
+    ievent.reply("available plugins: ", getpluginlist(), raw=True)
 
 cmnds.add('list', handle_available, ['USER', 'GUEST'])
 examples.add('list', 'list available plugins', 'list')

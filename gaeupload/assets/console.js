@@ -72,8 +72,8 @@
           setCookie();
           setInterval("loop();", 300000);
           setTimeout("doCmnd('help', response);", 1000);
-          setTimeout("update();", 2000);
-          setTimeout("loop();", 5000);
+          setTimeout("update();", 4000);
+          setTimeout("loop();", 6000);
       }
 
 
@@ -194,9 +194,8 @@
       }
 
       function topper(text) {
-        var html = "<b><i>" + text + "</i></b>";
         var element = document.getElementById("topper_div");  
-        element.innerHTML = html;
+        element.innerHTML = text;
       }
 
       function statusadd(text) {
