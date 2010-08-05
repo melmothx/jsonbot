@@ -316,14 +316,15 @@ class BotBase(LazyDict):
         res = []
         # check if there are list in list
 
-        for i in result:
-            if type(i) == types.ListType or type(i) == types.TupleType:
-                try:
-                    res.append(dot.join(i))
-                except TypeError:
-                    res.extend(i)
-            else:   
-                res.append(i)
+        if result:
+            for i in result:
+                if type(i) == types.ListType or type(i) == types.TupleType:
+                    try:
+                        res.append(dot.join(i))
+                    except TypeError:
+                        res.extend(i)
+                else:   
+                    res.append(i)
 
         if txt: 
             return txt + dot.join(res)   

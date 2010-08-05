@@ -246,8 +246,9 @@ def handle_helpplug(bot, ievent):
     if phelp:
 
         if bot.users:
-            perms = list(bot.users.getperms(ievent.userhost))
-        else:
+            perms = bot.users.getperms(ievent.userhost)
+
+        if not perms:
             perms = ['GUEST', ]
 
         for i, j in cmnds.iteritems():

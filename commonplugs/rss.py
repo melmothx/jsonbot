@@ -930,7 +930,11 @@ class Rsswatcher(Rssdict):
 
         """ search titles of a feeds cached data. """
 
-        return self.byname(name).search(item, search)
+        i = self.byname(name)
+        if i:
+            return i.search(item, search)
+
+        return []
 
 
     def searchall(self, item, search):
@@ -1132,7 +1136,7 @@ def handle_rsscloneurl(bot, event):
     event.reply('cloned the following feeds: ', feeds)
  
 cmnds.add('rss-cloneurl', handle_rsscloneurl, 'OPER')
-examples.add('rss-cloneurl', 'clone feeds from remote url', 'wave-clone http://gozerbot.org/feeds')
+examples.add('rss-cloneurl', 'clone feeds from remote url', 'wave-clone jsonbot-hg http://jsonbot.appspot.com')
 
 def handle_rssadd(bot, ievent):
 
@@ -1932,7 +1936,7 @@ def handle_rssseturl(bot, ievent):
 
 cmnds.add('rss-seturl', handle_rssseturl, ['USER', ])
 examples.add('rss-seturl', 'rss-seturl <name> <url> .. change url of rssitem',\
-'rss-seturl gozerbot http://core.gozerbot.org/hg/dev/0.9/rss-log')
+'rss-seturl jsonbot-hg http://code.google.com/feeds/p/jsonbot/hgchanges/basic')
 
 def handle_rssitemslist(bot, ievent):
 

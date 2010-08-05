@@ -659,7 +659,7 @@ def handle_hubbubsubscribe(bot, event):
 
 
 cmnds.add('hb-subscribe', handle_hubbubsubscribe, ['USER',])
-examples.add('hb-subscribe', 'subscribe to a feed', 'hb-subscribe gozerrepo http://core.gozerbot.org/hg/dev/0.9')
+examples.add('hb-subscribe', 'subscribe to a feed', 'hb-subscribe jsonbot-hg http://code.google.com/feeds/p/jsonbot/hgchanges/basic')
 
 def handle_hubbubclone(bot, event):
     """ <channel> .. clone the feeds running in a channel. """
@@ -689,7 +689,7 @@ def handle_hubbubcloneurl(bot, event):
         event.reply("hubbub - clone - %s" % str(ex))
 
 cmnds.add('hb-cloneurl', handle_hubbubcloneurl, 'OPER')
-examples.add('hb-cloneurl', 'clone feeds from remote url', 'hb-cloneurl http://gozerbot.org/feeds')
+examples.add('hb-cloneurl', 'clone feeds from remote url', 'hb-cloneurl http://jsonbot.appspot.com/feeds')
 
 def handle_hubbubadd(bot, ievent):
     """ <name> <url> .. add a hubbub item. """
@@ -708,7 +708,7 @@ def handle_hubbubadd(bot, ievent):
        ievent.reply('%s feed NOT added. status code is %s' % (name, result.status))
 
 cmnds.add('hb-add', handle_hubbubadd, 'USER')
-examples.add('hb-add', 'hubbub-add <name> <url> to the watcher', 'hb-add gozerbot http://core.gozerbot.org/hg/dev/0.9/rss-log')
+examples.add('hb-add', 'hubbub-add <name> <url> to the watcher', 'hb-add jsonbot-hg http://code.google.com/feeds/p/jsonbot/hgchanges/basic')
 
 def handle_hubbubwatch(bot, ievent):
     """ <feedname> .. enable a feed for watching. """
@@ -730,7 +730,7 @@ def handle_hubbubwatch(bot, ievent):
         item.data.running = 1
         item.data.stoprunning = 0
         got = True
-        watcher.save(name)
+        item.save()
 
         try:
             watcher.watch(name)
@@ -827,8 +827,8 @@ def handle_hubbubstopall(bot, ievent):
     if feeds:
         for feed in feeds:
             if watcher.stop(bot.name, bot.type, feed, target):
-                if name in ievent.chan.data.feeds:
-                    ievent.chan.data.feeds.remove(name)
+                if feed in ievent.chan.data.feeds:
+                    ievent.chan.data.feeds.remove(feed)
                     ievent.chan.save()
                 stopped.append(feed)
 
