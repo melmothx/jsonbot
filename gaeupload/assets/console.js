@@ -71,13 +71,14 @@
           update();
           setCookie();
           setInterval("loop();", 300000);
-          setTimeout("doCmnd('help', response);", 8000);
+          setTimeout("doCmnd('list', dotop);", 500);
+          setTimeout("doCmnd('help', response);", 1000);
           loop();
       }
 
 
       function init() {
-        setTimeout("consolestart();", 1000)
+        setTimeout("consolestart();", 500)
       }
 
       function consolestart() {
@@ -101,7 +102,7 @@
            cmnd = "rss-register " + form.name.value + " " + form.url.value;           
            status("sending command ");
            doCmnd(cmnd, response);
-           setTimeout("update();", 5000);
+           setTimeout("update();", 500);
            return false;
       } 
 
@@ -117,7 +118,7 @@
            cmnd = "rss-register " + form.name.value + " " + form.url.value;           
            status("sending command ");
            doCmnd(cmnd, response);
-           setTimeout("update();", 5000);
+           setTimeout("update();", 500);
            return false;
         }
         else
@@ -135,7 +136,7 @@
            doCmnd(cmnd, response);
            form.cmnd.value = "";
            form.focus();
-           setTimeout("update();", 5000);
+           setTimeout("update();", 500);
            return false;
         }
         else
@@ -295,8 +296,8 @@
         }
         else {
             doCmnd('outputcache', dobottom);
-            doCmnd('perms', dotop);
             doCmnd('statusline', doinfo);
+            doCmnd('list', dotop);
         }
       }
 
