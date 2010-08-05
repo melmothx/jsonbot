@@ -68,12 +68,12 @@
       function start() {
           var txt = "enter a command in the box above";
           output(txt);
-          update();
+          // update();
           setCookie();
           setInterval("loop();", 300000);
-          setTimeout("doCmnd('list', dotop);", 500);
           setTimeout("doCmnd('help', response);", 1000);
-          loop();
+          setTimeout("update();", 2000);
+          setTimeout("loop();", 5000);
       }
 
 
@@ -87,6 +87,30 @@
           start();
           status("booting done");
       }
+
+      function update(what) {
+        if (what=="feeds") {
+            doCmnd('outputcache', dobottom);
+            doCmnd('statusline', doinfo);
+            doCmnd('rss-feeds', dotop);
+        }
+        else {
+            doCmnd('outputcache', dobottom);
+            doCmnd('statusline', doinfo);
+            doCmnd('list', dotop);
+        }
+      }
+
+      function doconsole() {
+        doscreen(consoletxt);
+        document.forms[0].cmnd.focus();
+      }
+
+      function dofeeds() {
+        doscreen(feedstxt);
+        document.forms[0].name.focus();
+      }
+
 
       function setCookie() {
         var val = localStorage && localStorage.getItem("jsb_cookie");
@@ -286,28 +310,5 @@
           parameters="content="+encodeURIComponent(cmnd);
           request.send(parameters);
           return true;
-      }
-
-      function update(what) {
-        if (what=="feeds") {
-            doCmnd('outputcache', dobottom);
-            doCmnd('statusline', doinfo);
-            doCmnd('rss-feeds', dotop);
-        }
-        else {
-            doCmnd('outputcache', dobottom);
-            doCmnd('statusline', doinfo);
-            doCmnd('list', dotop);
-        }
-      }
-
-      function doconsole() {
-        doscreen(consoletxt);
-        document.forms[0].cmnd.focus();
-      }
-
-      function dofeeds() {
-        doscreen(feedstxt);
-        document.forms[0].name.focus();
       }
 
