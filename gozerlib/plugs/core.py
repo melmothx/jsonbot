@@ -395,7 +395,7 @@ cmnds.add('threads', handle_threads, ['USER', 'OPER'])
 examples.add('threads', 'show running threads', 'threads')
 
 def handle_statusline(bot, event):
-    event.reply("user: %s - perms: %s - modfied: %s - feeds: %s" % (event.user.data.name, ", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds)))
+    event.reply("perms: %s - modfied: %s - feeds: %s" % (event.user.data.name, ", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds)))
 
 cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')
