@@ -194,8 +194,11 @@
       }
 
       function topper(text) {
+        var html = "<i>";
+        html += text;
+        html += "</i>";
         var element = document.getElementById("topper_div");  
-        element.innerHTML = text;
+        element.innerHTML = html;
       }
 
       function statusadd(text) {
