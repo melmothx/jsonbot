@@ -108,6 +108,7 @@ class WebEvent(EventBase):
 
         """
         if not raw:
+            
             txt = cgi.escape(txt)
         if "http://" in txt:
             for item in re_url_match.findall(txt):
@@ -115,7 +116,7 @@ class WebEvent(EventBase):
                  txt = re.sub(item, '<a href="%s" onclick="window.open(\'%s\'); return false;">%s</a>' % (item, item, item), txt)
         self._raw(start + txt + end)
 
-    def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):
+    def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=True, *args, **kwargs):
         """ send reply to the web user. """
 
         if self.checkqueues(resultlist):
@@ -124,6 +125,7 @@ class WebEvent(EventBase):
         if raw:
             txt = "<b>" + txt + "</b>"
         result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
+
         (res1, res2) = self.less(result)
         self.write(res1, raw=raw)
         if res2:

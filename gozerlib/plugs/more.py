@@ -28,6 +28,7 @@ def handle_more(bot, ievent):
         txt = what.strip()
 
     if bot.type == 'web':
+        txt = "<code>" + txt + "</code>"
         ievent.reply(txt)
     else:
         bot.say(ievent.printto, txt, extend=5)
