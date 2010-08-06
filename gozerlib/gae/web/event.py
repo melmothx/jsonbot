@@ -12,11 +12,11 @@ from gozerlib.utils.xmpp import stripped
 from gozerlib.outputcache import add
 from gozerlib.utils.url import getpostdata, re_url_match
 from gozerlib.utils.exception import handle_exception
+from gozerlib.channelbase import ChannelBase
 
 ## gaelib imports
 
 from gozerlib.gae.utils.auth import checkuser
-from gozerlib.gae.wave.waves import Wave
 
 ## basic imports
 
@@ -73,20 +73,20 @@ class WebEvent(EventBase):
         self.auth = fromenc(userhost)
         self.stripped = stripped(self.auth)
         self.domain = None
-        self.waveid = fromenc(request.get('waveid'))
+        #self.waveid = fromenc(request.get('waveid'))
 
-        if self.waveid:
-            self.channel = self.waveid
-            self.domain = self.waveid.split('!')[0]
-        else:
-            self.channel = stripped(userhost)
+        #if self.waveid:
+        #    self.channel = self.waveid
+        #    self.domain = self.waveid.split('!')[0]
+        #else:
+        #    self.channel = stripped(userhost)
+        self.channel = stripped(userhost)
+        #if self.waveid:
+        #    self.isgadget = True
+        #    logging.debug(u'web - setting channel to %s' % unicode(self.waveid))
+        #    self.channel = self.waveid
 
-        if self.waveid:
-            self.isgadget = True
-            logging.debug(u'web - setting channel to %s' % unicode(self.waveid))
-            self.channel = self.waveid
-
-        self.chan = Wave(self.channel)
+        self.chan = ChannelBase(self.channel)
         self.makeargs()
         #logging.debug(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
@@ -108,7 +108,6 @@ class WebEvent(EventBase):
 
         """
         if not raw:
-            
             txt = cgi.escape(txt)
         if "http://" in txt:
             for item in re_url_match.findall(txt):
@@ -122,11 +121,11 @@ class WebEvent(EventBase):
         if self.checkqueues(resultlist):
             return
 
-        if raw:
+        if raw and resultlist:
             txt = u"<b>" + txt + u"</b>"
         result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
 
-        (res1, res2) = self.less(result)
+        (res1, res2) = self.less(result, nr=750)
         self.write(res1, raw=raw)
         if res2:
-            self.write(res2, raw=raw)
+            self.write(res2, "<br>", "<br>", raw=raw)

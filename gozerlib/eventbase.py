@@ -148,4 +148,4 @@ class EventBase(LazyDict):
             
     def less(self, what, nr=365):
         """ check string for overflow, if so send data to the output cache. """
-        return self.bot.less(self.userhost, what, nr)
+        return self.bot.less(self.channel, what, nr)

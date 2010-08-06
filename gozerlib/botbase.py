@@ -90,7 +90,7 @@ class BotBase(LazyDict):
         logging.info(u"botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.plugs = plugs or coreplugs 
-        self.outcache = Less(1)
+        self.outcache = Less(3)
         self.userhosts = {}
         if not self.nick:
             self.nick = u'jsonbot'

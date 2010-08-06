@@ -1,8 +1,8 @@
-# jsonbot cron file
+# gozbot cron file
 #
 #
 
 cron:
 - description: rss beat
   url: /tasks/rss
-  schedule: every 5 minutes
+  schedule: every 15 minutes

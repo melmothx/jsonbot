@@ -275,7 +275,7 @@ def handle_helpplug(bot, ievent):
                 res.append(r)
 
         res.sort()
-        
+        what = what.upper()
         if bot.type in ['web', ]:
             res.insert(0, u'%s - %s<br>' % (what, phelp.strip()))
             txt = 'HELP ON %s<br><br>%s' % (what,"<br>".join(res))
@@ -397,7 +397,7 @@ cmnds.add('threads', handle_threads, ['USER', 'OPER'])
 examples.add('threads', 'show running threads', 'threads')
 
 def handle_statusline(bot, event):
-    event.reply("perms: %s - modfied: %s - feeds: %s" % (", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds)))
+    event.reply("perms: %s - modfied: %s - feeds: %s - cache: %s" % (", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds), str(bot.outcache.size(event.channel))))
 
 cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')

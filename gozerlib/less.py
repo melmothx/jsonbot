@@ -6,6 +6,7 @@
 
 # gozerlib imports
 
+from utils.exception import handle_exception
 from utils.limlist import Limlist
 
 ## classes
@@ -13,7 +14,7 @@ from utils.limlist import Limlist
 class Less(object):
 
     """
-        output cache .. caches upto <nr> item of txt lines per nick.
+        output cache .. caches upto <nr> item of txt lines per channel.
 
         :param nr: size of backlog
         :type nr: integer
@@ -25,30 +26,30 @@ class Less(object):
         self.index = {}
         self.nr = nr
 
-    def add(self, nick, listoftxt):
+    def add(self, channel, listoftxt):
         """
-            add listoftxt to nick's output .. set index for used by more 
+            add listoftxt to channel's output .. set index for used by more 
             commands.
 
-            :param nick: nick to add txt to cache for
-            :type nick: string
+            :param channel: channel to add txt to cache for
+            :type channel: string
             :param listoftxt: list of txt to cache
             :type listoftxt: list
 
         """
-        if not self.data.has_key(nick):
-            self.data[nick] = Limlist(self.nr)
-        self.data[nick].insert(0, listoftxt)
-        self.index[nick] = 1
+        if not self.data.has_key(channel):
+            self.data[channel] = Limlist(self.nr)
+        self.data[channel].insert(0, listoftxt)
+        self.index[channel] = 1
 
-    def get(self, nick, index1, index2):
+    def get(self, channel, index1, index2):
         """
              return less entry.
 
-             entry is self.data[nick][index1][index2]
+             entry is self.data[channel][index1][index2]
 
-             :param nick: nick to get data for
-             :type nick: string
+             :param channel: channel to get data for
+             :type channel: string
              :param index1: number of txtlines back
              :type index1: integer
              :param index2: index into the txtlines 
@@ -58,50 +59,51 @@ class Less(object):
         """
 
         try:
-            txt = self.data[nick][index1][index2]
+            txt = self.data[channel][index1][index2]
         except (KeyError, IndexError):
             txt = None
         return txt
 
-    def more(self, nick, index1):
+    def more(self, channel, index1=0):
         """
              return more entry pointed to by index .. increase index.
 
-             :param nick: nick to fetch data for
-             :type nick: string
+             :param channel: channel to fetch data for
+             :type channel: string
              :param index1: index into cache data
              :type index1: integer
              :rtype: tuple .. (txt, index)
 
         """
         try:
-            nr = self.index[nick]
+            nr = self.index[channel]
         except KeyError:
             nr = 1
 
         try:
-            txt = self.data[nick][index1][nr]
-            size = len(self.data[nick][index1])-nr
-            self.index[nick] = nr+1
+            txt = self.data[channel][index1][nr]
+            size = len(self.data[channel][index1])-nr
+            self.index[channel] = nr+1
         except (KeyError, IndexError):
+            handle_exception()
             txt = None
-            size = 0
+            size = 1
 
         return (txt, size-1)
 
-    def size(self, nick):
+    def size(self, channel):
         """
              return sizes of cached output.
 
-             :param nick: nick to get cache sizes for
-             :type nick: string
+             :param channel: nick to get cache sizes for
+             :type channel: string
              :rtype: list .. list of sizes
 
         """
         sizes = []
-        if not self.data.has_key(nick):
+        if not self.data.has_key(channel):
             return sizes
-        for i in self.data[nick]:
+        for i in self.data[channel]:
             sizes.append(len(i))
 
         return sizes
