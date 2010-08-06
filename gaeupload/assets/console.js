@@ -12,7 +12,7 @@
       var viewerid = "";
       var parameters = ""
       var identtime = new Date();
-      var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>no command given yet.</i></div>';
+      var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>Welcome to JSONBOT</i></div>';
       var feedstxt = '<div class="body" align="left"><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div></div>';
 
       // utils functions
@@ -32,27 +32,6 @@
         topper(hostid + ' ' + viewerid)
       }
 
-      // start function .. call on load of applet
-
-      function start() {
-        if (!viewerid) {
-          viewerid = window.location.host;
-        }
-        if (!waveid) {
-          waveid = wave.getWaveId();
-        }
-
-        var txt = "enter a command in the box above.";
-        output(txt);
-
-        if (wave && wave.isInWaveContainer()) {
-           doCmnd("hb-welcome", dotop);
-        }
-
-        statusadd('done');
-        // gadgets.window.adjustHeight();
-      }
-
       // mainloop
 
       function loop() {
@@ -66,24 +45,20 @@
       // INIT
 
       function start() {
-          var txt = "enter a command in the box above";
-          output(txt);
-          // update();
           setCookie();
+          setTimeout("update();", 150);
+          setTimeout("doCmnd('help', response);", 3000);
           setInterval("loop();", 300000);
-          setTimeout("doCmnd('help', response);", 1000);
-          setTimeout("update();", 4000);
-          setTimeout("loop();", 6000);
       }
 
 
       function init() {
-        setTimeout("consolestart();", 500)
+        setTimeout("consolestart();", 10)
       }
 
       function consolestart() {
-          status("booting");
           doconsole();
+          status("booting");
           start();
           status("booting done");
       }
@@ -97,7 +72,7 @@
         else {
             doCmnd('outputcache', dobottom);
             doCmnd('statusline', doinfo);
-            doCmnd('list', dotop);
+            doCmnd('uptime', dotop);
         }
       }
 

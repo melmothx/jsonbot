@@ -132,7 +132,7 @@ def savecmndtable():
 
     if cmnds.subs:
         for name, clist in cmnds.subs.iteritems():
-            if name:
+            if name and not name not in cmndtable.data:
                 if clist and len(clist) == 1:
                     cmndtable.data[name] = clist[0].modname   
 

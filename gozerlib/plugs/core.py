@@ -197,15 +197,15 @@ def handle_whereis(bot, ievent):
 cmnds.add('whereis', handle_whereis, ['USER', 'GUEST'])
 examples.add('whereis', 'whereis <cmnd> .. show in which plugins <what> is', 'whereis test')
 
-def handle_help(bot, event):
-    """ help [<cmnd>|<plugin>]. """
-    if event.rest:
-        event.txt = 'help ' + event.rest
-        handle_helpplug(bot, event)
-        return
-    event.reply("see !help <plugin> for help on a plugin and !list for a list of available plugins.")
+#def handle_help(bot, event):
+#    """ help [<cmnd>|<plugin>]. """
+#    if event.rest:
+#        event.txt = 'help ' + event.rest
+#        handle_helpplug(bot, event)
+#        return
+#    event.reply("see !help <plugin> for help on a plugin and !list for a list of available plugins.")
 
-cmnds.add('help', handle_help, ['USER', 'GUEST'])
+#cmnds.add('help', handle_help, ['USER', 'GUEST'])
 
 def handle_helpplug(bot, ievent):
 
@@ -214,9 +214,8 @@ def handle_helpplug(bot, ievent):
     try:
         what = ievent.args[0]
     except IndexError:
-        pluginslist = Persist('run' + os.sep + 'pluginlist').data
-        ievent.reply("available plugins: ", pluginslist)
-        ievent.reply('see commmands <plugin> for list of commands.')
+        ievent.reply("available plugins: ", getpluginlist(), raw=True)
+        ievent.reply('see !help <plugin> for help on a plugin.')
         return
 
     plugin = None
@@ -286,8 +285,8 @@ def handle_helpplug(bot, ievent):
         ievent.reply('no commands available')
 
 
-cmnds.add('help-plug', handle_helpplug, ['USER', 'GUEST'])
-examples.add('help-plug', 'get help on <cmnd> or <plugin>', '1) help-plug test 2) help-plug misc')
+cmnds.add('help', handle_helpplug, ['USER', 'GUEST'])
+examples.add('help', 'get help on <cmnd> or <plugin>', '1) help-plug test 2) help-plug misc')
 
 def handle_apro(bot, ievent):
     """ <cmnd> .. apropos for command. """
@@ -396,7 +395,7 @@ cmnds.add('threads', handle_threads, ['USER', 'OPER'])
 examples.add('threads', 'show running threads', 'threads')
 
 def handle_statusline(bot, event):
-    event.reply("perms: %s - modfied: %s - feeds: %s" % (", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds)))
+    event.reply("user: %s - perms: %s - modfied: %s - feeds: %s" % (event.user.data.name, ", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds)))
 
 cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')
