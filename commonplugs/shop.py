@@ -33,7 +33,7 @@ def sayshop(bot, ievent, shoplist):
     for i in shoplist:
         result.append('%s) %s' % (teller, i))
         teller += 1
-    ievent.reply("shoplist: ", result)
+    ievent.reply("shoplist: ", result, dot=" ")
 
 ## commands
 

@@ -278,7 +278,8 @@ def handle_helpplug(bot, ievent):
         
         if bot.type in ['web', ]:
             res.insert(0, u'%s - %s<br>' % (what, phelp.strip()))
-            ievent.reply('HELP ON %s<br><br>' % what, res, dot="<br>", raw=True)
+            txt = 'HELP ON %s<br><br>%s' % (what,"<br>".join(res))
+            ievent.reply(txt)
         else:
             res.insert(0, u'%s - %s\n' % (what, phelp.strip()))
             ievent.reply('HELP ON %s\n\n' % what, res, dot="\n", raw=True)
