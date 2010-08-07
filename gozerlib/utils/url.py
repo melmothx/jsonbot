@@ -6,7 +6,7 @@
 
 ## lib imports
 
-from generic import fromenc
+from generic import fromenc, toenc
 from gozerlib.config import cfg
 
 ## basic imports
@@ -290,17 +290,17 @@ class Stripper(sgmllib.SGMLParser):
 
     def strip(self, some_html):
         """ strip html. """
-        self.theString = ""
+        self.theString = u""
         self.feed(some_html)
         self.close()
         return self.theString
 
     def handle_data(self, data):
         """ data handler. """
-        self.theString += fromenc(data)
+        self.theString += data
 
 def striphtml(txt):
     """ strip html from txt. """
     stripper = Stripper()
-    txt = stripper.strip(fromenc(txt))
+    txt = stripper.strip(txt)
     return txt

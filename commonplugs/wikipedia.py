@@ -24,6 +24,7 @@ wikire = re.compile('start content(.*?)end content', re.M)
 ## functions
 
 def searchwiki(txt, lang='en'):
+    txt = txt.strip()
     for i in txt.split():
         if i.startswith('-'):
             if len(i) != 3:
@@ -31,28 +32,28 @@ def searchwiki(txt, lang='en'):
             else:
                 lang = i[1:]
             continue
-    txt = txt.replace("-%s" % lang, '')
-    txt = txt.strip().capitalize()
-    what = txt.strip().replace(' ', '_')
-    url = 'http://%s.wikipedia.org/wiki/Special:Export/%s' % (lang, \
+    txt = txt.replace(u"-%s" % lang, '')
+    txt = txt.capitalize()
+    what = txt.replace(' ', '_')
+    url = u'http://%s.wikipedia.org/wiki/Special:Export/%s' % (lang, \
 quote(what.encode('utf-8')))
-    url2 = 'http://%s.wikipedia.org/wiki/%s' % (lang, \
+    url2 = u'http://%s.wikipedia.org/wiki/%s' % (lang, \
 quote(what.encode('utf-8')))
     txt = getwikidata(url)
     if not txt:
-        return None
+        return ("", url2)
     if 'from other capitalisation' in txt:
         what = what.title()
-        url = 'http://%s.wikipedia.org/wiki/Special:Export/%s' % (lang, \
+        url = u'http://%s.wikipedia.org/wiki/Special:Export/%s' % (lang, \
 quote(what.encode('utf-8')))
-        url2 = 'http://%s.wikipedia.org/wiki/%s' % (lang, \
+        url2 = u'http://%s.wikipedia.org/wiki/%s' % (lang, \
 quote(what.encode('utf-8')))
         txt = getwikidata(url)
     if '#REDIRECT' in txt or '#redirect' in txt:
         redir = ' '.join(txt.split()[1:])
-        url = 'http://%s.wikipedia.org/wiki/Special:Export/%s' % (lang, \
+        url = u'http://%s.wikipedia.org/wiki/Special:Export/%s' % (lang, \
 quote(redir.encode('utf-8')))
-        url2 = 'http://%s.wikipedia.org/wiki/%s' % (lang, \
+        url2 = u'http://%s.wikipedia.org/wiki/%s' % (lang, \
 quote(redir.encode('utf-8')))
         txt = getwikidata(url)
     return (txt, url2)
@@ -70,12 +71,7 @@ def getwikidata(url):
             break
         except:
             pass
-    if not txt:
-        return
-    #txt = re.sub('\[\[Image:([^\[\]]+|\[\[[^\]]+\]\])*\]\]', '', txt)
-    txt = txt.replace('[[', '')
-    txt = txt.replace(']]', '')
-    txt = re.sub('\s+', ' ', txt)
+
     return txt
 
 ## commands
@@ -86,12 +82,19 @@ def handle_wikipedia(bot, ievent):
         ievent.missing('<what>')
         return
     res = searchwiki(ievent.rest)
-    if not res:
+    if not res[0]:
         ievent.reply('no result found')
         return
+
     txt, url = res
-    prefix = '%s ===> %s ' % (url, txt.strip())
-    ievent.reply(prefix)
+    txt = re.sub('\s+', ' ', txt)
+    txt = re.sub('==(.*?)==', '<h3>\g<1></h3>', txt)
+    txt = re.sub('\[\[(.*?)\]\]', '<b>\g<1></b>', txt)
+    txt = re.sub('{{(.*?)}}', '<i>\g<1></i>', txt)
+    txt = u'%s ===> %s' % (url, txt)
+    txt = txt.replace('|', ' - ')
+
+    ievent.reply(txt)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
 examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search \

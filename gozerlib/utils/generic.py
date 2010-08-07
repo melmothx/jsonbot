@@ -93,6 +93,7 @@ def splittxt(what, l=375):
 
         res = what[start:endword]
         if res:
+            #logging.warn(u"splittxt - adding %s (%s)" % (unicode(res), len(res)))
             txtlist.append(res)
 
         start = endword

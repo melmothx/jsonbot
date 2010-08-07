@@ -125,7 +125,7 @@ class WebEvent(EventBase):
             txt = u"<b>" + txt + u"</b>"
         result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
 
-        (res1, res2) = self.less(result, nr=750)
+        (res1, res2) = self.less(result, 1500)
         self.write(res1, raw=raw)
         #if res2:
         #    self.write(res2, "<br>", "<br>", raw=raw)

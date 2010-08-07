@@ -1,6 +1,7 @@
       // vars
 
-      var url = "http://jsonbot.appspot.com/gadgetexec/";
+      //var url = "http://jsonbot.appspot.com/gadgetexec/";
+      var url = "http://localhost:8080/gadgetexec/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
