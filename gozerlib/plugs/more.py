@@ -15,7 +15,7 @@ def handle_more(bot, ievent):
         ievent.reply('no more data available for %s' % ievent.channel)
         return
     
-    txt = what.pop()
+    txt = what.pop(0)
 
     if bot.type == 'web':
         ievent.reply(txt)
