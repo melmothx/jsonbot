@@ -270,15 +270,14 @@ def handle_helpplug(bot, ievent):
         res = []
         for r in cmndresult:
             if bot.type in ['web', ]:
-                res.append("<code>%s</code>" % cgi.escape(r))
+                res.append("<i>%s</i>" % cgi.escape(r))
             else:
                 res.append(r)
 
         res.sort()
         what = what.upper()
         if bot.type in ['web', ]:
-            res.insert(0, u'%s - %s<br>' % (what, phelp.strip()))
-            txt = 'HELP ON %s<br><br>%s' % (what,"<br>".join(res))
+            txt = '<b>HELP ON %s</b><br><br><b><i>%s</i></b><br><br>%s' % (what, phelp.strip(), "<br>".join(res))
             ievent.reply(txt)
         else:
             res.insert(0, u'%s - %s\n' % (what, phelp.strip()))
@@ -397,7 +396,7 @@ cmnds.add('threads', handle_threads, ['USER', 'OPER'])
 examples.add('threads', 'show running threads', 'threads')
 
 def handle_statusline(bot, event):
-    event.reply("perms: %s - modfied: %s - feeds: %s - cache: %s" % (", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds), str(bot.outcache.size(event.channel))))
+    event.reply("perms: %s - modfied: %s - feeds: %s - cache: %s" % (", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds), len(event.chan.data.outcache)))
 
 cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')

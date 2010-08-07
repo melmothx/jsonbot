@@ -145,7 +145,30 @@ class EventBase(LazyDict):
     def makeresponse(self, txt, result, dot=u", ", *args, **kwargs):
         """ create a response from a string and result list. """
         return self.bot.makeresponse(txt, result, dot, *args, **kwargs)
-            
+
     def less(self, what, nr=365):
-        """ check string for overflow, if so send data to the output cache. """
-        return self.bot.less(self.channel, what, nr)
+        """ split up in parts of <nr> chars overflowing on word boundaries. """
+        
+        if type(what) == types.ListType:
+            txtlist = what
+        else:
+            what = what.strip()
+            txtlist = splittxt(what, nr)
+
+        size = 0
+
+        # send first block
+        if not txtlist:   
+            logging.debug("can't split txt from %s" % what)
+            return ["", ""]
+
+        res = txtlist[0]
+
+        # see if we need to store output in less cache
+        if len(txtlist) > 1:
+            logging.debug("addding %s lines to %s outputcache" % (len(txtlist), self.channel))
+            self.chan.data.outcache = txtlist[1:]
+            self.chan.save()
+
+        return [res, ""]
+

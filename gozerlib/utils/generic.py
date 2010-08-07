@@ -82,15 +82,16 @@ def splittxt(what, l=375):
     start = 0
     end = l
     length = len(what)
-
     for i in range(length/end+1):
-        endword = what.find(' ', end)
-
-        if endword == -1:
-            endword = length
+        starttag = what.find("</", end)
+        if starttag != -1:
+            endword = what.find('>', end) + 1
+        else:
+            endword = what.find(' ', end)
+            if endword == -1:
+                endword = length
 
         res = what[start:endword]
-
         if res:
             txtlist.append(res)
 

@@ -38,9 +38,10 @@ class Less(object):
 
         """
         if not self.data.has_key(channel):
-            self.data[channel] = Limlist(self.nr)
-        self.data[channel].insert(0, listoftxt)
+            self.data[channel] = []
+        self.data[channel].extend(listoftxt)
         self.index[channel] = 1
+        self.save()
 
     def get(self, channel, index1, index2):
         """
@@ -62,7 +63,7 @@ class Less(object):
             txt = self.data[channel][index1][index2]
         except (KeyError, IndexError):
             txt = None
-        return txt
+        return txt[:self.nr]
 
     def more(self, channel, index1=0):
         """

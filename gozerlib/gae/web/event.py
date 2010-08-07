@@ -101,7 +101,7 @@ class WebEvent(EventBase):
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
-    def write(self, txt, start=u"", end=u"<br>", raw=False):
+    def write(self, txt, start=u"", end=u"<br>", raw=True):
         """ 
             put txt onto the reponse object .. adding end string if provided. 
             output IS escaped.
@@ -127,5 +127,5 @@ class WebEvent(EventBase):
 
         (res1, res2) = self.less(result, nr=750)
         self.write(res1, raw=raw)
-        if res2:
-            self.write(res2, "<br>", "<br>", raw=raw)
+        #if res2:
+        #    self.write(res2, "<br>", "<br>", raw=raw)

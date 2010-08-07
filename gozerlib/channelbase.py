@@ -42,6 +42,8 @@ class ChannelBase(Persist):
         self.data.feeds = self.data.feeds or []
         self.data.passwords = self.data.passwords or {}
         self.data.createdfrom = whichmodule()
+        self.data.outcache = self.data.outcache or []
+        self.data.cacheindex = 0
 
     def setpass(self, type, key):
         """ set channel password based on type. """
