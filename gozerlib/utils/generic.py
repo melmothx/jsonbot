@@ -133,7 +133,7 @@ def toenc(what, encoding='utf-8'):
 
     try:
         #w = unicode(what)
-        return what.decode(encoding)
+        return what.encode(encoding)
     except UnicodeDecodeError:
         logging.debug("%s - can't encode %s to %s" % (whichmodule(2), what, encoding))
         raise
@@ -146,13 +146,15 @@ def fromenc(txt, encoding='utf-8', what=""):
 
     try:
         #if type(txt) == types.UnicodeType:
-        #    t = txt.encode(encoding)
-        #t = unicode(txt)
-        return txt.encode(encoding)
+        #    t = txt
+            #t = txt.encode(encoding)
+        #else:
+        #    t = unicode(txt)
+        return txt.decode(encoding)
     except UnicodeDecodeError:
         logging.debug("%s - can't encode %s" % (whichmodule(), encoding))
-        raise
-        #return decodeperchar(txt, encoding, what)
+        #raise
+        return decodeperchar(txt, encoding, what)
 
 def toascii(what):
     """ convert to ascii. """

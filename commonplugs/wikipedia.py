@@ -59,7 +59,7 @@ quote(redir.encode('utf-8')))
 
 def getwikidata(url):
     """ fetch wiki data """
-    result = fromenc(geturl(url))
+    result = geturl(url)
     if not result:
         return
     res = rsslist(result)
@@ -90,9 +90,8 @@ def handle_wikipedia(bot, ievent):
         ievent.reply('no result found')
         return
     txt, url = res
-    prefix = '%s ===> ' % url
-    result = splittxt(striphtml(txt).strip())
-    ievent.reply(prefix, result)
+    prefix = '%s ===> %s ' % (url, txt.strip())
+    ievent.reply(prefix)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
 examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search \
