@@ -16,6 +16,7 @@ from gozerlib.utils.rsslist import rsslist
 
 from urllib import quote
 import re
+import logging
 
 ## defines
 
@@ -67,6 +68,7 @@ def getwikidata(url):
     txt = ""
     for i in res:
         try:
+            logging.warn(unicode(i))
             txt = i['text']
             break
         except:
@@ -87,12 +89,15 @@ def handle_wikipedia(bot, ievent):
         return
 
     txt, url = res
-    txt = re.sub('\s+', ' ', txt)
-    txt = re.sub('==(.*?)==', '<h3>\g<1></h3>', txt)
     txt = re.sub('\[\[(.*?)\]\]', '<b>\g<1></b>', txt)
     txt = re.sub('{{(.*?)}}', '<i>\g<1></i>', txt)
-    txt = u'%s ===> %s' % (url, txt)
+    txt = re.sub('==(.*?)==', '<h3>\g<1></h3>', txt)
+    txt = re.sub('=(.*?)=', '<h2>\g<1></h2>', txt)
+    txt = re.sub('\*(.*?)\n', '<li>\g<1></li>', txt)
+    txt = re.sub('\n\n', '<br><br>', txt)
+    txt = re.sub('\s+', ' ', txt)
     txt = txt.replace('|', ' - ')
+    txt = u'%s ===> %s' % (url, txt)
 
     ievent.reply(txt)
 
