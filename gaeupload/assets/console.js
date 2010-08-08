@@ -1,6 +1,7 @@
       // vars
-
-      var url = "http://jsonbot.appspot.com/gadgetexec/";
+      var hostname = window.location.hostname;
+      var port = window.location.port;
+      var url = "http://" + hostname + ":" + port + "/gadgetexec/";
       //var url = "http://localhost:8080/gadgetexec/";
       var starttime = new Date();
       var interval_id;
@@ -60,6 +61,7 @@
       function consolestart() {
           doconsole();
           status("booting");
+          output(url);
           start();
           status("booting done");
       }
