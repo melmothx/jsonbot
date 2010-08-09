@@ -172,6 +172,8 @@ class Ircevent(EventBase):
     def reply(self, txt, result=[], to="", dot=", ", extend=0, raw=True):
         if self.checkqueues(result):
             return
+        if result:
+            txt = u"<b>" + txt + u"</b>"
         restxt = self.makeresponse(txt, result, dot)
         if not raw:
             restxt = strippedtxt(restxt)

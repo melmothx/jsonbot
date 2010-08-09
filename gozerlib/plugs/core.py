@@ -259,9 +259,9 @@ def handle_helpplug(bot, ievent):
                                 descr = j.func.__doc__.strip()
                                 cmndhelp = cmnds.gethelp(i)
                                 try:
-                                    cmndresult.append(u"    !%s - %s - examples: %s" % (i, descr, examples[i].example))
+                                    cmndresult.append(u"    <b>!%s</b> - <i>%s</i> - examples: %s" % (i, descr, examples[i].example))
                                 except KeyError:
-                                    cmndresult.append(u"    !%s - %s - no examples" % (i, descr))
+                                    cmndresult.append(u"    <b>!%s</b> - <i>%s</i> - no examples" % (i, descr))
 
                             except AttributeError:
                                 cmndresult.append(i)
@@ -270,18 +270,18 @@ def handle_helpplug(bot, ievent):
         res = []
         for r in cmndresult:
             if bot.type in ['web', ]:
-                res.append("<i>%s</i>" % cgi.escape(r))
+                res.append("%s<br>" % r)
             else:
                 res.append(r)
 
         res.sort()
         what = what.upper()
-        if bot.type in ['web', ]:
-            txt = '<b>HELP ON %s</b><br><br><b><i>%s</i></b><br><br>%s' % (what, phelp.strip(), "<br>".join(res))
-            ievent.reply(txt)
-        else:
-            res.insert(0, u'%s - %s\n' % (what, phelp.strip()))
-            ievent.reply('HELP ON %s\n\n' % what, res, dot="\n", raw=True)
+        #if bot.type in ['web', ]:
+        #    txt = '<b>HELP ON %s</b><br><br><b><i>%s</i></b><br><br>%s' % (what, phelp.strip(), "<br>".join(res))
+        #    ievent.reply(txt)
+        #else:
+        res.insert(0, u'%s - %s\n' % (what, phelp.strip()))
+        ievent.reply('HELP ON %s\n\n' % what, res, dot="\n")
     else:
         ievent.reply('no commands available')
 
@@ -359,7 +359,7 @@ def handle_loglevel(bot, event):
     event.done()
 
 cmnds.add("loglevel", handle_loglevel, "OPER")
-examples.add("logleve;", "set loglevel ot on of debug, info, warning or error", "loglevel debug")
+examples.add("loglevel", "set loglevel ot on of debug, info, warning or error", "loglevel debug")
 
 def handle_botdata(bot, event):
     result = bot.dump()

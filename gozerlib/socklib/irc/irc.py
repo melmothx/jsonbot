@@ -503,8 +503,8 @@ realname))
                 raise
             return
         # normal
-        what = what.replace("<b>", "\002")
-        what = what.replace("</b>", "\002")
+        what = self.normalize(what)
+
         if how == 'notice':
             self.notice(printto, what)
         elif how == 'ctcp':
@@ -626,6 +626,13 @@ realname))
 
         for i in self.state['joinedchannels']:
             self.say(i, txt, speed=-1)
+
+    def normalize(self, what):
+        what = what.replace("<b>", "\002")
+        what = what.replace("</b>", "\002")
+        what = what.replace("&lt;b&gt;", "\002")
+        what = what.replace("&lt;/b&gt;", "\002")
+        return what
 
     def save(self):
 
