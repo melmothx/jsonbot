@@ -167,6 +167,7 @@ gn_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
 gn_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
 gn_callbacks.add('CONSOLE', watchcallback, prewatchcallback)
 gn_callbacks.add('WEB', watchcallback, prewatchcallback)
+gn_callbacks.add('GADGET', watchcallback, prewatchcallback)
 
 ## commands
 
