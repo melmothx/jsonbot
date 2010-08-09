@@ -503,6 +503,8 @@ realname))
                 raise
             return
         # normal
+        what = what.replace("<b>", "\002")
+        what = what.replace("</b>", "\002")
         if how == 'notice':
             self.notice(printto, what)
         elif how == 'ctcp':

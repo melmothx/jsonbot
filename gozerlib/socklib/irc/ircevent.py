@@ -9,7 +9,7 @@ __copyright__ = 'this file is in the public domain'
 
 ## gozerbot imports
 
-from gozerlib.utils.generic import toenc, fromenc
+from gozerlib.utils.generic import toenc, fromenc, strippedtxt
 from gozerlib.socklib.utils.generic import fix_format, stripident, makeargrest
 from gozerlib.eventbase import EventBase
 from gozerlib.config import cfg as config
@@ -169,10 +169,12 @@ class Ircevent(EventBase):
         makeargrest(self)
         return self
 
-    def reply(self, txt, result=[], to="", dot=", ", extend=0):
+    def reply(self, txt, result=[], to="", dot=", ", extend=0, raw=True):
         if self.checkqueues(result):
             return
         restxt = self.makeresponse(txt, result, dot)
+        if not raw:
+            restxt = strippedtxt(restxt)
         if self.isdcc:
             self.sock.send(restxt)
             self.sock.send("\n")
