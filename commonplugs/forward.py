@@ -81,6 +81,7 @@ first_callbacks.add('QUIT', forwardoutcb, forwardoutpre)
 first_callbacks.add('NICK', forwardoutcb, forwardoutpre)
 first_callbacks.add('CONSOLE', forwardoutcb, forwardoutpre)
 first_callbacks.add('WEB', forwardoutcb, forwardoutpre)
+first_callbacks.add('GADGET', forwardoutcb, forwardoutpre)
 first_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
