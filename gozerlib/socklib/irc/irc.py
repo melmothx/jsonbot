@@ -492,6 +492,8 @@ realname))
 
     def out(self, printto, what, how):
         # check for socket
+        # normal
+        what = self.normalize(what)
 
         if 'socket' in repr(printto): 
             try:
@@ -502,8 +504,6 @@ realname))
                     return
                 raise
             return
-        # normal
-        what = self.normalize(what)
 
         if how == 'notice':
             self.notice(printto, what)

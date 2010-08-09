@@ -178,6 +178,7 @@ class Ircevent(EventBase):
         if not raw:
             restxt = strippedtxt(restxt)
         if self.isdcc:
+            restxt = self.bot.normalize(restxt)
             self.sock.send(restxt)
             self.sock.send("\n")
             return
