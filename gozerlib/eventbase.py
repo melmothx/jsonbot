@@ -47,6 +47,7 @@ class EventBase(LazyDict):
         self.isremote = False
         self.iscmnd = False
         self.ttl = 1
+        self.how = "normal"
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
@@ -172,3 +173,21 @@ class EventBase(LazyDict):
 
         return [res, ""]
 
+    def iscmnd(self):
+        cc = "!"
+        if self.chan:
+            cc = self.chan.data.cc
+        if not cc:
+            cc = "!"
+        if self.type == "GADGET":
+            cc += "!"
+        logging.debug("cc for %s is %s (%s)" % (self.title or self.channel or event.userhost, cc, self.bot.nick))
+        matchnick = unicode(self.bot.nick + u":")
+        #logging.debug("dispatch - %s" % event.txt)        
+
+        if self.txt and self.txt[0] in cc:
+            return cc
+        elif self.txt.startswith(matchnick):
+            return matchnick
+
+        return False

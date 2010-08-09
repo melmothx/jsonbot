@@ -44,7 +44,7 @@ import types
 import os
 import logging
 
-logging.warn(getversion('EXEC'))
+logging.warn(getversion('GADGET'))
 
 boot()
 
@@ -68,7 +68,7 @@ class HB_Handler(webapp.RequestHandler):
          #self.response.headers.add_header('Content-Length', '0') 
          self.response.out.write("Allow: *")
          self.response.out.write('Access-Control-Allow-Origin: *') 
-         logging.warn("gadgetexec - optins response send to %s - %s" % (self.request.remote_addr, str(self.request.headers)))
+         logging.warn("gadgetexec - options response send to %s - %s" % (self.request.remote_addr, str(self.request.headers)))
 
     def post(self):
 
@@ -80,10 +80,8 @@ class HB_Handler(webapp.RequestHandler):
             event = WebEvent(bot=bot).parse(self.response, self.request)
             #logging.debug(dir(self.request))
             #logging.debug(self.request.params)
-            if event.txt and event.txt[0] in event.chan.data.cc:
-                event.cbtype = "GADGET"
-            else:
-                event.cbtype = "WEB"
+            event.cbtype = "GADGET"
+            event.type = "GADGET"
             logging.debug(event.dump())
             self.response.headers.add_header('Access-Control-Allow-Origin', '*')
 

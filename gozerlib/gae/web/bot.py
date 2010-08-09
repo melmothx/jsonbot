@@ -25,7 +25,7 @@ class WebBot(BotBase):
             self.cfg['type'] = u'web'
         self.isgae = True
         self.type = u"web"
-
+        
     def say(self, channel, txt, *args, **kwargs):
         """ saying on a webbot add it to the output cache. """
         self.saynocb(channel, txt, *args, **kwargs)        

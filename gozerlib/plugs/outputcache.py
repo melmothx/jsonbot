@@ -40,7 +40,7 @@ def handle_outputcache(bot, event):
         for result in res[::-1]:
             event.reply(result)
 
-cmnds.add('outputcache', handle_outputcache, 'USER')
+cmnds.add('outputcache', handle_outputcache, ['OPER', 'USER', 'GUEST'])
 examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache')
 
 def handle_outputcacheclear(bot, event):

@@ -43,6 +43,24 @@ class WebEvent(EventBase):
         """ parse request/response into a WebEvent. """
         #logging.warn('%s %s' % (dir(request), dir(response)))
         #logging.warn(str(request.environ))
+        how = request.get('how')
+        if not how:
+            try:
+                how = request.params.getone('how')
+            except KeyError:
+                how = "normal"
+            except Exception, ex:
+                how = "normal"
+                handle_exception()
+            if not how:
+                try:
+                    how = request.GET['how']
+                except KeyError:
+                    pass
+        logging.warn("web - setting how to %s" % how)
+        self.how = how
+        if self.how == "undefined":
+            self.how = "normal"
         input = request.get('content') or request.get('cmnd')
         if not input:
             try:

@@ -36,43 +36,32 @@ if True:
         bot.status = "dispatch"
         bot.curevent = event
         go = False
-        cc = "!"
-
-        if event.type == "GADGET":
-            cc = "!"
-        elif event.chan:
-            cc = event.chan.data.cc
-        if not cc:
-            cc = "!"
-
-        logging.debug("cc for %s is %s (%s)" % (event.title or event.channel or event.userhost, cc, bot.nick))
-        matchnick = unicode(bot.nick + u":")
-        #logging.debug("dispatch - %s" % event.txt)        
-
-        if event.txt and event.txt[0] in cc:
-            if event.txt[0] in cc:
-                event.txt = event.txt[1:]
-            if event.txt:
-                event.usercmnd = event.txt.split()[0]
-            else:
-                event.usercmnd = None
-            event.makeargs()
-            go = True
-        elif event.txt.startswith(matchnick):
-            event.txt = event.txt[len(matchnick) + 1:]
-            if event.txt:
-                event.usercmnd = event.txt.split()[0]
-            else:
-                event.usercmnd = None
-            event.makeargs()
-            go = True
 
         try:
-            if go:
-                event.finish()
+            cc = event.iscmnd()
+            if cc:
+                if event.txt[0] in cc:
+                    event.txt = event.txt[1:]
+                    if event.txt:
+                        event.usercmnd = event.txt.split()[0]
+                    else:
+                        event.usercmnd = None
+                    event.makeargs()
+                    event.finish()
+                    go = True
+                elif event.txt.startswith(cc):
+                    event.txt = event.txt[len(cc) + 1:]
+                    if event.txt:
+                        event.usercmnd = event.txt.split()[0]
+                    else:
+                        event.usercmnd = None
+                    event.makeargs()
+                    event.finish()
+                    go = True
+
                 result = bot.plugs.dispatch(bot, event)
             else:
-                logging.debug("dispatch - no go for %s" % event.userhost)
+                logging.debug("dispatch - no go for %s (cc is %s)" % (event.userhost, cc))
                 result =  []
         except NoSuchCommand:
             logging.info("no such command: %s" % event.usercmnd)

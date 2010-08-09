@@ -37,7 +37,7 @@
       // mainloop
 
       function loop() {
-          doCmnd("!outputcache", dobottom); 
+          doCmnd("!outputcache", dobottom, "background"); 
           lastpolled = new Date();
           //var lpdate = lastpolled.getTime();
           status("last polled at " + lastpolled.toUTCString());
@@ -49,7 +49,7 @@
       function start() {
           setCookie();
           setTimeout("update();", 150);
-          setTimeout("doCmnd('!help', response);", 3000);
+          setTimeout("doCmnd('!help', response, 'background');", 3000);
           setInterval("loop();", 300000);
       }
 
@@ -68,14 +68,14 @@
 
       function update(what) {
         if (what=="feeds") {
-            doCmnd('!outputcache', dobottom);
-            doCmnd('!statusline', doinfo);
-            doCmnd('!rss-feeds', dotop);
+            doCmnd('!outputcache', dobottom, "background");
+            doCmnd('!statusline', doinfo), "background";
+            doCmnd('!rss-feeds', dotop, "background");
         }
         else {
-            doCmnd('!outputcache', dobottom);
-            doCmnd('!statusline', doinfo);
-            doCmnd('!uptime', dotop);
+            doCmnd('!outputcache', dobottom, "background");
+            doCmnd('!statusline', doinfo, "background");
+            doCmnd('!uptime', dotop, "background");
         }
       }
 
@@ -119,7 +119,7 @@
         {
            cmnd = "!rss-register " + form.name.value + " " + form.url.value;           
            status("sending command ");
-           doCmnd(cmnd, response);
+           doCmnd(cmnd, response, "background");
            setTimeout("update();", 500);
            return false;
         }
@@ -287,7 +287,8 @@
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
           request.setRequestHeader("Cache-Control", "no-cache");
-          parameters="content="+encodeURIComponent(cmnd);
+          parameters="content="+encodeURIComponent(cmnd) + "&how=" + encodeURIComponent(how);
+
           request.send(parameters);
           return true;
       }
