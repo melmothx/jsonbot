@@ -41,6 +41,7 @@ import Queue
 import random
 import logging
 import types
+import re
 
 ## locks
 
@@ -628,6 +629,7 @@ realname))
             self.say(i, txt, speed=-1)
 
     def normalize(self, what):
+        what = re.sub("\s+", " ", what)
         what = what.replace("<b>", "\002")
         what = what.replace("</b>", "\002")
         what = what.replace("&lt;b&gt;", "\002")

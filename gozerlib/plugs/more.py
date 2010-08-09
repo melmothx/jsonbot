@@ -9,15 +9,21 @@ from gozerlib.examples import examples
 
 def handle_more(bot, ievent):
     """ pop message from the output cache. """
-    txt = ievent.chan.data.outcache.pop(0)
- 
+    try:
+        txt = ievent.chan.data.outcache.pop(0)
+    except IndexError:
+        txt = None 
     if not txt:
         ievent.reply('no more data available for %s' % ievent.channel)
         return
+
+    if ievent.isgae:
+        ievent.chan.save()
     
-    ievent.chan.save()
-    
-    ievent.write(txt, raw=True)
+    if ievent.bottype == "web":
+        ievent.write(txt, raw=True)
+    else:
+        bot.out(ievent.channel, txt, 'msg')
 
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('more', 'return txt from output cache', 'more')
