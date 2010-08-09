@@ -117,9 +117,12 @@ class WebEvent(EventBase):
         """
         #logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
         self.response.out.write(txt + end)
-        self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
     def write(self, txt, start=u"", end=u"<br>", raw=False):
+        self.writenocb(txt, start, end, raw)
+        self.bot.outmonitor(self.userhost, self.channel, txt, self)
+
+    def writenocb(self, txt, start=u"", end=u"<br>", raw=False):
         """ 
             put txt onto the reponse object .. adding end string if provided. 
             output IS escaped.

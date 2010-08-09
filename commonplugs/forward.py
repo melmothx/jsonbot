@@ -17,7 +17,7 @@ from gozerlib.fleet import fleet
 from gozerlib.config import cfg
 from gozerlib.container import Container
 from gozerlib.errors import NoProperDigest
-
+from gozerlib.utils.exception import handle_exception
 ## basic imports
 
 import logging
@@ -50,7 +50,8 @@ cpy = copy.deepcopy
 def forwardoutpre(bot, event):
     logging.debug("forward - pre - %s" % event.channel)
     if event.channel in forward.data.channels and not event.isremote:
-        return True
+        if not event.how == "background":
+            return True
 
 def forwardoutcb(bot, event):
     e = cpy(event)
@@ -85,7 +86,7 @@ first_callbacks.add('GADGET', forwardoutcb, forwardoutpre)
 first_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 
 def forwardinpre(bot, event):
-    if event.isremote:
+    if event.forwarded:
         return True
 
 def forwardincb(bot, event):
@@ -109,6 +110,7 @@ def forwardincb(bot, event):
             raise NoProperDigest()
 
     except TypeError:
+        handle_exception()
         logging.error("forward - can't load payload - %s" % container.payload)
         return
     #logging.debug(u"forward - incoming - %s" % remoteevent.dump())

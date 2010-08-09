@@ -17,7 +17,7 @@ import logging
 def handle_echo(bot, event):
     logging.warn("echo - cbtype %s" % event.cbtype) 
     if event.how != "background" and not event.iscmnd():
-        bot.say(event.userhost, u"[%s] %s" % (event.nick, event.txt))
+        bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
     
 cmnds.add("echo", handle_echo, ['USER', 'OPER', 'GUEST'])
 examples.add("echo", "echo input", "echo yoooo dudes")

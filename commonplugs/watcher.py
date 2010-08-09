@@ -123,7 +123,7 @@ def writeout(botname, type, channel, txt):
 def prewatchcallback(bot, event):
     """ watch callback precondition. """
     #logging.debug("watcher - pre - %s - %s - %s" % (event.channel, event.userhost, event.txt))
-    return watched.check(event.channel) and event.txt
+    return watched.check(event.channel) and event.txt and not event.how == "background"
 
 def watchcallback(bot, event):
     """ the watcher callback, see if channels are followed and if so send data. """
