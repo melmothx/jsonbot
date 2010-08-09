@@ -35,15 +35,15 @@ def dummy(a, b=None):
 ## commands
 
 def handle_testplugs(bot, event):
-    if bot.cfg['type'] == 'irc' and not event.isdcc:
-        event.reply('use this command in a /dcc chat with the bot')
-        return
-    if bot.cfg['type'] == 'web':
-        event.reply("don't use this command on a web bot")
-        return
-    if bot.cfg['type'] == 'wave':
-        event.reply("don't use this command on a wave bot")
-        return
+    #if bot.cfg['type'] == 'irc' and not event.isdcc:
+    #    event.reply('use this command in a /dcc chat with the bot')
+    #    return
+    #if bot.cfg['type'] == 'web':
+    #    event.reply("don't use this command on a web bot")
+    #    return
+    #if bot.cfg['type'] == 'wave':
+    #    event.reply("don't use this command on a wave bot")
+    #    return
     match = ""
     try:
         loop = int(event.args[0])

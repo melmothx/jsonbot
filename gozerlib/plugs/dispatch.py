@@ -38,7 +38,9 @@ if True:
         go = False
         cc = "!"
 
-        if event.chan:
+        if event.type == "GADGET":
+            cc = "!"
+        elif event.chan:
             cc = event.chan.data.cc
         if not cc:
             cc = "!"
@@ -47,7 +49,7 @@ if True:
         matchnick = unicode(bot.nick + u":")
         #logging.debug("dispatch - %s" % event.txt)        
 
-        if event.txt and event.txt[0] in cc or event.type == "GADGET":
+        if event.txt and event.txt[0] in cc:
             if event.txt[0] in cc:
                 event.txt = event.txt[1:]
             if event.txt:
@@ -85,3 +87,4 @@ if True:
     last_callbacks.add('WEB', dispatch, predispatch)
     last_callbacks.add('CONSOLE', dispatch, predispatch)
     last_callbacks.add('DCC', dispatch, predispatch)
+    last_callbacks.add('GADGET', dispatch, predispatch)

@@ -99,7 +99,7 @@ def handle_wikipedia(bot, ievent):
     txt = txt.replace('|', ' - ')
     txt = u'%s ===> %s' % (url, txt)
 
-    ievent.reply(txt)
+    ievent.reply(txt, raw=True)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
 examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search \

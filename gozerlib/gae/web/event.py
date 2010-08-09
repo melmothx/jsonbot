@@ -101,7 +101,7 @@ class WebEvent(EventBase):
         self.response.out.write(txt + end)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
-    def write(self, txt, start=u"", end=u"<br>", raw=True):
+    def write(self, txt, start=u"", end=u"<br>", raw=False):
         """ 
             put txt onto the reponse object .. adding end string if provided. 
             output IS escaped.
@@ -115,7 +115,7 @@ class WebEvent(EventBase):
                  txt = re.sub(item, '<a href="%s" onclick="window.open(\'%s\'); return false;">%s</a>' % (item, item, item), txt)
         self._raw(start + txt + end)
 
-    def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=True, *args, **kwargs):
+    def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):
         """ send reply to the web user. """
 
         if self.checkqueues(resultlist):

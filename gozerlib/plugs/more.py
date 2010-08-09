@@ -16,7 +16,8 @@ def handle_more(bot, ievent):
         return
     
     ievent.chan.save()
-    ievent.write(txt)
+    
+    ievent.write(txt, raw=True)
 
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('more', 'return txt from output cache', 'more')

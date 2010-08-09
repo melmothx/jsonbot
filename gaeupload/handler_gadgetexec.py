@@ -44,7 +44,7 @@ import types
 import os
 import logging
 
-logging.warn(getversion('GADGETEXEC'))
+logging.warn(getversion('EXEC'))
 
 boot()
 
@@ -80,7 +80,10 @@ class HB_Handler(webapp.RequestHandler):
             event = WebEvent(bot=bot).parse(self.response, self.request)
             #logging.debug(dir(self.request))
             #logging.debug(self.request.params)
-            event.type = "GADGET"
+            if event.txt and event.txt[0] in event.chan.data.cc:
+                event.cbtype = "GADGET"
+            else:
+                event.cbtype = "WEB"
             logging.debug(event.dump())
             self.response.headers.add_header('Access-Control-Allow-Origin', '*')
 
