@@ -191,3 +191,4 @@ class EventBase(LazyDict):
             return matchnick
 
         return False
+

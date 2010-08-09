@@ -130,6 +130,7 @@ class WebEvent(EventBase):
         """
         if not raw:
             txt = cgi.escape(txt)
+            txt = self.normalize(txt)
         if "http://" in txt:
             for item in re_url_match.findall(txt):
                  logging.debug("web - raw - found url - %s" % item)
@@ -142,7 +143,7 @@ class WebEvent(EventBase):
         if self.checkqueues(resultlist):
             return
 
-        if raw and resultlist:
+        if resultlist:
             txt = u"<b>" + txt + u"</b>"
         result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
 
@@ -150,3 +151,8 @@ class WebEvent(EventBase):
         self.write(res1, raw=raw)
         #if res2:
         #    self.write(res2, "<br>", "<br>", raw=raw)
+
+    def normalize(self, txt):
+        txt = txt.replace("&lt;b&gt;", "<b>")
+        txt = txt.replace("&lt;/b&gt;", "</b>")
+        return txt
