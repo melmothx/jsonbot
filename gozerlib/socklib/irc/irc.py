@@ -104,6 +104,10 @@ class Irc(BotBase):
         self.encoding = 'utf-8'
         self.blocking = 1
         self.lastoutput = 0
+        if self.cfg and self.cfg.ipv6:
+            self.ipv6 = 1
+        else:
+            self.ipv6 = 0
 
     def __del__(self):
         self.exit()
@@ -163,7 +167,7 @@ class Irc(BotBase):
         #self.connectlock.acquire()
 
         # create socket
-        if self.ipv6:
+        if self.cfg.ipv6 or self.ipv6:
             self.oldsock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
             self.ipv6 = 1
         else:

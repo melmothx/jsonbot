@@ -66,6 +66,8 @@ dest='command', help="give a command to execute")
 dest='type', help="define type of the bot")
     parser.add_option('-z', '--forward', action='store_true', default=False,
 dest='forward', help="enable forwarding bot")
+    parser.add_option('-6', '--ipv6', action='store_true', default=False,
+dest='ipv6', help="enable ipv6 bot")
 
     opts, args = parser.parse_args()
     opts.args = args
@@ -130,5 +132,8 @@ def makeconfig(type, opts, botname=None):
         cfg.loglevel = opts.loglevel
     else:
         cfg.loglevel = cfg.loglevel or "warning"
+
+    if opts.ipv6:
+        cfg.ipv6 = opts.ipv6
 
     return cfg
