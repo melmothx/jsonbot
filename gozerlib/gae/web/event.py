@@ -152,11 +152,3 @@ class WebEvent(EventBase):
         #if res2:
         #    self.write(res2, "<br>", "<br>", raw=raw)
 
-    def normalize(self, txt):
-        txt = txt.replace("&lt;br&gt;", "<br>")
-        txt = txt.replace("&lt;i&gt;", "<i>")
-        txt = txt.replace("&lt;/i&gt;", "</i>")
-        txt = txt.replace("&lt;b&gt;", "<b>")
-        txt = txt.replace("&lt;/b&gt;", "</b>")
-        txt = txt.replace("\n", "<br>")
-        return txt

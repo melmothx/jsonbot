@@ -14,6 +14,7 @@ from gozerlib.errors import NoInput
 
 import getpass
 import logging
+import re
 
 ## classes
 
@@ -37,6 +38,7 @@ class ConsoleEvent(EventBase):
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
+        txt = self.normalize(txt)
         self.console.write(u"=> " + unicode(txt) + "\n")
         
     def parse(self, bot, input, console, *args, **kwargs):
@@ -55,3 +57,11 @@ class ConsoleEvent(EventBase):
         self.chan = ChannelBase(self.channel)
         self.cbtype = self.cmnd = unicode("CONSOLE")
         self.makeargs()
+
+    def normalize(self, what):
+        what = re.sub("\s+", " ", what)
+        what = what.replace("<b>", self.bot.BOLD)
+        what = what.replace("</b>", self.bot.ENDC)
+        what = what.replace("&lt;b&gt;", self.bot.BOLD)
+        what = what.replace("&lt;/b&gt;", self.bot.ENDC)
+        return what

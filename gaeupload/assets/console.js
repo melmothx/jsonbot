@@ -47,8 +47,8 @@
 
       function start() {
           setCookie();
-          setTimeout("update();", 150);
-          setTimeout("doCmnd('!help', response, 'background');", 3000);
+          setTimeout("update();", 10);
+          setTimeout("doCmnd('!help', response, 'background');", 5);
           setInterval("loop();", 300000);
       }
 

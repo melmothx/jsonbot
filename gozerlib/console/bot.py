@@ -57,6 +57,14 @@ console = HistoryConsole()
 
 class ConsoleBot(BotBase):
 
+    ERASE_LINE = '\033[2K'
+    BOLD='\033[1m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    GREEN = '\033[92m'
+    ENDC = '\033[0m'
+
+
     def __init__(self, cfg=None, users=None, plugs=None, botname=None, *args, **kwargs):
         BotBase.__init__(self, cfg, users, plugs, botname, *args, **kwargs)
         self.type = "console"

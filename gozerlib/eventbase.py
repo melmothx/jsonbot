@@ -82,6 +82,8 @@ class EventBase(LazyDict):
         self.update(eventin)
         if eventin.has_key("sock"):
             self.sock = eventin['sock']
+        if eventin.has_key("chan"):
+            self.sock = eventin['chan']
         
         if eventin.has_key('queues'):
             if eventin['queues']:
@@ -192,3 +194,11 @@ class EventBase(LazyDict):
 
         return False
 
+    def normalize(self, txt):
+        txt = txt.replace("&lt;br&gt;", "<br>")
+        txt = txt.replace("&lt;i&gt;", "<i>")
+        txt = txt.replace("&lt;/i&gt;", "</i>")
+        txt = txt.replace("&lt;b&gt;", "<b>")
+        txt = txt.replace("&lt;/b&gt;", "</b>")
+        txt = txt.replace("\n", "<br>")
+        return txt
