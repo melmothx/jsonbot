@@ -59,7 +59,7 @@ class TodoList(UserState):
         return len(self.data.list)
 
     def delete(self, indexnr):
-        del self.data.list[indexnr]
+        del self.data.list[indexnr-1]
         self.save()
         return self
 
@@ -97,10 +97,7 @@ given"""
     if len(ievent.args) > 0:
         handle_todo2(bot, ievent)
         return
-    name = bot.users.getname(ievent.auth)
-    if not name:
-        ievent.reply("can't find username for %s" % ievent.auth)
-        return
+    name = ievent.channel
     try:
         todoos = TodoList(name).data.list
     except KeyError:
@@ -115,7 +112,7 @@ def handle_todo2(bot, ievent):
         return
     else:
         what = ievent.rest
-    name = bot.users.getname(ievent.auth)
+    name = ievent.channel
     if not name:
         ievent.reply("can't find username for %s" % ievent.auth)
         return
@@ -146,16 +143,13 @@ def handle_tododone(bot, ievent):
     except ValueError:
         ievent.reply('%s is not an integer' % i)
         return
-    name = bot.users.getname(ievent.auth)
-    if not name:
-        ievent.reply("can't find username for %s" % ievent.auth)
-        return
+    name = ievent.channel
     nrdone = 0
     failed = []
     todo = TodoList(name)
     for i in nrs[::-1]:
         try:
-            del todo.data.list[i]
+            del todo.data.list[i-1]
             nrdone += 1
         except IndexError:
             continue
@@ -177,85 +171,9 @@ cmnds.add('todo-done', handle_tododone, ['USER', 'GUEST'])
 examples.add('todo-done', 'todo-done <listofnrs> .. remove items from \
 todo list', '1) todo-done 1 2) todo-done 3 5 8')
 
-def handle_settodo(bot, ievent):
-    """ todo-set <name> <txt> .. add a todo to another user's todo list"""
-    try:
-        who = ievent.args[0]
-        what = ' '.join(ievent.args[1:])
-    except IndexError:
-        ievent.missing('<nick> <what>')
-        return
-    if not what:
-        ievent.missing('<nick> <what>')
-        return
-    userhost = getwho(bot, who)
-    if not userhost:
-        ievent.reply("can't find userhost for %s" % who)
-        return
-    whouser = bot.users.getname(userhost)
-    if not whouser:
-        ievent.reply("can't find user for %s" % userhost)
-        return
-    name = bot.users.getname(ievent.userhost)
-    if not name:
-        ievent.reply("can't find username for %s" % ievent.userhost)
-        return
-    if not bot.users.permitted(userhost, name, 'todo'):
-        ievent.reply("%s doesn't permit todo sharing for %s " % \
-(who, name))
-        return
-    what = "%s: %s" % (ievent.nick, what)
-    ttime = strtotime(what)
-    nr = 0
-    todo = TodoList(name)
-    if not ttime  == None:
-        ievent.reply('time detected ' + time.ctime(ttime))
-        what = striptime(what)
-        nr = todo.add(what, ttime)
-    else:
-        nr = todo.add(what)
-    ievent.reply('todo item %s added' % nr)
-
-#cmnds.add('todo-set', handle_settodo, 'USER')
-#examples.add('todo-set', 'todo-set <nick> <txt> .. set todo item of \
-#<nick>', 'todo-set dunker bot proggen')
-
-def handle_gettodo(bot, ievent):
-    """ todo-get <nick> .. get todo of another user """
-    try:
-        who = ievent.args[0]
-    except IndexError:
-        ievent.missing('<nick>')
-        return
-    userhost = getwho(bot, who)
-    if not userhost:
-        ievent.reply("can't find userhost for %s" % who)
-        return
-    whouser = bot.users.getname(userhost)
-    if not whouser:
-        ievent.reply("can't find user for %s" % userhost)
-        return
-    name = bot.users.getname(ievent.userhost)
-    if not name:
-        ievent.reply("can't find username for %s" % ievent.userhost)
-        return
-    if not bot.users.permitted(userhost, name, 'todo'):
-        ievent.reply("%s doesn't permit todo sharing for %s " % (who, name))
-        return
-    todo = TodoList(name)
-    todoos = todo.get(whouser)
-    saytodo(bot, ievent, todoos)
-
-#cmnds.add('todo-get', handle_gettodo, ['USER', 'GUEST'])
-#examples.add('todo-get', 'todo-get <nick> .. get the todo list of \
-#<nick>', 'todo-get dunker')
-
 def handle_todotime(bot, ievent):
     """ todo-time .. show time related todoos """
-    name = bot.users.getname(ievent.auth)
-    if not name:
-        ievent.reply("can't find username for %s" % ievent.auth)
-        return
+    name = ievent.channel
     todo = TodoList(name)
     todoos = todo.timetodo()
     saytodo(bot, ievent, todoos)
@@ -266,7 +184,7 @@ examples.add('todo-time', 'todo-time .. show todo items with time fields', \
 
 def handle_todoweek(bot, ievent):
     """ todo-week .. show time related todo items for this week """
-    name = bot.users.getname(ievent.auth)
+    name = ievent.channel
     if not name:
         ievent.reply("can't find username for %s" % ievent.auth)
         return
@@ -279,10 +197,7 @@ examples.add('todo-week', 'todo-week .. todo items for this week', 'todo-week')
 
 def handle_today(bot, ievent):
     """ todo-today .. show time related todo items for today """
-    name = bot.users.getname(ievent.auth)
-    if not name:
-        ievent.reply("can't find username for %s" % ievent.auth)
-        return
+    name = ievent.channel
     todo = TodoList(name)
     now = time.time()
     todoos = todo.withintime(now, now+3600*24)
@@ -293,10 +208,7 @@ examples.add('todo-today', 'todo-today .. todo items for today', 'todo-today')
 
 def handle_tomorrow(bot, ievent):
     """ todo-tomorrow .. show time related todo items for tomorrow """
-    username = bot.users.getname(ievent.auth)
-    if not username:
-        ievent.reply("can't find username for %s" % ievent.auth)
-        return
+    username = ievent.channel
     todo = TodoList(username)
     if ievent.rest:
         what = ievent.rest
@@ -328,13 +240,10 @@ def handle_setpriority(bot, ievent):
     except ValueError:
         try:
             (itemnr, prio) = ievent.args
-            who = bot.users.getname(ievent.auth)
+            who = ievent.channel
         except ValueError:
             ievent.missing('[<channe|namel>] <itemnr> <priority>')
             return
-    if not who:
-        ievent.reply("can't find username for %s" % ievent.auth)
-        return
     try:
         itemnr = int(itemnr)
         prio = int(prio)
@@ -343,7 +252,7 @@ def handle_setpriority(bot, ievent):
         return
     todo = TodoList(who)
     try:
-        todo.data.list[itemnr].priority = prio
+        todo.data.list[itemnr-1].priority = prio
         todo.save()
         ievent.reply('priority set')
     except IndexError:
@@ -367,13 +276,10 @@ def handle_todosettime(bot, ievent):
     except ValueError:
         try:
             (itemnr, ) = txt.split()
-            who = bot.users.getname(ievent.auth)
+            who = ievent.channel
         except ValueError:
             ievent.missing('[<channel|name>] <itemnr> <timestring>')
             return
-    if not who:
-        ievent.reply("can't find username for %s" % ievent.auth)
-        return
     try:
         itemnr = int(itemnr)
     except ValueError:
@@ -381,7 +287,7 @@ def handle_todosettime(bot, ievent):
         return
     todo = TodoList(who)
     try:
-        todo.data.list[itemnr].time = ttime
+        todo.data.list[itemnr-1].time = ttime
         todo.save()
         ievent.reply('time of todo %s set to %s' % (itemnr, time.ctime(ttime)))
     except IndexError:
@@ -400,7 +306,7 @@ def handle_getpriority(bot, ievent):
     except ValueError:
         try:
             itemnr = ievent.args[0]
-            who = bot.users.getname(ievent.auth)
+            who = ievent.channel
         except IndexError:
             ievent.missing('[<channel|name>] <itemnr>')
             return
@@ -432,7 +338,9 @@ def saytodo(bot, ievent, todoos):
         return
     result = []
     now = time.time()
-    counter = 0
+    counter = 1
+    todoos.sort(lambda a, b: cmp(b.priority,a.priority))
+
     for i in todoos:
         res = ""
         res += "%s) " % counter
