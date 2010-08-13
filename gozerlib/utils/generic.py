@@ -60,14 +60,10 @@ def jsonstring(s):
 
 def getwho(bot, who):
     """ get userhost from bots userhost cache """
-    try:
-        result = bot.userhosts[who]
-        if bot.cfg['stripident']:
-            logging.debug('getwho - removed ident from %s' % result)
-            result = stripident(result)
-        return result
-    except KeyError:
-        return None
+    who = who.lower()
+    for user in bot.userhosts:
+        if user.lower() == who:
+            return bot.userhosts[user]
 
 def getversion(txt=""):
 

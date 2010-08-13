@@ -18,21 +18,27 @@ from gozerlib.persist import PlugPersist
 
 import time
 import os
+import logging
+
+## defines
 
 idle = PlugPersist('idle.data')
 if not idle.data:
     idle.data = {}
 
+## callbacks
+
 def preidle(bot, ievent):
     """ idle precondition aka check if it is not a command """
     if ievent.iscmnd():
         return 0
-    elif ievent.channel in idle.data:
+    else:
         return 1
         
 def idlecb(bot, ievent):
     """ idle PRIVMSG callback .. set time for channel and nick """
     ttime = time.time()
+    idle.data[ievent.userhost] = ttime
     idle.data[ievent.channel] = ttime
     idle.save()
 
@@ -40,6 +46,8 @@ callbacks.add('PRIVMSG', idlecb, preidle)
 callbacks.add('MESSAGE', idlecb, preidle)
 callbacks.add('WEB', idlecb, preidle)
 callbacks.add('CONSOLE', idlecb, preidle)
+
+## commands
 
 def handle_idle(bot, ievent):
     """ idle [<nick>] .. show how idle an channel/user has been """
@@ -52,6 +60,7 @@ def handle_idle(bot, ievent):
     if not userhost:
         ievent.reply("can't get userhost of %s" % who)
         return
+    logging.warn("idle - userhost is %s" % userhost)
     try:
         elapsed = elapsedstring(time.time() - idle.data[userhost])
     except KeyError:
