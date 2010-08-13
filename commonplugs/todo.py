@@ -355,4 +355,4 @@ def saytodo(bot, ievent, todoos):
             res += "%s " % i.txt
         result.append(res.strip())
     if result:
-        ievent.reply("todo: ", result, dot=" ")
+        ievent.reply("todo for %s: " % ievent.channel, result, dot=" ")
