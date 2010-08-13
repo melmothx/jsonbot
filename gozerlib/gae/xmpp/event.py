@@ -23,6 +23,9 @@ from gozerlib.gae.utils.auth import checkuser
 
 import cgi
 import logging
+import re
+
+## classes
 
 class XMPPEvent(EventBase):
 
@@ -39,10 +42,19 @@ class XMPPEvent(EventBase):
 
         return XMPPEvent().copyin(self)
 
+    def normalize(self, what):
+        #what = re.sub("\s+", " ", what)
+        what = what.replace("<b>", "")
+        what = what.replace("</b>", "")
+        what = what.replace("&lt;b&gt;", "")
+        what = what.replace("&lt;/b&gt;", "")
+        return what
+
     def _raw(self, txt):
 
         """ output data to user. txt is NOT escaped. """
 
+        txt = self.normalize(txt)
         txt = unicode(txt)
         logging.debug(u"xmpp - out - %s - %s" (self.userhost, txt))
 
@@ -105,7 +117,8 @@ class XMPPEvent(EventBase):
 
         if txt:
             from google.appengine.api import xmpp
-            txt = unicode(txt)
+            txt = unicode(cgi.escape(txt))
+            txt = self.normalize(txt)
             logging.debug(u"xmpp - out - %s - %s" % (self.userhost, txt))
             if not raw:
                 xmpp.send_message([self.userhost, ], cgi.escape(txt))
