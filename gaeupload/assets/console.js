@@ -1,8 +1,7 @@
       // vars
       var hostname = window.location.hostname;
       var port = window.location.port;
-      var url = "http://" + hostname + ":" + port + "/gadgetexec/";
-      //var url = "http://localhost:8080/gadgetexec/";
+      var url = "http://" + hostname + ":" + port + "/dispatch/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();

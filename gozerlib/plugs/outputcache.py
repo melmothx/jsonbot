@@ -11,26 +11,6 @@ from gozerlib.outputcache import get, set
 from gozerlib.callbacks import callbacks
 from gozerlib.examples import examples
 
-## callbacks
-
-def handle_outputcachepollerwave(bot, event):
-     """ callback used in gadget polling. """
-     res = get(event.channel)
-     for result in res:
-         event.reply(result)
-
-#callbacks.add('POLLER', handle_outputcachepollerwave)
-
-def handle_outputcachepollerweb(bot, event):
-     """ send outputcache when WEB event is triggered. """
-     res = get(event.channel)
-
-     for result in res:
-         event.reply(result)
-
-#callbacks.add('WEB', handle_outputcachepollerweb)
-#callbacks.add('GADGET', handle_outputcachepollerweb)
-
 ## commands
 
 def handle_outputcache(bot, event):

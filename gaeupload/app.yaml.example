@@ -41,28 +41,14 @@ handlers:
   static_files: assets/\1
   upload: assets//1
 
-- url: /gadgetexec/
-  script: handler_gadgetexec.py
-
-- url: /gadgetexec
-  script: handler_gadgetexec.py
-
-- url: /gadgetexec/_static/(.*\.(gif|png|jpg|ico|css|js))
-  static_files: assets/\1
-  upload: assets/(.*\.(gif|png|jpg|ico|css|js))
-
 - url: /dispatch/
-  script: handler_web.py
-
+  script: handler_dispatch.py
 
 - url: /dispatch/_static/(.*\.(gif|png|jpg|ico|css|js))
   static_files: assets/\1
   upload: assets/(.*\.(gif|png|jpg|ico|css|js))
 
 - url: /
-  script: handler_web.py
-
-- url: /feeds
   script: handler_web.py
 
 - url: /feeds/

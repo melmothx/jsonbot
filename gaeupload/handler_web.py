@@ -30,8 +30,7 @@ from gozerlib.gae.utils.web import commandbox, start, closer, loginurl, logoutur
 
 ## google imports
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
+from webapp2 import RequestHandler, Route, WSGIApplication
 from google.appengine.ext.webapp import template
 from google.appengine.api import users as gusers
 
@@ -58,7 +57,7 @@ bot = WebBot(name='webbot')
 
 ## classes
 
-class DispatchHandler(webapp.RequestHandler):
+class DispatchHandler(RequestHandler):
 
     """ the bots web command dispatcher. """
 
@@ -138,7 +137,7 @@ class DispatchHandler(webapp.RequestHandler):
                
         #closer(self.response)
 
-class FeedListHandler(webapp.RequestHandler):
+class FeedListHandler(RequestHandler):
 
     """ the bots web command dispatcher. """
 
@@ -157,19 +156,17 @@ class FeedListHandler(webapp.RequestHandler):
 
 ## the application 
 
-application = webapp.WSGIApplication([('/', DispatchHandler),
-                                      ('/dispatch', DispatchHandler),
-                                      ('/dispatch/', DispatchHandler),
-                                      ('/feeds', FeedListHandler),
-                                      ('/feeds/', FeedListHandler)],
-                                      debug=True)
+application = WSGIApplication([('/', DispatchHandler),
+                               ('/feeds', FeedListHandler),
+                               ('/feeds/', FeedListHandler)],
+                               debug=True)
 
 ## main
 
 def main():
     global bot
     global application
-    run_wsgi_app(application)
+    application.run()
 
 if __name__ == "__main__":
     main()

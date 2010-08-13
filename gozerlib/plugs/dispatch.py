@@ -76,4 +76,4 @@ if True:
     last_callbacks.add('WEB', dispatch, predispatch)
     last_callbacks.add('CONSOLE', dispatch, predispatch)
     last_callbacks.add('DCC', dispatch, predispatch)
-    last_callbacks.add('GADGET', dispatch, predispatch)
+    last_callbacks.add('DISPATCH', dispatch, predispatch)

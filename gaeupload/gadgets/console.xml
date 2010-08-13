@@ -643,7 +643,7 @@ tt {
 
       // vars
 
-      var url = "https://jsonbot.appspot.com/gadgetexec/";
+      var url = "https://jsonbot.appspot.com/dispatch/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();

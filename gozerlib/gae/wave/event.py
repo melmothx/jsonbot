@@ -84,8 +84,8 @@ class WaveEvent(EventBase):
                 if elem.get('ispoller') == 'yes':
                     self.ispoller = True
                 if elem.get('gadgetcmnd') == 'yes':
-                    self.cbtype = "GADGETCMND"
-                    logging.debug("wave.event - gadgetcmnd - %s" % str(elem))
+                    self.cbtype = "DISPATCH"
+                    logging.debug("wave.event - dispatch - %s" % str(elem))
                     self.txt = u"!" + elem.get("cmnd")
                     self.channel = self.waveid = elem.get("waveid")
                     self.gadgetnr = nr

@@ -22,5 +22,5 @@ def handle_echo(bot, event):
 cmnds.add("echo", handle_echo, ['USER', 'OPER', 'GUEST'])
 examples.add("echo", "echo input", "echo yoooo dudes")
 
-callbacks.add("GADGET", handle_echo)
+callbacks.add("DISPATCH", handle_echo)
 callbacks.add("OUTPUT", handle_echo)

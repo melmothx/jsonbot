@@ -179,7 +179,7 @@ class EventBase(LazyDict):
             cc = self.chan.data.cc
         if not cc:
             cc = "!"
-        if self.type == "GADGET":
+        if self.type == "DISPATCH":
             cc += "!"
         logging.debug("cc for %s is %s (%s)" % (self.title or self.channel or event.userhost, cc, self.bot.nick))
         matchnick = unicode(self.bot.nick + u":")

@@ -1,8 +1,8 @@
-# handler_gadgetexec.py
+# handler_dispatch.py
 #
 #
 
-""" jsonbot exec handler.  just return the results in a <div>. """
+""" jsonbot dispatch handler.  dispatches remote commands.  """
 
 ## gozerlib imports
 
@@ -19,15 +19,12 @@ from gozerlib.errors import NoSuchCommand
 
 ## gaelib imports
 
-from gozerlib.gae.wave.bot import WaveBot
 from gozerlib.gae.web.bot import WebBot
 from gozerlib.gae.web.event import WebEvent
-from gozerlib.gae.utils.web import execbox, commandbox, closer
 
 ## google imports
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
+from webapp2 import RequestHandler, Route, WSGIApplication
 from google.appengine.ext.webapp import template
 from google.appengine.api import users as gusers
 
@@ -44,46 +41,38 @@ import types
 import os
 import logging
 
-logging.warn(getversion('GADGET'))
+logging.warn(getversion('DISPATCH'))
 
 boot()
 
 bot = WebBot()
 
-class HB_Handler(webapp.RequestHandler):
+class Dispatch_Handler(RequestHandler):
 
-    """ the bots exec command dispatcher. """
+    """ the bots remote command dispatcher. """
 
     def options(self):
-         logging.warn(dir(self.request))
-         #logging.warn(self.request)
-         logging.warn(dir(self.response))
-         #self.response.headers.add_header('Content-Type', 'application/x-www-form-urlencoded')
+         self.response.headers.add_header('Content-Type', 'application/x-www-form-urlencoded')
          #self.response.headers.add_header("Cache-Control", "private")
          self.response.headers.add_header("Server", getversion())
          self.response.headers.add_header("Public", "*")
          self.response.headers.add_header('Accept', '*')
          self.response.headers.add_header('Access-Control-Allow-Origin', self.request.headers['Origin'])
-         #self.response.headers.add_header('Access-Control-Allow-Origin', '*') 
-         #self.response.headers.add_header('Content-Length', '0') 
          self.response.out.write("Allow: *")
          self.response.out.write('Access-Control-Allow-Origin: *') 
-         logging.warn("gadgetexec - options response send to %s - %s" % (self.request.remote_addr, str(self.request.headers)))
+         logging.warn("dispatch - options response send to %s - %s" % (self.request.remote_addr, str(self.request.headers)))
 
     def post(self):
 
         """ this is where the command get disaptched. """
 
         try:
-            logging.debug("EXEC incoming: %s" % self.request.remote_addr)
+            logging.debug("DISPATCH incoming: %s" % self.request.remote_addr)
             #logging.debug(str(self.request))
             event = WebEvent(bot=bot).parse(self.response, self.request)
-            #logging.debug(dir(self.request))
-            #logging.debug(self.request.params)
-            event.cbtype = "GADGET"
-            event.type = "GADGET"
+            event.cbtype = "DISPATCH"
+            event.type = "DISPATCH"
             logging.debug(event.dump())
-            self.response.headers.add_header('Access-Control-Allow-Origin', '*')
 
             try:
                 bot.doevent(event)
@@ -97,14 +86,12 @@ class HB_Handler(webapp.RequestHandler):
 
 # the application 
 
-application = webapp.WSGIApplication([('/gadgetexec', HB_Handler),
-                                      ('/gadgetexec/', HB_Handler)],
-                                      debug=True)
+application = WSGIApplication([Route('/dispatch/', Dispatch_Handler) ], debug=True)
 
 def main():
-    global webbot
+    global bot
     global application
-    run_wsgi_app(application)
+    application.run()
 
 if __name__ == "__main__":
     main()
