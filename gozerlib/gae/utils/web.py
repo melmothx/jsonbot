@@ -16,6 +16,7 @@ from auth import finduser
 
 import os
 import time
+import socket
 
 ## functions
 
@@ -31,12 +32,24 @@ def mini(response, input={}):
 
 def start(response, input={}):
     """ display start html so that bot output can follow. """
-    from google.appengine.ext.webapp import template
-    inputdict = {'version': getversion()}
+    try:
+         inputdict['url'] = socket.gethostname()
+    except AttributeError:
+         if os.environ.get('HTTP_HOST'):
+             url = os.environ['HTTP_HOST']
+         else:
+             url = os.environ['SERVER_NAME']
+    print url
+    inputdict = {'version': getversion(), 'url': "http://%s:8080" % url}
+
     if input:
         inputdict.update(input)
+
     temp = os.path.join(os.getcwd(), 'templates/start.html')
+
+    from google.appengine.ext.webapp import template
     outstr = template.render(temp, inputdict)
+
     response.out.write(outstr)
 
 def commandbox(response, url="/dispatch/"):

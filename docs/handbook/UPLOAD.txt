@@ -1,6 +1,12 @@
 UPLOAD
 ======
 
+JSONBOT uses a directory in your home in that contains all the site specific
+files such as app.yaml, credentials.py and mainconfig. These files are
+expected in the ~/jsonregs/<botname> directory. When runnng
+./bin/jsb-release for the first time these files will be created and can then be
+edited. JSONBOT needs the google_appengine package installed in your home dir as well.
+
 you need an account on the Google Application Engine. see http://appengine.google.com/
 
 1) run jsb-release <yourbotname> - this will create a uploadable dir 
@@ -22,4 +28,3 @@ now you should be able to do the following:
 2) add the bot as Jabber buddy at <yourbotname>@appspot.com
 3) the same as wave bot
 
-JSONBOT is open source (MIT license) and free to clone when needed, patches welcomed though ;]

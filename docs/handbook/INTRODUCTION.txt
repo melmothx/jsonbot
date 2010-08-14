@@ -1,0 +1,91 @@
+INTRODUCTION
+============
+
+Welcome to JSONBOT, i will explain here what you can do with the bot and how
+to get started with it.
+
+What is JSONBOT
+~~~~~~~~~~~~~~~
+
+JSONBOT is all of the following:
+
+    * a shell console bot
+    * a shell IRC bot
+    * a shell XMPP bot
+    * a Web bot running on Google Application Engine
+    * a XMPP bot running on Google Application Engine
+    * a Google Wave bot running op Google Application Engine
+    * the XMPP bots are used to communicate between bots
+    * plugin infrastructure to write your own functionality
+    * event driven framework by the use of callbacks
+
+Getting Started
+~~~~~~~~~~~~~~~
+
+note: the bot needs to have a control character to execute commands. default
+is ! .. so use !help for example.
+
+Install the bot from mercurial repository or untar the tarball 
+
+::
+
+    hg clone http://jsonbot.appspot.com/hg jsonbot
+    
+
+All the programs have a --help option that shows a help page describing all
+the command line options of the program.
+
+Shell console bot
+~~~~~~~~~~~~~~~~~
+
+In the bot dir run the ./bin/jsb command to start the console version of the bot.
+
+    ::
+
+        09:15:01 bart@done:~/jsonbot/0.2.1/first/plugs$ ./bin/jsb
+        JSONBOT 0.2.1 RELEASE SOCKET CONSOLE
+        > 
+
+Shell IRC bot
+~~~~~~~~~~~~~
+
+run the following to make the bot connect to an IRC server:
+
+    ::
+
+        ./bin/jsb-irc -o <owner> -s <server> -c \<channel>
+
+Take note you need to escape the # character of the channel name.
+a configuration file will be generated from the command line opions so the
+next time you want to start the bot you can just use:
+
+    ::
+
+        ./bin/jsb-irc
+
+Shell XMPP bot
+~~~~~~~~~~~~~~
+
+run the following to make the bot connect to an Jabber server:
+
+    ::
+
+        ./bin/jsb-xmpp -o <owner> -u <bot JID> -p <password> [-c <conference>] [-s <server>]
+
+Conference and server options are optional. Server is take from the -u
+option if not provided as a seperate option. 
+
+GAE bots
+~~~~~~~~
+
+To use the Google Application Engine bots the bot needs to be uploaded into
+the GAE cloud. See the UPLOAD docs on how to upload the bot into the GAE
+cloud.
+
+Plugins
+~~~~~~~
+
+to see what plugins are available use the !list command. Use !help <plugin>
+to get help on a plugin. If a plugin is not responding try !reload <plugin>
+otherwise try !admin-boot that will regenerate the callbacks and command
+indexes.

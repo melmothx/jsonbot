@@ -15,10 +15,6 @@
 # limitations under the License.
 #
 
-# copy this to the google_appengine dir and run it like below
-
-"""bart@done:~/cmndbot/google_appengine$ ./makehtml.py -a ./cmndtest/doc/ cmndtest/doc/html/ """
-
 
 import os
 import sys
@@ -37,17 +33,19 @@ if version_tuple == (2, 4):
                    'break. Please use version 2.5 or greater.\n')
 
 DIR_PATH = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+GOOGLE_PATH =  os.path.expanduser('~') + os.sep + 'google_appengine'
+
 #SCRIPT_DIR = os.path.join(DIR_PATH, 'google', 'appengine', 'tools')
 SCRIPT_DIR = '/usr/local/bin'
 
 EXTRA_PATHS = [
   DIR_PATH,
-  os.path.join(DIR_PATH, 'lib', 'antlr3'),
-  os.path.join(DIR_PATH, 'lib', 'django'),
-  os.path.join(DIR_PATH, 'lib', 'webob'),
-  os.path.join(DIR_PATH, 'lib', 'yaml'),
-  os.path.join(DIR_PATH, 'lib', 'yaml', 'lib'),
-  os.path.join(DIR_PATH, 'cmndtest'),
+  GOOGLE_PATH,
+  os.path.join(GOOGLE_PATH, 'lib', 'antlr3'),
+  os.path.join(GOOGLE_PATH, 'lib', 'django'),
+  os.path.join(GOOGLE_PATH, 'lib', 'webob'),
+  os.path.join(GOOGLE_PATH, 'lib', 'yaml'),
+  os.path.join(GOOGLE_PATH, 'lib', 'yaml', 'lib'),
 ]
 
 SCRIPT_EXCEPTIONS = {
