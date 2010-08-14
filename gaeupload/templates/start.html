@@ -4,7 +4,7 @@
     <script type="text/javascript" src="assets/console.js" /></script>
 </head>
 <body onLoad="init();">
-    <title>Welcome to {{ appname }}</title>
+    <title>{{ host }}</title>
     <div class="related">
       <ul> 
         <li class="right" style="margin-right: 10px">
@@ -21,6 +21,7 @@
         <div><h1>{{ appname }}</h1></div><br>
         <div id="topper_div"></div><br>  
         <div id="screen_div"></div>
+        <div id="down_div"><i>running on {{ host }}</i></div>
     </div>
     <div class="footer" id="status_div"></div>
     <div class="footer" id="doc_div"><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><i><b>DOCS</b></i></a></div>

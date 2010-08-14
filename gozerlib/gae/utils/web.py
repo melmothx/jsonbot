@@ -36,11 +36,11 @@ def start(response, input={}):
          inputdict['url'] = socket.gethostname()
     except AttributeError:
          if os.environ.get('HTTP_HOST'):
-             url = os.environ['HTTP_HOST']
+             host = os.environ['HTTP_HOST']
          else:
-             url = os.environ['SERVER_NAME']
-    print url
-    inputdict = {'version': getversion(), 'url': "http://%s:8080" % url}
+             host = os.environ['SERVER_NAME']
+
+    inputdict = {'version': getversion(), 'host': host}
 
     if input:
         inputdict.update(input)

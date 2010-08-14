@@ -214,8 +214,8 @@ def handle_helpplug(bot, ievent):
     try:
         what = ievent.args[0]
     except IndexError:
-        ievent.reply("available plugins: ", getpluginlist(), raw=True)
-        ievent.reply('see !help <plugin> for help on a plugin.')
+        ievent.reply("available plugins: ", getpluginlist())
+        ievent.write('see !help <plugin> for help on a plugin.', start="<br>")
         return
 
     plugin = None
