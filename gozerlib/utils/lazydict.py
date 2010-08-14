@@ -22,7 +22,7 @@ import types
 
 ## defines
 
-defaultignore = ['pass', 'password', 'fsock', 'sock', 'handlers']
+defaultignore = ['pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins']
 raw = ['payload', ]
 
 cpy = copy.deepcopy
@@ -67,7 +67,7 @@ def dumpelement(element, ignore=[], prev={}):
             if prop == None:
                 continue
             if checkignore(prop, ignore):
-                logging.debug("lazydict - dump - ignoring %s" % prop)
+                logging.debug("lazydict - dump - ignoring %s" % type(prop))
                 newer[name] = unicode(type(prop))
                 continue                
             try:
