@@ -34,7 +34,8 @@ def handle_quote(bot, event):
     possible = quotes.data.keys()
     possible.remove('index')
     if possible:
-        event.reply(quotes.data[random.choice(possible)])
+        nr = random.choice(possible)
+        event.reply("#%s %s" % (nr, quotes.data[nr]))
     else:
         event.reply("no quotes yet.")
 
