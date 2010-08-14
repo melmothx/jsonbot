@@ -14,7 +14,6 @@
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.datadir import datadir
-from gozerlib.persiststate import UserState
 
 ## basic imports
 
@@ -30,7 +29,7 @@ def handle_aliassearch(bot, ievent):
 
     result = []
     res = []
-    aliases = ievent.userstate.data.aliases
+    aliases = ievent.chan.data.aliases
     if aliases:
         for i, j in aliases.iteritems():
             if what in i or what in j:
@@ -61,14 +60,14 @@ def handle_aliasset(bot, ievent):
         return
 
     # add alias and save
-    aliases = ievent.userstate.data.aliases
+    aliases = ievent.chan.data.aliases
     if not aliases:
-        ievent.userstate.data.aliases = aliases = {}
+        ievent.chan.data.aliases = aliases = {}
     if aliases.has_key(aliasto):
         ievent.reply("can't alias an alias")
         return
-    ievent.userstate.data.aliases[aliasfrom] = aliasto
-    ievent.userstate.save()
+    ievent.chan.data.aliases[aliasfrom] = aliasto
+    ievent.chan.save()
     ievent.reply('alias added')
 
 cmnds.add('alias', handle_aliasset, 'USER', allowqueue=False)
@@ -83,11 +82,11 @@ def handle_delalias(bot, ievent):
         return
 
     # del alias and save
-    aliases = ievent.userstate.data.aliases
+    aliases = ievent.chan.data.aliases
     try: 
         if aliases:
             del aliases[what]
-            ievent.userstate.save()
+            ievent.chan.save()
             ievent.reply('alias deleted')
             return
     except KeyError:
@@ -100,7 +99,7 @@ examples.add('alias-del', 'alias-del <what> .. delete alias', 'alias-del ll')
 
 def handle_getaliases(bot, ievent):
     """ aliases .. show aliases. (per user) """
-    aliases = ievent.userstate.data.aliases
+    aliases = ievent.chan.data.aliases
     if aliases:
         ievent.reply("aliases: %s" % str(aliases))
     else:

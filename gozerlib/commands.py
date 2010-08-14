@@ -100,7 +100,7 @@ class Commands(LazyDict):
                 logging.debug("failed to set user %s" % id)
         cmnd = event.usercmnd.lower()
         try:
-            cmnd = event.userstate.data.aliases[cmnd]
+            cmnd = event.chan.data.aliases[cmnd]
             event.usercmnd = cmnd
             event.makeargs()
         except (TypeError, KeyError, AttributeError):
