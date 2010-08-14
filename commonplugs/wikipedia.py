@@ -74,6 +74,14 @@ def getwikidata(url):
         except:
             pass
 
+    txt = re.sub('\[\[(.*?)\]\]', '<b>\g<1></b>', txt)
+    txt = re.sub('{{(.*?)}}', '<i>\g<1></i>', txt)
+    txt = re.sub('==(.*?)==', '<h3>\g<1></h3>', txt)
+    txt = re.sub('=(.*?)=', '<h2>\g<1></h2>', txt)
+    txt = re.sub('\*(.*?)\n', '<li>\g<1></li>', txt)
+    txt = re.sub('\n\n', '<br><br>', txt)
+    txt = re.sub('\s+', ' ', txt)
+    txt = txt.replace('|', ' - ')
     return txt
 
 ## commands
@@ -88,18 +96,12 @@ def handle_wikipedia(bot, ievent):
         ievent.reply('no result found')
         return
 
-    txt, url = res
-    txt = re.sub('\[\[(.*?)\]\]', '<b>\g<1></b>', txt)
-    txt = re.sub('{{(.*?)}}', '<i>\g<1></i>', txt)
-    txt = re.sub('==(.*?)==', '<h3>\g<1></h3>', txt)
-    txt = re.sub('=(.*?)=', '<h2>\g<1></h2>', txt)
-    txt = re.sub('\*(.*?)\n', '<li>\g<1></li>', txt)
-    txt = re.sub('\n\n', '<br><br>', txt)
-    txt = re.sub('\s+', ' ', txt)
-    txt = txt.replace('|', ' - ')
-    txt = u'%s ===> %s' % (url, txt)
-
-    ievent.reply(txt, raw=True)
+    result = splittxt(res[0])
+    if result:
+        prefix = u'%s ===> ' % res[1]
+        ievent.reply(prefix, result, dot="<br><br>")
+    else:
+        event.reply("no data found on %s" % event.rest)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
 examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search \

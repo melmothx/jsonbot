@@ -250,21 +250,15 @@ class BotBase(LazyDict):
             return ["", ""]
 
         res = txtlist[0]
+        size = len(txtlist) - 1
 
         # see if we need to store output in less cache
         result = ""
-        if len(txtlist) > 2:
+        if len(txtlist) > 1:
             logging.debug("addding %s lines to %s outputcache" % (len(txtlist), who))
             self.outcache.add(who, txtlist[1:])
-            size = len(txtlist) - 2
-            result = txtlist[1:2][0]
-            if size:
-                result += " (+%s)" % size
-        else:
-            if len(txtlist) == 2:
-                result = txtlist[1]
 
-        return [res, result]
+        return [res, size]
 
     def join(self, channel, password, *args, **kwargs):
         """ join a channel. """

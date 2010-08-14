@@ -633,12 +633,18 @@ realname))
             self.say(i, txt, speed=-1)
 
     def normalize(self, what):
-        what = re.sub("\s+", " ", what)
-        what = what.replace("<b>", "\002")
-        what = what.replace("</b>", "\002")
-        what = what.replace("&lt;b&gt;", "\002")
-        what = what.replace("&lt;/b&gt;", "\002")
-        return what
+        txt = re.sub("\s+", " ", what)
+        txt = txt.replace("<b>", "\002")
+        txt = txt.replace("</b>", "\002")
+        txt = txt.replace("&lt;b&gt;", "\002")
+        txt = txt.replace("&lt;/b&gt;", "\002")
+        txt = txt.replace("&lt;h2&gt;", "\002")
+        txt = txt.replace("&lt;/h2&gt;", "\002")
+        txt = txt.replace("&lt;h3&gt;", "\002")
+        txt = txt.replace("&lt;/h3&gt;", "\002")
+        txt = txt.replace("&lt;li&gt;", "\002")
+        txt = txt.replace("&lt;/li&gt;", "\002")
+        return txt
 
     def save(self):
 

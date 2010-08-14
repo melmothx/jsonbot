@@ -169,7 +169,7 @@ class Ircevent(EventBase):
         makeargrest(self)
         return self
 
-    def reply(self, txt, result=[], to="", dot=", ", extend=0, raw=True):
+    def reply(self, txt, result=[], to="", dot=", ", extend=15, raw=True):
         if self.checkqueues(result):
             return
         if result:
@@ -182,13 +182,11 @@ class Ircevent(EventBase):
             self.sock.send(restxt)
             self.sock.send("\n")
             return
-        res1, res2 = self.less(restxt, 365+extend)
+        res1, nritems = self.less(restxt, 365+extend)
         target = to or self.printto
-        self.bot.out(target, res1, 'msg')
-        self.bot.outmonitor(self.userhost, target, res1, self)
-        if res2:
-            self.bot.out(target, res2, 'msg')
-            self.bot.outmonitor(self.userhost, target, res2, self)
+        if res1:
+            self.bot.out(target, res1, 'msg')
+            self.bot.outmonitor(self.userhost, target, res1, self)
 
 # postfix count aka how many arguments
 

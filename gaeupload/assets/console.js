@@ -152,6 +152,12 @@
         element.innerHTML = html;
       }
 
+      function down(text) {
+        var html = text;
+        var element = document.getElementById("down_div");  
+        element.innerHTML = html;
+      }
+
       function info(text) {
         var html = "<i>";
         html += text;
@@ -223,6 +229,14 @@
               else {
                    statusadd(" - response NOT ok");
                    output("no result");
+              }
+          }
+      }
+
+      function dodown(obj) {
+          if (obj.readyState==4) {
+              if (obj.status==200) {
+                  down(obj.responseText);
               }
           }
       }

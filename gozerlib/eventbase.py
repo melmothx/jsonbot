@@ -90,6 +90,19 @@ class EventBase(LazyDict):
                 self.queues = list(eventin['queues'])
         return self
 
+    def write(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
+        if self.checkqueues(result):
+            return
+        txt = self.makeresponse(txt, result, dot)
+        if self.isdcc:
+            self.sock.send(unicode(txt) + u"\n")
+            return
+        res1, nritems = self.less(txt, 1000+extend)
+        self.bot.saynocb(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        self.result.append(txt)
+        self.outqueue.put_nowait(txt)
+        return self
+
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
         """ reply to this event """
 
@@ -99,12 +112,8 @@ class EventBase(LazyDict):
         if self.isdcc:
             self.sock.send(unicode(txt) + u"\n")
             return
-        res1, res2 = self.less(txt, 1000+extend)
+        res1, nritems = self.less(txt, 1000+extend)
         self.bot.say(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
-
-        if res2:
-            self.bot.say(self.channel, res2, origin=origin or self.userhost, extend=extend, *args, **kwargs)
-
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self
@@ -166,14 +175,15 @@ class EventBase(LazyDict):
             return ["", ""]
 
         res = txtlist[0]
-
+        length = len(txtlist)
         # see if we need to store output in less cache
-        if len(txtlist) > 1:
+        if length > 1:
             logging.debug("addding %s lines to %s outputcache" % (len(txtlist), self.channel))
             self.chan.data.outcache = txtlist[1:]
+            res += " <b>(+%s)<b>" % (length - 1) 
             self.chan.save()
 
-        return [res, ""]
+        return [res, length]
 
     def iscmnd(self):
         cc = "!"
@@ -200,5 +210,11 @@ class EventBase(LazyDict):
         txt = txt.replace("&lt;/i&gt;", "</i>")
         txt = txt.replace("&lt;b&gt;", "<b>")
         txt = txt.replace("&lt;/b&gt;", "</b>")
+        txt = txt.replace("&lt;h2&gt;", "<h2>")
+        txt = txt.replace("&lt;/h2&gt;", "</h2>")
+        txt = txt.replace("&lt;h3&gt;", "<h3>")
+        txt = txt.replace("&lt;/h3&gt;", "</h3>")
+        txt = txt.replace("&lt;li&gt;", "<li>")
+        txt = txt.replace("&lt;/li&gt;", "</li>")
         txt = txt.replace("\n", "<br>")
         return txt

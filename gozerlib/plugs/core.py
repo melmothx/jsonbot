@@ -14,7 +14,7 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.plugins import plugs
-from gozerlib.boot import plugin_packages, getpluginlist, boot
+from gozerlib.boot import plugin_packages, getpluginlist, boot, getcmndtable
 from gozerlib.persist import Persist
 from gozerlib.reboot import reboot, reboot_stateful
 from gozerlib.eventhandler import mainhandler
@@ -131,17 +131,22 @@ def handle_commands(bot, ievent):
     except IndexError:
         plugin = ""
 
+    if ievent.user:
+        userperms = ievent.user.data.perms
+    else:
+        userperms = ["GUEST", ]
+
     result = []
-    cp = dict(cmnds)
-    for i, j in cp.iteritems():
-        if not plugin or plugin == j.plugname:
-            txt = i
-            if txt:
-                result.append(txt)
+    cmnds = getcmndtable()
+    for cmnd, plugname in cmnds.iteritems(): 
+        if not plugin or plugname == plugin:
+            result.append(cmnd)
 
     if result:
         result.sort()
-        ievent.reply('%s has the following commands: ' % plugin, result)
+        if not plugin:
+            plugin = "JSONBOT"
+        ievent.reply('%s has the following commands (%s): ' % (plugin, ", ".join(userperms)), result)
     else:
         ievent.reply('no commands found for plugin %s' % plugin)
 
