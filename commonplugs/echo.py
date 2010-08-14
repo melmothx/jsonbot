@@ -15,7 +15,6 @@ from gozerlib.callbacks import callbacks
 import logging
 
 def handle_echo(bot, event):
-    logging.warn("echo - cbtype %s" % event.cbtype) 
     if event.how != "background" and not event.iscmnd():
         bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
     

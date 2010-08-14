@@ -121,9 +121,9 @@ try:
                     cfrom = whichmodule(3)
 
             if gotcache:
-                logging.info('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
+                logging.debug('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
             else:
-                logging.info('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
+                logging.debug('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
 
         def save(self):
             """ save json data to database. """
@@ -145,7 +145,7 @@ try:
                 if 'gozerlib' in cfrom:
                     cfrom = whichmodule(3)
 
-            logging.info('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
+            logging.debug('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
             set(self.fn, bla)
 
 except ImportError:
@@ -234,7 +234,7 @@ except ImportError:
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
 
-                logging.info('persist - %s saved' % self.fn)
+                logging.debug('persist - %s saved' % self.fn)
 
             finally:
                 pass

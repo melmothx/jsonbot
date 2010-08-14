@@ -74,5 +74,5 @@ def checkuser(response, request, event=None):
         if 'gozerlib' in cfrom: 
             cfrom = whichmodule(2)
 
-    logging.info("auth - %s - %s - %s - %s - %s" % (cfrom, userhost, user, u, nick))
+    logging.info("auth - %s - %s - %s" % (userhost, nick, cfrom))
     return (userhost, user, u, nick)

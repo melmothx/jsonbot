@@ -123,6 +123,8 @@ def getUrlInfo(text):
 
 # Catch channel chat for possible URLs
 def catchHasUrls(bot, ievent):
+  if ievent.how == "background":
+    return 0
   if cfg.data.has_key(ievent.channel) and cfg.data[ievent.channel]:
     if len(ievent.txt) >= 5:
       if (ievent.txt.find('www.') != -1) or (ievent.txt.find('http') != -1):
@@ -136,6 +138,7 @@ def catchUrls(bot, ievent):
 callbacks.add('PRIVMSG', catchUrls, catchHasUrls, threaded=True)
 callbacks.add('CONSOLE', catchUrls, catchHasUrls, threaded=True)
 callbacks.add('MESSAGE', catchUrls, catchHasUrls, threaded=True)
+callbacks.add('DISPATCH', catchUrls, catchHasUrls, threaded=True)
 
 # Enable on channel
 def handle_urlinfo_enable(bot, ievent):
