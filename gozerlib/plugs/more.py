@@ -26,7 +26,7 @@ def handle_more(bot, ievent):
     ievent.chan.save()
     nritems = len(ievent.chan.data.outcache)
     if nritems:
-        txt += "<b><i> - (+%s)</i></b>" % str(nritems)
+        txt += "<b> - %s more</b>" % str(nritems)
 
     ievent.write(txt)
 
