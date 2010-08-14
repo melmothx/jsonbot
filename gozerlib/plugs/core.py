@@ -131,22 +131,18 @@ def handle_commands(bot, ievent):
     except IndexError:
         plugin = ""
 
-    if ievent.user:
-        userperms = ievent.user.data.perms
-    else:
-        userperms = ["GUEST", ]
-
     result = []
     cmnds = getcmndtable()
     for cmnd, plugname in cmnds.iteritems(): 
-        if not plugin or plugname == plugin:
-            result.append(cmnd)
+        if plugname:
+            if not plugin or plugin in plugname:
+                result.append(cmnd)
 
     if result:
         result.sort()
         if not plugin:
             plugin = "JSONBOT"
-        ievent.reply('%s has the following commands (%s): ' % (plugin, ", ".join(userperms)), result)
+        ievent.reply('%s has the following commands: ' % plugin, result)
     else:
         ievent.reply('no commands found for plugin %s' % plugin)
 
