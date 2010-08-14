@@ -180,7 +180,7 @@ class EventBase(LazyDict):
         if length > 1:
             logging.debug("addding %s lines to %s outputcache" % (len(txtlist), self.channel))
             self.chan.data.outcache = txtlist[1:]
-            res += " <b>(+%s)<b>" % (length - 1) 
+            res += "<b><i> - (+%s)</i><b>" % (length - 1) 
             self.chan.save()
 
         return [res, length]
