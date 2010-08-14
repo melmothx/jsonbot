@@ -27,9 +27,9 @@ is ! .. so use !help for example.
 
 Install the bot from mercurial repository or untar the tarball 
 
-::
+    ::
 
-    hg clone http://jsonbot.appspot.com/hg jsonbot
+        hg clone http://jsonbot.googlecode.com/hg jsonbot
     
 
 All the programs have a --help option that shows a help page describing all
