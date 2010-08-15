@@ -90,6 +90,19 @@ class EventBase(LazyDict):
                 self.queues = list(eventin['queues'])
         return self
 
+    def writenocb(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
+        if self.checkqueues(result):
+            return
+        txt = self.makeresponse(txt, result, dot)
+        if self.isdcc:
+            self.sock.send(unicode(txt) + u"\n")
+            return
+        res1, nritems = self.less(txt, 1000+extend)
+        self.bot.saynocb(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        self.result.append(txt)
+        self.outqueue.put_nowait(txt)
+        return self
+
     def write(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
         if self.checkqueues(result):
             return

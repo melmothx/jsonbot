@@ -11,13 +11,13 @@
         * do !reload udp to enable the udp plugin
         * call !udp-cfgsave to generate a config file in gozerdata/plugs/udp/config
         * edit this file .. esp. look at the udpallowednicks list
-        * run ./bin/gozerbot-udp -s to generate clientside config file "udp-send"
+        * run ./bin/jsb-udp -s to generate clientside config file "udp-send"
         * edit this file
         * test with:
 
         ::
 
-            echo "YOOO" | ./bin/gozerbot-udp
+            echo "YOOO" | ./bin/jsb-udp
 
     2) limiter
 
@@ -69,9 +69,7 @@ cfg.define('udpbots', [cfg['udpbot'] or 'default-irc', ])
 ## functions
 
 def _inmask(addr):
-
     """ check if addr matches a mask. """
-
     if not cfg['udpmasks']:
         return False
     for i in cfg['udpmasks']:
@@ -83,10 +81,7 @@ def _inmask(addr):
 
 class Udplistener(object):
 
-    """ 
-        listen for udp messages.
-
-    """
+    """ listen for udp messages and relay them to channel/nick/JID. """
 
     def __init__(self):
         self.outqueue = Queue.Queue()
@@ -106,15 +101,7 @@ class Udplistener(object):
         self.loggers = []
 
     def _outloop(self):
-
-        """ 
-            loop controling the rate of outputted messages.
-
-            .. literalinclude:: ../../gozerplugs/udp.py
-                :pyobject: Udplistener._outloop
-
-        """
-
+        """ loop controling the rate of outputted messages. """
         logging.info('udp - starting outloop')
         while not self.stop:
             (printto, txt) = self.outqueue.get()
@@ -124,6 +111,7 @@ class Udplistener(object):
         logging.info('udp - stopping outloop')
 
     def _handleloop(self):
+        """ handle incoming udp data. """
         while not self.stop:
             (input, addr) = self.queue.get()
             if not input or not addr:
@@ -188,8 +176,6 @@ class Udplistener(object):
             :param addr: address info of udp packet
             :type add: (host, port) tuple
 
-            .. literalinclude:: ../../gozerplugs/udp.py
-                :pyobject: Udplistener.handle
         """
 
         if cfg['udpseed']:
@@ -230,25 +216,13 @@ _inmask(addr[0])):
 
     def say(self, printto, txt):
 
-        """ 
-            send txt to printto. 
- 
-            .. literalinclude:: ../../gozerplugs/udp.py
-                :pyobject: Udplistener.say
-
-        """
+        """ send txt to printto. """
 
         self.outqueue.put((printto, txt))
 
     def dosay(self, printto, txt):
 
-        """ 
-            send txt to printto .. do some checks. 
-
-           .. literalinclude:: ../../gozerplugs/udp.py
-                :pyobject: Udplistener.dosay
-
-        """
+        """ send txt to printto .. do some checks. """
 
         if cfg['udpparty'] and partyline.is_on(printto):
             partyline.say_nick(printto, txt)
@@ -279,14 +253,7 @@ if cfg['udp'] and cfg['udpseed']:
 
 def init():
 
-    """ 
-        init the udp plugin. 
-
-        .. literalinclude:: ../../gozerplugs/udp.py
-            :pyobject: init
-
-    """
-
+    """ init the udp plugin. """
     if cfg['udp']:
         start_new_thread(udplistener._listen, ())
         start_new_thread(udplistener._handleloop, ())
@@ -295,15 +262,8 @@ def init():
     
 def shutdown():
 
-    """ 
-        shutdown the udp plugin.
-
-        .. literalinclude:: ../../gozerplugs/udp.py
-            :pyobject: init
-
-    """
-
-    if cfg['udp'] and udplistener:
+    """ shutdown the udp plugin. """
+    if udplistener:
         udplistener.stop = 1
         udplistener.outqueue.put_nowait((None, None))
         udplistener.queue.put_nowait((None, None))
