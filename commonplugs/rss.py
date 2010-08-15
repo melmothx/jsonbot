@@ -589,7 +589,9 @@ class Rsswatcher(Rssdict):
         """ check if userhost is the owner of feed. """
 
         try:
-            return self.byname(name).ownercheck(userhost)
+            feed = self.byname(name)
+            if feed:
+                return feed.ownercheck(userhost)
         except KeyError:
             pass
 

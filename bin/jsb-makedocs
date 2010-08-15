@@ -41,7 +41,7 @@ print plugs
 users = Users()
 
 try:
-    users.add('test', ['test@test', ], ['OPER', 'USER', 'QUOTE', 'MAIL'])
+    users.add('test', ['test@test', ], ['OPER', 'USER', 'QUOTE', 'MAIL', 'GUEST'])
 except Exception, ex:
     pass
 
@@ -192,11 +192,13 @@ def domodfile(module, dir):
     if not os.path.isdir('docs' + os.sep + dir):
         os.mkdir('docs' + os.sep + dir)
     plugin = dir.split(os.sep)[-1]
+    print "writing %s" % plugin
     if True:
         for mod in os.listdir(dir):
             if '__init__' in mod or mod.endswith('.pyc') or mod.endswith('~'):
                 continue
-            print "in dir %s file %s" % (dir, mod)
+            #sys.stdout.write(" %s" % mod)
+            #print "in dir %s file %s" % (dir, mod)
             m = mod.split(os.sep)[-1]
             z = mod[:-3]
             f = open('docs' + os.sep + dir + os.sep + 'index.txt', 'w')
@@ -205,7 +207,7 @@ def domodfile(module, dir):
             f.close()
             thedir = dir + os.sep + mod
             if os.path.isdir(thedir):
-                print "RECURSE !! " + thedir
+                #print "\nRECURSE !! " + thedir
                 domodfile(module + "." + m, thedir)
                 continue
             else:
@@ -213,7 +215,7 @@ def domodfile(module, dir):
                 p = module + '.' + n
                 predir = '..' + os.sep
                 mfile = '..' + os.sep + predir * p.count('.') + thedir 
-                print "writing %s.txt - %s (%s)" % (n, mfile, p)
+                #print "writing %s.txt - %s (%s)" % (n, mfile, p)
                 if not os.path.isdir('docs' + os.sep + dir):
                     os.mkdir('docs' + os.sep + dir)
                 f = open('docs' + os.sep + thedir[:-3] + '.txt', 'w')
@@ -222,6 +224,8 @@ def domodfile(module, dir):
                 f.write("code\n~~~~\n\n.. literalinclude::  %s\n    :linenos:\n\n" % mfile)
                 f.flush()
                 f.close() 
+
+        sys.stdout.write(" .. done\n")
 
 def domods(dir):
     try:

@@ -164,7 +164,7 @@ def handle_urlinfo_list(bot, ievent):
   names.sort()
   
   for name in names:
-    targets = cfg.data[name].keys()
+    targets = cfg.data.keys()
     targets.sort()
     chans.append('%s: %s' % (name, ' '.join(targets)))
   if not chans:
@@ -172,5 +172,5 @@ def handle_urlinfo_list(bot, ievent):
   else:
     ievent.reply('urlinfo enabled on channels: %s' % ', '.join(chans))
 
-cmnds.add('urlinfo-list', handle_urlinfo_list, 'USER')
+cmnds.add('urlinfo-list', handle_urlinfo_list, 'OPER')
 examples.add('urlinfo-list', 'show in which channels urlinfo is enabled', 'urlinfo-list')

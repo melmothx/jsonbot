@@ -360,7 +360,7 @@ def handle_loglevel(bot, event):
     event.done()
 
 cmnds.add("loglevel", handle_loglevel, "OPER")
-examples.add("loglevel", "set loglevel ot on of debug, info, warning or error", "loglevel debug")
+examples.add("loglevel", "set loglevel ot on of debug, info, warning or error", "loglevel warn")
 
 def handle_botdata(bot, event):
     result = bot.dump()
