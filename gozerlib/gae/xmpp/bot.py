@@ -9,9 +9,6 @@
 from gozerlib.botbase import BotBase
 from gozerlib.socklib.xmpp.presence import Presence
 
-## google imports
-
-
 ## basic imports
 
 import types

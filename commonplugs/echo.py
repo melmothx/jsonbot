@@ -14,11 +14,13 @@ from gozerlib.callbacks import callbacks
 
 import logging
 
+## commands
+
 def handle_echo(bot, event):
+    """ echo txt to user. """
     if event.how != "background" and not event.iscmnd():
         if not event.isdcc:
             bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
-        else:
             
 cmnds.add("echo", handle_echo, ['USER', 'OPER', 'GUEST'], threaded=True)
 examples.add("echo", "echo input", "echo yoooo dudes")

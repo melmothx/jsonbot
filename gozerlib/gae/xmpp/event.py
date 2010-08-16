@@ -10,14 +10,7 @@ from gozerlib.channelbase import ChannelBase
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.xmpp import stripped, resource
 from gozerlib.utils.lazydict import LazyDict
-
-## gaelibs imports
-
 from gozerlib.gae.utils.auth import checkuser
-
-## google imports
-
-
 
 ## basic imports
 

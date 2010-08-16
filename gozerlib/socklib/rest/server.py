@@ -1,4 +1,4 @@
-# gozerbot/rest/server.py
+# gozerlib/socklib/rest/server.py
 #
 #
 
@@ -10,7 +10,7 @@ from gozerlib.config import cfg as config
 from gozerlib.persiststate import ObjectState
 from gozerlib.threads import start_new_thread
 
-# basic imports
+## basic imports
 
 from SocketServer import BaseServer, ThreadingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
@@ -23,6 +23,8 @@ import select
 import types
 import socket
 import logging
+
+## RestServerBase class
 
 class RestServerBase(HTTPServer):
 
@@ -167,6 +169,8 @@ class RestServerBase(HTTPServer):
         logging.warn('rest.server - %s - error %s %s => %s' % (ip, exctype, excvalue, exceptstr))
 
 
+## Mixin classes
+
 class RestServer(ThreadingMixIn, RestServerBase):
 
     pass
@@ -174,6 +178,8 @@ class RestServer(ThreadingMixIn, RestServerBase):
 class RestServerAsync(RestServerBase, dispatcher):
 
     pass
+
+## RestReqeustHandler class
 
 class RestRequestHandler(BaseHTTPRequestHandler):
 
@@ -227,6 +233,8 @@ class RestRequestHandler(BaseHTTPRequestHandler):
             logging.debug('rest.server - %s "%s %s %s" %s %s "%s" "%s"' % (self.address_string(), self.command, self.path, self.request_version, code, self.size, rf, ua))
         else:
             logging.debug('rest.server - %s "%s %s %s" %s %s "%s" "%s"' % (self.address_string(), self.command, "none", self.request_version, code, self.size, rf, ua))
+
+## secure classes .. not working yet
 
 class SecureRestServer(RestServer):
 

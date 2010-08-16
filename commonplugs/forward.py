@@ -18,6 +18,7 @@ from gozerlib.config import cfg
 from gozerlib.container import Container
 from gozerlib.errors import NoProperDigest
 from gozerlib.utils.exception import handle_exception
+
 ## basic imports
 
 import logging
@@ -45,7 +46,7 @@ if not forward.data.whitelist:
 
 cpy = copy.deepcopy
 
-## callbacks
+## outgoing callbacks
 
 def forwardoutpre(bot, event):
     logging.debug("forward - pre - %s" % event.channel)
@@ -84,6 +85,8 @@ first_callbacks.add('CONSOLE', forwardoutcb, forwardoutpre)
 first_callbacks.add('WEB', forwardoutcb, forwardoutpre)
 first_callbacks.add('DISPATCH', forwardoutcb, forwardoutpre)
 first_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
+
+## incoming data handler
 
 def forwardinpre(bot, event):
     if event.forwarded:

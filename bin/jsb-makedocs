@@ -190,6 +190,8 @@ def doindexfile(file):
     return txt
 
 def domodfile(module, dir):
+    if "contrib" in module:
+        return
     module = module.replace(os.sep, '.')
     if not os.path.isdir('docs' + os.sep + dir):
         os.mkdir('docs' + os.sep + dir)
