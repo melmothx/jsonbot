@@ -1,8 +1,6 @@
 Welcome to JSONBOT
 ==================
 
-JSONBOT is a bot that stores all its data in json format. It runs on the Google Application Engine and can thus support wave, web and XMPP. Shell programs are provided for IRC, XMPP and console.
-
 JSONBOT is all of the following:
 
     * a shell console bot
@@ -20,63 +18,16 @@ note: JSONBOT is in ALPHA stage right now and still subject to change of protoco
 
 see http://jsonbot.googlecode.com
 
+this bot needs google_appengine installed in your home dir
+
 Indices and tables
 ~~~~~~~~~~~~~~~~~~
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    * :ref:`genindex`
+    * :ref:`modindex`
+    * :ref:`search`
 
-License
-~~~~~~~
-
-JSONBOT is free code (MIT) and can be cloned where needed. 
-
-* Source code: http://jsonbot.googlecode.com
-* Web: http://jsonbot.appspot.com (web)
-* Wave/Jabber: jsonbot@appspot.com
-
-this bot needs google_appengine installed in your home dir
-
-Programs
-~~~~~~~~
-
-jsonbot provides the following programs:
-
-* jsb - console version of jsonbot
-* jsb-import - import data from another bot
-* jsb-installplug - install remote plugins
-* jsb-irc - IRC version of jsonbot (socket)
-* jsb-xmpp - XMPP version of jsonbot (socket)
-* jsb-fleet - mix IRC and XMPP bots
-* jsb-release - create a new release directory
-* jsb-rollback - rollback a release
-* jsb-run - run a release in the GAE dev_appserver
-* jsb-stop - stop a running bot
-* jsb-upload - upload a release to the GAE
-
-see docs/UPLOAD on how to upload your own bot.
-
-running a development version of the bot
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-first checkout the main bot from the mercurial repository
-
-``hg clone http://jsonbot.googlecode.com/hg``
-
-now you can run the programs in the bin directory with the
-``./bin/<program>``  command. try ./bin/jsb for the console app
-
-
-contact the developer
-~~~~~~~~~~~~~~~~~~~~~
-
-* email: bthate@gmail.com
-* wave: bthate@googlewave.com
-
-You can reach me by joining #dunkbots on FreeNode or IRCNet. If we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
-
-documentation
+Documentation
 ~~~~~~~~~~~~~~
 
     .. toctree::
@@ -84,7 +35,57 @@ documentation
         
         handbook/index
 
-plugins documentation
+Programs
+~~~~~~~~
+
+jsonbot provides the following programs:
+
+    * jsb - console version of jsonbot
+    * jsb-import - import data from another bot
+    * jsb-installplug - install remote plugins
+    * jsb-irc - IRC version of jsonbot (socket)
+    * jsb-xmpp - XMPP version of jsonbot (socket)
+    * jsb-fleet - mix IRC and XMPP bots
+    * jsb-release - create a new release directory
+    * jsb-rollback - rollback a release
+    * jsb-run - run a release in the GAE dev_appserver
+    * jsb-stop - stop a running bot
+    * jsb-upload - upload a release to the GAE
+
+see docs/UPLOAD on how to upload your own bot.
+
+License
+~~~~~~~
+
+JSONBOT is free code (MIT) and can be cloned where needed. 
+
+Urls
+~~~~
+
+    * Source code: http://jsonbot.googlecode.com
+    * Web: http://jsonbot.appspot.com (web)
+    * Wave/Jabber: jsonbot@appspot.com
+
+Running a development version of the bot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+first checkout the main bot from the mercurial repository
+
+    ``hg clone http://jsonbot.googlecode.com/hg``
+
+now you can run the programs in the bin directory with the
+``./bin/<program>``  command. try ./bin/jsb for the console app
+
+
+Contact the developer
+~~~~~~~~~~~~~~~~~~~~~
+
+    * email: bthate@gmail.com
+    * wave: bthate@googlewave.com
+
+You can reach me by joining #dunkbots on FreeNode or IRCNet. If we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
+
+Plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
 
     .. toctree::        
@@ -93,7 +94,7 @@ plugins documentation
 
         plugins/index
 
-gozerlib code
+Gozerlib code
 ~~~~~~~~~~~~~
 
     .. toctree::
