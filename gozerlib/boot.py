@@ -127,7 +127,7 @@ def savecmndtable():
     assert cmnds
 
     for cmndname, c in cmnds.iteritems():
-        if cmndname:
+        if cmndname and c:
             cmndtable.data[cmndname] = c.modname   
 
     if cmnds.subs:
@@ -191,10 +191,10 @@ def savepluginlist():
     assert cmnds
 
     for cmndname, c in cmnds.iteritems():
-        if not c.plugname:
+        if c and not c.plugname:
             logging.info("boot - not adding %s to pluginlist" % cmndname)
             continue
-        if c.plugname not in pluginlist.data:
+        if c and c.plugname not in pluginlist.data:
             pluginlist.data.append(c.plugname)
     pluginlist.data.sort()
     logging.debug("saving plugin list")

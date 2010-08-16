@@ -1841,7 +1841,7 @@ def handle_rssget(bot, ievent):
     else:
         ievent.reply("can't make a reponse out of %s" % name)
 
-cmnds.add('rss-get', handle_rssget, ['RSS', 'USER'], threaded=True)
+cmnds.add('rss-get', handle_rssget, ['RSS', 'USER'], threaded=True, wait=False)
 examples.add('rss-get', 'rss-get <name> .. get data from <name>', 'rss-get jsonbot')
 
 def handle_rssrunning(bot, ievent):

@@ -43,7 +43,7 @@ class Command(LazyDict):
 
     """
 
-    def __init__(self, modname, cmnd, func, perms=[], threaded=False, orig=None):
+    def __init__(self, modname, cmnd, func, perms=[], threaded=False, wait=False, orig=None):
         LazyDict.__init__(self)
         if not modname:
              raise Exception("modname is not set - %s" % cmnd)
@@ -57,6 +57,7 @@ class Command(LazyDict):
         self.perms = perms
         self.plugin = self.plugname
         self.threaded = threaded
+        self.wait = wait
 
 class Commands(LazyDict):
 
@@ -64,23 +65,23 @@ class Commands(LazyDict):
         the commands object holds all commands of the bot. 
     """
 
-    def add(self, cmnd, func, perms, threaded=False, *args, **kwargs):
+    def add(self, cmnd, func, perms, threaded=False, wait=False, *args, **kwargs):
         """ add a command. """
         modname = calledfrom(sys._getframe())
-        self[cmnd] = Command(modname, cmnd, func, perms, threaded)
+        self[cmnd] = Command(modname, cmnd, func, perms, threaded, wait)
         try:
             c = cmnd.split('-')[1]
             if not self.subs:
                 self.subs = LazyDict()
             if self.subs.has_key(c):
-                self.subs[c].append(Command(modname, c, func, perms, threaded, cmnd))
+                self.subs[c].append(Command(modname, c, func, perms, threaded, wait, cmnd))
             else:
-                self.subs[c] = [Command(modname, c, func, perms, threaded, cmnd), ]
+                self.subs[c] = [Command(modname, c, func, perms, threaded, wait, cmnd), ]
         except IndexError:
             pass
         return self
 
-    def dispatch(self, bot, event, wait=True):
+    def dispatch(self, bot, event, wait=False):
         """ 
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
@@ -132,7 +133,7 @@ class Commands(LazyDict):
             return self.doit(bot, event, c)
         return event
 
-    def doit(self, bot, event, target, wait=True):
+    def doit(self, bot, event, target):
         """ do the dispatching. """
         id = event.auth or event.userhost
         event.iscmnd = True
@@ -140,7 +141,7 @@ class Commands(LazyDict):
         try:
             if target.threaded:
                 thread = start_bot_command(target.func, (bot, event))
-                if wait:
+                if self.wait:
                     thread.join()
             else:
                 target.func(bot, event)

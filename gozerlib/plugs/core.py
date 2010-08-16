@@ -321,7 +321,7 @@ def handle_whatcommands(bot, ievent):
     result = cmnds
     res = []
     for cmnd in result.values():
-        if ievent.rest in cmnd.perms:
+        if cmnd and ievent.rest in cmnd.perms:
             res.append(cmnd.cmnd)
 
     res.sort()

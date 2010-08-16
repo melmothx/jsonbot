@@ -207,7 +207,7 @@ class BotBase(LazyDict):
         first_callbacks.check(self, e)
         #e.leave()
 
-    def docmnd(self, origin, channel, txt, event=None, wait=True):
+    def docmnd(self, origin, channel, txt, event=None, wait=False):
         """ do a command. """
         e = EventBase()
         if event:

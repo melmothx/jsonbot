@@ -160,7 +160,7 @@ class Plugins(LazyDict):
             self.unload(modname)
         return self.load(modname, force=force)
 
-    def dispatch(self, bot, event, wait=True, *args, **kwargs):
+    def dispatch(self, bot, event, wait=False, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
         if event.txt and not ' | ' in event.txt:
