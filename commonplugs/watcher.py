@@ -50,7 +50,7 @@ class Watched(PlugPersist):
         """ unsubscribe a jid from a channel. """ 
         try:
             self.data.channels[channel].remove([botname, type, unicode(jid)])
-        except (KeyError, TypeError):
+        except (KeyError, TypeError, ValueError):
             return False
 
         self.save()
