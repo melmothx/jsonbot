@@ -34,6 +34,7 @@ from core import XMLStream
 from wait import XMPPWait, XMPPErrorWait
 from jid import JID, InvalidJID
 from errors import xmpperrors
+
 ## basic imports
 
 import time
@@ -56,7 +57,7 @@ outlocked = lockdec(outlock)
 inlocked = lockdec(inlock)
 connectlocked = lockdec(connectlock)
 
-## classes
+## SXMPPBot class
 
 class SXMPPBot(XMLStream, BotBase):
 

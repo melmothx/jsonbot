@@ -317,9 +317,7 @@ class PartyLine(object):
 
         return False
 
-## INIT SECTION
+## the partyline
 
-# the partyline !
 partyline = PartyLine()
 
-## END INIT

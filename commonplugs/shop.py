@@ -43,7 +43,10 @@ def handle_shop(bot, ievent):
         handle_shop2(bot, ievent)
         return
 
-    sayshop(bot, ievent, ievent.user.data.shops)
+    if ievent.user.data.shops:
+        sayshop(bot, ievent, ievent.user.data.shops)
+    else:
+        ievent.reply("no shops")
 
 cmnds.add('shop', handle_shop, ['USER', 'GUEST'])
 

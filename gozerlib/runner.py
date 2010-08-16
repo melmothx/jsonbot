@@ -23,11 +23,10 @@ import random
 
 ## define
 
-# locks
 runlock = thread.allocate_lock()
 locked = lockdec(runlock)
 
-## classes
+## Runner class
 
 class Runner(RunnerLoop):
 
@@ -79,6 +78,8 @@ class Runner(RunnerLoop):
 
         self.working = False
 
+## CommandRunner class
+
 class CommandRunner(Runner):
 
     def handle(self, descr, func, bot, ievent, *args, **kwargs):
@@ -120,6 +121,8 @@ class CommandRunner(Runner):
             handle_exception(ievent)
 
         self.working = False
+
+## Runners class
 
 class Runners(object):
 
@@ -255,7 +258,7 @@ def runners_stop():
     for runner in cmndrunners:
         runner.stop()
 
-## INIT SECTION
+## defines
 
 # callback runners
 cbrunners = [Runners(12-i) for i in range(10)]
@@ -270,5 +273,3 @@ def cleanall():
         runners.cleanup()
 
 cleanall()
-
-## END INIT

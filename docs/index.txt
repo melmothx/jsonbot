@@ -1,15 +1,34 @@
 Welcome to JSONBOT
 ==================
 
-JSONBOT is a bot that stores all its data in json format. It runs on the 
-Google Application Engine and can thus support wave, web and XMPP.
-Standalone programms are provided for IRC, XMPP and console. Both clientside 
-and GAE side communicate through JSON either over XMPP. This makes relaying
-IRC <-> Wave or Jabber <-> Wave or Jabber <-> IRC possible.
+JSONBOT is a bot that stores all its data in json format. It runs on the Google Application Engine and can thus support wave, web and XMPP. Shell programs are provided for IRC, XMPP and console.
+
+JSONBOT is all of the following:
+
+    * a shell console bot
+    * a shell IRC bot
+    * a shell XMPP bot
+    * a Web bot running on Google Application Engine
+    * a XMPP bot running on Google Application Engine
+    * a Google Wave bot running op Google Application Engine
+    * the XMPP bots are used to communicate between bots
+    * plugin infrastructure to write your own functionality
+    * event driven framework by the use of callbacks
+
 
 note: JSONBOT is in ALPHA stage right now and still subject to change of protocols and API.
 
 see http://jsonbot.googlecode.com
+
+Indices and tables
+~~~~~~~~~~~~~~~~~~
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+License
+~~~~~~~
 
 JSONBOT is free code (MIT) and can be cloned where needed. 
 
@@ -18,6 +37,9 @@ JSONBOT is free code (MIT) and can be cloned where needed.
 * Wave/Jabber: jsonbot@appspot.com
 
 this bot needs google_appengine installed in your home dir
+
+Programs
+~~~~~~~~
 
 jsonbot provides the following programs:
 
@@ -82,9 +104,3 @@ gozerlib code
         waveplugs/index
         socketplugs/index
         
-indices and tables
-~~~~~~~~~~~~~~~~~~
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

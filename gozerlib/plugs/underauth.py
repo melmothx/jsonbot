@@ -4,6 +4,8 @@
 
 """ Handle non-ident connection on undernet. """
 
+## copyright
+
 __copyright__ = 'this file is in the public domain'
 __author__ = 'aafshar@gmail.com'
 
@@ -14,6 +16,8 @@ from gozerlib.callbacks import callbacks
 ## basic imports
 
 import logging
+
+## callbacks
 
 def pre_underauth_cb(bot, ievent):
     """ 
@@ -32,10 +36,7 @@ def pre_underauth_cb(bot, ievent):
         return 0
 
 def underauth_cb(bot, ievent):
-    """
-        Send the raw command to the server.
-
-    """
+    """ Send the raw command to the server. """
     # last two elements of the arguments list are PASS <id>
     logging.debug("underauth - sending response")
     bot._raw(' '.join(ievent.arguments[-2:]))
