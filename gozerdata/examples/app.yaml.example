@@ -29,20 +29,14 @@ handlers:
 - url: /_ah/xmpp/.*
   script: handler_xmpp.py
 
-- url: /hubbub?(.*)
-  script: handler_hubbub.py
-
 - url: /hubbub(.*)
   script: handler_hubbub.py
 
 - url: /assets/(.*)
   static_dir: /assets/
 
-- url: /gadgetexec.*
-  script: handler_gadgetexec.py
-
-- url: /dispatch/
-  script: handler_web.py
+- url: /dispatch.*
+  script: handler_dispatch.py
 
 - url: /feeds.*
   script: handler_web.py
