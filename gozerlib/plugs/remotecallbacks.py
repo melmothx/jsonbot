@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.callbacks import callbacks, gn_callbacks
+from gozerlib.callbacks import callbacks, remote_callbacks
 from gozerlib.container import Container
 from gozerlib.remote.event import RemoteEvent
 from gozerlib.errors import NoProperDigest
@@ -34,8 +34,9 @@ if True:
         if event.ttl <= 0:
             logging.debug("botbase - ttl of event is 0 .. ignoring")
             return False
-
-        return True
+        if event.txt.startswith("{"):
+            return True
+        return False
 
     def remotecb(bot, event):
         """ dispatch an event. """
@@ -60,7 +61,7 @@ if True:
                 logging.error("forward - can't load payload - %s" % container.payload)
                 return
 
-            gn_callbacks.check(bot, e)
+            remote_callbacks.check(bot, e)
             e.leave()
             return
 

@@ -9,7 +9,7 @@
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
-from callbacks import callbacks, gn_callbacks, first_callbacks, last_callbacks
+from callbacks import callbacks, first_callbacks, last_callbacks
 from eventbase import EventBase
 from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet
 from datadir import datadir

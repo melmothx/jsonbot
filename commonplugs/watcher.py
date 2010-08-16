@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks, gn_callbacks
+from gozerlib.callbacks import callbacks, remote_callbacks
 from gozerlib.persist import PlugPersist
 from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
@@ -157,17 +157,17 @@ def watchcallback(bot, event):
             writeout(botname, type, channel, txt)
 
 
-gn_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
-gn_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
-gn_callbacks.add('JOIN', watchcallback, prewatchcallback)
-gn_callbacks.add('PART', watchcallback, prewatchcallback)
-gn_callbacks.add('QUIT', watchcallback, prewatchcallback)
-gn_callbacks.add('NICK', watchcallback, prewatchcallback)
-gn_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
-gn_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
-gn_callbacks.add('CONSOLE', watchcallback, prewatchcallback)
-gn_callbacks.add('WEB', watchcallback, prewatchcallback)
-gn_callbacks.add('DISPATCH', watchcallback, prewatchcallback)
+remote_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
+remote_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
+remote_callbacks.add('JOIN', watchcallback, prewatchcallback)
+remote_callbacks.add('PART', watchcallback, prewatchcallback)
+remote_callbacks.add('QUIT', watchcallback, prewatchcallback)
+remote_callbacks.add('NICK', watchcallback, prewatchcallback)
+remote_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
+remote_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
+remote_callbacks.add('CONSOLE', watchcallback, prewatchcallback)
+remote_callbacks.add('WEB', watchcallback, prewatchcallback)
+remote_callbacks.add('DISPATCH', watchcallback, prewatchcallback)
 
 ## commands
 

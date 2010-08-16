@@ -11,7 +11,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks, gn_callbacks
+from gozerlib.callbacks import callbacks, remote_callbacks
 from gozerlib.persistconfig import PersistConfig
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.timeutils import hourmin
@@ -99,7 +99,7 @@ def init():
     global stopped
     stopped = False
     callbacks.add('ALL', chatlogcb, prechatlogcb)
-    gn_callbacks.add('ALL', chatlogcb, prechatlogcb)
+    remote_callbacks.add('ALL', chatlogcb, prechatlogcb)
     return 1
 
 def shutdown():

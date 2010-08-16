@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks, gn_callbacks, last_callbacks, first_callbacks
+from gozerlib.callbacks import callbacks, remote_callbacks, last_callbacks, first_callbacks
 from gozerlib.eventbase import EventBase
 from gozerlib.remote.event import Container, RemoteEvent
 from gozerlib.persist import PlugPersist
@@ -117,9 +117,9 @@ def forwardincb(bot, event):
         logging.error("forward - can't load payload - %s" % container.payload)
         return
     #logging.debug(u"forward - incoming - %s" % remoteevent.dump())
-    gn_callbacks.check(bot, remoteevent)
+    remote_callbacks.check(bot, remoteevent)
 
-gn_callbacks.add('MESSAGE', forwardincb, forwardinpre)
+remote_callbacks.add('MESSAGE', forwardincb, forwardinpre)
 
 ## commands
 

@@ -20,13 +20,6 @@ see http://jsonbot.googlecode.com
 
 this bot needs google_appengine installed in your home dir
 
-Indices and tables
-~~~~~~~~~~~~~~~~~~
-
-    * :ref:`genindex`
-    * :ref:`modindex`
-    * :ref:`search`
-
 Documentation
 ~~~~~~~~~~~~~~
 

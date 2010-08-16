@@ -262,5 +262,5 @@ class Callbacks(object):
 
 first_callbacks = Callbacks()
 callbacks = Callbacks()
-gn_callbacks = Callbacks()
 last_callbacks = Callbacks()
+remote_callbacks = Callbacks()

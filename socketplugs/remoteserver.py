@@ -4,7 +4,7 @@
 
 ## gozerlib imports
 
-from gozerlib.callbacks import gn_callbacks
+from gozerlib.callbacks import remote_callbacks
 from gozerlib.utils.url import posturl, getpostdata
 from gozerlib.persiststate import PlugState
 from gozerlib.commands import cmnds
@@ -50,10 +50,10 @@ def handle_doremote(bot, event):
     bot = RemoteBot(state.data.outs)
     bot.broadcast(e)
 
-gn_callbacks.add('PRIVMSG', handle_doremote, preremote, threaded=True)
-gn_callbacks.add('OUTPUT', handle_doremote, preremote, threaded=True)
-gn_callbacks.add('MESSAGE', handle_doremote, preremote, threaded=True)
-gn_callbacks.add('BLIP_SUBMITTED', handle_doremote, preremote, threaded=True)
+remote_callbacks.add('PRIVMSG', handle_doremote, preremote, threaded=True)
+remote_callbacks.add('OUTPUT', handle_doremote, preremote, threaded=True)
+remote_callbacks.add('MESSAGE', handle_doremote, preremote, threaded=True)
+remote_callbacks.add('BLIP_SUBMITTED', handle_doremote, preremote, threaded=True)
 
 ## server part
 
