@@ -18,6 +18,17 @@ import os
 import time
 import socket
 
+## defines
+
+openIdProviders = [
+    'Gmail.com',
+    'Google.com',
+    'Yahoo.com',
+    'MySpace.com',
+    'AOL.com',
+    'MyOpenID.com',
+]
+
 ## functions
 
 def mini(response, input={}):
@@ -75,12 +86,23 @@ def closer(response):
     response.out.write('<b>%4f seconds</b></div>' % (time.time() - response.starttime))
     response.out.write('</body></html>')
 
-def loginurl(response):
+def loginurl(request, response):
     """ return google login url. """
     from google.appengine.api import users as gusers
-    return gusers.create_login_url("/")
+    urls = ""
+    for p in openIdProviders:
+        p_name = p.split('.')[0] # take "AOL" from "AOL.com"
+        p_url = p.lower()        # "AOL.com" -> "aol.com"
+        try:
+            url = gusers.create_login_url(federated_identity=p_url)
+        except TypeError:
+            continue
+        response.out.write('<b><i><a href="%s">%s</a></i><b> - ' % (url, p_name))
+        urls += url
+    return urls
 
-def logouturl(response):
+def logouturl(request, response):
     """ return google login url. """
     from google.appengine.api import users as gusers
-    return gusers.create_logout_url("/")
+    return gusers.create_logout_url(request.uri)
+

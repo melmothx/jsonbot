@@ -110,7 +110,7 @@ class XMPPEvent(EventBase):
 
         if txt:
             from google.appengine.api import xmpp
-            txt = unicode(cgi.escape(txt))
+            txt = unicode(cgi.escape(unciode(txt)))
             txt = self.normalize(txt)
             logging.debug(u"xmpp - out - %s - %s" % (self.userhost, txt))
             if not raw:

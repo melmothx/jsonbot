@@ -81,8 +81,12 @@ class DispatchHandler(RequestHandler):
         event.cbtype = "WEB"
 
         (userhost, user, u, nick) = checkuser(self.response, self.request, event)
-        login = loginurl(self.response)
-        logout = logouturl(self.response)
+        if user:
+            login = userhost
+        else:
+            login = u"please log in: %s" % loginurl(self.request, self.response)
+        
+        logout = logouturl(self.request, self.response)
 
         if not user:
             start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'login', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
