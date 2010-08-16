@@ -27,6 +27,7 @@ import os
 import readline
 import atexit
 import getpass
+import re
 
 ## defines
 
@@ -112,10 +113,19 @@ class ConsoleBot(BotBase):
         if not txt:
             logging.warn("console - %s - no txt provided" % printto)
             return
-        self._raw(strippedtxt(txt))
+        txt = self.normalize(txt)
+        self._raw(txt)
         self.outmonitor(self.name, printto, txt)
 
     def _raw(self, txt):
-        sys.stdout.write("=> ")
+        sys.stdout.write("\n")
         sys.stdout.write(txt)
         sys.stdout.write('\n')
+
+    def normalize(self, what):
+        what = re.sub("\s+", " ", what)
+        what = what.replace("<b>", self.BOLD)
+        what = what.replace("</b>", self.ENDC)
+        what = what.replace("&lt;b&gt;", self.BOLD)
+        what = what.replace("&lt;/b&gt;", self.ENDC)
+        return what

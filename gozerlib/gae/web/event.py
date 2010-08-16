@@ -120,6 +120,7 @@ class WebEvent(EventBase):
 
     def write(self, txt, start=u"", end=u"<br>", raw=False):
         self.writenocb(txt, start, end, raw)
+        self.result.append(txt)
         self.bot.outmonitor(self.userhost, self.channel, txt, self)
 
     def writenocb(self, txt, start=u"", end=u"<br>", raw=False):
@@ -135,6 +136,7 @@ class WebEvent(EventBase):
             for item in re_url_match.findall(txt):
                  logging.debug("web - raw - found url - %s" % item)
                  txt = re.sub(item, '<a href="%s" onclick="window.open(\'%s\'); return false;">%s</a>' % (item, item, item), txt)
+        self.result.append(txt)
         self._raw(start + txt + end)
 
     def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):

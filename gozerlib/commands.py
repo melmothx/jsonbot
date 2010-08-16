@@ -80,7 +80,7 @@ class Commands(LazyDict):
             pass
         return self
 
-    def dispatch(self, bot, event):
+    def dispatch(self, bot, event, wait=True):
         """ 
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
@@ -132,14 +132,16 @@ class Commands(LazyDict):
             return self.doit(bot, event, c)
         return event
 
-    def doit(self, bot, event, target):
+    def doit(self, bot, event, target, wait=True):
         """ do the dispatching. """
         id = event.auth or event.userhost
         event.iscmnd = True
         logging.info('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
             if target.threaded:
-                start_bot_command(target.func, (bot, event))
+                thread = start_bot_command(target.func, (bot, event))
+                if wait:
+                    thread.join()
             else:
                 target.func(bot, event)
             e = event

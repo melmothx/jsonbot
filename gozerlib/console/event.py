@@ -38,8 +38,8 @@ class ConsoleEvent(EventBase):
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
-        txt = self.normalize(txt)
-        self.console.write(u"=> " + unicode(txt) + "\n")
+        txt = self.bot.normalize(txt)
+        self.console.write(u"\n"+ unicode(txt) + "\n")
         
     def parse(self, bot, input, console, *args, **kwargs):
         """ overload this. """
@@ -58,10 +58,3 @@ class ConsoleEvent(EventBase):
         self.cbtype = self.cmnd = unicode("CONSOLE")
         self.makeargs()
 
-    def normalize(self, what):
-        what = re.sub("\s+", " ", what)
-        what = what.replace("<b>", self.bot.BOLD)
-        what = what.replace("</b>", self.bot.ENDC)
-        what = what.replace("&lt;b&gt;", self.bot.BOLD)
-        what = what.replace("&lt;/b&gt;", self.bot.ENDC)
-        return what

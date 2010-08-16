@@ -23,6 +23,6 @@ def setloglevel(level_name):
             root.removeHandler(handler)
 
     logging.basicConfig(level=level,
-                    format='%(asctime)s - %(message)s - <%(funcName)s:%(lineno)s>')
+                    format='%(asctime)s - %(levelname)s - %(message)s - <%(funcName)s:%(lineno)s>')
     root.setLevel(level)
     logging.info("loglevel is %s (%s)" % (str(level), level_name))

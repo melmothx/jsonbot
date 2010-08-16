@@ -5,7 +5,7 @@
 """ 
     this alias plugin allows aliases for commands to be added. aliases are in
     the form of <alias> -> <command> .. aliases to aliases are not allowed, 
-    aliases are per user.
+    aliases are per channel.
 
 """
 
@@ -18,6 +18,8 @@ from gozerlib.datadir import datadir
 ## basic imports
 
 import os
+
+## commands
 
 def handle_aliassearch(bot, ievent):
     """ alias-search <what> .. search aliases. """

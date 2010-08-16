@@ -207,7 +207,7 @@ class BotBase(LazyDict):
         first_callbacks.check(self, e)
         #e.leave()
 
-    def docmnd(self, origin, channel, txt, event=None):
+    def docmnd(self, origin, channel, txt, event=None, wait=True):
         """ do a command. """
         e = EventBase()
         if event:
@@ -222,14 +222,13 @@ class BotBase(LazyDict):
         e.txt = txt
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
-        e.cbtype = 'DOCMND'
         e.finish()
 
         if self.plugs:
             try:
-                return self.plugs.dispatch(self, e)
+                return self.plugs.dispatch(self, e, wait=wait)
             except NoSuchCommand:
-                print "no such command: %s" % e.usercmnd
+                e.reply("no such command: %s" % e.usercmnd)
         else:
             raise PlugsNotConnected()
 

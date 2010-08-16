@@ -27,7 +27,7 @@ def handle_adminboot(bot, ievent):
 
 cmnds.add('admin-boot', handle_adminboot, 'OPER')
 cmnds.add('admin-init', handle_adminboot, 'OPER')
-examples.add('admin-boot', 'initialize the bot .. cmndtable and pluginlist', 'admin-init')
+examples.add('admin-boot', 'initialize the bot .. cmndtable and pluginlist', 'admin-boot')
 
 def handle_loadall(bot, ievent):
     """ load all available plugins. """
