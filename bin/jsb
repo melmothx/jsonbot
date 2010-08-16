@@ -73,7 +73,7 @@ except NoOwnerSet:
 
 
 if opts.command:
-    result = bot.docmnd(cfg.owner, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
+    result = bot.docmnd(userid, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
     time.sleep(3)
     os._exit(0)
 elif opts.forward:

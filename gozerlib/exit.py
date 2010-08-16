@@ -42,4 +42,4 @@ def globalshutdown():
     print "ltrs!"
     os._exit(0)
 
-#atexit.register(globalshutdown)
+atexit.register(globalshutdown)

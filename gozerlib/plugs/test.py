@@ -26,8 +26,8 @@ donot = ['quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
 'install', 'reconnect', 'wiki', 'weather', 'sc', 'jump', 'disable', 'dict', \
 'snarf', 'validate', 'popcon', 'twitter', 'tinyurl', 'whois', 'rblcheck', \
 'wowwiki', 'wikipedia', 'tr', 'translate', 'serie', 'sc', 'shoutcast', 'mash', \
-'gcalc', 'identi', 'mail', 'part', 'cycle', 'exception', 'fleet', 'rss', 'ln', 'markov-learn', 'pit', 'bugtracker', 'tu', 'banner', 'test', 'cloud', 'dispatch', 'lns', 'loglevel', \
-'hb-register', 'hb-subscribe', 'hb-cloneurl', 'hb-clone']
+'gcalc', 'identi', 'mail', 'part', 'cycle', 'exception', 'fleet', 'ln', 'markov-learn', 'pit', 'bugtracker', 'tu', 'banner', 'test', 'cloud', 'dispatch', 'lns', 'loglevel', \
+'cloneurl', 'clone', 'hb']
 
 def dummy(a, b=None):
     return ""

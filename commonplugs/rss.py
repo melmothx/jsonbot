@@ -956,8 +956,11 @@ class Rsswatcher(Rssdict):
         """ search all cached data of a feed. """
 
         res = []
+        feed = self.byname(name)
+        if not feed:
+            return res
 
-        for result in self.byname(name).all():
+        for result in feed.all():
 
             try:
                 txt = getattr(result, item)
