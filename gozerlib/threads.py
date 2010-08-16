@@ -22,6 +22,16 @@ import logging
 methodre = re.compile('method\s+(\S+)', re.I)
 funcre = re.compile('function\s+(\S+)', re.I)
 
+## functions
+
+def task(func):
+    try:
+        from google.appengine.ext.deferred import defer
+        task.defer = lambda *args, **kwargs: defer(func, *args, **kwargs)
+    except ImportError:
+        pass
+    return task
+
 ## classes
 
 class Botcommand(threading.Thread):
@@ -108,14 +118,6 @@ def start_new_thread(func, arglist, kwargs={}):
     #logging.debug("threads - %s - %s" % (name, str(func)))
 
     try:
-        from google.appengine.ext.deferred import defer
-        #defer(func, *arglist, **kwargs)
-        func(*arglist, **kwargs)
-        return
-    except ImportError: 
-        pass
-
-    try:
         thread = Thr(None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()
         return thread
@@ -132,14 +134,6 @@ def start_bot_command(func, arglist, kwargs={}):
         name = getname(func)
         if not name:
             name = 'noname'
-
-        try:
-            from google.appengine.ext.deferred import defer
-            #defer(func, *arglist, **kwargs)
-            func(*arglist, **kwargs)
-            return
-        except ImportError: 
-            pass
 
         thread = Botcommand(group=None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()

@@ -16,10 +16,12 @@ import logging
 
 def handle_echo(bot, event):
     if event.how != "background" and not event.iscmnd():
-        bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
-    
-cmnds.add("echo", handle_echo, ['USER', 'OPER', 'GUEST'])
+        if not event.isdcc:
+            bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
+        else:
+            
+cmnds.add("echo", handle_echo, ['USER', 'OPER', 'GUEST'], threaded=True)
 examples.add("echo", "echo input", "echo yoooo dudes")
 
-callbacks.add("DISPATCH", handle_echo)
-callbacks.add("OUTPUT", handle_echo)
+callbacks.add("DISPATCH", handle_echo, threaded=True)
+callbacks.add("OUTPUT", handle_echo, threaded=True)

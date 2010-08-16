@@ -10,7 +10,7 @@
 
 ## gozerlib imports
 
-from threads import getname 
+from threads import getname, start_new_thread
 from utils.exception import handle_exception
 from utils.trace import calledfrom, whichplugin
 from utils.dol import Dol
@@ -219,7 +219,10 @@ class Callbacks(object):
             event.iscallback = True
 
             # launch the callback
-            cb.func(bot, event)
+            if cb.threaded:
+                start_new_thread(cb.func, (bot, event))
+            else:
+                cb.func(bot, event)
             #event.leave()
             return True
 
