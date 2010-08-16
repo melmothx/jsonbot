@@ -104,7 +104,7 @@ class IRCBot(Irc):
             chatmsg = 'DCC CHAT CHAT %s %s' % (ipip, port)
             self.ctcp(nick, chatmsg)
             # go listen to response
-            sock = listensock.accept()[0]
+            self.sock = sock = listensock.accept()[0]
         except Exception, ex:
             handle_exception()
             logging.error('irc - dcc error: %s' % str(ex))
@@ -401,7 +401,7 @@ class IRCBot(Irc):
                 self.doevent(ievent)
             return
 
-        ievent.printto = chan
+        #ievent.printto = channel
 
         # see if we can get channel control character
 
@@ -415,6 +415,7 @@ class IRCBot(Irc):
             cchar = "!"
 
         self.doevent(ievent)
+
         if not ievent.iscmnd:
             # check for PRIVMSG waiting callback
             self.privwait.check(ievent)

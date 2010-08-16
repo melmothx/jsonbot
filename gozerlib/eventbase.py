@@ -83,7 +83,7 @@ class EventBase(LazyDict):
         if eventin.has_key("sock"):
             self.sock = eventin['sock']
         if eventin.has_key("chan"):
-            self.sock = eventin['chan']
+            self.chan = eventin['chan']
         
         if eventin.has_key('queues'):
             if eventin['queues']:
