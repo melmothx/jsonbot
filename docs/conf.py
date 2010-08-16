@@ -34,7 +34,7 @@ sys.path.insert(0, os.path.abspath('..' + os.sep + 'gozerdata'))
 sys.path.insert(0, os.path.abspath('..' + os.sep + 'gaeupload' + os.sep + 'waveapi'))
 sys.path.insert(0, os.path.abspath(os.path.expanduser("~") + os.sep + "google_appengine"))
 sys.path.insert(0, os.path.abspath(os.path.expanduser("~") + os.sep + "google_appengine" + os.sep +'google'))
-print sys.path
+#print sys.path
 # General configuration
 # ---------------------
 

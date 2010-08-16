@@ -19,19 +19,20 @@ from gozerlib.errors import NoSuchWave
 import logging
 from copy import deepcopy as cpy
 
-## plugin state .. this is where the relay plugin data lives. It's JSON string
-## put into the database with memcache in between. The data is accessible
-## through object.data. When data changes call object.save()
-## see gozerlib/persist/persist.py
+# plugin state .. this is where the relay plugin data lives. It's JSON string
+# put into the database with memcache in between. The data is accessible
+# through object.data. When data changes call object.save()
+# see gozerlib/persist/persist.py
 
 block = PlugPersist('block')
 relay = PlugPersist('relay')
 
 ## CALLBACKS
-## these are the callbacks that do the hard work of the relay plugin takes 
-## place. The precondition is called to see whether the callback should fire 
-## or not. It should return True or False.
-## see gozerlib/callbacks.py
+
+# these are the callbacks that do the hard work of the relay plugin takes 
+# place. The precondition is called to see whether the callback should fire 
+# or not. It should return True or False.
+# see gozerlib/callbacks.py
   
 def relayprecondition(bot, event):
     """ check to see whether the callback needs to be executed. """
@@ -43,11 +44,12 @@ def relayprecondition(bot, event):
 
     return False
 
-## CORE BUSINESS
-## this callback does all the relaying. It receives the event that triggered
-## the callback and checks whether there are relays for the channel the event
-## took place (the bot uses the users JID in the jabber and web case (web users
-## must be registered)
+# CORE BUSINESS
+
+# this callback does all the relaying. It receives the event that triggered
+# the callback and checks whether there are relays for the channel the event
+# took place (the bot uses the users JID in the jabber and web case (web users
+# must be registered)
 
 def relaycallback(bot, event):
     """ this is the callbacks that handles the responses to questions. """
@@ -98,11 +100,11 @@ def relaycallback(bot, event):
     except KeyError:
         pass
 
-## MORE CORE BUSINESS
-## this is the place where the callbacks get registered. The first argument is
-## the string representation of the event type, MESSAGE is for jabber message,
-## EXEC is for the gadget handling, WEB for the website, BLIP_SUBMITTED for
-## wave and OUTPUT for the outputcache (both used in wave and web).
+# MORE CORE BUSINESS
+# this is the place where the callbacks get registered. The first argument is
+# the string representation of the event type, MESSAGE is for jabber message,
+# EXEC is for the gadget handling, WEB for the website, BLIP_SUBMITTED for
+# wave and OUTPUT for the outputcache (both used in wave and web).
 
 callbacks.add('MESSAGE', relaycallback, relayprecondition)
 callbacks.add('EXEC', relaycallback, relayprecondition)
@@ -111,10 +113,10 @@ callbacks.add('BLIP_SUBMITTED', relaycallback, relayprecondition)
 callbacks.add('OUTPUT', relaycallback, relayprecondition)
 callbacks.add('PRIVMSG', relaycallback, relayprecondition)
 
-## COMMANDS
-## this is where the commands for the relay plugin are defined, Arguments to a
-## command function are the bot that the event occured on and the event that
-## triggered the command. Think the code speaks for itself here ;]
+# COMMANDS
+# this is where the commands for the relay plugin are defined, Arguments to a
+# command function are the bot that the event occured on and the event that
+# triggered the command. Think the code speaks for itself here ;]
 
 def handle_relayclone(bot, event):
     """ clone relays from one channel to the other. """

@@ -26,6 +26,7 @@ import thread
 import logging
 
 ## locks
+
 replylock = thread.allocate_lock()
 replylocked = lockdec(replylock)
 
@@ -33,6 +34,8 @@ if cfg['dotchars']:
     dotchars = cfg['dotchars']
 else:
     dotchars = ' .. '
+
+## classes
 
 class Message(GozerEvent):
 

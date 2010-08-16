@@ -4,7 +4,8 @@
 
 """ base class of all events. """
 
-## imports
+## gozerlib imports
+
 from channelbase import ChannelBase
 from utils.lazydict import LazyDict
 from utils.generic import splittxt
@@ -199,6 +200,7 @@ class EventBase(LazyDict):
         return [res, length]
 
     def iscmnd(self):
+        """ check if event is a command. """
         cc = "!"
         if self.chan:
             cc = self.chan.data.cc
@@ -218,6 +220,7 @@ class EventBase(LazyDict):
         return False
 
     def normalize(self, txt):
+        """ allow certain html markup. """
         txt = txt.replace("&lt;br&gt;", "<br>")
         txt = txt.replace("&lt;i&gt;", "<i>")
         txt = txt.replace("&lt;/i&gt;", "</i>")

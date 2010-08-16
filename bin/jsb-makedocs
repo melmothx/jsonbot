@@ -174,18 +174,20 @@ def gendoc(mod, f, output):
     output.close()
     print "DONE %s" % f 
 
-def doindexfile(mod):
-    mod = mod.replace(os.sep, '.')
-    return """
+def doindexfile(file):
+    mod = file.replace(os.sep, '.')
+    depth = mod.count(".") - 1
+    txt = """
 %s
 %s
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: %s
     :glob:
 
     *
-""" % (mod, "=" * (len(mod)))
+""" % (mod, "=" * (len(mod)), depth or 1)
+    return txt
 
 def domodfile(module, dir):
     module = module.replace(os.sep, '.')
@@ -210,7 +212,7 @@ def domodfile(module, dir):
                 #print "\nRECURSE !! " + thedir
                 domodfile(module + "." + m, thedir)
                 continue
-            else:
+            elif "contrib" not in thedir:
                 n = mod[:-3]
                 p = module + '.' + n
                 predir = '..' + os.sep
@@ -219,9 +221,19 @@ def domodfile(module, dir):
                 if not os.path.isdir('docs' + os.sep + dir):
                     os.mkdir('docs' + os.sep + dir)
                 f = open('docs' + os.sep + thedir[:-3] + '.txt', 'w')
-                f.write("%s\n%s\n\n" % (p, '=' * len(p)))
+                f.write("%s\n%s\n\n" % (p, '~' * len(p)))
                 f.write(".. automodule:: %s\n        :show-inheritance:\n        :members:\n        :undoc-members:\n\n" % p)
-                f.write("code\n~~~~\n\n.. literalinclude::  %s\n    :linenos:\n\n" % mfile)
+                data = ""
+                prevline = ""
+                f.write("CODE\n----\n\n    ::\n\n")
+                for line in open(thedir, 'r'):
+                    if line.startswith("##"):
+                        f.write(line[3:].strip() + u"\n")
+                        f.write(u"-" * (len(line.strip())-3) + u"\n")
+                        f.write(u"\n    ::\n\n")
+                    else:
+                        f.write(u"        " + line)
+                #f.write("code\n~~~~\n\n.. literalinclude::  %s\n    :linenos:\n\n" % mfile)
                 f.flush()
                 f.close() 
 

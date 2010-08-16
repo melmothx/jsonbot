@@ -42,4 +42,7 @@ def globalshutdown():
     print "ltrs!"
     os._exit(0)
 
-atexit.register(globalshutdown)
+try:
+    import google
+except ImportError:
+    atexit.register(globalshutdown)
