@@ -1295,7 +1295,7 @@ def handle_rsswatch(bot, ievent):
 
 cmnds.add('rss-watch', handle_rsswatch, 'USER')
 examples.add('rss-watch', 'rss-watch <name> [seconds to sleep] .. go \
-watching <name>', '1) rss-watch gozerbot 2) rss-watch gozerbot 600')
+watching <name>', '1) rss-watch jsonbot 2) rss-watch jsonbot 600')
 
 def handle_rssstart(bot, ievent):
 
@@ -1323,7 +1323,7 @@ def handle_rssstart(bot, ievent):
 
 cmnds.add('rss-start', handle_rssstart, ['RSS', 'USER'])
 examples.add('rss-start', 'rss-start <name> .. start a rss feed \
-(per user/channel) ', 'rss-start gozerbot')
+(per user/channel) ', 'rss-start jsonbot')
 
 def handle_rssstop(bot, ievent):
 
@@ -1363,7 +1363,7 @@ def handle_rssstop(bot, ievent):
 
 cmnds.add('rss-stop', handle_rssstop, ['RSS', 'USER'])
 examples.add('rss-stop', 'rss-stop <name> .. stop a rss feed \
-(per user/channel) ', 'rss-stop gozerbot')
+(per user/channel) ', 'rss-stop jsonbot')
 
 def handle_rssstopall(bot, ievent):
 
@@ -1423,7 +1423,7 @@ def handle_rsschannels(bot, ievent):
     ievent.reply("channels of %s: " % name, result)
 
 cmnds.add('rss-channels', handle_rsschannels, ['OPER', ])
-examples.add('rss-channels', 'rss-channels <name> .. show channels', 'rss-channels gozerbot')
+examples.add('rss-channels', 'rss-channels <name> .. show channels', 'rss-channels jsonbot')
 
 def handle_rssaddchannel(bot, ievent):
 
@@ -1473,7 +1473,7 @@ def handle_rssaddchannel(bot, ievent):
 cmnds.add('rss-addchannel', handle_rssaddchannel, ['OPER', ])
 examples.add('rss-addchannel', 'rss-addchannel <name> [<botname>] <channel> \
 ..add <channel> or <botname> <channel> to watchchannels of <name>', \
-'1) rss-addchannel gozerbot #dunkbots 2) rss-addchannel gozerbot main \
+'1) rss-addchannel jsonbot #dunkbots 2) rss-addchannel jsonbot main \
 #dunkbots')
 
 def handle_rsssetitems(bot, ievent):
@@ -1498,7 +1498,7 @@ def handle_rsssetitems(bot, ievent):
 
 cmnds.add('rss-setitems', handle_rsssetitems, ['RSS', 'USER'])
 examples.add('rss-setitems', 'set tokens of the itemslist (per user/channel)',\
- 'rss-setitems gozerbot author author link pubDate')
+ 'rss-setitems jsonbot author author link pubDate')
 
 def handle_rssadditem(bot, ievent):
 
@@ -1528,7 +1528,7 @@ def handle_rssadditem(bot, ievent):
 
 cmnds.add('rss-additem', handle_rssadditem, ['RSS', 'USER'])
 examples.add('rss-additem', 'add a token to the itemslist (per user/channel)',\
- 'rss-additem gozerbot link')
+ 'rss-additem jsonbot link')
 
 def handle_rssdelitem(bot, ievent):
 
@@ -1558,7 +1558,7 @@ def handle_rssdelitem(bot, ievent):
 
 cmnds.add('rss-delitem', handle_rssdelitem, ['RSS', 'USER'])
 examples.add('rss-delitem', 'remove a token from the itemslist \
-(per user/channel)', 'rss-delitem gozerbot link')
+(per user/channel)', 'rss-delitem jsonbot link')
 
 def handle_rssmarkuplist(bot, ievent):
 
@@ -1593,7 +1593,7 @@ def handle_rssmarkup(bot, ievent):
 
 cmnds.add('rss-markup', handle_rssmarkup, ['RSS', 'USER'])
 examples.add('rss-markup', 'show markup list for a feed (per user/channel)', \
-'rss-markup gozerbot')
+'rss-markup jsonbot')
 
 def handle_rssaddmarkup(bot, ievent):
 
@@ -1626,7 +1626,7 @@ def handle_rssaddmarkup(bot, ievent):
 
 cmnds.add('rss-addmarkup', handle_rssaddmarkup, ['RSS', 'USER'])
 examples.add('rss-addmarkup', 'add a markup option to the markuplist \
-(per user/channel)', 'rss-addmarkup gozerbot all-lines 1')
+(per user/channel)', 'rss-addmarkup jsonbot all-lines 1')
 
 def handle_rssdelmarkup(bot, ievent):
 
@@ -1656,7 +1656,7 @@ def handle_rssdelmarkup(bot, ievent):
 
 cmnds.add('rss-delmarkup', handle_rssdelmarkup, ['RSS', 'USER'])
 examples.add('rss-delmarkup', 'remove a markup option from the markuplist \
-(per user/channel)', 'rss-delmarkup gozerbot all-lines')
+(per user/channel)', 'rss-delmarkup jsonbot all-lines')
 
 def handle_rssdelchannel(bot, ievent):
 
@@ -1708,7 +1708,7 @@ def handle_rssdelchannel(bot, ievent):
 cmnds.add('rss-delchannel', handle_rssdelchannel, ['OPER', ])
 examples.add('rss-delchannel', 'rss-delchannel <name> [<botname>] \
 [<channel>] .. delete <channel> or <botname> <channel> from watchchannels of \
-<name>', '1) rss-delchannel gozerbot #dunkbots 2) rss-delchannel gozerbot \
+<name>', '1) rss-delchannel jsonbot #dunkbots 2) rss-delchannel jsonbot \
 main #dunkbots')
 
 def handle_rssstopwatch(bot, ievent):
@@ -1735,7 +1735,7 @@ def handle_rssstopwatch(bot, ievent):
 
 cmnds.add('rss-stopwatch', handle_rssstopwatch, ['OPER', ])
 examples.add('rss-stopwatch', 'rss-stopwatch <name> .. stop polling <name>', \
-'rss-stopwatch gozerbot')
+'rss-stopwatch jsonbot')
 
 def handle_rsssleeptime(bot, ievent):
 
@@ -1764,7 +1764,7 @@ str(rssitem.data.sleeptime)))
 
 cmnds.add('rss-sleeptime', handle_rsssleeptime, 'USER')
 examples.add('rss-sleeptime', 'rss-sleeptime <name> .. get sleeping time \
-for <name>', 'rss-sleeptime gozerbot')
+for <name>', 'rss-sleeptime jsonbot')
 
 def handle_rsssetsleeptime(bot, ievent):
 
@@ -1806,7 +1806,7 @@ def handle_rsssetsleeptime(bot, ievent):
 
 cmnds.add('rss-setsleeptime', handle_rsssetsleeptime, ['USER', ])
 examples.add('rss-setsleeptime', 'rss-setsleeptime <name> <seconds> .. set \
-sleeping time for <name> .. min 60 sec', 'rss-setsleeptime gozerbot 600')
+sleeping time for <name> .. min 60 sec', 'rss-setsleeptime jsonbot 600')
 
 def handle_rssget(bot, ievent):
 
@@ -1842,7 +1842,7 @@ def handle_rssget(bot, ievent):
         ievent.reply("can't make a reponse out of %s" % name)
 
 cmnds.add('rss-get', handle_rssget, ['RSS', 'USER'], threaded=True)
-examples.add('rss-get', 'rss-get <name> .. get data from <name>', 'rss-get gozerbot')
+examples.add('rss-get', 'rss-get <name> .. get data from <name>', 'rss-get jsonbot')
 
 def handle_rssrunning(bot, ievent):
 
@@ -1910,7 +1910,7 @@ def handle_rssurl(bot, ievent):
     ievent.reply('url of %s: %s' % (name, result))
 
 cmnds.add('rss-url', handle_rssurl, ['OPER', ])
-examples.add('rss-url', 'rss-url <name> .. get url from rssitem with <name>', 'rss-url gozerbot')
+examples.add('rss-url', 'rss-url <name> .. get url from rssitem with <name>', 'rss-url jsonbot')
 
 def handle_rssseturl(bot, ievent):
 
@@ -1967,7 +1967,7 @@ def handle_rssitemslist(bot, ievent):
 
 cmnds.add('rss-itemslist', handle_rssitemslist, ['RSS', 'USER'])
 examples.add('rss-itemslist', 'rss-itemslist <name> .. get itemslist of \
-<name> ', 'rss-itemslist gozerbot')
+<name> ', 'rss-itemslist jsonbot')
 
 def handle_rssscan(bot, ievent):
 
@@ -2001,7 +2001,7 @@ def handle_rssscan(bot, ievent):
     ievent.reply("tokens of %s: " % name, res)
 
 cmnds.add('rss-scan', handle_rssscan, ['USER', ])
-examples.add('rss-scan', 'rss-scan <name> .. get possible items of <name> ', 'rss-scan gozerbot')
+examples.add('rss-scan', 'rss-scan <name> .. get possible items of <name> ', 'rss-scan jsonbot')
 
 def handle_rsssync(bot, ievent):
 
@@ -2022,7 +2022,7 @@ def handle_rsssync(bot, ievent):
 
 cmnds.add('rss-sync', handle_rsssync, ['USER', ])
 examples.add('rss-sync', 'rss-sync <name> .. sync data of <name>', \
-'rss-sync gozerbot')
+'rss-sync jsonbot')
 
 def handle_rssfeeds(bot, ievent):
 
@@ -2070,7 +2070,7 @@ def handle_rsslink(bot, ievent):
 
 cmnds.add('rss-link', handle_rsslink, ['RSS', 'USER'])
 examples.add('rss-link', 'give link of item which title matches search key', \
-'rss-link gozerbot gozer')
+'rss-link jsonbot gozer')
 
 def handle_rssdescription(bot, ievent):
 
@@ -2093,7 +2093,7 @@ def handle_rssdescription(bot, ievent):
 
 cmnds.add('rss-description', handle_rssdescription, ['RSS', 'USER'])
 examples.add('rss-description', 'give description of item which title \
-matches search key', 'rss-description gozerbot gozer')
+matches search key', 'rss-description jsonbot gozer')
 
 def handle_rssall(bot, ievent):
 
@@ -2112,7 +2112,7 @@ def handle_rssall(bot, ievent):
         return
 
 cmnds.add('rss-all', handle_rssall, ['RSS', 'USER'])
-examples.add('rss-all', "give titles of a feed", 'rss-all gozerbot')
+examples.add('rss-all', "give titles of a feed", 'rss-all jsonbot')
 
 def handle_rsssearch(bot, ievent):
 
