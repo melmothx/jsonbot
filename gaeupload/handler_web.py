@@ -89,17 +89,17 @@ class DispatchHandler(RequestHandler):
         else:
             start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
 
+        if not cfg['auto_register'] and not user:
+            self.response.out.write("please login .. this bot requires registration")
+            return
+
         try:
             bot.doevent(event)
-            #self.response.out.write('</div>')
         except NoSuchCommand:
             self.response.out.write("sorry no %s command found." % event.usercmnd)
         except Exception, ex:
             handle_exception(event)
 
-        #self.response.out.write('<br><div class="body"><i>"enter a command in the box above."</i><br></div>')
-        #self.response.out.write('</div>')
-        #closer(self.response)
         logging.warn("web_handler - out")
 
     def post(self):

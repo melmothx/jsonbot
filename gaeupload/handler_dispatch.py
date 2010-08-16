@@ -21,6 +21,7 @@ from gozerlib.errors import NoSuchCommand
 
 from gozerlib.gae.web.bot import WebBot
 from gozerlib.gae.web.event import WebEvent
+from gozerlib.gae.utils.auth import checkuser
 
 ## google imports
 
@@ -72,6 +73,10 @@ class Dispatch_Handler(RequestHandler):
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
+            (userhost, user, u, nick) = checkuser(self.response, self.request, event)
+            if not maincfg['auto_register'] and not user:
+                self.response.out.write("please login .. this bot requires registration\n")
+                return
             logging.debug(event.dump())
 
             try:

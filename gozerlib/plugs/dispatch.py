@@ -65,6 +65,7 @@ if True:
                 result =  []
         except NoSuchCommand:
             logging.info("no such command: %s" % event.usercmnd)
+            event.reply("no such command: %s" % event.usercmnd)
             result = []
 
         return result
