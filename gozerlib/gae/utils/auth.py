@@ -62,7 +62,7 @@ def checkuser(response, request, event=None):
         except KeyError:
             userhost = nick = "notauth@%s" % hostid
     else:
-        userhost = user.email() 
+        userhost = user.email() or user.nickname() 
         if not userhost:
             userhost = nick = "notauth@%s" % hostid
         nick = user.nickname()
