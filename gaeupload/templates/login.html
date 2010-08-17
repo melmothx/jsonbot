@@ -9,18 +9,19 @@
     <title>Login with Openid</title>
     <div class="related">
       <ul> 
-        <li align="center"><b><i>Welcome to {{ appname }}<b></i></li>
+        <li class="right" style="margin-right: 10px"><b><i>the JSON everywhere bot<b></i></li>
+        <li><b><i>Welcome to {{ appname }}<b></i></li>
       </ul>
     </div> 
     <div class="footer" id="info_div"><b>login page</b></div>
     <div class="body" align="center">
         <div><h1>{{ appname }}</h1></div><br>
-        <div id="topper_div"></div><br> 
+        <div id="topper_div"></div><b>please choose from: </b>{{ urlstring }}<br><br> 
         <form method="get" action="/_ah/login_required">
             {% if continue %}
             <input type="text" name="continue" value="{{continue|escape}}" />
             {% endif %}
-            <b>please enter the openid provider :</b>
+            <b>or enter the openid provider:</b>
             <input type="text" name="openid" />
             <input type="submit" value="Log In" />
         </form>

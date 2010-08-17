@@ -80,6 +80,9 @@ class DispatchHandler(RequestHandler):
             self.response.starttime = time.time()
 
         if True:
+            urlstring = u""
+            for name, url in loginurl(self.request, self.response).iteritems():
+                urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "WEB"
 
@@ -89,7 +92,7 @@ class DispatchHandler(RequestHandler):
                 openid_url = self.request.GET.get('openid')
                 if not openid_url:
                     path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
-                    self.response.out.write(template.render(path, {'continue': continue_url, 'appname': cfg['appname']}))
+                    self.response.out.write(template.render(path, {'continue': continue_url, 'appname': cfg['appname'], 'urlstring': urlstring[:-3]}))
                 else:
                     try:
                         if not continue_url:
@@ -99,22 +102,14 @@ class DispatchHandler(RequestHandler):
                     except TypeError:
                         self.redirect(users.create_login_url('/', None, openid_url))
                 return
-            urlstring = u""
-            #for name, url in loginurl(self.request, self.response).iteritems():
-            #    urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
-            #if not urlstring:
-            #    login = "can't log in"
-            #elif user:
-            #    login = "logged in as: "
-            #else:
-            #    login = u"please log in - %s" % urlstring[:-3]
+
             login = "logged in"
             logout = logouturl(self.request, self.response)
 
             if not user:
-                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
+                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
             else:
-                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
+                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
 
         try:
             bot.doevent(event)

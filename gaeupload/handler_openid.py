@@ -22,21 +22,25 @@ import os
 
 class OpenIdLoginHandler(webapp.RequestHandler):
 
-  def get(self):
-    continue_url = self.request.GET.get('continue')
-    openid_url = self.request.GET.get('openid')
-    if not openid_url:
-        from google.appengine.ext.webapp import template
-        path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
-        self.response.out.write(template.render(path, {'continue': continue_url, 'appname': cfg['appname']}))
-    else:
-        try:
-            if not continue_url:
-                self.redirect(users.create_login_url(continue_url, None, openid_url))
-            else:
+    def get(self):
+        continue_url = self.request.GET.get('continue')
+        openid_url = self.request.GET.get('openid')
+        if not openid_url:
+            from google.appengine.ext.webapp import template
+            urlstring = u""
+            for name, url in loginurl(self.request, self.response).iteritems():
+                urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
+
+            path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+            self.response.out.write(template.render(path, {'continue': continue_url, 'appname': cfg['appname'], 'urlstring': urlstring[:-3]}))
+        else:
+            try:
+                if not continue_url:
+                    self.redirect(users.create_login_url(continue_url, None, openid_url))
+                else:
+                    self.redirect(users.create_login_url("/", None, openid_url))
+            except TypeError:
                 self.redirect(users.create_login_url("/", None, openid_url))
-        except TypeError:
-            self.redirect(users.create_login_url("/", None, openid_url))
          
 ## the application 
 
