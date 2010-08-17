@@ -28,14 +28,13 @@ openIdProviders = [
     'MySpace.com',
     'AOL.com',
     'MyOpenID.com',
-    'auth.mononoke.nl'
 ]
 
 ## functions
 
 def create_openid_url(continue_url):
-  continue_url = urlparse.urljoin(self.request.url, continue_url)
-  return "/_ah/login?continue=%s" % urllib.quote(continue_url)
+    continue_url = urlparse.urljoin(self.request.url, continue_url)
+    return "/_ah/login?continue=%s" % urllib.quote(continue_url)
 
 def mini(response, input={}):
     """ display start html so that bot output can follow. """
@@ -101,6 +100,8 @@ def loginurl(request, response):
         p_url = p.lower()        # "AOL.com" -> "aol.com"
         try:
             url = gusers.create_login_url(federated_identity=p_url)
+            if not url:
+                url = create_openid_url(p_url)
         except TypeError:
             continue
         #response.out.write('<b><i><a href="%s">%s</a></i><b> - ' % (url, p_name))

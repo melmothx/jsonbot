@@ -8,6 +8,7 @@
 
 from gozerlib.gae.utils.web import loginurl
 from gozerlib.config import cfg
+from gozerlib.utils.generic import getversion
 
 ## google imports
 
@@ -17,34 +18,52 @@ import webapp2 as webapp
 ## basic imports
 
 import os
+import logging
+import urlparse
+import urllib
 
 ## classes
 
 class OpenIdLoginHandler(webapp.RequestHandler):
 
-    def get(self):
-        continue_url = self.request.GET.get('continue')
-        openid_url = self.request.GET.get('openid')
-        if not openid_url:
-            from google.appengine.ext.webapp import template
-            urlstring = u""
-            for name, url in loginurl(self.request, self.response).iteritems():
-                urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
+    def create_openid_url(self, continue_url):
+        continue_url = urlparse.urljoin(self.request.url, continue_url)
+        return "/_ah/login?continue=%s" % urllib.quote(continue_url)
 
-            path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
-            self.response.out.write(template.render(path, {'continue': continue_url, 'appname': cfg['appname'], 'urlstring': urlstring[:-3]}))
+    def get(self):
+        cont = self.request.get('continue')
+        logging.info('openid - login form %s' % cont)
+        urlstring = u""
+        for name, url in loginurl(self.request, self.response).iteritems():
+            urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
+        template_values = {
+            'continue': cont,
+            'urlstring': urlstring[:-3],
+            'appname': getversion()
+        }
+
+        path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+        from google.appengine.ext.webapp import template
+        logging.info("openid - diplaying page to %s" % self.request.remote_addr)
+        self.response.out.write(template.render(path, template_values))      
+
+    def post(self):
+        cont = self.request.get('continue')
+        conturl = self.create_openid_url(cont)
+        logging.info('openid - %s' % cont)
+        openid = self.request.get('openid')
+        if openid:
+            logging.info('openid - creating for %s' % openid)
+            login_url = users.create_login_url(cont, None, openid)
+            logging.info('openid - redirecting to url %s' % login_url)
+            self.redirect(login_url)
         else:
-            try:
-                if not continue_url:
-                    self.redirect(users.create_login_url(continue_url, None, openid_url))
-                else:
-                    self.redirect(users.create_login_url("/", None, openid_url))
-            except TypeError:
-                self.redirect(users.create_login_url("/", None, openid_url))
-         
+            self.error(400)
+
 ## the application 
 
-application = webapp.WSGIApplication([('/_ah/login_required', OpenIdLoginHandler),
+application = webapp.WSGIApplication([
+                               ('/_ah/login_required', OpenIdLoginHandler),
                                ('/_ah/login', OpenIdLoginHandler)],
                                debug=True)
 
@@ -56,4 +75,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

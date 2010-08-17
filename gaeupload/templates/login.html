@@ -16,8 +16,8 @@
     <div class="footer" id="info_div"><b>login page</b></div>
     <div class="body" align="center">
         <div><h1>{{ appname }}</h1></div><br>
-        <div id="topper_div"></div><b>please choose from: </b>{{ urlstring }}<br><br> 
-        <form method="get" action="/_ah/login_required">
+        <div id="topper_div"><b>please choose from: </b>{{ urlstring }}<br><br></div>
+        <form method="POST" action="/_ah/login_required">
             {% if continue %}
             <input type="text" name="continue" value="{{continue|escape}}" />
             {% endif %}

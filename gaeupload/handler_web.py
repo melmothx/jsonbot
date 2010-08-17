@@ -59,7 +59,7 @@ bot = WebBot(name='webbot')
 
 ## classes
 
-class DispatchHandler(RequestHandler):
+class HomePageHandler(RequestHandler):
 
     """ the bots web command dispatcher. """
 
@@ -88,19 +88,8 @@ class DispatchHandler(RequestHandler):
 
             (userhost, user, u, nick) = checkuser(self.response, self.request, event)
             if not user:
-                continue_url = self.request.GET.get('continue')
-                openid_url = self.request.GET.get('openid')
-                if not openid_url:
-                    path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
-                    self.response.out.write(template.render(path, {'continue': continue_url, 'appname': cfg['appname'], 'urlstring': urlstring[:-3]}))
-                else:
-                    try:
-                        if not continue_url:
-                            self.redirect(users.create_login_url(continue_url, None, openid_url))
-                        else:
-                            self.redirect(users.create_login_url('/', None, openid_url))
-                    except TypeError:
-                        self.redirect(users.create_login_url('/', None, openid_url))
+                path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+                self.response.out.write(template.render(path, {'appname': getversion(), 'urlstring': urlstring[:-3]}))
                 return
 
             login = "logged in"
@@ -119,41 +108,6 @@ class DispatchHandler(RequestHandler):
             handle_exception(event)
 
         logging.warn("web_handler - out")
-
-    def post(self):
-
-        """ this is where the command get disaptched. """
-
-        logging.debug("web - incoming - %s" % self.request.remote_addr)
-        global starttime
-
-        if starttime:
-            self.response.starttime = starttime
-            starttime = 0
-        else:
-            self.response.starttime = time.time()
-
-        login = loginurl(self.response)
-        logout = logouturl(self.response)
-
-        event = WebEvent(bot=bot).parse(self.response, self.request)
-        event.cbtype = "WEB"
-
-        if not event.user:
-            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'login', 'loginurl': login, 'logouturl': logout, 'onload': 'putFocus(0,0);'})
-        else:
-            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': event.userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'putFocus(0,0);'})
-
-
-        try:
-            bot.doevent(event)
-            #self.response.out.write('</div>')
-        except NoSuchCommand:
-            self.response.out.write("sorry no %s command found." % event.usercmnd)
-        except Exception, ex:
-            handle_exception(event)
-               
-        #closer(self.response)
 
 class FeedListHandler(RequestHandler):
 
@@ -174,9 +128,7 @@ class FeedListHandler(RequestHandler):
 
 ## the application 
 
-application = WSGIApplication([('/', DispatchHandler),
-                               ('/feeds', FeedListHandler),
-                               ('/feeds/', FeedListHandler)],
+application = WSGIApplication([('/', HomePageHandler)],
                                debug=True)
 
 ## main
