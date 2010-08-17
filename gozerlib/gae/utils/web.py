@@ -28,7 +28,7 @@ openIdProviders = [
     'MySpace.com',
     'AOL.com',
     'MyOpenID.com',
-    'mononoke.nl'
+    'auth.mononoke.nl'
 ]
 
 ## functions
@@ -97,7 +97,7 @@ def loginurl(request, response):
     from google.appengine.api import users as gusers
     urls = {}
     for p in openIdProviders:
-        p_name = p.split('.')[0] # take "AOL" from "AOL.com"
+        p_name = p.split('.')[-2] # take "AOL" from "AOL.com"
         p_url = p.lower()        # "AOL.com" -> "aol.com"
         try:
             url = gusers.create_login_url(federated_identity=p_url)
