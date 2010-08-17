@@ -11,6 +11,12 @@ default_expiration: "1s"
 
 handlers:
 
+- url: /_ah/login_required
+  script: handler_openid.py
+
+- url: /_ah/login
+  script: handler_openid.py
+
 - url: /_ah/queue/deferred
   script: $PYTHON_LIB/google/appengine/ext/deferred/deferred.py
   login: admin
