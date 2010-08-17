@@ -16,6 +16,8 @@ from gozerlib.boot import boot
 from gozerlib.fleet import fleet
 from gozerlib.config import cfg as maincfg
 from gozerlib.errors import NoSuchCommand
+from gozerlib.commands import public
+from gozerlib.gae.utils.web import loginurl
 
 ## gaelib imports
 
@@ -74,16 +76,15 @@ class Dispatch_Handler(RequestHandler):
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
             (userhost, user, u, nick) = checkuser(self.response, self.request, event)
-            if not maincfg['auto_register'] and not user:
-                self.response.out.write("please login .. this bot requires registration\n")
+            if not user:
+                self.response.set_status(401)
                 return
-            logging.debug(event.dump())
 
-            try:
-                bot.doevent(event)
-            except NoSuchCommand:
-                event.reply("no %s command found" % event.usercmnd)
+            logging.warn("launching event: %s" % event.dump())
+            bot.doevent(event)
 
+        except NoSuchCommand:
+            event.reply("no such command: %s" % event.usercmnd)
         except Exception, ex:
             handle_exception()
 

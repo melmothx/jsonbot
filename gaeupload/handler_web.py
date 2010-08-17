@@ -21,6 +21,8 @@ from gozerlib.boot import boot, getcmndtable, getpluginlist
 from gozerlib.persist import Persist
 from gozerlib.errors import NoSuchCommand
 from gozerlib.utils.log import setloglevel
+from gozerlib.commands import public
+
 ## gaelib import
 
 from gozerlib.gae.web.bot import WebBot
@@ -77,27 +79,32 @@ class DispatchHandler(RequestHandler):
         else:
             self.response.starttime = time.time()
 
-        event = WebEvent(bot=bot).parse(self.response, self.request)
-        event.cbtype = "WEB"
-
-        (userhost, user, u, nick) = checkuser(self.response, self.request, event)
-        if user:
-            login = userhost
-        else:
-            login = u"please log in: %s" % loginurl(self.request, self.response)
-        
-        logout = logouturl(self.request, self.response)
-
-        if not user:
-            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'login', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
-        else:
-            start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
-
-        if not cfg['auto_register'] and not user:
-            self.response.out.write("please login .. this bot requires registration")
-            return
-
         try:
+            event = WebEvent(bot=bot).parse(self.response, self.request)
+            event.cbtype = "WEB"
+
+            (userhost, user, u, nick) = checkuser(self.response, self.request, event)
+            urlstring = ""
+            for name, url in loginurl(self.request, self.response).iteritems():
+                urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
+            if not urlstring:
+                login = "can't log in"
+            elif user:
+                login = "logged in as: "
+            else:
+                login = u"please log in - %s" % urlstring[:-3]
+
+            logout = logouturl(self.request, self.response)
+
+            if not user:
+                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
+            else:
+                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
+
+            if not user:
+                event.reply("please login - %s\n" % urlstring, raw=True)
+                return
+
             bot.doevent(event)
         except NoSuchCommand:
             self.response.out.write("sorry no %s command found." % event.usercmnd)

@@ -89,7 +89,7 @@ def closer(response):
 def loginurl(request, response):
     """ return google login url. """
     from google.appengine.api import users as gusers
-    urls = ""
+    urls = {}
     for p in openIdProviders:
         p_name = p.split('.')[0] # take "AOL" from "AOL.com"
         p_url = p.lower()        # "AOL.com" -> "aol.com"
@@ -97,8 +97,8 @@ def loginurl(request, response):
             url = gusers.create_login_url(federated_identity=p_url)
         except TypeError:
             continue
-        response.out.write('<b><i><a href="%s">%s</a></i><b> - ' % (url, p_name))
-        urls += url
+        #response.out.write('<b><i><a href="%s">%s</a></i><b> - ' % (url, p_name))
+        urls[p_name] = url
     return urls
 
 def logouturl(request, response):

@@ -203,3 +203,4 @@ class Commands(LazyDict):
 ## defines
 
 cmnds = Commands()
+public = Commands()

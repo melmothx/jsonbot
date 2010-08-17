@@ -1,7 +1,7 @@
       // vars
       var hostname = window.location.hostname;
       var port = window.location.port;
-      var url = "http://" + hostname + ":" + port + "/dispatch/";
+      var url = "https://" + hostname + ":" + port + "/dispatch/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
@@ -104,6 +104,14 @@
            status("sending command ");
            doCmnd(cmnd, response);
            setTimeout("update();", 500);
+           return false;
+      } 
+
+      function dologin() {
+           cmnd = "!login-urls";
+           status("sending command ");
+           doCmnd(cmnd, response);
+           setTimeout("update();", 1000);
            return false;
       } 
 
