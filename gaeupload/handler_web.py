@@ -79,12 +79,12 @@ class DispatchHandler(RequestHandler):
         else:
             self.response.starttime = time.time()
 
-        try:
+        if True:
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "WEB"
 
             (userhost, user, u, nick) = checkuser(self.response, self.request, event)
-            urlstring = ""
+            urlstring = u""
             for name, url in loginurl(self.request, self.response).iteritems():
                 urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
             if not urlstring:
@@ -101,10 +101,7 @@ class DispatchHandler(RequestHandler):
             else:
                 start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();'})
 
-            if not user:
-                event.reply("please login - %s\n" % urlstring, raw=True)
-                return
-
+        try:
             bot.doevent(event)
         except NoSuchCommand:
             self.response.out.write("sorry no %s command found." % event.usercmnd)

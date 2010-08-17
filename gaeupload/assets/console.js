@@ -1,7 +1,7 @@
       // vars
       var hostname = window.location.hostname;
       var port = window.location.port;
-      var url = "https://" + hostname + ":" + port + "/dispatch/";
+      var url = "http://" + hostname + ":" + port + "/dispatch/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
