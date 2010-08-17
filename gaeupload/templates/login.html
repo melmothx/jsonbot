@@ -1,0 +1,32 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/assets/style.css" type="text/css" />
+    <title>Log in with OpenID</title>
+</head>
+<body>
+</body>
+</html>
+    <title>Login with Openid</title>
+    <div class="related">
+      <ul> 
+        <li align="center"><b><i>Welcome to {{ appname }}<b></i></li>
+      </ul>
+    </div> 
+    <div class="footer" id="info_div"><b>login page</b></div>
+    <div class="body" align="center">
+        <div><h1>{{ appname }}</h1></div><br>
+        <div id="topper_div"></div><br> 
+        <form method="get" action="/_ah/login_required">
+            {% if continue %}
+            <input type="text" name="continue" value="{{continue|escape}}" />
+            {% endif %}
+            <b>please enter the openid provider :</b>
+            <input type="text" name="openid" />
+            <input type="submit" value="Log In" />
+        </form>
+    </div>
+    <div class="footer" id="status_div"></div>
+    <div class="footer" id="doc_div"><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><i><b>DOCS</b></i></a></div>
+    <div class="footer" id="bottom_div"></div>
+</body>
+</html>

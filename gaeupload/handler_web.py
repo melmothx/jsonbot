@@ -84,16 +84,31 @@ class DispatchHandler(RequestHandler):
             event.cbtype = "WEB"
 
             (userhost, user, u, nick) = checkuser(self.response, self.request, event)
+            if not user:
+                continue_url = self.request.GET.get('continue')
+                openid_url = self.request.GET.get('openid')
+                if not openid_url:
+                    path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+                    self.response.out.write(template.render(path, {'continue': continue_url, 'appname': cfg['appname']}))
+                else:
+                    try:
+                        if not continue_url:
+                            self.redirect(users.create_login_url(continue_url, None, openid_url))
+                        else:
+                            self.redirect(users.create_login_url('/', None, openid_url))
+                    except TypeError:
+                        self.redirect(users.create_login_url('/', None, openid_url))
+                return
             urlstring = u""
-            for name, url in loginurl(self.request, self.response).iteritems():
-                urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
-            if not urlstring:
-                login = "can't log in"
-            elif user:
-                login = "logged in as: "
-            else:
-                login = u"please log in - %s" % urlstring[:-3]
-
+            #for name, url in loginurl(self.request, self.response).iteritems():
+            #    urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
+            #if not urlstring:
+            #    login = "can't log in"
+            #elif user:
+            #    login = "logged in as: "
+            #else:
+            #    login = u"please log in - %s" % urlstring[:-3]
+            login = "logged in"
             logout = logouturl(self.request, self.response)
 
             if not user:

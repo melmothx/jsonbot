@@ -17,6 +17,7 @@ from auth import finduser
 import os
 import time
 import socket
+import urlparse
 
 ## defines
 
@@ -27,9 +28,14 @@ openIdProviders = [
     'MySpace.com',
     'AOL.com',
     'MyOpenID.com',
+    'mononoke.nl'
 ]
 
 ## functions
+
+def create_openid_url(continue_url):
+  continue_url = urlparse.urljoin(self.request.url, continue_url)
+  return "/_ah/login?continue=%s" % urllib.quote(continue_url)
 
 def mini(response, input={}):
     """ display start html so that bot output can follow. """
