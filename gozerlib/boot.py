@@ -126,15 +126,15 @@ def savecmndtable():
     from gozerlib.commands import cmnds
     assert cmnds
 
+    if cmnds.subs:
+        for name, clist in cmnds.subs.iteritems():
+            if name:
+                if clist and len(clist) == 1:
+                    cmndtable.data[name] = clist[0].modname   
+
     for cmndname, c in cmnds.iteritems():
         if cmndname and c:
             cmndtable.data[cmndname] = c.modname   
-
-    if cmnds.subs:
-        for name, clist in cmnds.subs.iteritems():
-            if name and not name not in cmndtable.data:
-                if clist and len(clist) == 1:
-                    cmndtable.data[name] = clist[0].modname   
 
     logging.debug("saving command table")
     assert cmndtable

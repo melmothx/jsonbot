@@ -164,7 +164,7 @@ class Plugins(LazyDict):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
         if event.txt and not ' | ' in event.txt:
-            #self.reloadcheck(bot, event)
+            self.reloadcheck(bot, event)
             return cmnds.dispatch(bot, event, *args, **kwargs)
 
         if event.txt and ' | ' in event.txt:
