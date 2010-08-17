@@ -29,7 +29,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.2.1',
+    version='0.3b1',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
@@ -69,7 +69,7 @@ setup(
               'commonplugs',
               'socketplugs'],
     package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs']},
-    long_description = """ JSONBOT is a bot that stores all its data in json format. It runs on the Google Application Engine and can thus support wave, web and XMPP. Standalone programms are provided for IRC, XMPP and console. Both clientside and GAE side communicate through JSON either over XMPP. Relay IRC <-> Wave, XMPP <-> Wave, XMPP <-> IRC. """,
+    long_description = """ JSONBOT is a bot that stores all its data in json format. It runs on the Google Application Engine and can thus support wave, web and XMPP. Shell programms are provided for IRC, XMPP and console. Clientside and GAE side communicate through JSON over XMPP. """,
     install_requires = ['simplejson>1.0'],
     classifiers=[
         'Development Status :: 3 - Alpha',
