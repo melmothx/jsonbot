@@ -168,9 +168,9 @@ class Callbacks(object):
         """
 
         type = event.cbtype or event.cmnd
-        self.reloadcheck(event)
+        #self.reloadcheck(event)
         logging.debug("callbacks - %s - %s" % (event.userhost, type))
-
+        self.reloadcheck(event)
         # check for "ALL" callbacks
         if self.cbs.has_key('ALL'):
             for cb in self.cbs['ALL']:

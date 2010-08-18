@@ -28,12 +28,6 @@ cpy = copy.deepcopy
 if True:
 
     def preremotecb(bot, event):
-        if event.status == "done":
-            logging.debug("botbase - event is done .. ignoring")
-            return False
-        if event.ttl <= 0:
-            logging.debug("botbase - ttl of event is 0 .. ignoring")
-            return False
         if event.txt.startswith("{"):
             return True
         return False

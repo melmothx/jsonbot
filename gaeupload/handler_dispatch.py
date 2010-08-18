@@ -71,15 +71,15 @@ class Dispatch_Handler(RequestHandler):
 
         try:
             logging.debug("DISPATCH incoming: %s" % self.request.remote_addr)
+            if not gusers.get_current_user():
+                self.response.out.write("you are not logged in.")
+                self.response.set_status(400)
+                return
             #logging.debug(str(self.request))
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
             (userhost, user, u, nick) = checkuser(self.response, self.request, event)
-            if not user:
-                self.response.set_status(401)
-                return
-
             logging.warn("launching event: %s" % event.dump())
             bot.doevent(event)
 
