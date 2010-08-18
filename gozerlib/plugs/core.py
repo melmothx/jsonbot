@@ -397,12 +397,15 @@ cmnds.add('threads', handle_threads, ['USER', 'OPER'])
 examples.add('threads', 'show running threads', 'threads')
 
 def handle_statusline(bot, event):
-    if event.chan.data.feeds:
-        event.reply("<b>auth:</b> %s - <b>controlchars:</b> %s - <b>perms:</b> %s - <b>modfied:</b> %s - <b>feeds:</b> %s - <b>cache:</b> %s" % (event.userhost, event.chan.data.cc, ", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), ", ".join(event.chan.data.feeds), len(event.chan.data.outcache)), raw=True)
-    elif event.chan.data.cc:
-        event.reply("<b>auth:</b> %s - <b>controlchars:</b> %s - <b>perms:</b> %s - <b>modfied:</b> %s - <b>feeds:</b> no feeds - <b>cache:</b> %s" % (event.userhost, event.chan.data.cc, ", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), len(event.chan.data.outcache)), raw=True)
-    else:
-        event.reply("<b>auth:</b> %s - <b>controlchars:</b> ! - <b>perms:</b> %s - <b>modfied:</b> %s - <b>feeds:</b> no feeds - <b>cache:</b> %s" % (event.userhost, ", ".join(event.user.data.perms), time.ctime(event.chan.lastmodified), len(event.chan.data.outcache)), raw=True)
+    """ show a status line. """
+    event.reply("<b>auth:</b> %s - <b>controlchars:</b> %s - <b>perms:</b> %s - <b>cache:</b> %s" % (event.userhost, event.chan.data.cc, ", ".join(event.user.data.perms), len(event.chan.data.outcache)), raw=True)
 
 cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')
+
+def handle_topper(bot, event):
+    """ show a 'topper' startus line. """
+    event.reply("<b>forwards:</b> %s - <b>watched:</b> %s  - <b>feeds:</b> %s" % (", ".join(event.chan.data.forwards) or "none", ", ".join(event.chan.data.watched) or "none", ", ".join(event.chan.data.feeds) or "none"), raw=True)
+
+cmnds.add('topper', handle_topper, ['OPER', 'USER', 'GUEST'])
+examples.add('topper', 'show topper line', 'topper')

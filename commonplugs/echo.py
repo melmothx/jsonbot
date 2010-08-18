@@ -18,12 +18,12 @@ import logging
 
 def handle_echo(bot, event):
     """ echo txt to user. """
-    if event.how != "background" and not event.iscmnd():
+    if event.how != "background" and not event.iscmnd() and not event.isremote:
         if not event.isdcc:
             bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
             
 cmnds.add("echo", handle_echo, ['USER', 'OPER', 'GUEST'], threaded=True)
 examples.add("echo", "echo input", "echo yoooo dudes")
 
-callbacks.add("DISPATCH", handle_echo, threaded=True)
-callbacks.add("OUTPUT", handle_echo, threaded=True)
+#callbacks.add("DISPATCH", handle_echo, threaded=True)
+#callbacks.add("OUTPUT", handle_echo, threaded=True)

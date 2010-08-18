@@ -70,7 +70,10 @@ class Dispatch_Handler(RequestHandler):
         try:
             logging.debug("DISPATCH incoming: %s" % self.request.remote_addr)
             if not gusers.get_current_user():
-                self.response.out.write("you are not logged in.")
+                urlstring = u""
+                for name, url in loginurl(self.request, self.response).iteritems():
+                    urlstring += u'<a href="%s"><b>%s</b></a> - ' % (url, name)
+                self.response.out.write(u"you are not logged in. please login again. " + urlstring + "\n")
                 self.response.set_status(400)
                 return
             #logging.debug(str(self.request))

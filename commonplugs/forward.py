@@ -130,6 +130,11 @@ def handle_forwardadd(bot, event):
     if "@" in event.rest:
         forward.data.outs[event.rest] = bot.type
         forward.save()
+        if not event.rest in event.chan.forwards:
+            event.chan.forwards.append(event.rest)
+
+    if event.rest:
+        event.chan.save()
         event.done()
 
 cmnds.add("forward-add", handle_forwardadd, 'OPER')
@@ -175,6 +180,12 @@ def handle_forward(bot, event):
     forward.data.channels[event.channel] =  event.args
     for jid in event.args:
         forward.data.outs[jid] = bot.type
+        if not jid in event.chan.forwards:
+            event.chan.forwards.append(jid)
+
+    if event.args:
+        event.chan.save()
+
     forward.save()
     event.done()
 
@@ -190,6 +201,8 @@ def handle_forwardstop(bot, event):
         del forward.data.channels[event.channel]
         for jid in event.args:
             del forward.data.outs[jid]
+            if jid in event.chan.forwards:
+                event.chan.forwards.remove(jid)
         forward.save()
         event.done()
     except KeyError, ex:

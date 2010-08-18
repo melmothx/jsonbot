@@ -36,7 +36,7 @@
       // mainloop
 
       function loop() {
-          doCmnd("!outputcache", dobottom, "background"); 
+          update()
           lastpolled = new Date();
           //var lpdate = lastpolled.getTime();
           status("last polled at " + lastpolled.toUTCString());
@@ -74,7 +74,7 @@
         else {
             doCmnd('!outputcache', dobottom, "background");
             doCmnd('!statusline', doinfo, "background");
-            doCmnd('!uptime', dotop, "background");
+            doCmnd('!topper', dotop, "background");
         }
       }
 

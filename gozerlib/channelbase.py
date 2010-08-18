@@ -40,6 +40,8 @@ class ChannelBase(Persist):
         self.type = type
         self.lastmodified = time.time()
         self.data.feeds = self.data.feeds or []
+        self.data.forwards = self.data.forwards or []
+        self.data.watched = self.data.watched or []
         self.data.passwords = self.data.passwords or {}
         self.data.createdfrom = whichmodule()
         self.data.outcache = self.data.outcache or []

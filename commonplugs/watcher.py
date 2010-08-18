@@ -178,20 +178,12 @@ def handle_watcherstart(bot, event):
     else:
         target = event.rest
 
-    # you can only watch yourself on xmpp/wave
-    #if '@' in target and not event.userhost == target:
-    #    event.reply('you are not allowed to watch %s' % target)
-    #    return
+    watched.subscribe(bot.name, bot.type, target, event.channel)
+    if not target in event.chan.data.watchers:
+        event.chan.data.watchers.append(target)
+        event.chan.save()
 
-    watched.subscribe(bot.name, bot.type, event.rest, event.channel)
     event.done()
-
-    if bot.type == "wave":
-        wave = Wave(event.rest)
-        if wave:
-            wavebot = fleet.makebot('wave', 'wavewatchbot')
-            if wavebot:
-                wave.say(wavebot, "%s is now watching %s" % (event.channel, event.rest))
 
 cmnds.add('watcher-start', handle_watcherstart, 'USER')
 examples.add('watcher-start', 'start watching a channel/wave. ', 'watcher-start <channel>')
@@ -204,6 +196,9 @@ def handle_watcherstop(bot, event):
         target = event.rest
 
     watched.unsubscribe(bot.name, bot.type, target, event.channel)
+    if target in event.chan.data.watchers:
+        event.chan.data.watchers.remove(target)
+        event.chan.save()
     event.done()
 
 cmnds.add('watcher-stop', handle_watcherstop, 'USER')
