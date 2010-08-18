@@ -45,7 +45,6 @@ import types
 import logging
 
 logging.info(getversion('GAE XMPP'))
-boot()
 
 ## define
 

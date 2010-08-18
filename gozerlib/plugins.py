@@ -118,7 +118,8 @@ class Plugins(LazyDict):
                 logging.debug("plugins - %s is already loaded" % modname)
                 self[modname] = sys.modules[modname]
                 return sys.modules[modname]
-        else:
+            
+        if True:
             try:
                 self[modname] = reload(sys.modules[modname])
                 logging.debug("plugins - %s reloaded (true)" % modname)                
@@ -233,6 +234,7 @@ class Plugins(LazyDict):
         #logging.warn('cmnd: %s plugin: %s' % (event.usercmnd, plugin))
 
         if plugin in self:
+
             return False
 
         logging.debug("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))

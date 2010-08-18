@@ -51,7 +51,6 @@ import logging
 
 ## init
 logging.info(getversion('GAE WEB'))
-boot()
 
 ## define
 

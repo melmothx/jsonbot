@@ -46,8 +46,6 @@ import logging
 
 logging.warn(getversion('DISPATCH'))
 
-boot()
-
 bot = WebBot()
 
 class Dispatch_Handler(RequestHandler):
