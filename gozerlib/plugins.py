@@ -159,7 +159,7 @@ class Plugins(LazyDict):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname):
             self.unload(modname)
-        return self.load(modname, force=force)
+        return self.load(modname)
 
     def dispatch(self, bot, event, wait=False, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """

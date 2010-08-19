@@ -68,9 +68,8 @@ def boot(force=False, encoding="utf-8", umask=None):
 
     try:
         # set default settings
-        if not ongae:
-            reload(sys)
-            sys.setdefaultencoding(encoding)
+        reload(sys)
+        sys.setdefaultencoding(encoding)
     except AttributeError:
         pass
 
@@ -114,7 +113,7 @@ def boot(force=False, encoding="utf-8", umask=None):
 
     if not loaded:
         for plug in default_plugins:
-            plugs.load(plug)
+            plugs.reload(plug)
 
     logging.info("boot - done")
 
