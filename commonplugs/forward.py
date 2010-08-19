@@ -86,41 +86,6 @@ first_callbacks.add('WEB', forwardoutcb, forwardoutpre)
 first_callbacks.add('DISPATCH', forwardoutcb, forwardoutpre)
 first_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 
-## incoming data handler
-
-def forwardinpre(bot, event):
-    if event.forwarded:
-        return True
-
-def forwardincb(bot, event):
-    if cfg.strictforward and not forward_allow(event.channel):
-        return
-
-    container = Container()
-    container.load(event.txt)     
-    container.isremote = True
-    remoteevent = RemoteEvent()
-    remoteevent.isremote = True
-    remoteevent.printto = event.printto
-    remoteevent.forwarded = True
-    try:
-        digest = hmac.new(container.hashkey, container.payload, hashlib.sha512).hexdigest()
-        logging.debug("forward - digest is %s" % digest)
-        if container.digest == digest:
-            #logging.debug("forward - using payload - %s" % container.payload)
-            remoteevent.copyin(loads(container.payload))
-        else:
-            raise NoProperDigest()
-
-    except TypeError:
-        handle_exception()
-        logging.error("forward - can't load payload - %s" % container.payload)
-        return
-    #logging.debug(u"forward - incoming - %s" % remoteevent.dump())
-    remote_callbacks.check(bot, remoteevent)
-
-remote_callbacks.add('MESSAGE', forwardincb, forwardinpre)
-
 ## commands
 
 def handle_forwardadd(bot, event):
@@ -180,8 +145,8 @@ def handle_forward(bot, event):
     forward.data.channels[event.channel] =  event.args
     for jid in event.args:
         forward.data.outs[jid] = bot.type
-        if not jid in event.chan.forwards:
-            event.chan.forwards.append(jid)
+        if not jid in event.chan.data.forwards:
+            event.chan.data.forwards = event.args
 
     if event.args:
         event.chan.save()
@@ -201,8 +166,8 @@ def handle_forwardstop(bot, event):
         del forward.data.channels[event.channel]
         for jid in event.args:
             del forward.data.outs[jid]
-            if jid in event.chan.forwards:
-                event.chan.forwards.remove(jid)
+            if jid in event.chan.data.forwards:
+                event.chan.data.forwards.remove(jid)
         forward.save()
         event.done()
     except KeyError, ex:

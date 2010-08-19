@@ -74,7 +74,7 @@ class Dispatch_Handler(RequestHandler):
                 for name, url in loginurl(self.request, self.response).iteritems():
                     urlstring += u'<a href="%s"><b>%s</b></a> - ' % (url, name)
                 self.response.out.write(u"you are not logged in. please login again. " + urlstring + "\n")
-                logging.warn("denied access for %s - %s - %s" % (self.request.remote_addr, cont, openid))
+                logging.warn("denied access for %s - %s - %s" % self.request.remote_addr)
                 self.response.set_status(400)
                 return
             #logging.debug(str(self.request))
