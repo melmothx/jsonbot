@@ -53,12 +53,12 @@ class OpenIdLoginHandler(webapp.RequestHandler):
         logging.info('openid - %s' % cont)
         openid = self.request.get('openid')
         if openid:
-            logging.info('openid - creating for %s' % openid)
             login_url = users.create_login_url(cont, None, openid)
-            logging.info('openid - redirecting to url %s' % login_url)
+            logging.info('openid - redirecting to url %s (%s)' % (login_url, openid))
             self.redirect(login_url)
         else:
-            self.error(400)
+            logging.warn("denied access for %s - %s - %s" % (self.request.remote_addr, cont, openid))
+            self.send_error(400)
 
 ## the application 
 

@@ -74,13 +74,14 @@ class Dispatch_Handler(RequestHandler):
                 for name, url in loginurl(self.request, self.response).iteritems():
                     urlstring += u'<a href="%s"><b>%s</b></a> - ' % (url, name)
                 self.response.out.write(u"you are not logged in. please login again. " + urlstring + "\n")
+                logging.warn("denied access for %s - %s - %s" % (self.request.remote_addr, cont, openid))
                 self.response.set_status(400)
                 return
             #logging.debug(str(self.request))
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
-            (userhost, user, u, nick) = checkuser(self.response, self.request, event)
+            #(userhost, user, u, nick) = checkuser(self.response, self.request, event)
             logging.warn("launching event: %s" % event.dump())
             bot.doevent(event)
 
