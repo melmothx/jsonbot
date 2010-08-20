@@ -51,7 +51,7 @@ import logging
 # defines
 
 cfg = PersistConfig()
-cfg.define('udp', 1) # set to 0 to disnable
+cfg.define('udp', 0) # set to 0 to disnable
 cfg.define('udpparty', 0)
 cfg.define('udpipv6', 0)
 cfg.define('udpmasks', ['192.168*', ])
