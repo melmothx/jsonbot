@@ -40,7 +40,7 @@ class Watched(PlugPersist):
         jid = unicode(jid)
         if not self.data.channels.has_key(channel):
             self.data.channels[channel] = []
-        if not [type, jid] in self.data.channels[channel]:
+        if not [botname, type, jid] in self.data.channels[channel]:
             self.data.channels[channel].append([botname, type, jid])
             self.save()
 
