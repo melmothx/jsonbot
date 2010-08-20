@@ -118,7 +118,9 @@ class Ircevent(EventBase):
         if self.txt:
             if self.txt[0] == ":":
                 self.txt = self.txt[1:]
-            self.usercmnd = self.txt.split()[0]
+            if self.txt:
+                self.usercmnd = self.txt.split()[0]
+
         #logging.debug("irc - event - %s %s %s" % (self.cmnd, self.arguments, self.txt))
 
         # set ircevent attributes
