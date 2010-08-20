@@ -63,9 +63,6 @@ handlers:
 - url: /
   script: handler_web.py
 
-- url: /.*
-  script: handler_wave.py
-
 inbound_services:
 
 - xmpp_message   
