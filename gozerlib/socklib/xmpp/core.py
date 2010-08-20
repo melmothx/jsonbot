@@ -33,6 +33,7 @@ import copy
 import logging
 import thread
 import cgi
+import xml
 
 ## locks
 
