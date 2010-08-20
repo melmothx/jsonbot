@@ -45,7 +45,7 @@ def dumpelement(element, ignore=[], prev={}):
     try:
         newer = dict(prev) or {}
     except (ValueError, KeyError):
-        if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+        if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType, types.DictType]:
             return prev
         else:
             logging.debug("lazydict - returning prev - type %s" % type(prev))
@@ -70,15 +70,18 @@ def dumpelement(element, ignore=[], prev={}):
                 logging.debug("lazydict - dump - ignoring %s" % type(prop))
                 newer[name] = unicode(type(prop))
                 continue                
+
             try:
-                 if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+                 if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType, types.DictType]:
                      newer[name] = prop
                  else:
-                     dumps(prop)
-                     newer[name] = prop
-                #     newer[name] = str(type(prop))
-                #dumps(prop)
-                #newer[name] = prop
+                     try:
+                         dumps(prop)
+                         newer[name] = prop
+                     except TypeError:
+                         from gozerlib.utils.generic import strippedtxt
+                         dumps(strippedtxt(prop))
+                         newername = strippedtxt(prop)
             except (TypeError, AttributeError):
                 newer[name] = unicode(type(prop))
                 try:
@@ -87,15 +90,12 @@ def dumpelement(element, ignore=[], prev={}):
                     else:
                         return str(type(prop))
                 except (TypeError, AttributeError):
-                    if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+                    if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType, types.DictType]:
                         newer[name] =  prop
                     else:
                         newer[name] = str(type(prop))
 
         except TypeError:
-            #if type(element) in [types.DictType, types.ListType, types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
-            #    newer[name] = element
-            #else:
             newer[name] = str(type(element))
 
     for name in newer.keys():
