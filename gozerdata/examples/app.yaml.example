@@ -11,7 +11,10 @@ default_expiration: "1s"
 
 handlers:
 
-- url: /_ah/login.*
+- url: /_ah/login_required
+  script: handler_openid.py
+
+- url: /_ah/login
   script: handler_openid.py
 
 - url: /_ah/queue/deferred
@@ -62,6 +65,9 @@ handlers:
 
 - url: /
   script: handler_web.py
+
+- url: /.*
+  script: handler_wave.py
 
 inbound_services:
 

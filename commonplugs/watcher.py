@@ -144,7 +144,10 @@ def watchcallback(bot, event):
         else:
             orig = event.nick
 
-        txt = u"[%s] %s" % (orig, event.txt)
+        if orig == bot.nick:
+            txt = u"[!] %s" % event.txt
+        else:
+            txt = u"[%s] %s" % (orig, event.txt)
         #logging.debug("watcher - %s - %s" % (type, txt))
         if txt.count('] [') > 2:
             logging.debug("watcher - %s - skipping %s" % (type, txt))
