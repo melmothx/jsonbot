@@ -47,6 +47,7 @@ setup(
                'bin/jsb-rollback',
                'bin/jsb-run',
                'bin/jsb-stop',
+               'bin/jsb-udp',
                'bin/jsb-upload'],
     packages=['gozerlib', 
               'gozerlib.utils', 
