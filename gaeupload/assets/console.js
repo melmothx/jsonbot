@@ -68,13 +68,13 @@
       function update(what) {
         if (what=="feeds") {
             doCmnd('!outputcache', dobottom, "background");
-            doCmnd('!statusline', doinfo), "background";
-            doCmnd('!rss-feeds', dotop, "background");
+            doCmnd('!statusline', dotop), "background";
+            doCmnd('!rss-feeds', doinfo, "background");
         }
         else {
             doCmnd('!outputcache', dobottom, "background");
-            doCmnd('!statusline', doinfo, "background");
-            doCmnd('!topper', dotop, "background");
+            doCmnd('!statusline', dotop, "background");
+            doCmnd('!topper', doinfo, "background");
         }
       }
 

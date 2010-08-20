@@ -398,14 +398,14 @@ examples.add('threads', 'show running threads', 'threads')
 
 def handle_statusline(bot, event):
     """ show a status line. """
-    event.reply("<b>auth:</b> %s - <b>controlchars:</b> %s - <b>perms:</b> %s - <b>cache:</b> %s" % (event.userhost, event.chan.data.cc, ", ".join(event.user.data.perms), len(event.chan.data.outcache)), raw=True)
+    event.reply("<b>controlchars:</b> %s - <b>perms:</b> %s" % (event.chan.data.cc, ", ".join(event.user.data.perms)))
 
 cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')
 
 def handle_topper(bot, event):
     """ show a 'topper' startus line. """
-    event.reply("<b>forwards:</b> %s - <b>watched:</b> %s  - <b>feeds:</b> %s" % (", ".join(event.chan.data.forwards) or "none", ", ".join(event.chan.data.watched) or "none", ", ".join(event.chan.data.feeds) or "none"), raw=True)
+    event.reply("<b>forwards:</b> %s - <b>watched:</b> %s  - <b>feeds:</b> %s" % (", ".join(event.chan.data.forwards) or "none", ", ".join(event.chan.data.watched) or "none", ", ".join(event.chan.data.feeds) or "none"))
 
 cmnds.add('topper', handle_topper, ['OPER', 'USER', 'GUEST'])
 examples.add('topper', 'show topper line', 'topper')
