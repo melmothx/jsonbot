@@ -61,7 +61,7 @@ class EventBase(LazyDict):
     def finish(self):
         if not self.user:
             if mainconfig.auto_register:
-                self.bot.users.addguest(self..userhost)
+                self.bot.users.addguest(self.userhost)
             self.user = self.bot.users.getuser(self.userhost)
         if not self.user:
             raise NoSuchUser(self.auth or self.userhost)
