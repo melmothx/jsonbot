@@ -39,6 +39,8 @@ def makedirs(ddir=None):
         shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
     except ImportError:
         pass
+    if not os.path.isdir(ddir + '/examples/'):
+        os.mkdir(ddir + '/examples/')
     if not os.path.isdir(ddir + '/config/'):
         os.mkdir(ddir + '/config/')
     if not os.path.isdir(ddir + '/users/'):
