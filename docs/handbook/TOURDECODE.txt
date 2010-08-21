@@ -1,0 +1,56 @@
+TOURDECODE
+==========
+
+this document goes through all the files and directories installed by the
+bot and explains what it does.
+
+toplevel
+~~~~~~~~
+
+::
+
+    19:26:47 bart@done:~/jsonbot/0.3/work/docs$ ls
+    bin	         gaeupload	  gozerlib     README	 simplejson   waveplugs
+    commonplugs  gozerdata	  LICENSE      releases  socketplugs
+    docs	 MANIFEST.in      setup.py     tests
+
+whats it for
+------------
+
+most of the links here are directories.
+
+::
+
+    * bin - contains all the programs provided by JSONBOT.
+    * commonplugs - all the plugins that work on both GAE and shell.
+    * docs - has all the documentation .. run ./bib/jsb-dodocs to populate this
+             dir. (needs sphinx installed)
+    * gaeupload - template directory of every file uploaded to the GAE
+    * gozerdata - contain all the bots data and config files. copy this dir into
+                  new bots with the ./bin/jsb-import command.
+    * gozerlib - is the main library of the bot .. has all the classes and
+                 modules etc.
+    * LICENSE - license file
+    * MANIFEST.in - file used to determine what needs to be installed by setup.py
+    * README - the bots README file
+    * releases - directory where the uploads (releases) for the GAE are stored.
+                 releases get cloned from the gaeupload dir. 
+    * setup.py - the setup script for JSONBOT. use python setup.py install to
+                 install the bot global (or use easy_install jsonbot).
+    * simplejson - json library used by JSONBOT
+    * socketplugs - plugins that only work on socket based bots (shell).
+    * tests - some unittests for JSONBOT. use jsb-test to run them (uses nose).
+    * waveplugs - plugins that only work on the wave platform
+
+bin directory
+-------------
+
+:: 
+
+    19:44:15 bart@done:~/jsonbot/0.3/work/docs/bin$ ls
+    jsb	        jsb-doitall          jsb-irc	     jsb-nose	   jsb-test
+    jsb-clone   jsb-edit	     jsb-jsonserver  jsb-release   jsb-udp
+    jsb-debug   jsb-fleet	     jsb-makedocs    jsb-rollback  jsb-upload
+    jsb-dodocs  jsb-import	     jsb-makehtml    jsb-run	   jsb-xmpp
+    jsb-doit    jsb-installplug      jsb-nest	     jsb-stop
+

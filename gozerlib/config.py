@@ -231,12 +231,12 @@ class Config(LazyDict):
 
             # move temp file to original
             configtmp.close()
-            try:
-                os.rename(filename + '.tmp', self.cfile)
-            except WindowsError:
+            #try:
+            os.rename(filename + '.tmp', self.cfile)
+            #except WindowsError:
                 # no atomic operation supported on windows! error is thrown when destination exists
-                os.remove(filename)
-                os.rename(filename + '.tmp', self.cfile)
+            #    os.remove(filename)
+            #    os.rename(filename + '.tmp', self.cfile)
 
             return teller
 
