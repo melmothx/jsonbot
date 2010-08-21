@@ -106,7 +106,7 @@ homedir = os.path.expanduser("~")
 try:
     shutil.move(release + os.sep + 'gozerdata' + os.sep + 'config', release + os.sep + 'gozerdata' + os.sep + 'config.bck')
 except IOError, ex:
-    print "TAKE NOTE ! no %s dir available" % os.path.join(release, "gozerdata", "config")    
+    print "TAKE NOTE ! no %s dir available" % os.path.join(release, "gozerdata", "config")
 
 if not os.path.isdir(homedir + os.sep + 'jsonregs'):
    os.mkdir(homedir + os.sep + 'jsonregs')
@@ -119,7 +119,7 @@ try:
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'cron.yaml', release + os.sep + 'cron.yaml')
 except (OSError, IOError), ex:
-    print "TAKE NOTE ! no %s available .. %s" % (os.path.join(homedir, 'jsonregs', targetin), str(ex))
+    print "TAKE NOTE: %s" % str(ex)
     try:
         copyover(release + os.sep + 'gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
         print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
