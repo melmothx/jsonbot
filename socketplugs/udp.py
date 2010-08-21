@@ -50,6 +50,8 @@ import logging
 
 # defines
 
+udplistener = None
+
 cfg = PersistConfig()
 cfg.define('udp', 0) # set to 0 to disnable
 cfg.define('udpparty', 0)
@@ -255,6 +257,7 @@ def init():
 
     """ init the udp plugin. """
     if cfg['udp']:
+        global udplistener
         start_new_thread(udplistener._listen, ())
         start_new_thread(udplistener._handleloop, ())
         start_new_thread(udplistener._outloop, ())
@@ -263,6 +266,7 @@ def init():
 def shutdown():
 
     """ shutdown the udp plugin. """
+    global udplistener
     if udplistener:
         udplistener.stop = 1
         udplistener.outqueue.put_nowait((None, None))

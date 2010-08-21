@@ -58,6 +58,7 @@ class EventBase(LazyDict):
 
     def finish(self):
         self.user = self.bot.users.getuser(self.auth or self.userhost)
+        self.chan = ChannelBase(self.channel)
         self.makeargs()
         #logging.info("%s - %s - %s - %s" % (self.type, self.cbtype, self.usercmnd, self.userhost))
 
@@ -73,7 +74,6 @@ class EventBase(LazyDict):
         self.auth = self.origin
         self.userhost = self.origin
         self.channel = event.channel
-        self.chan = ChannelBase(self.channel)
 
     def copyin(self, eventin):
         """ copy in an event. """
