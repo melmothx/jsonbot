@@ -118,12 +118,7 @@ class Users(Persist):
             if user:
                 return user
         except KeyError:
-            try:
-                user = self.byname(self.data.names[userhost])
-                if user:
-                    return user
-            except KeyError:
-                return 
+            return
 
     ### Check functions
     def exist(self, name):

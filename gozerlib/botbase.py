@@ -201,7 +201,6 @@ class BotBase(LazyDict):
         e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname
-        e.chan = ChannelBase(e.channel)
         e.finish()
         first_callbacks.check(self, e)
         #e.leave()
@@ -217,7 +216,6 @@ class BotBase(LazyDict):
         e.auth = origin
         e.userhost = origin
         e.channel = channel
-        e.chan = ChannelBase(channel)
         e.txt = txt
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
