@@ -182,8 +182,8 @@ def handle_watcherstart(bot, event):
         target = event.rest
 
     watched.subscribe(bot.name, bot.type, target, event.channel)
-    if not target in event.chan.data.watchers:
-        event.chan.data.watchers.append(target)
+    if not target in event.chan.data.watched:
+        event.chan.data.watched.append(target)
         event.chan.save()
 
     event.done()
@@ -199,8 +199,8 @@ def handle_watcherstop(bot, event):
         target = event.rest
 
     watched.unsubscribe(bot.name, bot.type, target, event.channel)
-    if target in event.chan.data.watchers:
-        event.chan.data.watchers.remove(target)
+    if target in event.chan.data.watched:
+        event.chan.data.watched.remove(target)
         event.chan.save()
     event.done()
 

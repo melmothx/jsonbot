@@ -12,12 +12,16 @@ __license__ = 'BSD'
 from gozerlib.commands import cmnds
 from gozerlib.utils.url import striphtml, useragent
 from gozerlib.examples import examples
+from gozerlib.utils.exception import handle_exception
 
 ## google imports
+
+gotgoogle = False
 
 try:
     from google.appengine.api.memcache import get, set
     import google
+    gotgoogle = True
 except ImportError:
     def get(name, *args, **kwargs):
         return ""
@@ -92,9 +96,6 @@ def get_tinyurl(url):
     try:
         res = urllib2.urlopen(req).readlines()
         #raise Exception("mekker")
-    except google.appengine.api.urlfetch_errors.DownloadError, e:
-        logging.warn('tinyurl - %s - DownloadError: %s' % (url, str(e)))
-        return
 
     except urllib2.URLError, e:
         logging.error('tinyurl - %s - URLError: %s' % (url, str(e)))
@@ -102,6 +103,13 @@ def get_tinyurl(url):
     except urllib2.HTTPError, e:
         logging.error('tinyurl - %s - HTTP error: %s' % (url, str(e)))
         return
+    except Exception, ex:
+        if "DownloadError" in str(ex):
+            logging.warn('tinyurl - %s - DownloadError: %s' % (url, str(e)))
+        else:
+            handle_exception()
+        return
+
     urls = []
     for line in res:
         if line.startswith('<blockquote><b>'):
