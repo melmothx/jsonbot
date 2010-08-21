@@ -1,24 +1,6 @@
 INTRODUCTION
 ============
 
-Welcome to JSONBOT, i will explain here what you can do with the bot and how
-to get started with it.
-
-What is JSONBOT
-~~~~~~~~~~~~~~~
-
-JSONBOT is all of the following:
-
-    * a shell console bot
-    * a shell IRC bot
-    * a shell XMPP bot
-    * a Web bot running on Google Application Engine
-    * a XMPP bot running on Google Application Engine
-    * a Google Wave bot running op Google Application Engine
-    * the XMPP bots are used to communicate between bots
-    * plugin infrastructure to write your own functionality
-    * event driven framework by the use of callbacks
-
 Getting Started
 ~~~~~~~~~~~~~~~
 

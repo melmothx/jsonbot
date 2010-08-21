@@ -36,7 +36,7 @@ class XMPPEvent(EventBase):
         return XMPPEvent().copyin(self)
 
     def normalize(self, what):
-        #what = re.sub("\s+", " ", what)
+        what = re.sub("\s+", " ", unicode(what))
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
         what = what.replace("&lt;b&gt;", "")
@@ -100,9 +100,6 @@ class XMPPEvent(EventBase):
 
         (res1, res2) = self.less(result, 1000+extend)
         self.write(res1, raw)
-
-        if res2:
-            self.write(res2, raw)
 
     def write(self, txt, raw=False):
 
