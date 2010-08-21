@@ -63,8 +63,6 @@ class EventBase(LazyDict):
             if mainconfig.auto_register:
                 self.bot.users.addguest(self.userhost)
             self.user = self.bot.users.getuser(self.userhost)
-        if not self.user:
-            raise NoSuchUser(self.auth or self.userhost)
         self.chan = ChannelBase(self.channel)
         self.makeargs()
         #logging.info("%s - %s - %s - %s" % (self.type, self.cbtype, self.usercmnd, self.userhost))
