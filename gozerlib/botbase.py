@@ -148,8 +148,6 @@ class BotBase(LazyDict):
         first_callbacks.check(self, event)
         callbacks.check(self, event)
         last_callbacks.check(self, event)
-        #e.leave()
-
         event.callbackdone = True
 
     def ownercheck(self, userhost):

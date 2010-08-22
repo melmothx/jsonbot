@@ -166,7 +166,7 @@ class Callbacks(object):
             :param event: event that needs to be checked
 
         """
-
+        event.finish()
         type = event.cbtype or event.cmnd
         #self.reloadcheck(event)
         logging.debug("callbacks - %s - %s" % (event.userhost, type))

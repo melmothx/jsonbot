@@ -59,7 +59,6 @@ class EventBase(LazyDict):
         return e
 
     def finish(self):
-        self.botname = self.bot.name
         if not self.user:
             if mainconfig.auto_register:
                 self.bot.users.addguest(self.userhost)
