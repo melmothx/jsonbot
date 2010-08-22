@@ -191,8 +191,8 @@ class BotBase(LazyDict):
             return
         e.bot = self
         e.origin = origin
-        e.ruserhost = self.botname
-        e.userhost = self.botname
+        e.ruserhost = self.botname +'@' + self.uuid
+        e.userhost = e.ruserhost
         e.channel = channel
         e.origtxt = txt
         e.txt = txt

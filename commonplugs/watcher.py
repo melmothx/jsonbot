@@ -37,6 +37,7 @@ class Watched(PlugPersist):
 
     def subscribe(self, botname, type, channel, jid):
         """ subscrive a jid to a channel. """ 
+        channel = channel.lower()
         jid = unicode(jid)
         if not self.data.channels.has_key(channel):
             self.data.channels[channel] = []
@@ -48,6 +49,7 @@ class Watched(PlugPersist):
 
     def unsubscribe(self, botname, type, channel, jid):
         """ unsubscribe a jid from a channel. """ 
+        channel = channel.lower()
         try:
             self.data.channels[channel].remove([botname, type, unicode(jid)])
         except (KeyError, TypeError, ValueError):
@@ -58,6 +60,7 @@ class Watched(PlugPersist):
 
     def subscribers(self, channel):
         """ get all subscribers of a channel. """
+        channel = channel.lower()
         try:
             return self.data.channels[channel]
         except KeyError:
@@ -65,10 +68,12 @@ class Watched(PlugPersist):
 
     def check(self, channel):
         """ check if channel has subscribers. """
+        channel =  channel.lower()
         return self.data.channels.has_key(channel)
 
     def channels(self, channel):
         """ return all subscribers of a channel. """
+        channel = channel.lower()
         try:
             return self.data.channels[channel]
         except KeyError:
@@ -76,12 +81,14 @@ class Watched(PlugPersist):
 
     def enable(self, channel):
         """ add channel to whitelist. """
+        channel =  channel.lower()
         if not channel in self.data.whitelist:
             self.data.whitelist.append(channel)
             self.save()
 
     def disable(self, channel):
         """ remove channel from whitelist. """
+        channel = channel.lower()
         try:
             self.data.whitelist.remove(channel)
         except ValueError:
@@ -92,10 +99,12 @@ class Watched(PlugPersist):
 
     def available(self, channel):
         """ check if channel is on whitelist. """
+        channel = channel.lower()
         return channel in self.data.whitelist
 
     def channels(self, channel):
         """ return channels on whitelist. """
+        channel = channel.lower()
         res = []
         for chan, targets in self.data.channels.iteritems():
             if channel in str(targets):
@@ -147,7 +156,7 @@ def watchcallback(bot, event):
         if orig == bot.nick:
             txt = u"[!] %s" % event.txt
         else:
-            txt = u"[%s] %s" % (orig, event.txt)
+            txt = u"[%s!%s] %s" % (orig, type, event.txt)
         #logging.debug("watcher - %s - %s" % (type, txt))
         if txt.count('] [') > 2:
             logging.debug("watcher - %s - skipping %s" % (type, txt))
