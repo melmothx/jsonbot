@@ -113,12 +113,6 @@ class Plugins(LazyDict):
 
     def load(self, modname, force=False):
         """ load a plugin. """
-        if not force:
-            if modname in sys.modules:
-                logging.debug("plugins - %s is already loaded" % modname)
-                self[modname] = sys.modules[modname]
-                return sys.modules[modname]
-            
         if True:
             try:
                 self[modname] = reload(sys.modules[modname])
@@ -159,7 +153,7 @@ class Plugins(LazyDict):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname):
             self.unload(modname)
-        return self.load(modname)
+        return self.load(modname, force=force)
 
     def dispatch(self, bot, event, wait=False, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """

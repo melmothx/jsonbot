@@ -156,7 +156,7 @@ def watchcallback(bot, event):
         if orig == bot.nick:
             txt = u"[!] %s" % event.txt
         else:
-            txt = u"[%s!%s] %s" % (orig, type, event.txt)
+            txt = u"[%s!%s] %s" % (orig, event.bottype, event.txt)
         #logging.debug("watcher - %s - %s" % (type, txt))
         if txt.count('] [') > 2:
             logging.debug("watcher - %s - skipping %s" % (type, txt))
@@ -185,10 +185,7 @@ remote_callbacks.add('DISPATCH', watchcallback, prewatchcallback)
 
 def handle_watcherstart(bot, event):
     """ [<channel>] .. start watching a target (channel/wave). """
-    if not event.rest:
-        target = event.origin
-    else:
-        target = event.rest
+    target = event.rest or event.origin or event.channel
 
     watched.subscribe(bot.name, bot.type, target, event.channel)
     if not target in event.chan.data.watched:

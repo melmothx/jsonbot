@@ -123,7 +123,10 @@ cmnds.add('test-unicode', handle_testunicode, 'OPER')
 examples.add('test-unicode', 'test if unicode output path is clear', 'test-unicode')
 
 def handle_testdocmnd(bot, ievent):
-    bot.docmnd(ievent.origin, ievent.channel, ievent.rest)
+    if ievent.rest:
+        bot.docmnd(ievent.origin, ievent.channel, ievent.rest)
+    else:
+        ievent.missing("<cmnd>")
 
 cmnds.add('test-docmnd', handle_testdocmnd, 'OPER')
 examples.add('test-docmnd', 'test the bot.docmnd() method', 'test-docmnd version')
