@@ -46,18 +46,14 @@ if True:
                         event.usercmnd = event.txt.split()[0]
                     else:
                         event.usercmnd = None
-                    event.makeargs()
                     event.finish()
-                    go = True
                 elif event.txt.startswith(cc):
                     event.txt = event.txt[len(cc) + 1:]
                     if event.txt:
                         event.usercmnd = event.txt.split()[0]
                     else:
                         event.usercmnd = None
-                    event.makeargs()
                     event.finish()
-                    go = True
 
                 result = bot.plugs.dispatch(bot, event)
             else:

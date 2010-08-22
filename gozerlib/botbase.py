@@ -172,7 +172,6 @@ class BotBase(LazyDict):
     def out(self, printto, txt, event, origin, groupchat):
         pass
 
-
     def say(self, channel, txt, result=[], event=None, *args, **kwargs):
         self._raw(self.makeresponse(txt, result))
         return self
@@ -201,7 +200,6 @@ class BotBase(LazyDict):
         e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname
-        e.finish()
         first_callbacks.check(self, e)
         #e.leave()
 
@@ -219,7 +217,6 @@ class BotBase(LazyDict):
         e.txt = txt
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
-        e.finish()
 
         if self.plugs:
             try:
