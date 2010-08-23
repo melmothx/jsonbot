@@ -83,6 +83,7 @@ class Dispatch_Handler(RequestHandler):
             event.type = "DISPATCH"
             #(userhost, user, u, nick) = checkuser(self.response, self.request, event)
             logging.warn("launching event: %s" % event.dump())
+            event.finish()
             bot.doevent(event)
 
         except NoSuchCommand:

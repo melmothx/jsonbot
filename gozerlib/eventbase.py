@@ -65,6 +65,9 @@ class EventBase(LazyDict):
             self.user = self.bot.users.getuser(self.userhost)
         if self.channel:
             self.chan = ChannelBase(self.channel)
+        elif self.userhost:
+            self.chan = ChannelBase(self.userhost)
+
         self.makeargs()
         #logging.info("%s - %s - %s - %s" % (self.type, self.cbtype, self.usercmnd, self.userhost))
 
@@ -89,7 +92,7 @@ class EventBase(LazyDict):
         self.update(eventin)
         if eventin.has_key("sock"):
             self.sock = eventin['sock']
-        if eventin.has_key("chan"):
+        if eventin.has_key("chan") and eventin['chan']:
             self.chan = eventin['chan']
         if eventin.has_key("user"):
             self.user = eventin['user']

@@ -158,6 +158,7 @@ class Plugins(LazyDict):
     def dispatch(self, bot, event, wait=False, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
+        event.finish()
         if event.txt and not ' | ' in event.txt:
             self.reloadcheck(bot, event)
             return cmnds.dispatch(bot, event, *args, **kwargs)

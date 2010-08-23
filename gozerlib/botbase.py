@@ -105,7 +105,8 @@ class BotBase(LazyDict):
         self.setstate()
         if not fleet.byname(self.name):
             fleet.bots.append(self)
-        defaultrunner.start()
+        if not self.isgae:
+            defaultrunner.start()
 
     def setstate(self, state=None):
         """ set state on the bot. """

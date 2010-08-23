@@ -82,17 +82,25 @@ class RunnerLoop(ThreadLoop):
 
     """ dedicated threadloop for bot commands/callbacks. """
 
+    def put(self, *data):
+
+        """ put data on task queue. """
+
+        self.queue.put_nowait(data)
+        if not self.stopped and not self.running:
+            self._loop()
 
     def _loop(self):
         logging.debug('%s - starting threadloop' % self.name)
         self.running = True
-
+        nrempty = 0
         while not self.stopped:
 
             try:
                 data = self.queue.get_nowait()
             except Queue.Empty:
-                if self.stopped:
+                nrempty += 1
+                if self.stopped or nrempty > 10:
                     break
                 time.sleep(0.1)
                 continue
