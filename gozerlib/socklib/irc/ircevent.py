@@ -23,6 +23,8 @@ import types
 import copy
 import logging
 
+## defines
+
 cpy = copy.deepcopy
 
 try:
@@ -31,6 +33,8 @@ try:
         dotchars = ' .. '
 except KeyError:
     dotchars = ' .. '
+
+## functions
 
 def makeargrest(ievent):
 
@@ -52,6 +56,8 @@ def makeargrest(ievent):
         ievent.rest = ""   
 
     ievent.command = ievent.txt.split(' ')[0]
+
+## classes
 
 class Ircevent(EventBase):
 
@@ -190,7 +196,7 @@ class Ircevent(EventBase):
             self.bot.out(target, res1, 'msg')
             self.bot.outmonitor(self.userhost, target, res1, self)
 
-# postfix count aka how many arguments
+## postfix count aka how many arguments
 
 pfc = {}
 pfc['NICK'] = 0
