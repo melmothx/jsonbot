@@ -12,6 +12,7 @@
 
 ## gozerlib imports
 
+from gozerlib.periodical import interval, periodical
 from gozerlib.persist import Persist, PlugPersist
 from gozerlib.utils.url import geturl2, striphtml, useragent
 from gozerlib.utils.exception import handle_exception
@@ -1039,22 +1040,12 @@ class Rsswatcher(Rssdict):
 
         return feeds
 
-class Looper(TimedLoop):
-
-    def handle(self, *args, **kwargs):
-        taskmanager.dispatch('periodical', *args, **kwargs)
-
 # the watcher object 
 watcher = Rsswatcher('rss')
-looper = Looper('rss')
-
 assert(watcher)
-assert(looper)
 
 def dosync(feedname):
-
     """ main level function to be deferred by periodical. """
-
     try:
        localwatcher = Rsswatcher('rss', feedname)
 
@@ -1064,8 +1055,8 @@ def dosync(feedname):
     except RssException, ex:
        logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
+@interval(300, 1)
 def doperiodical(*args, **kwargs):
-
     """ rss periodical function. """
     names = watcher.data['names']
     logging.debug("rss - periodical - launching %s" % ", ".join(names))
@@ -1079,43 +1070,29 @@ def doperiodical(*args, **kwargs):
                 start_new_thread(dosync, (feed, ))
             except Exception, ex:
                 handle_exception()
+                time.sleep(1)
 
 taskmanager.add('periodical', doperiodical)
 
-def pollerpeek(bot, event):
-
-    """ peek on poll event. """
-
-    feeds = watcher.getfeeds(bot.name, event.channel)
-    logging.debug('rss - poller - %s' % str(feeds))
-
-    for feed in feeds:
-        watcher.peek(feed, event)
-
-#callbacks.add('POLLER', pollerpeek)
-
 def init():
     taskmanager.add('rss', doperiodical)
-    try:
-        from google.appengine.ext.deferred import defer
-    except ImportError:
-        global looper
-        looper.start()
+    doperiodical()
+
+def start():
+    logging.warn("rss plugin started")
+
+callbacks.add('START', start)
 
 def shutdown():
     taskmanager.unload('rss')
-    looper.stop()
+    periodical.unload('rss')
 
 def size():
-
     """ return number of watched rss entries. """
-
     return watcher.size()
 
 def save():
-
     """ save watcher data. """
-
     watcher.save()
 
 def handle_rssclone(bot, event):

@@ -42,7 +42,6 @@ import os
 
 opts = makeopts()
 cfg = makeconfig('irc', opts)
-cfg.name = opts.name or 'default-IRCBot'
 cfg.type = "irc"
 cfg.save()
 
@@ -51,10 +50,10 @@ cfg.save()
 setloglevel(cfg.loglevel)
 
 makedirs()
-boot()
+#boot()
 
-from gozerlib.plugins import plugs
-plugs.loadall()
+#from gozerlib.plugins import plugs
+#plugs.loadall()
 
 if opts.doresume and os.path.isfile(opts.doresume):
     logging.warn("irc - resuming from %s" % opts.doresume)

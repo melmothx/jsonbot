@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from periodical import periodical
 from runner import defaultrunner
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
@@ -57,6 +58,7 @@ class BotBase(LazyDict):
         else:
             self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
 
+
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
         if cfg:
             self.cfg = cfg
@@ -65,8 +67,14 @@ class BotBase(LazyDict):
             self.cfg = Config(self.fleetdir + os.sep + u'config')
         logging.debug(u"botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
+        try:
+            import waveapi
+            self.isgae = True
+            logging.warn("botbase - bot is a GAE bot (%s)" % botname)
+        except ImportError:
+            self.isgae = False
+            logging.warn("botbase - bot is a shell bot (%s)" % botname)
         self.starttime = time.time()
-        self.isgae = False
         self.type = "base"
         self.status = "init"
         self.networkname = self.cfg.networkname or botname or ""
@@ -107,6 +115,8 @@ class BotBase(LazyDict):
             fleet.bots.append(self)
         if not self.isgae:
             defaultrunner.start()
+            periodical.start()
+        self.dostart(self.botname, self.type)
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -180,6 +190,25 @@ class BotBase(LazyDict):
     def saynocb(self, channel, txt, result=[], event=None, *args, **kwargs):
         self._raw(self.makeresponse(txt, result))
         return self
+
+    def dostart(self, botname, bottype, *args, **kwargs):
+        """ create an OUTPUT event with provided txt and send it to callbacks. """
+        e = EventBase()
+        e.bot = self
+        e.botname = self.name
+        e.bottype = bottype
+        e.origin = botname
+        e.ruserhost = self.botname +'@' + self.uuid
+        e.userhost = e.ruserhost
+        e.channel = botname
+        e.origtxt = time.time()
+        e.txt = e.origtxt
+        e.cbtype = 'START'
+        e.botoutput = False
+        e.iscmnd = False
+        e.ttl = 1
+        e.nick = self.nick or self.botname
+        first_callbacks.check(self, e)
 
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """

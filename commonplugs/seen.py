@@ -126,26 +126,24 @@ class Seen(Pdod):
 
 ## init
 
-seen = None
+seen = Seen()
 
-def init():
-    global seen
-    seen = Seen()
-    callbacks.add('PRIVMSG', seen.privmsgcb)
-    callbacks.add('JOIN', seen.joincb)
-    callbacks.add('PART', seen.partcb)
-    callbacks.add('QUIT', seen.quitcb)
-    callbacks.add('Presence', seen.xmppcb)
-    cmnds.add('seen', seen.handle_seen, ['USER', 'CLOUD'])
-    examples.add('seen', 'show last spoken txt of <nikc>', 'seen dunker')
-    return 1
+## callbacks and commands register
+
+callbacks.add('PRIVMSG', seen.privmsgcb)
+callbacks.add('JOIN', seen.joincb)
+callbacks.add('PART', seen.partcb)
+callbacks.add('QUIT', seen.quitcb)
+callbacks.add('Presence', seen.xmppcb)
+cmnds.add('seen', seen.handle_seen, ['USER', 'CLOUD'])
+examples.add('seen', 'show last spoken txt of <nikc>', 'seen dunker')
+
+## shutdown
 
 def shutdown():
-    global seen
-    if seen:
-        seen.save()
-        del seen
+    seen.save()
+
+## size
 
 def size():
-    global seen
     return seen.size()

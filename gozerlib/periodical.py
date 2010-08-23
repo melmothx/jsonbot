@@ -22,6 +22,7 @@ import sys
 import time
 import thread
 import types
+import logging
 
 ## locks
 
@@ -168,7 +169,7 @@ str(self.func))
         if self.next <= time.time():
             logging.debug('periodical - running %s - %s' % (str(self.func), self.description))
             self.next = time.time() + self.interval
-            thr.start_new_thread(self.do, ())
+            self.do()
             self.counts += 1
             if self.repeat > 0 and self.counts >= self.repeat:
                 return False # remove this job
@@ -185,11 +186,12 @@ class Periodical(object):
     def __init__(self):
         self.jobs = []
         self.running = []
-        self.run = True
+        self.run = False
 
     def start(self):
         """ start the periodical scheduler. """
-        thr.start_new_thread(self.checkloop, ())
+        if not self.run:
+            thr.start_new_thread(self.checkloop, ())
 
     def addjob(self, sleeptime, repeat, function, description="" , *args, **kw): 
         """
@@ -234,12 +236,15 @@ class Periodical(object):
 
     def checkloop(self):
         """ main loop of the periodical scheduler."""
+        logging.info("periodical - starting checkloop")
+        self.run = True
         while self.run:
             for job in self.jobs:
                 if job.next <= time.time():
                     self.runjob(job)
 
             time.sleep(self.SLEEPTIME)
+        logging.info("periodical - stopping checkloop")
 
     def runjob(self, job):
         """ run a periodical job. """

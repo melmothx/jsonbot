@@ -61,7 +61,7 @@ class ThreadLoop(object):
 
         """ start the thread. """
 
-        if not self.running:
+        if not self.running and not self.stopped:
             start_new_thread(self._loop, ())
 
     def stop(self):
