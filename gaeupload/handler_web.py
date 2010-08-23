@@ -82,10 +82,10 @@ class HomePageHandler(RequestHandler):
             (userhost, user, u, nick) = checkuser(self.response, self.request)
 
             if not user:
-                login(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': 'logged in', 'logouturl': 'JSONBOT', 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
+                login(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': 'not logged in', 'logouturl': 'JSONBOT', 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
             else:
                 logout = logouturl(self.request, self.response)
-                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': 'not logged in', 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
+                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
 
         logging.warn("web_handler - out")
         

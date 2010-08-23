@@ -70,10 +70,6 @@ class Dispatch_Handler(RequestHandler):
         try:
             logging.debug("DISPATCH incoming: %s" % self.request.remote_addr)
             if not gusers.get_current_user():
-                urlstring = u""
-                for name, url in loginurl(self.request, self.response).iteritems():
-                    urlstring += u'<a href="%s"><b>%s</b></a> - ' % (url, name)
-                self.response.out.write(u"you are not logged in. please login again. " + urlstring + "\n")
                 logging.warn("denied access for %s - %s - %s" % self.request.remote_addr)
                 self.response.set_status(400)
                 return
@@ -81,9 +77,9 @@ class Dispatch_Handler(RequestHandler):
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
+            event.finish()
             #(userhost, user, u, nick) = checkuser(self.response, self.request, event)
             logging.warn("launching event: %s" % event.dump())
-            event.finish()
             bot.doevent(event)
 
         except NoSuchCommand:

@@ -104,8 +104,8 @@ class WebEvent(EventBase):
         #    logging.debug(u'web - setting channel to %s' % unicode(self.waveid))
         #    self.channel = self.waveid
 
-        self.chan = ChannelBase(self.channel)
-        self.makeargs()
+        #self.chan = ChannelBase(self.channel)
+        #self.makeargs()
         #logging.debug(u'web - in - %s - %s' % (self.userhost, self.txt)) 
         return self
 
