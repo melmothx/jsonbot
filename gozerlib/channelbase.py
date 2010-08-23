@@ -11,7 +11,7 @@ from gozerlib.utils.lazydict import LazyDict
 from gozerlib.persist import Persist
 from gozerlib.datadir import datadir
 from gozerlib.utils.trace import whichmodule
-from gozerlib.errors import NoChannelProvided
+from gozerlib.errors import NoChannelProvided, NoChannelSet
 
 ## basic imports
 

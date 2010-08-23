@@ -80,18 +80,12 @@ class HomePageHandler(RequestHandler):
                 urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
 
             (userhost, user, u, nick) = checkuser(self.response, self.request)
-            if not user:
-                path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
-                self.response.out.write(template.render(path, {'appname': getversion(), 'urlstring': urlstring[:-3]}))
-                return
-
-            login = "logged in"
-            logout = logouturl(self.request, self.response)
 
             if not user:
-                login(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
+                login(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': 'logged in', 'logouturl': 'JSONBOT', 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
             else:
-                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
+                logout = logouturl(self.request, self.response)
+                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': 'not logged in', 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
 
         logging.warn("web_handler - out")
         

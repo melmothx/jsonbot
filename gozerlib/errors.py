@@ -43,6 +43,9 @@ class NoSuchUser(JsonBotError):
 class NoSuchBotType(JsonBotError):
     pass
 
+class NoChannelSet(JsonBotError):
+    pass
+
 class NoSuchWave(JsonBotError):
     pass
 

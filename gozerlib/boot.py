@@ -70,7 +70,7 @@ def boot(force=False, encoding="utf-8", umask=None):
         # set default settings
         reload(sys)
         sys.setdefaultencoding(encoding)
-    except AttributeError:
+    except (AttributeError, IOError):
         pass
 
     try:
