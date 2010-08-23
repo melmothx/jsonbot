@@ -223,7 +223,9 @@ class Callbacks(object):
             if cb.threaded:
                 start_new_thread(cb.func, (bot, event))
             else:
-                if event.speed:
+                if bot.isgae:
+                    cb.func(bot, event)
+                elif event.speed:
                     cbrunners[10-int(event.speed)].put(cb.modname, cb.func, bot, event)
                 else:
                     cbrunners[5].put(cb.modname, cb.func, bot, event)

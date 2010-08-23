@@ -145,7 +145,9 @@ class Commands(LazyDict):
                 if self.wait:
                     thread.join()
             else:
-                if event.speed:
+                if bot.isgae:
+                    target.func(bot, event)
+                elif event.speed:
                     cmndrunners[10-int(event.speed)].put(target.modname, target.func, bot, event)
                 else:
                     cmndrunners[5].put(target.modname, target.func, bot, event)
