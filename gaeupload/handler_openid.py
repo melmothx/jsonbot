@@ -51,7 +51,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
         cont = self.request.get('continue')
         conturl = self.create_openid_url(cont)
         logging.info('openid - %s' % cont)
-        openid = self.request.get('openid')
+        openid = self.request.get('openid_identifier')
         if openid:
             login_url = users.create_login_url(cont, None, openid)
             logging.info('openid - redirecting to url %s (%s)' % (login_url, openid))
@@ -63,8 +63,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
 ## the application 
 
 application = webapp.WSGIApplication([
-                               ('/_ah/login_required', OpenIdLoginHandler),
-                               ('/_ah/login', OpenIdLoginHandler)],
+                               ('/_ah/login_required', OpenIdLoginHandler)],
                                debug=True)
 
 ## main

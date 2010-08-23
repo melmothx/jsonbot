@@ -82,10 +82,10 @@ class HomePageHandler(RequestHandler):
             urlstring = u""
             for name, url in loginurl(self.request, self.response).iteritems():
                 urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
-            event = WebEvent(bot=bot).parse(self.response, self.request)
-            event.cbtype = "WEB"
+            #event = WebEvent(bot=bot).parse(self.response, self.request)
+            #event.cbtype = "WEB"
 
-            (userhost, user, u, nick) = checkuser(self.response, self.request, event)
+            (userhost, user, u, nick) = checkuser(self.response, self.request)
             if not user:
                 path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
                 self.response.out.write(template.render(path, {'appname': getversion(), 'urlstring': urlstring[:-3]}))
@@ -95,16 +95,9 @@ class HomePageHandler(RequestHandler):
             logout = logouturl(self.request, self.response)
 
             if not user:
-                start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
+                login(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': 'not logged in yet', 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
             else:
                 start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
-
-        try:
-            bot.doevent(event)
-        except NoSuchCommand:
-            self.response.out.write("sorry no %s command found." % event.usercmnd)
-        except Exception, ex:
-            handle_exception(event)
 
         logging.warn("web_handler - out")
 

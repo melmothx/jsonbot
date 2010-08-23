@@ -1,11 +1,18 @@
-<html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <link rel="stylesheet" href="/assets/style.css" type="text/css" />
-    <title>Log in with OpenID</title>
+    <link rel="stylesheet" href="/assets/openid.css" type="text/css" />
+    <script type="text/javascript" src="assets/jquery-1.2.6.min.js"></script>
+    <script type="text/javascript" src="assets/openid-jquery.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            openid.init('openid_identifier');
+        });
+    </script>
 </head>
 <body>
-</body>
-</html>
     <title>Login with Openid</title>
     <div class="related">
       <ul> 
@@ -17,13 +24,20 @@
     <div class="body" align="center">
         <div><h1>{{ appname }}</h1></div><br>
         <div id="topper_div"><b>please choose from: </b>{{ urlstring }}<br><br></div>
-        <form method="POST" action="/_ah/login_required">
-            {% if continue %}
-            <input type="text" name="continue" value="{{continue|escape}}" />
-            {% endif %}
-            <b>or enter the openid provider:</b>
-            <input type="text" name="openid" />
-            <input type="submit" value="Log In" />
+        <form action="/_ah/login_required" method="post" id="openid_form">
+	    <input type="hidden" name="cont" value="continue" />
+	    <fieldset>
+    		<legend>Sign-in or Create New Account</legend>
+    		<div id="openid_choice">
+	    		<p>Please click your account provider:</p>
+	    		<div id="openid_btns"></div>
+			</div>
+			
+			<div id="openid_input_area">
+				<input id="openid_identifier" name="openid" type="text" value="http://" />
+				<input id="openid_submit" type="submit" value="Sign-In"/>
+			</div>
+	    </fieldset>
         </form>
     </div>
     <div class="footer" id="status_div"></div>
