@@ -31,15 +31,16 @@ class ThreadLoop(object):
     def _loop(self):
         logging.debug('%s - starting threadloop' % self.name)
         self.running = True
-
+        nrempty = 0
         while not self.stopped:
 
             try:
                 data = self.queue.get_nowait()
             except Queue.Empty:
-                if self.stopped:
+                nrempty += 1
+                if self.stopped or nrempyt > 200:
                     break
-                time.sleep(0.1)
+                time.sleep(0.05)
                 continue
 
             if self.stopped:
@@ -110,7 +111,7 @@ class RunnerLoop(ThreadLoop):
             self.handle(*data)
 
         self.running = False
-        self.debug('%s - stopping threadloop' % self.name)
+        logging.debug('%s - stopping threadloop' % self.name)
 
 class TimedLoop(ThreadLoop):
 

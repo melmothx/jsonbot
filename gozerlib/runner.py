@@ -20,6 +20,7 @@ import Queue
 import time
 import thread
 import random
+import logging
 
 ## define
 
@@ -63,7 +64,6 @@ class Runner(RunnerLoop):
 
         try:
             name = getname(str(func))
-            stats.up('runners', name)
             logging.debug('runner - running %s: %s' % (descr, name))
             self.starttime = time.time()
             func(*args, **kwargs)
@@ -80,7 +80,7 @@ class Runner(RunnerLoop):
 
 ## CommandRunner class
 
-class CommandRunner(Runner):
+class BotEventRunner(Runner):
 
     def handle(self, descr, func, bot, ievent, *args, **kwargs):
 
@@ -102,14 +102,13 @@ class CommandRunner(Runner):
 
         try:
             name = getname(str(func))
-            stats.up('runners', name)
-            stats.up('runners', bot.name)
             logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
             func(bot, ievent, *args, **kwargs)
 
-            for queue in ievent.queues:
-                queue.put_nowait(None)
+            if ievent.queues:
+                for queue in ievent.queues:
+                    queue.put_nowait(None)
 
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
@@ -261,10 +260,10 @@ def runners_stop():
 ## defines
 
 # callback runners
-cbrunners = [Runners(12-i) for i in range(10)]
+cbrunners = [Runners(12-i, BotEventRunner) for i in range(10)]
 
 # command runners
-cmndrunners = [Runners(20-i, CommandRunner) for i in range(10)]
+cmndrunners = [Runners(20-i, BotEventRunner) for i in range(10)]
 
 # sweep over all runners 
 @minutely

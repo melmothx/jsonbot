@@ -14,6 +14,7 @@ from threads import getname, start_new_thread
 from utils.exception import handle_exception
 from utils.trace import calledfrom, whichplugin
 from utils.dol import Dol
+from runner import cbrunners
 
 ## basic imports
 
@@ -222,7 +223,11 @@ class Callbacks(object):
             if cb.threaded:
                 start_new_thread(cb.func, (bot, event))
             else:
-                cb.func(bot, event)
+                if event.speed:
+                    cbrunners[10-int(event.speed)].put(cb.modname, cb.func, bot, event)
+                else:
+                    cbrunners[5].put(cb.modname, cb.func, bot, event)
+
             #event.leave()
             return True
 
