@@ -140,7 +140,7 @@ class Commands(LazyDict):
         event.iscmnd = True
         logging.info('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
-            if target.threaded:
+            if target.threaded and not bot.isgae:
                 thread = start_bot_command(target.func, (bot, event))
                 if self.wait:
                     thread.join()

@@ -220,7 +220,7 @@ class Callbacks(object):
             event.iscallback = True
 
             # launch the callback
-            if cb.threaded:
+            if cb.threaded and not bot.isgae:
                 start_new_thread(cb.func, (bot, event))
             else:
                 if bot.isgae:

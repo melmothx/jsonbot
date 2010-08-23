@@ -52,10 +52,6 @@ import logging
 ## init
 logging.info(getversion('GAE WEB'))
 
-## define
-
-bot = WebBot(name='webbot')
-
 ## classes
 
 class HomePageHandler(RequestHandler):
@@ -82,8 +78,6 @@ class HomePageHandler(RequestHandler):
             urlstring = u""
             for name, url in loginurl(self.request, self.response).iteritems():
                 urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
-            #event = WebEvent(bot=bot).parse(self.response, self.request)
-            #event.cbtype = "WEB"
 
             (userhost, user, u, nick) = checkuser(self.response, self.request)
             if not user:
@@ -100,7 +94,7 @@ class HomePageHandler(RequestHandler):
                 start(self.response, {'appname': cfg['appname'] , 'plugins': getpluginlist() , 'who': userhost, 'loginurl': login, 'logouturl': logout, 'onload': 'consoleinit();', 'urlstring': urlstring[:-3]})
 
         logging.warn("web_handler - out")
-
+        
 class FeedListHandler(RequestHandler):
 
     """ the bots web command dispatcher. """
