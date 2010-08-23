@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from runner import defaultrunner
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
@@ -104,6 +105,7 @@ class BotBase(LazyDict):
         self.setstate()
         if not fleet.byname(self.name):
             fleet.bots.append(self)
+        defaultrunner.start()
 
     def setstate(self, state=None):
         """ set state on the bot. """

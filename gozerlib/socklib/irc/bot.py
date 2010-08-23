@@ -254,7 +254,7 @@ class IRCBot(Irc):
             return
 
         # were connected .. start dcc loop
-        self._dodcc(sock, nick, userhost)
+        self._dodcc(sock, nick, userhost, userhost)
 
     @threaded
     def start(self):

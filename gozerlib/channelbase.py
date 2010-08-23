@@ -39,6 +39,7 @@ class ChannelBase(Persist):
         self.id = id
         self.type = type
         self.lastmodified = time.time()
+        self.data.id = id
         self.data.feeds = self.data.feeds or []
         self.data.forwards = self.data.forwards or []
         self.data.watched = self.data.watched or []

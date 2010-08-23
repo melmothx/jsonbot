@@ -10,7 +10,7 @@ from utils.trace import whichmodule
 #from eventhandler import mainhandler
 from plugins import plugs
 from fleet import fleet
-from runner import runners_stop
+from runner import defaultrunner
 from gozerlib.config import cfg as config
 
 ## basic imports
@@ -31,7 +31,7 @@ def globalshutdown():
     except:
         pass
 
-    runners_stop()
+    defaultrunner.stop()
     logging.info('shutting down fleet')
     fleet.exit()
     logging.info('shutting down plugins')

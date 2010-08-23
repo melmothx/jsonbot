@@ -18,7 +18,7 @@ from utils.lazydict import LazyDict
 from errors import NoSuchCommand
 from config import cfg as mainconfig
 from persiststate import UserState
-from runner import cmndrunners
+from runner import defaultrunner
 
 ## basic imports
 
@@ -147,10 +147,12 @@ class Commands(LazyDict):
             else:
                 if bot.isgae:
                     target.func(bot, event)
-                elif event.speed:
-                    cmndrunners[10-int(event.speed)].put(target.modname, target.func, bot, event)
                 else:
-                    cmndrunners[5].put(target.modname, target.func, bot, event)
+                    defaultrunner.put(target.modname, target.func, bot, event)
+                #elif event.speed:
+                #    cmndrunners[10-int(event.speed)].put(target.modname, target.func, bot, event)
+                #else:
+                #    cmndrunners[5].put(target.modname, target.func, bot, event)
             e = event
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))

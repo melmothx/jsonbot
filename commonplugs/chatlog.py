@@ -246,7 +246,7 @@ def log(bot, ievent):
             'txt': '%s (%s) has left'%(ievent.nick, ievent.userhost),
         })
     elif ievent.cmnd in ('QUIT', 'NICK'):
-        if not ievent.user or not ievent.user.channels:
+        if not ievent.user or not ievent.user.data.channels:
             logging.debug("chatlog - can't find joined channels for %s" % ievent.userhost)
             return
         cmd = ievent.cmnd

@@ -14,7 +14,7 @@ from threads import getname, start_new_thread
 from utils.exception import handle_exception
 from utils.trace import calledfrom, whichplugin
 from utils.dol import Dol
-from runner import cbrunners
+from runner import defaultrunner
 
 ## basic imports
 
@@ -225,10 +225,12 @@ class Callbacks(object):
             else:
                 if bot.isgae:
                     cb.func(bot, event)
-                elif event.speed:
-                    cbrunners[10-int(event.speed)].put(cb.modname, cb.func, bot, event)
                 else:
-                    cbrunners[5].put(cb.modname, cb.func, bot, event)
+                    defaultrunner.put(cb.modname, cb.func, bot, event)
+                #elif event.speed:
+                #    cbrunners[10-int(event.speed)].put(cb.modname, cb.func, bot, event)
+                #else:
+                #    cbrunners[5].put(cb.modname, cb.func, bot, event)
 
             #event.leave()
             return True

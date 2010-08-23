@@ -260,15 +260,17 @@ def runners_stop():
 ## defines
 
 # callback runners
-cbrunners = [Runners(12-i, BotEventRunner) for i in range(10)]
+#cbrunners = [Runners(12-i, BotEventRunner) for i in range(10)]
 
 # command runners
-cmndrunners = [Runners(20-i, BotEventRunner) for i in range(10)]
+#cmndrunners = [Runners(20-i, BotEventRunner) for i in range(10)]
 
 # sweep over all runners 
-@minutely
-def cleanall():
-    for runners in cbrunners + cmndrunners:
-        runners.cleanup()
+#@minutely
+#def cleanall():
+#    for runners in cbrunners + cmndrunners:
+#        runners.cleanup()
 
-cleanall()
+#cleanall()
+
+defaultrunner = BotEventRunner()
