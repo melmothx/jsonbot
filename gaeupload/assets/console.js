@@ -36,7 +36,7 @@
       // mainloop
 
       function loop() {
-          update()
+          update();
           lastpolled = new Date();
           //var lpdate = lastpolled.getTime();
           status("last polled at " + lastpolled.toUTCString());
