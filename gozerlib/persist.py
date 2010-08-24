@@ -37,7 +37,7 @@ try:
     ## google imports
 
     from google.appengine.ext import db
-    from google.appengine.api.memcache import get, set, replace
+    from google.appengine.api.memcache import get, set
     from google.appengine.api.datastore_errors import Timeout
 
     logging.debug("persist - using BigTable based Persist")
@@ -158,6 +158,19 @@ except ImportError:
 
     persistlock = thread.allocate_lock()
     persistlocked = lockdec(persistlock)
+    cache = {}
+    
+    def get(name):
+        try:
+            logging.debug("persist - fetching %s from cache" % name)
+            return cache[name]
+        except KeyError:
+            return None
+
+    def set(name, data):
+        global cache
+        logging.debug("persist - returning %s from cache" % name)
+        cache[name] = data
 
     ## classes
 
@@ -181,7 +194,11 @@ except ImportError:
             logging.debug('persist - reading %s' % self.fn)
             # see if file exists .. if not initialize data to default
             try:
-                datafile = open(self.fn, 'r')
+                data = get(self.fn)
+                if not data:
+                   datafile = open(self.fn, 'r')
+                   data = datafile.read()
+                   datafile.close()
             except IOError, ex:
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
@@ -192,8 +209,7 @@ except ImportError:
 
             # load the JSON data into attribute
             try:
-                self.data = load(datafile)
-                datafile.close()
+                self.data = loads(data)
                 if type(self.data) == types.DictType:
                     d = LazyDict()
                     d.update(self.data)
@@ -206,6 +222,7 @@ except ImportError:
         def save(self):
             """ persist data attribute. """
             try:
+                set(self.fn, self.data)
                 dirr = []
                 for p in self.fn.split(os.sep)[:-1]:
                     dirr.append(p)

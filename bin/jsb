@@ -55,9 +55,7 @@ import os
 ## start the bot
 
 makedirs()
-boot()
 plugs = Plugins()
-plugs.loadall()
 users = Users()
 userid = getpass.getuser() + '@' + cfg.uuid
 users.make_owner(userid)

@@ -234,7 +234,6 @@ class Plugins(LazyDict):
         #logging.warn('cmnd: %s plugin: %s' % (event.usercmnd, plugin))
 
         if plugin in self:
-
             return False
 
         logging.debug("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))

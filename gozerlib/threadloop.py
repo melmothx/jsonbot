@@ -37,7 +37,7 @@ class ThreadLoop(object):
             try:
                 data = self.queue.get_nowait()
             except Queue.Empty:
-                time.sleep(0.05)
+                time.sleep(0.1)
                 continue
 
             if self.stopped:
@@ -99,11 +99,12 @@ class RunnerLoop(ThreadLoop):
             try:
                 data = self.queue.get_nowait()
             except Queue.Empty:
-                nrempty += 1
-                if self.stopped or nrempty > 10:
-                    break
+                #nrempty += 1
+                #if self.stopped or nrempty > 20:
+                #    break
                 time.sleep(0.1)
                 continue
+            #nrempty = 0
 
             if self.stopped:
                 break
