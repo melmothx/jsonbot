@@ -192,10 +192,10 @@ class BotBase(LazyDict):
         return self
 
     def dostart(self, botname, bottype, *args, **kwargs):
-        """ create an OUTPUT event with provided txt and send it to callbacks. """
+        """ create an START event and send it to callbacks. """
         e = EventBase()
         e.bot = self
-        e.botname = self.name
+        e.botname = botname
         e.bottype = bottype
         e.origin = botname
         e.ruserhost = self.botname +'@' + self.uuid
@@ -208,7 +208,8 @@ class BotBase(LazyDict):
         e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname
-        first_callbacks.check(self, e)
+        callbacks.check(self, e)
+        logging.warn("botbase - START event (%s) send to callbacks" % botname)
 
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """

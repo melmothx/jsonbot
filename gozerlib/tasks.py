@@ -4,6 +4,7 @@
 
 ## gozerlib imports 
 
+from gozerlib.periodical import periodical
 from gozerlib.utils.trace import calledfrom
 from gozerlib.plugins import plugs
 

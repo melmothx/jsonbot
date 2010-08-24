@@ -332,7 +332,7 @@ class Rssdict(PlugPersist):
             else:
                 self.feeds[feedname] = Rssitem(feedname)
 
-        self.startwatchers()
+        #self.startwatchers()
 
     def save(self, namein=None):
 
@@ -790,6 +790,10 @@ class Rsswatcher(Rssdict):
                     continue
 
                 got = True
+                if type == "irc" and not '#' in channel:
+                    nick = getwho(bot, channel)
+                else:
+                    nick = None                        
 
                 if rssitem.markup.get(jsonstring([name, type, channel]), 'reverse-order'):
                     res2 = res2[::-1]
@@ -807,7 +811,7 @@ class Rsswatcher(Rssdict):
                         else:
 
                             try:
-                                bot.say(channel, response)
+                                bot.say(nick or channel, response)
                             except Exception, ex:
                                 handle_exception()
 
@@ -828,7 +832,7 @@ class Rsswatcher(Rssdict):
                     else:
 
                         try:
-                            bot.say(channel, response)
+                            bot.say(nick or channel, response)
                         except Exception, ex:
                             handle_exception()
 
@@ -1080,13 +1084,9 @@ def doperiodical(*args, **kwargs):
 
 def init():
     taskmanager.add('rss', doperiodical)
-    loop()
-     
-@interval(300, 0)
-def loop():
-    doperiodical()
+    periodical.addjob(300, 0, doperiodical)
 
-def start():
+def start(bot, event):
     logging.warn("rss plugin started")
 
 callbacks.add('START', start)

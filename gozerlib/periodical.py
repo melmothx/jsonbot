@@ -169,7 +169,7 @@ str(self.func))
         if self.next <= time.time():
             logging.debug('periodical - running %s - %s' % (str(self.func), self.description))
             self.next = time.time() + self.interval
-            self.do()
+            thr.start_new_thread(self.do, ())
             self.counts += 1
             if self.repeat > 0 and self.counts >= self.repeat:
                 return False # remove this job
@@ -211,6 +211,7 @@ class Periodical(object):
         job.group = calledfrom(sys._getframe())
         job.description = str(description) or whichmodule()
         self.jobs.append(job)
+        logging.warn("periodical - added %s job" % str(function))
         return job.pid
 
     def changeinterval(self, pid, interval):

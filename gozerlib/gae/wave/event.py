@@ -216,8 +216,6 @@ class WaveEvent(EventBase):
         self.result.append(outtxt)
         (res1, res2) = self.less(outtxt)
         self.write(res1)
-        if res2:
-            self.write(res2)
 
     def replyroot(self, txt, resultlist=[], event=None, origin="", dot=", ", *args, **kwargs):
         """ reply to wave root. """
@@ -232,8 +230,6 @@ class WaveEvent(EventBase):
         self.result.append(outtxt)
         (res1, res2) = self.less(outtxt)
         self.write_root(res1)
-        if res2:
-            self.write_root(res2)
 
     def write(self, outtxt, end="\n"):
         """ write outtxt to the server. """
