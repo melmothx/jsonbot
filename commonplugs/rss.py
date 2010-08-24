@@ -16,7 +16,7 @@ from gozerlib.periodical import interval, periodical
 from gozerlib.persist import Persist, PlugPersist
 from gozerlib.utils.url import geturl2, striphtml, useragent
 from gozerlib.utils.exception import handle_exception
-from gozerlib.utils.generic import strippedtxt, fromenc, toenc, jsonstring
+from gozerlib.utils.generic import strippedtxt, fromenc, toenc, jsonstring, getwho
 from gozerlib.utils.rsslist import rsslist
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.statdict import StatDict
@@ -203,14 +203,14 @@ sleeptime=30*60, running=0):
 
         url = self.data['url']
         result = feedparser.parse(url, agent=useragent())
-        logging.info("rss - fetch - got result from %s" % url)
+        logging.debug("rss - fetch - got result from %s" % url)
         
         if result and result.has_key('bozo_exception'):
             logging.info('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
 
         try:
             status = result.status
-            logging.info("rss - status is %s" % status)
+            logging.debug("rss - status is %s" % status)
         except AttributeError:
             status = 200
 
@@ -528,19 +528,25 @@ class Rsswatcher(Rssdict):
                 res2 = result.entries
 
                 if not res2:
-                    logging.info("no updates for %s (%s) feed available" % (rssitem.data.name, channel))
+                    logging.debug("rss - no updates for %s (%s) feed available" % (rssitem.data.name, channel))
                     continue
+
+                if type == "irc" and not '#' in channel:
+                    nick = getwho(bot, channel)
+                else:
+                    nick = None                        
 
                 if rssitem.markup.get(jsonstring([name, type, channel]), 'reverse-order'):
                     res2 = res2[::-1]
 
                 if rssitem.markup.get(jsonstring([name, type, channel]), 'all-lines'):
 
+
                     for i in res2:
                         response = self.makeresponse(name, type, [i, ], channel)
 
                         try:
-                            bot.say(channel, response)
+                            bot.say(nick or channel, response)
                         except Exception, ex:
                             handle_exception()
 
@@ -554,7 +560,7 @@ class Rsswatcher(Rssdict):
                         response = self.makeresponse(name, type, res2, channel)
 
                     try:
-                        bot.say(channel, response)
+                        bot.say(nick or channel, response)
                     except Exception, ex:
                         handle_exception()
 
@@ -1041,6 +1047,7 @@ class Rsswatcher(Rssdict):
         return feeds
 
 # the watcher object 
+
 watcher = Rsswatcher('rss')
 assert(watcher)
 

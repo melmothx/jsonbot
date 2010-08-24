@@ -130,10 +130,14 @@ class Plugins(LazyDict):
                 logging.debug('plugins - %s init called' % modname)
                 return self[modname]
             except KeyError:
-                try:
-                    del sys.modules[modname]
-                except KeyError:
-                    pass
+                pass
+
+        if force:
+            try:
+                del sys.modules[modname]
+                logging.warn("plugins - removed %s from sys.modules" % modname)
+            except KeyError:
+                pass
 
         logging.info("plugins - loading %s" % modname)
         mod = _import(modname)
