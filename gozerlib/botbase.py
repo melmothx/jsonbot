@@ -118,6 +118,7 @@ class BotBase(LazyDict):
         if not self.isgae:
             defaultrunner.start()
             periodical.start()
+        time.sleep(1)
         self.dostart(self.botname, self.type)
 
     def setstate(self, state=None):
