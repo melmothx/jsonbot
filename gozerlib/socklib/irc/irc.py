@@ -100,7 +100,6 @@ class Irc(BotBase):
             self.port = 6667
         self.connecttime = 0
         self.connectlock = thread.allocate_lock()
-        self.connectok = threading.Event()
         self.encoding = 'utf-8'
         self.blocking = 1
         self.lastoutput = 0

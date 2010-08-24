@@ -153,8 +153,11 @@ class Plugins(LazyDict):
         except AttributeError:
             return self[modname]
 
-        init()
-        logging.debug('plugins - %s init called' % modname)
+        try:
+            init()
+            logging.debug('plugins - %s init called' % modname)
+        except Exception, ex:
+            handle_exception()
 
         return self[modname]
 

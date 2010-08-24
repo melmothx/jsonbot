@@ -89,7 +89,6 @@ class SXMPPBot(XMLStream, BotBase):
         self.privwait = XMPPWait()
         self.errorwait = XMPPErrorWait()
         self.jabber = True
-        self.connectok = threading.Event()
         self.jids = {}
         self.topics = {}
         self.timejoined = {}

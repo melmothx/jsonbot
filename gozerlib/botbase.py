@@ -38,6 +38,7 @@ import getpass
 import os
 import thread
 import types
+import threading
 
 ## define
 
@@ -101,6 +102,7 @@ class BotBase(LazyDict):
         self.plugs = plugs or coreplugs 
         self.outcache = Less(3)
         self.userhosts = {}
+        self.connectok = threading.Event()
         if not self.nick:
             self.nick = u'jsonbot'
 
