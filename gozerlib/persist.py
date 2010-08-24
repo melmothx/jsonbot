@@ -222,7 +222,8 @@ except ImportError:
         def save(self):
             """ persist data attribute. """
             try:
-                set(self.fn, self.data)
+                data = dumps(self.data)
+                set(self.fn, data)
                 dirr = []
                 for p in self.fn.split(os.sep)[:-1]:
                     dirr.append(p)
