@@ -1043,7 +1043,6 @@ class Rsswatcher(Rssdict):
 # the watcher object 
 watcher = Rsswatcher('rss')
 assert(watcher)
-
 def dosync(feedname):
     """ main level function to be deferred by periodical. """
     try:
@@ -1055,7 +1054,6 @@ def dosync(feedname):
     except RssException, ex:
        logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
-@interval(300, 0)
 def doperiodical(*args, **kwargs):
     """ rss periodical function. """
     names = watcher.data['names']
@@ -1072,14 +1070,18 @@ def doperiodical(*args, **kwargs):
                 handle_exception()
                 time.sleep(1)
 
-taskmanager.add('periodical', doperiodical)
+#taskmanager.add('periodical', doperiodical)
 
 def init():
     taskmanager.add('rss', doperiodical)
+
+@interval(300, 0)
+def loop():
     doperiodical()
 
 def start():
     logging.warn("rss plugin started")
+    loop()
 
 callbacks.add('START', start)
 

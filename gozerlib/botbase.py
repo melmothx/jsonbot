@@ -70,10 +70,10 @@ class BotBase(LazyDict):
         try:
             import waveapi
             self.isgae = True
-            logging.warn("botbase - bot is a GAE bot (%s)" % botname)
+            logging.info("botbase - bot is a GAE bot (%s)" % botname)
         except ImportError:
             self.isgae = False
-            logging.warn("botbase - bot is a shell bot (%s)" % botname)
+            logging.info("botbase - bot is a shell bot (%s)" % botname)
         self.starttime = time.time()
         self.type = "base"
         self.status = "init"

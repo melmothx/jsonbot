@@ -114,13 +114,13 @@ class Plugins(LazyDict):
     def load(self, modname, force=False):
         """ load a plugin. """
         if not force and modname in self:
-            logging.warn("plugins - %s already loaded" % modname)
+            logging.info("plugins - %s already loaded" % modname)
             return self[modname]
 
         if not force:
             try:
                 self[modname] = reload(sys.modules[modname])
-                logging.warn("plugins - %s loaded (true)" % modname)                
+                logging.info("plugins - %s loaded (true)" % modname)                
                 try:
                     init = getattr(self[modname], 'init')
                 except AttributeError:
@@ -135,7 +135,7 @@ class Plugins(LazyDict):
                 except KeyError:
                     pass
 
-        logging.warn("plugins - loading %s" % modname)
+        logging.info("plugins - loading %s" % modname)
         mod = _import(modname)
 
         try:
