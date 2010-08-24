@@ -1015,14 +1015,14 @@ class Rsswatcher(Rssdict):
         logging.warn("started %s feed in %s channel" % (name, channel))
         return True
 
-    def stop(self, botname, name, channel):
+    def stop(self, botname, bottype, name, channel):
         rssitem = self.byname(name)
 
         if not rssitem:
             return False
 
         try:
-            rssitem.data.watchchannels.remove([botname, channel])
+            rssitem.data.watchchannels.remove([botname, bottype, channel])
             rssitem.save()
             logging.warn("stopped %s feed in %s channel" % (name, channel))
         except ValueError:
@@ -1030,19 +1030,20 @@ class Rsswatcher(Rssdict):
 
         return True
 
-    def clone(self, botname, newchannel, oldchannel):
+    def clone(self, botname, bottype, newchannel, oldchannel):
 
         feeds = self.getfeeds(botname, oldchannel)
 
         for feed in feeds:
-            self.stop(botname, feed, oldchannel)
-            self.start(botname, feed, newchannel)
+            self.stop(botname, bottype, feed, oldchannel)
+            self.start(botname, bottype, feed, newchannel)
 
         return feeds
 
 # the watcher object 
 watcher = Rsswatcher('rss')
 assert(watcher)
+
 def dosync(feedname):
     """ main level function to be deferred by periodical. """
     try:
@@ -1070,18 +1071,16 @@ def doperiodical(*args, **kwargs):
                 handle_exception()
                 time.sleep(1)
 
-#taskmanager.add('periodical', doperiodical)
-
 def init():
     taskmanager.add('rss', doperiodical)
-
+    loop()
+     
 @interval(300, 0)
 def loop():
     doperiodical()
 
 def start():
     logging.warn("rss plugin started")
-    loop()
 
 callbacks.add('START', start)
 
@@ -1165,7 +1164,7 @@ def handle_rssregister(bot, ievent):
         if name not in ievent.chan.data.feeds:
             ievent.chan.data.feeds.append(name)
             ievent.chan.save()
-        ievent.reply('rss item added')
+        ievent.reply('rss item added and started in channel %s' % ievent.channel)
     else:
         ievent.reply('%s is not valid' % url)
 
@@ -1360,7 +1359,7 @@ def handle_rssstopall(bot, ievent):
 
         for feed in feeds:
 
-            if watcher.stop(bot.name, feed, target):
+            if watcher.stop(bot.name, bot.type, feed, target):
                 if name in ievent.chan.data.feeds:
                     ievent.chan.data.feeds.remove(name)
                     ievent.chan.save()

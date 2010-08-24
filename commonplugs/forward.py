@@ -50,7 +50,7 @@ cpy = copy.deepcopy
 
 def forwardoutpre(bot, event):
     logging.debug("forward - pre - %s" % event.channel)
-    if event.channel in forward.data.channels and not event.isremote:
+    if event.channel.lower() in forward.data.channels and not event.isremote:
         if not event.how == "background":
             return True
 
@@ -143,7 +143,7 @@ def handle_forward(bot, event):
         event.missing("<JID>")
         return
 
-    forward.data.channels[event.channel] =  event.args
+    forward.data.channels[event.channel.lower()] =  event.args
     for jid in event.args:
         forward.data.outs[jid] = bot.type
         if not jid in event.chan.data.forwards:
