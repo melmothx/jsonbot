@@ -1055,7 +1055,7 @@ def dosync(feedname):
     except RssException, ex:
        logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
-@interval(300, 1)
+@interval(300, 0)
 def doperiodical(*args, **kwargs):
     """ rss periodical function. """
     names = watcher.data['names']
