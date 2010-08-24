@@ -1835,7 +1835,7 @@ def handle_rssrunning(bot, ievent):
         resultlist.append("%s %s" % (i[0], i[1]))
 
     if resultlist:
-        ievent.reply("running rss watchers: ", resultlist, nr=1)
+        ievent.reply("running rss watchers: ", resultlist)
     else:
         ievent.reply('nothing running yet')
 
