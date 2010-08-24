@@ -28,7 +28,7 @@ from gozerlib.commands import public
 from gozerlib.gae.web.bot import WebBot
 from gozerlib.gae.web.event import WebEvent
 from gozerlib.gae.utils.auth import checkuser
-from gozerlib.gae.utils.web import commandbox, start, closer, loginurl, logouturl
+from gozerlib.gae.utils.web import commandbox, start, closer, loginurl, logouturl, login
 
 ## google imports
 

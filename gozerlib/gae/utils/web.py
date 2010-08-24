@@ -49,7 +49,7 @@ def mini(response, input={}):
 def start(response, input={}):
     """ display start html so that bot output can follow. """
     try:
-         inputdict['url'] = socket.gethostname()
+         host = socket.gethostname()
     except AttributeError:
          if os.environ.get('HTTP_HOST'):
              host = os.environ['HTTP_HOST']
@@ -62,6 +62,28 @@ def start(response, input={}):
         inputdict.update(input)
 
     temp = os.path.join(os.getcwd(), 'templates/start.html')
+
+    from google.appengine.ext.webapp import template
+    outstr = template.render(temp, inputdict)
+
+    response.out.write(outstr)
+
+def login(response, input={}):
+    """ display start html so that bot output can follow. """
+    try:
+         host = socket.gethostname()
+    except AttributeError:
+         if os.environ.get('HTTP_HOST'):
+             host = os.environ['HTTP_HOST']
+         else:
+             host = os.environ['SERVER_NAME']
+
+    inputdict = {'version': getversion(), 'host': host}
+
+    if input:
+        inputdict.update(input)
+
+    temp = os.path.join(os.getcwd(), 'templates/login.html')
 
     from google.appengine.ext.webapp import template
     outstr = template.render(temp, inputdict)
