@@ -215,6 +215,9 @@ class EventBase(LazyDict):
         cc = "!"
         if self.chan:
             cc = self.chan.data.cc
+            if not cc:
+                self.chan.data.cc = "!"
+                self.chan.save()
         if not cc:
             cc = "!"
         if self.type == "DISPATCH":
@@ -224,9 +227,9 @@ class EventBase(LazyDict):
         #logging.debug("dispatch - %s" % event.txt)        
 
         if self.txt and self.txt[0] in cc:
-            return cc
+            return self.txt[1:]
         elif self.txt.startswith(matchnick):
-            return matchnick
+            return self.txt[len(matchnick):]
 
         return False
 

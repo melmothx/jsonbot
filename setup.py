@@ -92,6 +92,7 @@ setup(
                ('tests', uploadlist('tests')),
                ('simplejson', uploadlist('simplejson')),
                ('gaeupload', uploadlist('gaeupload')),
+               ('gaeupload/webapp2', uploadlist('gaeupload/webapp2')),
                ('gaeupload/assets', uploadlist('gaeupload/assets')),
                ('gaeupload/templates', uploadlist('gaeupload/templates')),
                ('gaeupload/waveapi', uploadlist('gaeupload/waveapi')),

@@ -38,26 +38,14 @@ if True:
         go = False
 
         try:
-            cc = event.iscmnd()
-            if cc:
-                if event.txt[0] in cc:
-                    event.txt = event.txt[1:]
-                    if event.txt:
-                        event.usercmnd = event.txt.split()[0]
-                    else:
-                        event.usercmnd = None
-                    event.finish()
-                elif event.txt.startswith(cc):
-                    event.txt = event.txt[len(cc) + 1:]
-                    if event.txt:
-                        event.usercmnd = event.txt.split()[0]
-                    else:
-                        event.usercmnd = None
-                    event.finish()
-
+            execstr = event.iscmnd()
+            if execstr:
+                event.usercmnd = execstr.split()[0]
+                event.txt = execstr
+                event.finish()
                 result = bot.plugs.dispatch(bot, event)
             else:
-                logging.debug("dispatch - no go for %s (cc is %s)" % (event.userhost, cc))
+                logging.debug("dispatch - no go for %s (cc is %s)" % (event.userhost, execstr))
                 result =  []
         except NoSuchCommand:
             logging.info("no such command: %s" % event.usercmnd)

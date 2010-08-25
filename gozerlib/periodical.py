@@ -211,7 +211,7 @@ class Periodical(object):
         job.group = calledfrom(sys._getframe())
         job.description = str(description) or whichmodule()
         self.jobs.append(job)
-        logging.warn("periodical - added %s job" % str(function))
+        logging.info("periodical - added %s job" % str(function))
         return job.pid
 
     def changeinterval(self, pid, interval):
