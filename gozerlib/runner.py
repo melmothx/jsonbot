@@ -8,7 +8,7 @@ __copyright__ = 'this file is in the public domain'
 
 ## gozerlib imports
 
-from gozerlib.threads import getname, start_new_thread
+from gozerlib.threads import getname, start_new_thread, start_bot_command
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
 from gozerlib.threadloop import RunnerLoop
@@ -104,12 +104,18 @@ class BotEventRunner(Runner):
             name = getname(str(func))
             logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
-            func(bot, ievent, *args, **kwargs)
+            if ievent.threaded:
+                args.insert(0, ievent)
+                args.insert(0, bot)
+                start_bot_command(func, args, kwargs)
+            else:
+                func(bot, ievent, *args, **kwargs)
 
-            if ievent.queues:
+            if ievent.closequeue and ievent.queues:
+                logging.warn("closing %s queues" % len(ievent.queues))
                 for queue in ievent.queues:
                     queue.put_nowait(None)
-
+            ievent.outqueue.put_nowait(None)
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
 

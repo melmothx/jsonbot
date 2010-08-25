@@ -23,7 +23,7 @@ from less import Less
 from boot import boot
 from utils.locking import lockdec
 from exit import globalshutdown
-from utils.generic import splittxt, toenc, fromenc
+from utils.generic import splittxt, toenc, fromenc, waitforqueue
 from utils.trace import whichmodule
 from fleet import fleet
 from utils.name import stripname
@@ -237,6 +237,7 @@ class BotBase(LazyDict):
         e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname
+        e.finish()
         first_callbacks.check(self, e)
         #e.leave()
 
@@ -254,10 +255,12 @@ class BotBase(LazyDict):
         e.txt = txt
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
-
+        #e.wait = True
+        e.finish()
         if self.plugs:
             try:
-                return self.plugs.dispatch(self, e, wait=wait)
+                event = self.plugs.dispatch(self, e, wait=wait)
+                return event
             except NoSuchCommand:
                 e.reply("no such command: %s" % e.usercmnd)
         else:

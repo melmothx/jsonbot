@@ -142,7 +142,7 @@ class Commands(LazyDict):
         try:
             if target.threaded and not bot.isgae:
                 thread = start_bot_command(target.func, (bot, event))
-                if self.wait:
+                if False and self.wait or event.wait:
                     thread.join()
             else:
                 if bot.isgae:
@@ -157,11 +157,11 @@ class Commands(LazyDict):
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))
             raise
-        e.outqueue.put_nowait(None)
-        if True:
-            if e.queues:
-                for q in e.queues:
-                    q.put_nowait(None)
+        #e.outqueue.put_nowait(None)
+        #if True:
+        #    if e.queues:
+        #        for q in e.queues:
+        #            q.put_nowait(None)
         return e
 
     def unload(self, modname):

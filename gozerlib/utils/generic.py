@@ -238,12 +238,16 @@ def gethighest(ddir, ffile):
 def waitforqueue(queue, timeout=10, maxitems=None):
     """ wait for results to arrive in a queue. return list of results. """
     result = []
-
+    counter = 0
     while 1:
 
         try:   
-            res = queue.get(1, timeout)
+            res = queue.get_nowait()
         except Queue.Empty:
+            time.sleep(0.1)
+            counter += 1
+            if counter > timeout*10:
+                break
             continue
 
         if not res:

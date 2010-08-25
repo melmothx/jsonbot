@@ -170,17 +170,17 @@ class Plugins(LazyDict):
     def dispatch(self, bot, event, wait=False, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
-        event.finish()
+        #event.finish()
         if event.txt and not ' | ' in event.txt:
             self.reloadcheck(bot, event)
-            return cmnds.dispatch(bot, event, *args, **kwargs)
+            return cmnds.dispatch(bot, event, wait=wait, *args, **kwargs)
 
         if event.txt and ' | ' in event.txt:
             return self.pipelined(bot, event, *args, **kwargs)
 
         return event              
 
-    def pipelined(self, bot, event, *args, **kwargs):
+    def pipelined(self, bot, event, wait=False, *args, **kwargs):
         """ split cmnds, create events for them, chain the queues and dispatch.  """
         origqueues = event.queues
         event.queues = []
@@ -190,7 +190,7 @@ class Plugins(LazyDict):
 
         # split commands
         for item in event.txt.split(' | '):
-            e = copy.deepcopy(event)
+            e = cpy(event)
             e.queues = []
             e.onlyqueues = True
             e.txt = item.strip()
@@ -218,7 +218,7 @@ class Plugins(LazyDict):
 
         # do the dispatch
         for e in events:
-            self.dispatch(bot, e)
+            self.dispatch(bot, e, wait=wait)
 
         return events[-1]
 

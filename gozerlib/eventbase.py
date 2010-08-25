@@ -99,7 +99,7 @@ class EventBase(LazyDict):
         
         if eventin.has_key('queues'):
             if eventin['queues']:
-                self.queues = list(eventin['queues'])
+                self.queues = eventin['queues']
         return self
 
     def writenocb(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):

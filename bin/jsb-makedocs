@@ -16,7 +16,7 @@ sys.path.insert(0, "..")
 ## gozerlib imports
 
 from gozerlib.utils.exception import handle_exception
-from gozerlib.utils.generic import toascii, splittxt, strippedtxt
+from gozerlib.utils.generic import toascii, splittxt, strippedtxt, waitforqueue
 from gozerlib.plugins import plugs, Plugins
 from gozerlib.examples import examples
 from gozerlib.users import Users
@@ -30,14 +30,14 @@ from gozerlib.datadir import makedirs
 
 import os
 import re
+import time
 
 ## defines
-
-donot = []
+boot(force=True)
+donot = ['stop',]
 bot = BotBase()
 bot.allowall = True
 plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
-print plugs
 users = Users()
 
 try:
@@ -149,6 +149,7 @@ def gendoc(mod, f, output):
                 out = None
                 try:
                     out = bot.docmnd("test@test", "#test", i.strip())
+                    waitforqueue(out.outqueue, 5)
                     if not out.result:
                         output.write("        <output> none" + '\n')
                         continue
@@ -169,7 +170,7 @@ def gendoc(mod, f, output):
         teller += 1
     if not data['commands']:
         output.write("no commands in this plugin" + '\n')
-
+    
     output.flush()
     output.close()
     print "DONE %s" % f 
@@ -322,7 +323,7 @@ if __name__ == '__main__':
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'socketplugs' + os.sep + file[:-3] + '.txt', 'w')
             threads.append(start_new_thread(gendoc, ('socketplugs', file, f)))
-
+    
     for thread in threads:
         thread.join()
 
