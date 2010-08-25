@@ -118,8 +118,6 @@ class BotBase(LazyDict):
         if not self.isgae:
             defaultrunner.start()
             periodical.start()
-        time.sleep(1)
-        self.dostart(self.botname, self.type)
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -149,6 +147,7 @@ class BotBase(LazyDict):
         """ start the mainloop of the bot. """
         # basic loop
         self.status == "running"
+        self.dostart(self.botname, self.type)
 
     def doevent(self, event):
         """ dispatch an event. """
