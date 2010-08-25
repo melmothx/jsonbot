@@ -29,7 +29,7 @@ class DocsHandler(webapp2.RequestHandler):
 
     def get(self, url=None):
         if not url.endswith(".html"):
-            url += "/index.html"
+            url += "index.html"
         splitted = url.split('/')
         splitted.insert(2, 'html')
         goto = '/'.join(splitted)

@@ -140,29 +140,23 @@ class Commands(LazyDict):
         event.iscmnd = True
         logging.info('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
-            if target.threaded and not bot.isgae:
-                thread = start_bot_command(target.func, (bot, event))
-                if False and self.wait or event.wait:
-                    thread.join()
+            if bot.isgae:
+                target.func(bot, event)
             else:
-                if bot.isgae:
-                    target.func(bot, event)
+                if target.threaded:
+                    thread = start_bot_command(target.func, (bot, event))
                 else:
                     defaultrunner.put(target.modname, target.func, bot, event)
-                #elif event.speed:
-                #    cmndrunners[10-int(event.speed)].put(target.modname, target.func, bot, event)
-                #else:
-                #    cmndrunners[5].put(target.modname, target.func, bot, event)
-            e = event
+
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))
             raise
-        #e.outqueue.put_nowait(None)
-        #if True:
-        #    if e.queues:
-        #        for q in e.queues:
-        #            q.put_nowait(None)
-        return e
+        event.outqueue.put_nowait(None)
+        if bot.isgae:
+            if event.queues:
+                for q in event.queues:
+                    q.put_nowait(None)
+        return event
 
     def unload(self, modname):
         """ remove modname registered commands from store. """

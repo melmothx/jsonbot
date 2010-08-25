@@ -104,18 +104,14 @@ class BotEventRunner(Runner):
             name = getname(str(func))
             logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
-            if ievent.threaded:
-                args.insert(0, ievent)
-                args.insert(0, bot)
-                start_bot_command(func, args, kwargs)
-            else:
-                func(bot, ievent, *args, **kwargs)
+            func(bot, ievent, *args, **kwargs)
 
+            
             if ievent.closequeue and ievent.queues:
                 logging.debug("closing %s queues" % len(ievent.queues))
                 for queue in ievent.queues:
                     queue.put_nowait(None)
-            ievent.outqueue.put_nowait(None)
+                ievent.outqueue.put_nowait(None)
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
 
@@ -280,3 +276,7 @@ def runners_stop():
 #cleanall()
 
 defaultrunner = BotEventRunner()
+cmndrunner = BotEventRunner()
+longrunner = BotEventRunner()
+
+
