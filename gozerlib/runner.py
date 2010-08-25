@@ -112,7 +112,7 @@ class BotEventRunner(Runner):
                 func(bot, ievent, *args, **kwargs)
 
             if ievent.closequeue and ievent.queues:
-                logging.warn("closing %s queues" % len(ievent.queues))
+                logging.debug("closing %s queues" % len(ievent.queues))
                 for queue in ievent.queues:
                     queue.put_nowait(None)
             ievent.outqueue.put_nowait(None)
