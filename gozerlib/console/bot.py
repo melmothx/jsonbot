@@ -73,7 +73,7 @@ class ConsoleBot(BotBase):
 
     def start(self):
         time.sleep(0.1)
-        while 1: 
+        while not self.stopped: 
             try: 
                 input = console.raw_input("> ")
                 event = ConsoleEvent()
@@ -94,7 +94,7 @@ class ConsoleBot(BotBase):
                     if not result:
                             continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
-                    waitforqueue(result.outqueue)
+                    waitforqueue(result.outqueue, timeout=1)
                 except NoSuchCommand:
                     print "no such command: %s" % event.usercmnd
 
@@ -106,8 +106,6 @@ class ConsoleBot(BotBase):
                 handle_exception()
 
         console.save_history()
-        globalshutdown()
-                
 
     def say(self, printto, txt, *args, **kwargs):
         if not txt:
@@ -129,3 +127,7 @@ class ConsoleBot(BotBase):
         what = what.replace("&lt;b&gt;", self.BOLD)
         what = what.replace("&lt;/b&gt;", self.ENDC)
         return what
+
+    def exit(self):
+        console.save_history()
+        

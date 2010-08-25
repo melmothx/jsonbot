@@ -9,11 +9,13 @@
 
 ## gozerlib imports
 
+from gozerlib.config import Config
 from gozerlib.threads import start_new_thread
 from gozerlib.fleet import fleet, FleetBotAlreadyExists
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.datadir import datadir
+from gozerlib.utils.name import stripname
 
 ## basic imports
 
@@ -41,8 +43,10 @@ def handle_fleetconnect(bot, ievent):
         return
 
     try:
-        if fleet.connect(botname):
-            ievent.reply('%s connected' % botname)
+        fleetbot = fleet.byname(botname)
+        if fleetbot:
+            start_new_thread(fleetbot.connect, ())
+            ievent.reply('%s connect thread started' % botname)
         else:
             ievent.reply("can't connect %s .. trying enable" % botname)
             fleet_enable(bot, ievent)
@@ -176,15 +180,14 @@ def fleet_enable(bot, ievent):
             bot.cfg['enable'] = 1
             bot.cfg.save()
             ievent.reply('enabled %s' % name)
-            start_new_thread(fleet.connect, (name, ))
+            start_new_thread(bot.connect, ())
         elif name in fleet.avail():
-            bots = fleet.start([name, ], enable=True)
-            for bot in bots:
-                bot.cfg.load()
-                bot.cfg['enable'] = 1
-                bot.cfg.save()
-                ievent.reply('enabled and started %s bot' % name)
-                #start_new_thread(fleet.connect, (name, ))
+            cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
+            cfg['enable'] = 1
+            cfg.save()
+            bot = fleet.makebot(cfg.type, cfg.name, cfg)
+            ievent.reply('enabled and started %s bot' % name)
+            start_new_thread(bot.connect, ())
         else:
             ievent.reply('no %s bot in fleet' % name)
 

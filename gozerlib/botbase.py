@@ -52,6 +52,7 @@ eventlocked = lockdec(eventlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
+        self.stopped = False
         if not botname and cfg:
             botname = cfg.botname
         if botname:
@@ -66,6 +67,9 @@ class BotBase(LazyDict):
             self.update(cfg)
         else:
             self.cfg = Config(self.fleetdir + os.sep + u'config')
+        if not self.cfg.enable:
+            self.cfg.enable = 1
+            self.cfg.save()
         logging.debug(u"botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
         try:
@@ -175,7 +179,7 @@ class BotBase(LazyDict):
 
     def exit(self):
         """ overload this. """
-        pass
+        self.stopped = True
 
     def _raw(self, txt):
         """ override this. """ 

@@ -10,6 +10,9 @@ import sys
 class JsonBotError(Exception):
     pass
 
+class BotNotEnabled(JsonBotError):
+     pass
+
 class NoProperDigest(JsonBotError):
      pass
 

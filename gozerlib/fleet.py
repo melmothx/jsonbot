@@ -13,7 +13,7 @@ from config import cfg as mainconfig
 from users import users
 from plugins import plugs
 from persist import Persist
-from errors import NoSuchBotType
+from errors import NoSuchBotType, BotNotEnabled
 from threads import start_new_thread
 from eventhandler import mainhandler
 from datadir import datadir
@@ -59,7 +59,7 @@ class Fleet(Persist):
         if not self.data.names:
             logging.error("fleet - no bots in fleet")
         else:
-            logging.debug("fleet - loading %s" % " .. ".join(self.data.names))
+            logging.warning("fleet - loading %s" % " .. ".join(self.data.names))
 
         for name in self.data.names:
             if not name:
@@ -67,6 +67,8 @@ class Fleet(Persist):
                 continue
             try:
                 self.makebot(self.data.types[name], name)
+            except BotNotEnabled:
+                pass
             except KeyError:
                 logging.error("no type know for %s bot" % name)
 
@@ -135,6 +137,9 @@ class Fleet(Persist):
         if not cfg:
             raise Exception("can't make config for %s" % name)
         cfg.save()
+        if not cfg.enable:
+            logging.warn("fleet - %s bot is not enabled" % name)
+            raise BotNotEnabled(name)
         # create bot based on type 
         if type == 'xmpp' or type == 'jabber':
             try:

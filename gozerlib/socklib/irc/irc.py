@@ -163,7 +163,6 @@ class Irc(BotBase):
         self.stopped = 0
         self.connecting = True
         self.connectok.clear()
-        #self.connectlock.acquire()
 
         # create socket
         if self.cfg.ipv6 or self.ipv6:
@@ -661,7 +660,6 @@ realname))
         res = 0
 
         try:
-            self.connectlock.release()
             res = self.start()
             if res:
                 logging.warn("waiting for connectok")
@@ -675,10 +673,6 @@ realname))
         except AlreadyConnected:
             return 0
         except Exception, ex:
-            try:
-                self.connectlock.release()
-            except thread.error:
-                pass
             if self.stopped:
                 return 0
             logging.error('connecting error: %s' % str(ex))
@@ -687,10 +681,6 @@ realname))
                 return
             raise
 
-        # add bot to the fleet
-        if not fleet.byname(self.name):
-            fleet.addbot(self)
-        self.connectlock.release()
         return res
 
     def shutdown(self):
