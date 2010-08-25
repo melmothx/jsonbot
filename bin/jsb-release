@@ -123,8 +123,9 @@ except (OSError, IOError), ex:
     try:
         copyover(release + os.sep + 'gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
         print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
+        os._exit(1)
     except OSError, ex:
-        print str(ex)
+        print "ERROR: can't copy files to ~/jsonregs %s" % str(ex)
         os._exit(1)
 
 
