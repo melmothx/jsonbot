@@ -181,7 +181,7 @@ class Periodical(object):
 
     """ periodical scheduler. """
 
-    SLEEPTIME = 1 # smallest interval possible
+    SLEEPTIME = 60 # smallest interval possible
 
     def __init__(self):
         self.jobs = []

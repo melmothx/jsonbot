@@ -435,7 +435,7 @@ class Irc(BotBase):
             queue = self._getqueue()
             if queue:
                 try:
-                    res = queue.get_nowait()
+                    res = queue.get()
                 except Queue.Empty:
                     continue
                 if not res:

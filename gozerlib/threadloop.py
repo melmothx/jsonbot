@@ -35,7 +35,7 @@ class ThreadLoop(object):
         while not self.stopped:
 
             try:
-                data = self.queue.get_nowait()
+                data = self.queue.get()
             except Queue.Empty:
                 time.sleep(0.1)
                 continue
@@ -87,24 +87,17 @@ class RunnerLoop(ThreadLoop):
         """ put data on task queue. """
 
         self.queue.put_nowait(data)
-        if not self.stopped and not self.running:
-            self._loop()
 
     def _loop(self):
         logging.debug('%s - starting threadloop' % self.name)
         self.running = True
-        nrempty = 0
         while not self.stopped:
 
             try:
-                data = self.queue.get_nowait()
+                data = self.queue.get()
             except Queue.Empty:
-                #nrempty += 1
-                #if self.stopped or nrempty > 20:
-                #    break
                 time.sleep(0.1)
                 continue
-            #nrempty = 0
 
             if self.stopped:
                 break

@@ -20,6 +20,7 @@ from gozerlib.reboot import reboot, reboot_stateful
 from gozerlib.eventhandler import mainhandler
 from gozerlib.fleet import fleet
 from gozerlib.socklib.partyline import partyline
+from gozerlib.exit import globalshutdown
 
 ## basic imports
 
@@ -37,12 +38,21 @@ cpy = copy.deepcopy
 
 ## commands
 
+def handle_stop(bot, ievent):
+    if bot.isgae:
+        ievent.reply("this command doesn't work on the GAE")
+        return
+    mainhandler.put(0, globalshutdown)
+
+cmnds.add("stop", handle_stop, "OPER")
+examples.add("stop", "stop the bot.", "stop")
+
 def handle_reboot(bot, ievent):
     if bot.isgae:
         ievent.reply("this command doesn't work on the GAE")
         return
     ievent.reply("rebooting")
-    time.sleep(5)
+    time.sleep(3)
     if ievent.rest == "cold":
         stateful = False
     else:

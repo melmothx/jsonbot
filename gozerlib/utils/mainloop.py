@@ -19,7 +19,7 @@ import time
 def mainloop():
     while 1:
         try:
-            time.sleep(0.01)
+            time.sleep(1)
             mainhandler.handle_one()
         except KeyboardInterrupt:
             break
