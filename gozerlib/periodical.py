@@ -272,7 +272,7 @@ class Periodical(object):
                 except ValueError:
                     pass
 
-            logging.debug('periodical - killed %d jobs for %s' % (len(deljobs), group))
+            logging.info('periodical - killed %d jobs for %s' % (len(deljobs), group))
             del deljobs
 
         shoot() # *pow* you're dead ;)

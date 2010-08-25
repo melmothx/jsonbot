@@ -143,7 +143,7 @@ class Rssitem(Persist):
     """ item that contains rss data """
 
     def __init__(self, name="nonameset", url="", owner="noownerset", itemslist=['title', 'link'], watchchannels=[], \
-sleeptime=30*60, running=0):
+sleeptime=15*60, running=0):
 
         if True:
             filebase = datadir + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
@@ -312,7 +312,7 @@ class Rssdict(PlugPersist):
     """ dict of rss entries """
 
     def __init__(self, filename, feedname=None):
-        self.sleepsec = 300
+        self.sleepsec = 900
         self.feeds = {}
         PlugPersist.__init__(self, filename)
 
@@ -1084,7 +1084,7 @@ def doperiodical(*args, **kwargs):
 
 def init():
     taskmanager.add('rss', doperiodical)
-    periodical.addjob(300, 0, doperiodical)
+    periodical.addjob(900, 0, doperiodical)
 
 def start(bot, event):
     logging.warn("rss plugin started")
@@ -1093,7 +1093,7 @@ callbacks.add('START', start)
 
 def shutdown():
     taskmanager.unload('rss')
-    periodical.unload('rss')
+    periodical.killgroup('commonplugs.rss')
 
 def size():
     """ return number of watched rss entries. """
