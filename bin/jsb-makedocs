@@ -33,11 +33,11 @@ import re
 import time
 
 ## defines
-boot(force=True)
+boot()
 donot = ['stop',]
 bot = BotBase()
 bot.allowall = True
-plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
+#plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
 users = Users()
 
 try:
@@ -148,13 +148,13 @@ def gendoc(mod, f, output):
                 output.write('\n    ::\n\n        <user> !%s' % i.strip() + '\n')
                 out = None
                 try:
-                    out = bot.docmnd("test@test", "#test", i.strip())
-                    res = waitforqueue(out.outqueue, 5)
-                    print out.result
+                    out = bot.docmnd("test@test", "#test", i.strip(), wait=5.0)
+                    #res = waitforqueue(out.outqueue)
+                    #print out.result
                     if not out.result:
                         output.write("        <output> none" + '\n')
                         continue
-                    result = ' .. '.join(out.result)
+                    result = ' - '.join(out.result)
                     result = result.replace('\002', '')
                     teller2 = 1
                     for j in splittxt(result, 50):
@@ -324,9 +324,9 @@ if __name__ == '__main__':
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'socketplugs' + os.sep + file[:-3] + '.txt', 'w')
             threads.append(start_new_thread(gendoc, ('socketplugs', file, f)))
-    
-    for thread in threads:
-        thread.join()
+
+        for thread in threads:
+            thread.join()
 
     domods('gozerlib')
     domods('gozerlib' + os.sep + 'plugs')

@@ -295,8 +295,9 @@ def log(bot, ievent):
 def prechatlogcb(bot, ievent):
     """Check if event should be logged.  QUIT and NICK are not channel
     specific, so we will check each channel in log()."""
-    if not ievent.msg and [bot.name, ievent.channel] in \
-            cfg.get('channels'):
+    if not cfg.channels:
+        return 0
+    if not ievent.msg and [bot.name, ievent.channel] in cfg.get('channels'):
         return 1
     if ievent.cmnd in ('QUIT', 'NICK'):
         return 1

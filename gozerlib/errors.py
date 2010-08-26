@@ -63,3 +63,6 @@ class NoOwnerSet(JsonBotError):
 
 class PlugsNotConnected(JsonBotError):
     pass
+
+class NoEventProvided(JsonBotError):
+    pass

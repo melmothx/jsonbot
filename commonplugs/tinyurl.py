@@ -19,11 +19,18 @@ from gozerlib.utils.exception import handle_exception
 gotgoogle = False
 
 try:
+    import waveapi
     from google.appengine.api.memcache import get, set
-    import google
     gotgoogle = True
 except ImportError:
-    cache = {}
+    pass
+
+
+## defines
+
+cache = {}
+
+if not gotgoogle:
     def get(name, *args, **kwargs):
         return cache[name]
     def set(name, value, *args, **kwargs):

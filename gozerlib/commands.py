@@ -140,7 +140,7 @@ class Commands(LazyDict):
         event.iscmnd = True
         logging.info('commands - dispatching %s for %s - (%s seconds)' % (event.usercmnd, id, wait))
         try:
-            if bot.isgae:
+            if bot.isgae or event.direct:
                 target.func(bot, event)
                 if event.closequeue and event.queues:
                     for q in event.queues:

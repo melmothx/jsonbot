@@ -113,7 +113,7 @@ def boot(force=False, encoding="utf-8", umask=None):
 
     if not loaded:
         for plug in default_plugins:
-            plugs.reload(plug)
+            plugs.reload(plug, force=True)
 
     logging.info("boot - done")
 

@@ -13,7 +13,7 @@ from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
 from callbacks import callbacks, first_callbacks, last_callbacks
 from eventbase import EventBase
-from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet
+from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet, NoEventProvided
 from datadir import datadir
 from commands import Commands
 from config import Config
@@ -153,6 +153,8 @@ class BotBase(LazyDict):
 
     def doevent(self, event):
         """ dispatch an event. """
+        if not event:
+            raise NoEventProvided()
         if event.status == "done":
             logging.debug("botbase - event is done .. ignoring")
             return
@@ -253,12 +255,13 @@ class BotBase(LazyDict):
         e.txt = txt
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
-        #e.wait = True
+        e.closequeue = True
+        e.direct = True
         e.finish()
         if self.plugs:
             try:
-                event = self.doevent(event)
-                #event = self.plugs.dispatch(self, e, wait=wait)
+                #event = self.doevent(e)
+                event = self.plugs.dispatch(self, e, wait=wait)
                 return event
             except NoSuchCommand:
                 e.reply("no such command: %s" % e.usercmnd)

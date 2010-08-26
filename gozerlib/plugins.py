@@ -161,7 +161,7 @@ class Plugins(LazyDict):
 
         return self[modname]
 
-    def reload(self, modname, force=True):
+    def reload(self, modname, force=False):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname):
             self.unload(modname)
