@@ -44,10 +44,6 @@ class Botcommand(threading.Thread):
         self.ievent = args[1]
         self.setDaemon(True)
 
-    def join(self):
-        """ join the thread. """
-        threading.Thread.join(self)
-
     def run(self):
         """ run the bot command. """
         try:
@@ -71,10 +67,6 @@ class Thr(threading.Thread):
         threading.Thread.__init__(self, None, target, name, args, kwargs)
         self.setDaemon(True)
         self.name = name
-
-    def join(self):
-        """ join the thread. """
-        threading.Thread.join(self)
 
     def run(self):
         """ run the thread. """

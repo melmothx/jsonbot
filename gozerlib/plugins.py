@@ -167,7 +167,7 @@ class Plugins(LazyDict):
             self.unload(modname)
         return self.load(modname, force=force)
 
-    def dispatch(self, bot, event, wait=False, *args, **kwargs):
+    def dispatch(self, bot, event, wait=1.0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
         #event.finish()
@@ -176,11 +176,11 @@ class Plugins(LazyDict):
             return cmnds.dispatch(bot, event, wait=wait, *args, **kwargs)
 
         if event.txt and ' | ' in event.txt:
-            return self.pipelined(bot, event, *args, **kwargs)
+            return self.pipelined(bot, event, wait=wait, *args, **kwargs)
 
         return event              
 
-    def pipelined(self, bot, event, wait=False, *args, **kwargs):
+    def pipelined(self, bot, event, wait=0, *args, **kwargs):
         """ split cmnds, create events for them, chain the queues and dispatch.  """
         origqueues = event.queues
         event.queues = []

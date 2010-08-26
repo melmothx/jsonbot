@@ -37,9 +37,9 @@ def globalshutdown():
     logging.info('shutting down plugins')
     plugs.exit()
     logging.info('done')
-    sys.stdin.close()
+    #sys.stdin.close()
     print "ltrs!"
-    sys.stdout.close()
+    #sys.stdout.close()
     os._exit(0)
 
 try:

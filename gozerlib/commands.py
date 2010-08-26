@@ -82,7 +82,7 @@ class Commands(LazyDict):
             pass
         return self
 
-    def dispatch(self, bot, event, wait=False):
+    def dispatch(self, bot, event, wait=0):
         """ 
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
@@ -127,24 +127,31 @@ class Commands(LazyDict):
 
         # core business
         if bot.allowall:
-            return self.doit(bot, event, c)
+            return self.doit(bot, event, c, wait=wait)
         elif not bot.users or bot.users.allowed(id, c.perms, bot=bot):
-            return self.doit(bot, event, c)
+            return self.doit(bot, event, c, wait=wait)
         elif bot.users.allowed(id, c.perms, bot=bot):
-            return self.doit(bot, event, c)
+            return self.doit(bot, event, c, wait=wait)
         return event
 
-    def doit(self, bot, event, target):
+    def doit(self, bot, event, target, wait=1.0):
         """ do the dispatching. """
         id = event.auth or event.userhost
         event.iscmnd = True
-        logging.info('commands - dispatching %s for %s' % (event.usercmnd, id))
+        logging.info('commands - dispatching %s for %s (%s seconds)' % (event.usercmnd, id, wait))
         try:
             if bot.isgae:
                 target.func(bot, event)
             else:
                 if target.threaded:
                     thread = start_bot_command(target.func, (bot, event))
+                    if wait:
+                        thread.join(wait)
+                    event.outqueue.put_nowait(None)
+                    if bot.isgae:
+                        if event.queues:
+                            for q in event.queues:
+                                q.put_nowait(None)
                 else:
                     defaultrunner.put(target.modname, target.func, bot, event)
 

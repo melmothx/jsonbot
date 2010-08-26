@@ -94,7 +94,6 @@ class ConsoleBot(BotBase):
                     if not result:
                             continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
-                    waitforqueue(result.outqueue, timeout=1)
                 except NoSuchCommand:
                     print "no such command: %s" % event.usercmnd
 
