@@ -96,7 +96,6 @@ class EventBase(LazyDict):
             self.chan = eventin['chan']
         if eventin.has_key("user"):
             self.user = eventin['user']
-        
         if eventin.has_key('queues'):
             if eventin['queues']:
                 self.queues = eventin['queues']

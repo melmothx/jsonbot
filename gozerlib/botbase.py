@@ -69,14 +69,9 @@ class BotBase(LazyDict):
             self.cfg = Config(self.fleetdir + os.sep + u'config')
         logging.debug(u"botbase - %s - %s" % (str(cfg), botname))
         LazyDict.__init__(self)
-        if not self.cfg.enable:
-            self.cfg.enable = 1
-            self.cfg.save()
         try:
             import waveapi
             self.isgae = True
-            self.cfg.enable = 1
-            self.enable = 1
             logging.info("botbase - bot is a GAE bot (%s)" % botname)
         except ImportError:
             self.isgae = False

@@ -137,8 +137,8 @@ class Fleet(Persist):
         if not cfg:
             raise Exception("can't make config for %s" % name)
         cfg.save()
-        if not cfg.enable:
-            logging.warn("fleet - %s bot is not enabled" % name)
+        if cfg.disable:
+            logging.warn("fleet - %s bot is disabled" % name)
             raise BotNotEnabled(name)
         # create bot based on type 
         if type == 'xmpp' or type == 'jabber':
@@ -309,7 +309,7 @@ class Fleet(Persist):
             if bot.botname == name:
                 bot.exit()
                 self.remove(i)
-                bot.cfg['enable'] = 0
+                bot.cfg['disable'] = 1
                 bot.cfg.save()
                 logging.debug('fleet - %s disabled' % bot.botname)
                 return True

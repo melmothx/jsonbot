@@ -49,7 +49,7 @@ def handle_fleetconnect(bot, ievent):
             ievent.reply('%s connect thread started' % botname)
         else:
             ievent.reply("can't connect %s .. trying enable" % botname)
-            fleet_enable(bot, ievent)
+            fleet.enable(bot, ievent)
     except Exception, ex:
         ievent.reply(str(ex))
 
@@ -177,13 +177,13 @@ def fleet_enable(bot, ievent):
 
         if bot:
             bot.cfg.load()
-            bot.cfg['enable'] = 1
+            bot.cfg['disable'] = 0
             bot.cfg.save()
             ievent.reply('enabled %s' % name)
             start_new_thread(bot.connect, ())
         elif name in fleet.avail():
             cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
-            cfg['enable'] = 1
+            cfg['disable'] = 0
             cfg.save()
             bot = fleet.makebot(cfg.type, cfg.name, cfg)
             ievent.reply('enabled and started %s bot' % name)
