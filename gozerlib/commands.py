@@ -18,7 +18,7 @@ from utils.lazydict import LazyDict
 from errors import NoSuchCommand
 from config import cfg as mainconfig
 from persiststate import UserState
-from runner import defaultrunner
+from runner import cmndrunner
 
 ## basic imports
 
@@ -134,35 +134,35 @@ class Commands(LazyDict):
             return self.doit(bot, event, c, wait=wait)
         return event
 
-    def doit(self, bot, event, target, wait=1.0):
+    def doit(self, bot, event, target, wait=0):
         """ do the dispatching. """
         id = event.auth or event.userhost
         event.iscmnd = True
-        logging.info('commands - dispatching %s for %s (%s seconds)' % (event.usercmnd, id, wait))
+        logging.info('commands - dispatching %s for %s - (%s seconds)' % (event.usercmnd, id, wait))
         try:
             if bot.isgae:
                 target.func(bot, event)
+                if event.closequeue and event.queues:
+                    for q in event.queues:
+                        q.put_nowait(None)
+                    event.outqueue.put_nowait(None)
             else:
                 if target.threaded:
+                    logging.info("commands - launching thread for %s" % event.usercmnd)
                     thread = start_bot_command(target.func, (bot, event))
                     if wait:
                         thread.join(wait)
-                    event.outqueue.put_nowait(None)
-                    if bot.isgae:
+                    if bot.isgae and event.closequeue:
                         if event.queues:
                             for q in event.queues:
                                 q.put_nowait(None)
+                        event.outqueue.put_nowait(None)
                 else:
-                    defaultrunner.put(target.modname, target.func, bot, event)
+                    cmndrunner.put(target.modname, target.func, bot, event)
 
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))
             raise
-        event.outqueue.put_nowait(None)
-        if bot.isgae:
-            if event.queues:
-                for q in event.queues:
-                    q.put_nowait(None)
         return event
 
     def unload(self, modname):

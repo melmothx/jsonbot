@@ -1368,7 +1368,7 @@ def handle_rssstopall(bot, ievent):
 
             if watcher.stop(bot.name, bot.type, feed, target):
                 if name in ievent.chan.data.feeds:
-                    ievent.chan.data.feeds.remove(name)
+                    ievent.chan.data.feeds.remove(feed)
                     ievent.chan.save()
                 stopped.append(feed)
 

@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from periodical import periodical
-from runner import defaultrunner
+from runner import defaultrunner, cmndrunner
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
@@ -119,6 +119,7 @@ class BotBase(LazyDict):
         if not self.isgae:
             periodical.start()
             defaultrunner.start()
+            cmndrunner.start()
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -238,7 +239,7 @@ class BotBase(LazyDict):
         first_callbacks.check(self, e)
         #e.leave()
 
-    def docmnd(self, origin, channel, txt, event=None, wait=1.0):
+    def docmnd(self, origin, channel, txt, event=None, wait=0):
         """ do a command. """
         e = EventBase()
         if event:
@@ -256,7 +257,8 @@ class BotBase(LazyDict):
         e.finish()
         if self.plugs:
             try:
-                event = self.plugs.dispatch(self, e, wait=wait)
+                event = self.doevent(event)
+                #event = self.plugs.dispatch(self, e, wait=wait)
                 return event
             except NoSuchCommand:
                 e.reply("no such command: %s" % e.usercmnd)

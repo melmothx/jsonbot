@@ -111,7 +111,6 @@ def start_new_thread(func, arglist, kwargs={}):
 
     try:
         thread = Thr(None, target=func, name=name, args=arglist, kwargs=kwargs)
-        thread.setDaemon(True)
         thread.start()
         return thread
     except:
@@ -129,7 +128,6 @@ def start_bot_command(func, arglist, kwargs={}):
             name = 'noname'
 
         thread = Botcommand(group=None, target=func, name=name, args=arglist, kwargs=kwargs)
-        thread.setDaemon(True)
         thread.start()
         return thread
 

@@ -167,7 +167,7 @@ class Plugins(LazyDict):
             self.unload(modname)
         return self.load(modname, force=force)
 
-    def dispatch(self, bot, event, wait=1.0, *args, **kwargs):
+    def dispatch(self, bot, event, wait=0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
         #event.finish()

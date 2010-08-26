@@ -23,10 +23,12 @@ try:
     import google
     gotgoogle = True
 except ImportError:
+    cache = {}
     def get(name, *args, **kwargs):
-        return ""
+        return cache[name]
     def set(name, value, *args, **kwargs):
-        return ""
+        global cache
+        cache[name] = value
 
 ## simpljejson
 

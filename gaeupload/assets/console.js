@@ -48,13 +48,13 @@
       function start() {
           setCookie();
           setTimeout("update();", 10);
-          setTimeout("doCmnd('!help', response, 'background');", 5);
+          setTimeout("doCmnd('!help', response, 'background');", 50);
           setInterval("loop();", 300000);
       }
 
 
       function init() {
-        setTimeout("consolestart();", 10)
+        setTimeout("consolestart();", 100)
       }
 
       function consolestart() {
