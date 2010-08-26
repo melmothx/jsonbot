@@ -37,7 +37,7 @@ boot()
 donot = ['stop',]
 bot = BotBase()
 bot.allowall = True
-#plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
+plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
 users = Users()
 
 try:
