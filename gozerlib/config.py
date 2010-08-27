@@ -280,7 +280,7 @@ class Config(LazyDict):
             self.setdefault('auto_register', 1)
             self.setdefault('ondemand', 1)
 
-        self['version'] = "JSONBOT 0.3 RELEASE"
+        self['version'] = "JSONBOT 0.3 BETA2"
         self['createdfrom'] = whichmodule()
 
         return self
