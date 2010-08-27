@@ -73,7 +73,7 @@ class Plugins(LazyDict):
         if modname == "gozerlib.plugs.dispatch":
             logging.debug("plugins - can't unload dispatcher plugin")
             return
-        logging.info("plugins - unloading %s" % modname)
+        logging.debug("plugins - unloading %s" % modname)
 
         try:
             self[modname].shutdown()

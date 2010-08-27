@@ -433,8 +433,7 @@ class SXMPPBot(XMLStream, BotBase):
         except Exception, ex:
             handle_exception()
 
-        mm = Message(m)
-        callbacks.check(self, mm)
+        self.doevent(m)
 
     def errorHandler(self, event):
         """ error handler .. calls the errorhandler set in the event. """
@@ -499,9 +498,6 @@ class SXMPPBot(XMLStream, BotBase):
             except KeyError:
                 pass
 
-        pp = Presence(p)
-        callbacks.check(self, pp)
-
         if p.type == 'error':
             for node in p.subelements:
                 try:
@@ -527,6 +523,8 @@ class SXMPPBot(XMLStream, BotBase):
             except AttributeError:
                 # no command method to handle event
                 pass
+
+        self.doevent(p)
 
     def reconnect(self):
         """ reconnect to the server. """

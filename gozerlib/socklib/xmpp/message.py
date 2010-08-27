@@ -58,16 +58,13 @@ class Message(GozerEvent):
         m.copyin(self)
         return m
 
-    def reply(self, txt, result=[], to="", dot=", ", extend=0):
+    def reply(self, txt, result=[], to="", dot=", ", extend=0, raw=False):
         if self.checkqueues(result):
             return
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 900+extend)
         self.out(res1, to)
         self.bot.outmonitor(self.userhost, self.channel, res1, self)
-        if res2:
-            self.out(res2, to)
-            self.bot.outmonitor(self.userhost, self.channel, res2, self)
 
     def out(self, txt, to=""):
         outtype = self.type

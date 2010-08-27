@@ -134,7 +134,7 @@ callbacks.add('PRIVMSG', seen.privmsgcb)
 callbacks.add('JOIN', seen.joincb)
 callbacks.add('PART', seen.partcb)
 callbacks.add('QUIT', seen.quitcb)
-callbacks.add('Presence', seen.xmppcb)
+#callbacks.add('Presence', seen.xmppcb)
 cmnds.add('seen', seen.handle_seen, ['USER', 'CLOUD'])
 examples.add('seen', 'show last spoken txt of <nikc>', 'seen dunker')
 

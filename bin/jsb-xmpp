@@ -45,10 +45,10 @@ cfg.save()
 setloglevel(cfg.loglevel)
 
 makedirs()
-boot()
+#boot()
 
-from gozerlib.plugins import plugs
-plugs.loadall()
+#from gozerlib.plugins import plugs
+#plugs.loadall()
 
 ## start bot
 try:
