@@ -21,6 +21,7 @@ from gozerlib.eventhandler import mainhandler
 from gozerlib.fleet import fleet
 from gozerlib.socklib.partyline import partyline
 from gozerlib.exit import globalshutdown
+from gozerlib.runner import defaultrunner, cmndrunner, longrunner
 
 ## basic imports
 
@@ -419,3 +420,10 @@ def handle_topper(bot, event):
 
 cmnds.add('topper', handle_topper, ['OPER', 'USER', 'GUEST'])
 examples.add('topper', 'show topper line', 'topper')
+
+def handle_running(bot, event):
+    """ show running tasks. """
+    event.reply("<b>callbacks:</b> %s - <b>commands:</b> %s - <b>longrunning:</b> %s" % (defaultrunner.running(), cmndrunner.running(), longrunner.running()))
+
+cmnds.add('running', handle_running, ['OPER', 'USER', 'GUEST'])
+examples.add('running', "show running tasks", "running")

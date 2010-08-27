@@ -120,7 +120,7 @@ class BotBase(LazyDict):
             defaultrunner.start()
             cmndrunner.start()
 
-        logging.warn("botbase - created bot %s - %s" % (self.name, self.dump()))
+        logging.debug("botbase - created bot %s - %s" % (self.name, self.dump()))
 
     def setstate(self, state=None):
         """ set state on the bot. """

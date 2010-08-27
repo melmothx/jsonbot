@@ -186,6 +186,7 @@ class Runners(object):
             put a job on a free runner.
 
         """
+        self.cleanup()
 
         for runner in self.runners:
             if not runner.working:
@@ -229,8 +230,11 @@ class Runners(object):
             self.runners.append(runner)
 
         else:
-            runner = random.choice(self.runners)
-
+            for i in self.runners:
+                if not i.working:
+                    runner = i
+                    break
+ 
         return runner
 
     def cleanup(self):
@@ -275,8 +279,8 @@ def runners_stop():
 
 #cleanall()
 
-defaultrunner = BotEventRunner()
-cmndrunner = BotEventRunner()
-longrunner = BotEventRunner()
+defaultrunner = Runners(10, BotEventRunner)
+cmndrunner = Runners(10, BotEventRunner)
+longrunner = Runners(10, BotEventRunner)
 
 

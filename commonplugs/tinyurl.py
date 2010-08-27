@@ -32,7 +32,10 @@ cache = {}
 
 if not gotgoogle:
     def get(name, *args, **kwargs):
-        return cache[name]
+        try:
+            return cache[name]
+        except KeyError:
+            return ""
     def set(name, value, *args, **kwargs):
         global cache
         cache[name] = value

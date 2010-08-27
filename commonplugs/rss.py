@@ -1367,7 +1367,7 @@ def handle_rssstopall(bot, ievent):
         for feed in feeds:
 
             if watcher.stop(bot.name, bot.type, feed, target):
-                if name in ievent.chan.data.feeds:
+                if feed in ievent.chan.data.feeds:
                     ievent.chan.data.feeds.remove(feed)
                     ievent.chan.save()
                 stopped.append(feed)
@@ -1535,7 +1535,7 @@ def handle_rssdelitem(bot, ievent):
     try:
         rssitem.itemslists.data[jsonstring([name, bot.type, target])].remove(item)
         rssitem.itemslists.save()
-    except (RssNoSuchItem, ValueError):
+    except (ValueError, KeyError):
         ievent.reply("we don't have a %s rss feed" % name)
         return
 
@@ -1826,7 +1826,7 @@ def handle_rssget(bot, ievent):
     else:
         ievent.reply("can't make a reponse out of %s" % name)
 
-cmnds.add('rss-get', handle_rssget, ['RSS', 'USER'], threaded=True, wait=False)
+cmnds.add('rss-get', handle_rssget, ['RSS', 'USER'], threaded=True)
 examples.add('rss-get', 'rss-get <name> .. get data from <name>', 'rss-get jsonbot')
 
 def handle_rssrunning(bot, ievent):
@@ -2005,7 +2005,7 @@ def handle_rsssync(bot, ievent):
     result = watcher.sync(name)
     ievent.reply('%s synced' % name)
 
-cmnds.add('rss-sync', handle_rsssync, ['USER', ])
+cmnds.add('rss-sync', handle_rsssync, ['USER', ], threaded=True)
 examples.add('rss-sync', 'rss-sync <name> .. sync data of <name>', \
 'rss-sync jsonbot')
 

@@ -6,7 +6,7 @@
 
 ## lib imports
 
-from threads import start_new_thread
+from threads import start_new_thread, getname
 
 ## basic imports
 
@@ -105,7 +105,7 @@ class RunnerLoop(ThreadLoop):
             if not data:
                 break
 
-            self.nowrunning = data[0]
+            self.nowrunning = getname(data[1])
             logging.debug('%s - now running %s' % (self.name, self.nowrunning))
             self.handle(*data)
 
