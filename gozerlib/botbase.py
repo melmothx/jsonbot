@@ -53,6 +53,7 @@ class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
         self.stopped = False
+        self.plugs = plugs or coreplugs
         if not botname and cfg:
             botname = cfg.botname
         if botname:
@@ -98,7 +99,6 @@ class BotBase(LazyDict):
         self.setusers(usersin)
         logging.info(u"botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
-        self.plugs = plugs or coreplugs 
         self.outcache = Less(3)
         self.userhosts = {}
         self.connectok = threading.Event()
@@ -114,10 +114,13 @@ class BotBase(LazyDict):
         self.setstate()
         if not fleet.byname(self.name):
             fleet.bots.append(self)
+
         if not self.isgae:
             periodical.start()
             defaultrunner.start()
             cmndrunner.start()
+
+        logging.warn("botbase - created bot %s - %s" % (self.name, self.dump()))
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -256,15 +259,12 @@ class BotBase(LazyDict):
         e.closequeue = True
         e.direct = True
         e.finish()
-        if self.plugs:
-            try:
-                #event = self.doevent(e)
-                event = self.plugs.dispatch(self, e, wait=wait)
-                return event
-            except NoSuchCommand:
-                e.reply("no such command: %s" % e.usercmnd)
-        else:
-            raise PlugsNotConnected()
+
+        try:
+            event = self.plugs.dispatch(self, e, wait=wait)
+            return event
+        except NoSuchCommand:
+            e.reply("no such command: %s" % e.usercmnd)
 
     def less(self, who, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
