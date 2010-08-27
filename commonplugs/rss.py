@@ -1086,11 +1086,6 @@ def init():
     taskmanager.add('rss', doperiodical)
     periodical.addjob(900, 0, doperiodical)
 
-def start(bot, event):
-    logging.warn("rss plugin started")
-
-callbacks.add('START', start)
-
 def shutdown():
     taskmanager.unload('rss')
     periodical.killgroup('commonplugs.rss')
