@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from gozerlib.utils.exception import handle_exception
 from gozerlib.errors import PropertyIgnored
 
 ## simplejson imports
@@ -40,13 +41,14 @@ def checkignore(element, ignore):
 
 def dumpelement(element, ignore=[], prev={}):
     #logging.warn("lazydict - in - %s - %s" % (str(element), str(prev)))
+    from gozerlib.utils.generic import toenc
     if element == prev:
         return unicode(type(prev))
     try:
         newer = dict(prev) or {}
     except (ValueError, KeyError):
-        if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType, types.DictType]:
-            return prev
+        if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
+            return toenc(unicode(prev))
         else:
             logging.debug("lazydict - returning prev - type %s" % type(prev))
             return unicode(type(prev))
@@ -54,10 +56,10 @@ def dumpelement(element, ignore=[], prev={}):
     for name in element:
         try:
             if checkignore(name, ignore):
-                newer[name] = "jsonbot-ignored"
+                newer[name] = u"jsonbot-ignored"
                 continue
             if name in raw:
-                newer[name] = getattr(element, name)
+                newer[name] = toenc(getattr(element, name))
                 continue
             try:
                 prop = getattr(element, name)
@@ -66,23 +68,18 @@ def dumpelement(element, ignore=[], prev={}):
                 continue
             if prop == None:
                 continue
-            if checkignore(prop, ignore):
-                logging.debug("lazydict - dump - ignoring %s" % type(prop))
-                newer[name] = unicode(type(prop))
-                continue                
+            #if checkignore(prop, ignore):
+            #    logging.debug("lazydict - dump - ignoring %s" % type(prop))
+            #    newer[name] = unicode(type(prop))
+            #    continue                
 
             try:
                  if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType, types.DictType]:
-                     newer[name] = prop
+                     newer[name] = toenc(unicode(prop))
                  else:
-                     try:
-                         dumps(prop)
-                         newer[name] = prop
-                     except TypeError:
-                         from gozerlib.utils.generic import strippedtxt
-                         dumps(strippedtxt(prop))
-                         newername = strippedtxt(prop)
+                     newer[name] = toenc(dumps(prop))
             except (TypeError, AttributeError):
+                handle_exception()
                 newer[name] = unicode(type(prop))
                 try:
                     if prop != element:

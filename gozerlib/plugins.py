@@ -136,7 +136,6 @@ class Plugins(LazyDict):
         mod = _import(modname)
 
         try:
-            
             self[modname] = mod
         except KeyError:
             logging.error("plugins - failed to load %s" % modname)

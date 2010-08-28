@@ -149,7 +149,7 @@ def fromenc(txt, encoding='utf-8', what=""):
         #    t = unicode(txt)
         return txt.decode(encoding)
     except UnicodeDecodeError:
-        logging.debug("%s - can't encode %s" % (whichmodule(), encoding))
+        logging.debug("%s - can't decode %s" % (whichmodule(), encoding))
         #raise
         return decodeperchar(txt, encoding, what)
 
