@@ -66,7 +66,7 @@ def forwardoutcb(bot, event):
         outbot = fleet.makebot('xmpp', 'forwardbot')
     if outbot:
         e.source = outbot.jid
-        for jid in forward.data.channels[event.channel]:
+        for jid in forward.data.channels[event.channel.lower()]:
             logging.info("forward - sending to %s" % jid)
             container = Container(outbot.jid, e.dump())
             container.isremote = True
