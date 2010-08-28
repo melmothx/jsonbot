@@ -244,7 +244,7 @@ class Callbacks(object):
             from boot import getcallbacktable
             plugins = getcallbacktable()[target]
         except KeyError:
-            logging.debug("can't find plugin to reload for %s" % event.cmnd)
+            logging.debug("callbacks - can't find plugin to reload for %s" % event.cmnd)
             return
 
         from plugins import plugs
