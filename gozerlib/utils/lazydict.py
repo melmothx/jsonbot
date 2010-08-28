@@ -59,6 +59,7 @@ def dumpelement(element, ignore=[], prev={}):
                 newer[name] = u"jsonbot-ignored"
                 continue
             if name in raw:
+                logging.debug("lazydict - inserting raw element - %s" % name)
                 newer[name] = toenc(getattr(element, name))
                 continue
             try:
@@ -80,7 +81,8 @@ def dumpelement(element, ignore=[], prev={}):
                      dumps(prop)
                      newer[name] = prop
             except (TypeError, AttributeError):
-                handle_exception()
+                logging.debug("lazydict - can't dump element - %s - %s" % (name, unicode(type(prop))))
+                #handle_exception()
                 newer[name] = unicode(type(prop))
                 try:
                     if prop != element:
@@ -133,6 +135,7 @@ class LazyDict(dict):
         return res
 
     def dump(self, ignore=[]):
+        logging.info("lazydict - dumping - %s" %  type(self))
         result = dumpelement(self, defaultignore + ignore)
         return dumps(result)
 
