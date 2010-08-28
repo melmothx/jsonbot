@@ -60,7 +60,7 @@ class Plugins(LazyDict):
             try:
                 for plug in imp.__plugs__:
                     try:
-                        self.reload("%s.%s" % (module,plug), force=force)
+                        self.reload("%s.%s" % (module,plug))
                     except KeyError:
                         logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex:
@@ -110,13 +110,9 @@ class Plugins(LazyDict):
 
     def load(self, modname, force=False):
         """ load a plugin. """
-        if not force and modname in self:
-            logging.info("plugins - %s already loaded" % modname)
-            return self[modname]
-
-        if not force:
+        if self.has_key(modname):
             try:
-                self[modname] = reload(sys.modules[modname])
+                self[modname] = reload(self[modname])
                 logging.info("plugins - %s loaded (true)" % modname)                
                 try:
                     init = getattr(self[modname], 'init')
@@ -129,17 +125,18 @@ class Plugins(LazyDict):
             except KeyError:
                 pass
 
-        if force:
-            try:
-                del sys.modules[modname]
-                logging.warn("plugins - removed %s from sys.modules" % modname)
-            except KeyError:
-                pass
+        #if force:
+        #    try:
+        #        del sys.modules[modname]
+        #        logging.warn("plugins - removed %s from sys.modules" % modname)
+        #    except KeyError:
+        #        pass
 
         logging.info("plugins - loading %s" % modname)
         mod = _import(modname)
 
         try:
+            
             self[modname] = mod
         except KeyError:
             logging.error("plugins - failed to load %s" % modname)

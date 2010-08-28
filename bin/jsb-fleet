@@ -13,7 +13,7 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.utils.generic import getversion
 print getversion('FLEET')
 
-## gozerlib impors
+## gozerlib imports
 
 from gozerlib.datadir import makedirs
 from gozerlib.boot import boot
@@ -38,6 +38,10 @@ else:
     setloglevel("warning")
 
 makedirs()
+boot()
+
+from gozerlib.plugins import plugs
+plugs.loadall()
 
 fleet.loadall()
 
