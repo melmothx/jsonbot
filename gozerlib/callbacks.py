@@ -227,12 +227,7 @@ class Callbacks(object):
                     cb.func(bot, event)
                 else:
                     defaultrunner.put(cb.modname, cb.func, bot, event)
-                #elif event.speed:
-                #    cbrunners[10-int(event.speed)].put(cb.modname, cb.func, bot, event)
-                #else:
-                #    cbrunners[5].put(cb.modname, cb.func, bot, event)
 
-            #event.leave()
             return True
 
         except Exception, ex:
