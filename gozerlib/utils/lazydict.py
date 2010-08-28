@@ -74,10 +74,11 @@ def dumpelement(element, ignore=[], prev={}):
             #    continue                
 
             try:
-                 if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType, types.DictType]:
+                 if type(prop) in [types.StringType, types.UnicodeType]:
                      newer[name] = toenc(unicode(prop))
                  else:
-                     newer[name] = toenc(dumps(prop))
+                     dumps(prop)
+                     newer[name] = prop
             except (TypeError, AttributeError):
                 handle_exception()
                 newer[name] = unicode(type(prop))
