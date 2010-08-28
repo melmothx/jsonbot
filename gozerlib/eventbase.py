@@ -69,7 +69,8 @@ class EventBase(LazyDict):
             self.chan = ChannelBase(self.userhost)
 
         self.makeargs()
-        #logging.info("%s - %s - %s - %s" % (self.type, self.cbtype, self.usercmnd, self.userhost))
+        logging.info("eventbase - %s - %s (%s)" % (self.cbtype, self.usercmnd, self.userhost))
+        logging.debug("eventbase - %s" % self.dump())
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
