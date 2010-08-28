@@ -9,7 +9,7 @@ edited. JSONBOT needs the google_appengine package installed in your home dir as
 
 you need an account on the Google Application Engine. see http://appengine.google.com/
 
-you also need to enable openid authentication on your app, it's in
+you also need to enable openid authentication (federated login) on your app, it's in
 Applcation Settings in your admin console.
 
 1) run jsb-release <yourbotname> - this will create a uploadable dir 
