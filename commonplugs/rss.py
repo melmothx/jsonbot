@@ -264,7 +264,7 @@ sleeptime=15*60, running=0):
         if result:
             r = lastpeeked
 
-            for res in result:
+            for res in result[::-1]:
                 res = LazyDict(res)
                 dt = feedparser._parse_date(res.updated)
                 #dtt = datetime.datetime.fromtimestamp(time.mktime(dt))
