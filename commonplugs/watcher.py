@@ -141,7 +141,7 @@ def watchcallback(bot, event):
 
     subscribers = watched.subscribers(event.channel)
     watched.data.descriptions[event.channel] = event.title
-    #logging.debug("watcher - out - %s - %s" % (str(subscribers), event.txt))
+    logging.debug("watcher - out - %s - %s" % (str(subscribers), event.txt))
     for item in subscribers:
         try:
             (botname, type, channel) = item

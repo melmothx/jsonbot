@@ -89,7 +89,7 @@ class XMLStream(NodeBuilder):
 
     def handle_proceed(self, data):
         """ default stream handler. """
-        logging.debug("sxmpp.core - proceeding")
+        logging.debug("sxmpp - proceeding")
 
     def handle_stream(self, data):
         """ default stream handler. """
@@ -97,7 +97,7 @@ class XMLStream(NodeBuilder):
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        logging.error("sxmpp.core - STREAMERROR: %s" % data)
+        logging.error("sxmpp - STREAMERROR: %s" % data)
         self.exit()
 
     def handle_streamfeatures(self, data):
@@ -157,9 +157,9 @@ class XMLStream(NodeBuilder):
             self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
-                logging.error("sxmpp.core - data is not well formed: %s" % data)
+                logging.error("sxmpp - data is not well formed: %s" % data)
                 return {}
-            logging.debug("sxmpp.core - ALERT: %s - %s" % (str(ex), data))
+            logging.debug("sxmpp - ALERT: %s - %s" % (str(ex), data))
         except Exception, ex:
             handle_exception()
             return {}
@@ -192,7 +192,7 @@ class XMLStream(NodeBuilder):
                     self.loop_one(self.buffer)
 
             except xml.parsers.expat.ExpatError, ex:
-                logging.error("sxmpp.core - %s: %s" % (str(ex), data))
+                logging.error("sxmpp - %s - %s" % (str(ex), data))
                 self.buffer = ""
                 self.error = str(ex)
                 self.disconnectHandler(ex)
@@ -204,11 +204,10 @@ class XMLStream(NodeBuilder):
                 self.disconnectHandler(ex)
                 break
 
-        logging.info('sxmpp.core - stopping readloop .. %s' % (self.error or 'error not set'))
+        logging.info('sxmpp - stopping readloop .. %s' % (self.error or 'error not set'))
 
     def _raw(self, stanza):
         """ output a xml stanza to the socket. """
-        #logging.warn("sxmpp.core - _raw - called from %s" % whichmodule())
         try:
             stanza = stanza.strip()
             if not stanza:
@@ -224,7 +223,7 @@ class XMLStream(NodeBuilder):
                 logging.error('sxmpp - invalid stanza: %s' % what)
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
-                logging.debug("_raw: %s" % what)
+                logging.debug("sxmpp - raw - %s" % what)
                 try:
                     self.connection.send(what + u"\r\n")
                 except AttributeError:
@@ -234,7 +233,7 @@ class XMLStream(NodeBuilder):
 
         except socket.error, ex:
             if 'Broken pipe' in str(ex):
-                logging.debug('sxmpp.core - broken pipe .. ignoring')
+                logging.debug('sxmpp - core - broken pipe .. ignoring')
                 time.sleep(0.01)
                 return
             self.error = str(ex)
@@ -247,7 +246,7 @@ class XMLStream(NodeBuilder):
     def connect(self):
         """ connect to the server. """
         if self.stopped:
-            logging.warn('sxmpp.core - bot is stopped not connecting to %s' % self.host)
+            logging.warn('sxmpp - bot is stopped not connecting to %s' % self.host)
             return
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(30)
@@ -257,21 +256,21 @@ class XMLStream(NodeBuilder):
             self.host = self.server
         else:
             self.host = self.cfg.host
-        logging.warn("sxmpp.core - connecting to %s:%s" % (self.host, self.port))
+        logging.warn("sxmpp - connecting to %s:%s" % (self.host, self.port))
         self.sock.connect((self.host, self.port))
         self.sock.setblocking(False)
         self.sock.settimeout(60)
         time.sleep(1) 
-        logging.debug("sxmpp.core - starting stream")
+        logging.debug("sxmpp - starting stream")
         self.sock.send('<stream:stream to="%s" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams" version="1.0">\r\n' % self.user.split('@')[1])
         time.sleep(3)
         result = self.sock.recv(1500)
-        logging.debug("sxmpp.core - " + str(result))
+        logging.debug("sxmpp - " + str(result))
         self.loop_one(result)
         self.sock.send('<starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"/>\r\n')
         time.sleep(3)
         result = self.sock.recv(1500)
-        logging.debug("sxmpp.core - " + str(result))
+        logging.debug("sxmpp - " + str(result))
         self.loop_one(result)
         self.sock.settimeout(60)
         return self.dossl()
@@ -280,10 +279,10 @@ class XMLStream(NodeBuilder):
         """ enable ssl on the socket. """
         try:
             import ssl
-            logging.debug("sxmpp.core - wrapping ssl socket")
+            logging.debug("sxmpp - wrapping ssl socket")
             self.connection = ssl.wrap_socket(self.sock)
         except ImportError:
-            logging.debug("sxmpp.core - making ssl socket")
+            logging.debug("sxmpp - making ssl socket")
             self.connection = socket.ssl(self.sock)
         if self.connection:
             return True
@@ -307,7 +306,7 @@ class XMLStream(NodeBuilder):
         self.final['subelements'] = self.subelements
 
         for subelement in self.subelements:
-            logging.debug("sxmpp.core - %s" % str(subelement))
+            logging.debug("sxmpp - %s" % str(subelement))
             for elem in subelement:
                 logging.debug("setting %s handler" % elem)
                 methods.append(self.getHandler(elem))
@@ -345,7 +344,7 @@ class XMLStream(NodeBuilder):
                 handle_exception()
                 result = {}
         else:
-            logging.error("sxmpp.core - can't find handler for %s" % element)
+            logging.error("sxmpp - can't find handler for %s" % element)
             result = {}
 
         self.final = {}

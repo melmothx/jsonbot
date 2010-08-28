@@ -72,7 +72,7 @@ class SXMPPBot(XMLStream, BotBase):
         if not self.host:
             self.host = self.cfg.host
             if not self.host:
-                raise Exception("host not set in sxmpp bot - %s" % str(self.cfg))
+                raise Exception("sxmpp - host not set - %s" % str(self.cfg))
 
         self.username = self.user.split('@')[0]
         XMLStream.__init__(self, self.host, self.port, self.name)   
@@ -152,7 +152,7 @@ class SXMPPBot(XMLStream, BotBase):
                 if not sleeptime:
                     sleeptime = 1
 
-                logging.debug('sxmpp - jabberoutsleep .. sleeping %s seconds' % sleeptime)
+                logging.debug('sxmpp - out - sleeping %s seconds' % sleeptime)
                 time.sleep(sleeptime)
 
                 try:
@@ -192,7 +192,7 @@ class SXMPPBot(XMLStream, BotBase):
             status = ""
             show = ""
 
-        logging.debug('sxmpp - keepalive: %s - %s' % (show, status))
+        logging.debug('sxmpp - keepalive - %s - %s' % (show, status))
 
         if show and status:
             p = Presence({'to': self.me, 'show': show, 'status': status})
@@ -271,7 +271,7 @@ class SXMPPBot(XMLStream, BotBase):
         self._raw("""<stream:stream to='%s' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>""" % (self.user.split('@')[1], )) 
         result = self.connection.read()
         iq = self.loop_one(result)
-        logging.debug("sxmpp - initstream: %s" % result)
+        logging.debug("sxmpp - initstream - %s" % result)
         return iq
 
     def register(self, jid, password):
@@ -290,14 +290,14 @@ class SXMPPBot(XMLStream, BotBase):
         logging.debug('sxmpp - register: %s' % str(iq))
         self._raw("""<iq type='set'><query xmlns='jabber:iq:register'><username>%s</username><resource>%s</resource><password>%s</password></query></iq>""" % (jid.split('@')[0], resource, password))
         result = self.connection.read()
-        logging.debug('sxmpp - register: %s' % result)
+        logging.debug('sxmpp - register - %s' % result)
         if not result:
             return False
         iq = self.loop_one(result)
         if not iq:
-            logging.error("sxmpp - can't decode data: %s" % result)
+            logging.error("sxmpp - can't decode data - %s" % result)
             return False
-        logging.debug('sxmpp - register: %s' % result)
+        logging.debug('sxmpp - register - %s' % result)
         if iq.error:
             logging.warn('sxmpp - register FAILED - %s' % iq.error)
             if iq.error.code == "405":
@@ -317,7 +317,7 @@ class SXMPPBot(XMLStream, BotBase):
         self._raw("""<iq type='get'><query xmlns='jabber:iq:auth'><username>%s</username></query></iq>""" % name)
         result = self.connection.read()
         iq = self.loop_one(result)
-        logging.debug('sxmpp - auth:' + result)
+        logging.debug('sxmpp - auth - ' + result)
 
         if ('digest' in result) and digest:
             s = hashlib.new('SHA1')
@@ -331,10 +331,10 @@ class SXMPPBot(XMLStream, BotBase):
         result = self.connection.read()
         iq = self.loop_one(result)
         if not iq:
-            logging.error('sxmpp - auth failed: %s' % result)
+            logging.error('sxmpp - auth failed - %s' % result)
             return False        
 
-        logging.debug('sxmpp - auth: ' + result)
+        logging.debug('sxmpp - auth -' + result)
 
         if iq.error:
             logging.warn('sxmpp - auth failed - %s' % iq.error)
@@ -354,7 +354,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def disconnectHandler(self, ex):
         """ disconnect handler. """
-        logging.error("sxmpp - disconnected: %s" % str(ex)) 
+        logging.error("sxmpp - disconnected - %s" % str(ex)) 
         if not self.stopped:
             self.reconnect()
         else:
@@ -384,13 +384,6 @@ class SXMPPBot(XMLStream, BotBase):
         """ message handler. """
         m = Message(data)
         m.parse(self)
-        #if m.txt.startswith("{"):
-        #    logging.debug("event is remote")
-        #    m.isremote = True
-        #    remote_callbacks.check(self, m)
-        #    return
-
-        #logging.debug("sxmpp - handling message - %s" % str(m))
 
         if data.type == 'groupchat' and data.subject:
             logging.debug("checking topic")
@@ -427,7 +420,7 @@ class SXMPPBot(XMLStream, BotBase):
         try:
             if m.type == 'error':
                 if m.code:
-                    logging.error('sxmpp.error - ' + str(m))
+                    logging.error('sxmpp - error - ' + str(m))
                 self.errorwait.check(m)
                 self.errorHandler(m)
         except Exception, ex:
@@ -441,7 +434,7 @@ class SXMPPBot(XMLStream, BotBase):
             logging.error("smpp.bot - error occured in %s" % str(event))
             event.errorHandler()
         except AttributeError:
-            logging.error('sxmpp - unhandled error: %s' % event)
+            logging.error('sxmpp - unhandled error - %s' % event)
 
     def handle_presence(self, data):
         """ presence handler. """
@@ -509,7 +502,7 @@ class SXMPPBot(XMLStream, BotBase):
                 except (AttributeError, TypeError):
                     txt = ""
             if err:
-                logging.error('sxmpp.error %s: %s'  % (err, txt))
+                logging.error('sxmpp - error - %s - %s'  % (err, txt))
 
             self.errorwait.check(p)
 
@@ -532,7 +525,7 @@ class SXMPPBot(XMLStream, BotBase):
             logging.warn('sxmpp - bot is stopped .. not reconnecting')
             return
 
-        logging.warn('sxmpp -reconnecting .. sleeping 15 seconds')
+        logging.warn('sxmpp - reconnecting .. sleeping 15 seconds')
         self.exit()
         time.sleep(15)
         botjid = self.jid
@@ -555,7 +548,6 @@ class SXMPPBot(XMLStream, BotBase):
 
     def send(self, what):
         """ send stanza to the server. """
-        #logging.warn("sxmpp - send - called from %s" % whichmodule(2))
         if not what:
             logging.debug("sxmpp - can't send empty message")
             return
@@ -568,7 +560,7 @@ class SXMPPBot(XMLStream, BotBase):
         try:
             jid = JID(to)
         except (InvalidJID, AttributeError):
-            logging.error("sxmpp - invalid jid %s .. %s" % (str(to), str(what)))
+            logging.error("sxmpp - invalid jid - %s - %s" % (str(to), str(what)))
             return
 
         try:
@@ -584,13 +576,11 @@ class SXMPPBot(XMLStream, BotBase):
         except (AttributeError, TypeError):
             handle_exception()
             return
-            #raise Exception("can't convert %s to xml .. bot.send()" % what) 
-        #logging.warn("sxmpp - to outqueue - %s" % xml)
+
         self.outqueue.put(xml)
            
     def sendnocb(self, what):
         """ send to server without calling callbacks/monitors. """
-        #logging.warn("sxmpp - sendnocb - called from %s" % whichmodule(2))
         try:
             xml = what.toxml()
         except AttributeError:
@@ -722,7 +712,7 @@ class SXMPPBot(XMLStream, BotBase):
 
         if errorobj:
             err = errorobj[0].error
-            logging.error('sxmpp - error joining %s: %s' % (channel, err))
+            logging.error('sxmpp - error joining %s - %s' % (channel, err))
             if err >= '400':
                 if channel not in self.channels409:
                     self.channels409.append(channel)
@@ -784,7 +774,7 @@ class SXMPPBot(XMLStream, BotBase):
                 if not topic:
                     return None
                 self.topics[msg.channel] = (topic, msg.userhost, time.time())
-                logging.debug('sxmpp -topic of %s set to %s' % (msg.channel, topic))
+                logging.debug('sxmpp - topic of %s set to %s' % (msg.channel, topic))
             except AttributeError:
                 return None
 
