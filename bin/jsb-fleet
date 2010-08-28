@@ -38,12 +38,9 @@ else:
     setloglevel("warning")
 
 makedirs()
-boot()
-
-from gozerlib.plugins import plugs
-plugs.loadall()
 
 fleet.loadall()
+
 if opts.doresume:
     fleet.resume(opts.doresume)
     os.unlink(opts.doresume) # bye
