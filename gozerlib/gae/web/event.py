@@ -91,22 +91,8 @@ class WebEvent(EventBase):
         self.auth = fromenc(userhost)
         self.stripped = stripped(self.auth)
         self.domain = None
-        #self.waveid = fromenc(request.get('waveid'))
-
-        #if self.waveid:
-        #    self.channel = self.waveid
-        #    self.domain = self.waveid.split('!')[0]
-        #else:
-        #    self.channel = stripped(userhost)
         self.channel = stripped(userhost)
-        #if self.waveid:
-        #    self.isgadget = True
-        #    logging.debug(u'web - setting channel to %s' % unicode(self.waveid))
-        #    self.channel = self.waveid
-
-        #self.chan = ChannelBase(self.channel)
-        #self.makeargs()
-        #logging.debug(u'web - in - %s - %s' % (self.userhost, self.txt)) 
+        logging.info(u'web - parsed - %s (%s)' % (self.txt, self.userhost)) 
         return self
 
     def _raw(self, txt, end=u""):
@@ -151,6 +137,4 @@ class WebEvent(EventBase):
 
         (res1, res2) = self.less(result, 1500)
         self.write(res1, raw=raw)
-        #if res2:
-        #    self.write(res2, "<br>", "<br>", raw=raw)
 

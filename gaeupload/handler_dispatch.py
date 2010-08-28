@@ -37,7 +37,6 @@ from simplejson import loads
 
 ## basic imports
 
-import wsgiref.handlers
 import sys
 import time
 import types

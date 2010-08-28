@@ -60,7 +60,7 @@ class Plugins(LazyDict):
             try:
                 for plug in imp.__plugs__:
                     try:
-                        self.load("%s.%s" % (module,plug), force=force)
+                        self.reload("%s.%s" % (module,plug), force=force)
                     except KeyError:
                         logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex:
@@ -70,9 +70,6 @@ class Plugins(LazyDict):
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
-        if modname == "gozerlib.plugs.dispatch":
-            logging.debug("plugins - can't unload dispatcher plugin")
-            return
         logging.debug("plugins - unloading %s" % modname)
 
         try:
@@ -161,7 +158,7 @@ class Plugins(LazyDict):
 
         return self[modname]
 
-    def reload(self, modname, force=False):
+    def reload(self, modname, force=True):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname):
             self.unload(modname)
