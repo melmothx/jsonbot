@@ -29,6 +29,7 @@ def handle_more(bot, ievent):
         txt += "<b> - %s more</b>" % str(nritems)
 
     ievent.write(txt)
+    bot.outmonitor(ievent.userhost, ievent.channel, txt)
 
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
 examples.add('more', 'return txt from output cache', 'more')
