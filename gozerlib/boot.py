@@ -68,8 +68,9 @@ def boot(force=False, encoding="utf-8", umask=None):
 
     try:
         # set default settings
-        reload(sys)
-        sys.setdefaultencoding(encoding)
+        if not ongae:
+            reload(sys)
+            sys.setdefaultencoding(encoding)
     except (AttributeError, IOError):
         pass
 
