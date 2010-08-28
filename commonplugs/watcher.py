@@ -58,6 +58,13 @@ class Watched(PlugPersist):
         self.save()
         return True
 
+    def reset(self, channel):
+        """ unsubscribe a jid from a channel. """ 
+        channel = channel.lower()
+        self.data.channels[channel] = []
+        self.save()
+        return True
+
     def subscribers(self, channel):
         """ get all subscribers of a channel. """
         channel = channel.lower()
@@ -195,7 +202,16 @@ def handle_watcherstart(bot, event):
     event.done()
 
 cmnds.add('watcher-start', handle_watcherstart, 'USER')
-examples.add('watcher-start', 'start watching a channel/wave. ', 'watcher-start <channel>')
+cmnds.add('watch', handle_watcherstart, 'USER')
+examples.add('watcher-start', 'start watching a channel. ', 'watcher-start <channel>')
+
+def handle_watcherreset(bot, event):
+    """ [<channel>] .. stop watching a channel/wave. """
+    watched.reset(event.channel)
+    event.done()
+
+cmnds.add('watcher-reset', handle_watcherreset, 'USER')
+examples.add('watcher-reset', 'stop watching', 'watcher-reset')
 
 def handle_watcherstop(bot, event):
     """ [<channel>] .. stop watching a channel/wave. """

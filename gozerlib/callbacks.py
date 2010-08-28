@@ -104,7 +104,7 @@ class Callbacks(object):
                     unload.append((name, index))
                 index += 1
 
-        logging.debug("callbacks - unload is %s" % str(unload))
+        #logging.debug("callbacks - unload is %s" % str(unload))
         # delete callbacks
         for callback in unload[::-1]:
             self.cbs.delete(callback[0], callback[1])

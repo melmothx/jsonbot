@@ -186,7 +186,6 @@ class Runners(object):
             put a job on a free runner.
 
         """
-        self.cleanup()
 
         for runner in self.runners:
             if not runner.working:
@@ -223,6 +222,8 @@ class Runners(object):
         """
 
         runner = None
+        if len(self.runners) >= self.max:
+            self.cleanup()
 
         if len(self.runners) < self.max:
             runner = self.runnertype()

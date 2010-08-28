@@ -163,6 +163,7 @@ class Commands(LazyDict):
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))
             raise
+
         return event
 
     def unload(self, modname):
