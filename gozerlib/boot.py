@@ -113,8 +113,9 @@ def boot(force=False, encoding="utf-8", umask=None):
         savecallbacktable()
 
     if not loaded:
+        logging.warn("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
-            plugs.reload(plug, force=True)
+            plugs.reload(plug)
 
     logging.info("boot - done")
 
@@ -155,20 +156,15 @@ def savecallbacktable():
  
     callbacktable.data = {}
   
-    from gozerlib.callbacks import callbacks, remote_callbacks
+    from gozerlib.callbacks import first_callbacks, callbacks, last_callbacks, remote_callbacks
     assert callbacks
 
-    for type, cbs in callbacks.cbs.iteritems():
-        for c in cbs:
-            if not callbacktable.data.has_key(type):
-                callbacktable.data[type] = []
-            callbacktable.data[type].append(c.modname)
-
-    for type, cbs in remote_callbacks.cbs.iteritems():
-        for c in cbs:
-            if not callbacktable.data.has_key(type):
-                callbacktable.data[type] = []
-            callbacktable.data[type].append(c.modname)
+    for cb in [first_callbacks, callbacks, last_callbacks, remote_callbacks]:
+        for type, cbs in cb.cbs.iteritems():
+            for c in cbs:
+                if not callbacktable.data.has_key(type):
+                    callbacktable.data[type] = []
+                callbacktable.data[type].append(c.modname)
 
     logging.debug("saving callback table")
     assert callbacktable

@@ -38,10 +38,10 @@ else:
     setloglevel("warning")
 
 makedirs()
-boot()
+#boot()
 
-from gozerlib.plugins import plugs
-plugs.loadall()
+#from gozerlib.plugins import plugs
+#plugs.loadall()
 
 fleet.loadall()
 
