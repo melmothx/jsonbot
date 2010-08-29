@@ -6,6 +6,8 @@
 
 ## gozerlib imports
 
+from gozerlib.utils.generic import strippedtxt, fromenc
+from gozerlib.utils.exception import handle_exception
 from gozerlib.callbacks import callbacks, remote_callbacks
 from gozerlib.container import Container
 from gozerlib.remote.event import RemoteEvent
@@ -44,16 +46,17 @@ if True:
             logging.debug('doing REMOTE callback')
             e = RemoteEvent()
             try:
-                digest = hmac.new(container.hashkey, container.payload, hashlib.sha512).hexdigest()
+                digest = hmac.new(str(container.hashkey), str(container.payload), hashlib.sha512).hexdigest()
                 logging.debug("forward - digest is %s" % digest)
-                if container.digest == digest:
-                    e.copyin(loads(container.payload))
-                else:
-                    raise NoProperDigest()
-
             except TypeError:
+                handle_exception()
                 logging.error("forward - can't load payload - %s" % container.payload)
                 return
+            if container.digest == digest:
+                e.copyin(loads(container.payload))
+            else:
+                raise NoProperDigest()
+
 
             remote_callbacks.check(bot, e)
             e.leave()

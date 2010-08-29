@@ -37,8 +37,7 @@ class Watched(PlugPersist):
 
     def subscribe(self, botname, type, channel, jid):
         """ subscrive a jid to a channel. """ 
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         jid = unicode(jid)
         if not self.data.channels.has_key(channel):
             self.data.channels[channel] = []
@@ -50,8 +49,7 @@ class Watched(PlugPersist):
 
     def unsubscribe(self, botname, type, channel, jid):
         """ unsubscribe a jid from a channel. """ 
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         try:
             self.data.channels[channel].remove([botname, type, unicode(jid)])
         except (KeyError, TypeError, ValueError):
@@ -62,16 +60,14 @@ class Watched(PlugPersist):
 
     def reset(self, channel):
         """ unsubscribe a jid from a channel. """ 
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         self.data.channels[channel] = []
         self.save()
         return True
 
     def subscribers(self, channel):
         """ get all subscribers of a channel. """
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         try:
             return self.data.channels[channel]
         except KeyError:
@@ -79,14 +75,12 @@ class Watched(PlugPersist):
 
     def check(self, channel):
         """ check if channel has subscribers. """
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         return self.data.channels.has_key(channel)
 
     def channels(self, channel):
         """ return all subscribers of a channel. """
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         try:
             return self.data.channels[channel]
         except KeyError:
@@ -94,16 +88,14 @@ class Watched(PlugPersist):
 
     def enable(self, channel):
         """ add channel to whitelist. """
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         if not channel in self.data.whitelist:
             self.data.whitelist.append(channel)
             self.save()
 
     def disable(self, channel):
         """ remove channel from whitelist. """
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         try:
             self.data.whitelist.remove(channel)
         except ValueError:
@@ -114,20 +106,18 @@ class Watched(PlugPersist):
 
     def available(self, channel):
         """ check if channel is on whitelist. """
-        if not type == "wave":
-            channel = channel.lower()
+        channel = channel.lower()
         return channel in self.data.whitelist
 
-    def channels(self, channel):
-        """ return channels on whitelist. """
-        if not type == "wave":
-            channel = channel.lower()
-        res = []
-        for chan, targets in self.data.channels.iteritems():
-            if channel in str(targets):
-                res.append(chan)
+    #def channels(self, channel):
+    #    """ return channels on whitelist. """
+    #    channel = channel.lower()
+    #    res = []
+    #    for chan, targets in self.data.channels.iteritems():
+    #        if channel in str(targets):
+    #            res.append(chan)
 
-        return res
+    #    return res
 
 ## defines
 
@@ -157,7 +147,7 @@ def watchcallback(bot, event):
         return
 
     subscribers = watched.subscribers(event.channel)
-    watched.data.descriptions[event.channel] = event.title
+    watched.data.descriptions[event.channel.lower()] = event.title
     logging.debug("watcher - out - %s - %s" % (str(subscribers), event.txt))
     for item in subscribers:
         try:
