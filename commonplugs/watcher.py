@@ -78,13 +78,13 @@ class Watched(PlugPersist):
         channel = channel.lower()
         return self.data.channels.has_key(channel)
 
-    def channels(self, channel):
-        """ return all subscribers of a channel. """
-        channel = channel.lower()
-        try:
-            return self.data.channels[channel]
-        except KeyError:
-            return None
+    #def channels(self, channel):
+    #    """ return all subscribers of a channel. """
+    #    channel = channel.lower()
+    #    try:
+    #        return self.data.channels[channel]
+    #    except KeyError:
+    #        return None
 
     def enable(self, channel):
         """ add channel to whitelist. """
@@ -109,15 +109,15 @@ class Watched(PlugPersist):
         channel = channel.lower()
         return channel in self.data.whitelist
 
-    #def channels(self, channel):
-    #    """ return channels on whitelist. """
-    #    channel = channel.lower()
-    #    res = []
-    #    for chan, targets in self.data.channels.iteritems():
-    #        if channel in str(targets):
-    #            res.append(chan)
+    def channels(self, channel):
+        """ return channels on whitelist. """
+        channel = channel.lower()
+        res = []
+        for chan, targets in self.data.channels.iteritems():
+            if channel in str(targets):
+                res.append(chan)
 
-    #    return res
+        return res
 
 ## defines
 
