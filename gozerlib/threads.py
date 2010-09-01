@@ -55,6 +55,8 @@ class Botcommand(threading.Thread):
                     for i in self.ievent.queues:
                         i.put_nowait(None)
                 self.ievent.outqueue.put_nowait(None)
+            if self.ievent.inqueue:
+                self.ievent.inqueue.put_nowait(None)
         except Exception, ex:
             handle_exception(self.ievent)
             time.sleep(1)

@@ -172,6 +172,7 @@ class Runners(object):
 
         return result
 
+    @locked
     def makenew(self):
         """ create a new runner. """
         runner = None
@@ -189,6 +190,7 @@ class Runners(object):
 
         return runner
 
+    @locked
     def cleanup(self):
         """ clean up idle runners. """
         nr = len(self.runners)
@@ -198,7 +200,7 @@ class Runners(object):
                     runner.stop() 
                     self.runners.remove(runner)
 
-            logging.warning("runner sizes: %s" % str(self.runnersizes()))
+            logging.info("runner sizes: %s" % str(self.runnersizes()))
 
 ## defines
 

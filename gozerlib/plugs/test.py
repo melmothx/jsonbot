@@ -32,6 +32,7 @@ donot = ['quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
 'cloneurl', 'clone', 'hb', 'rss-get', 'rss-sync']
 
 errors = {}
+teller = 0
 
 def dummy(a, b=None):
     return ""
@@ -39,9 +40,9 @@ def dummy(a, b=None):
 ## functions
 
 def dotest(bot, event):
+    global teller
     global errors
     match = ""
-    teller = 0
     msg = cpy(event)
     if True:
         examplez = examples.getexamples()
@@ -62,12 +63,16 @@ def dotest(bot, event):
                 bot.docmnd(event.userhost, event.channel, example, msg)
             except Exception, ex:
                 errors[example] = exceptionmsg()
-
+    if errors:
+        event.reply("there are %s errors .. " % len(errors))
+        for cmnd, error in errors.iteritems():
+            event.reply("%s - %s" % (cmnd, error))
 
 ## commands
 
 def handle_testplugs(bot, event):
     """ test the plugins by executing all the available examples. """
+    global teller
     try:
         loop = int(event.args[0])
     except (ValueError, IndexError):
@@ -76,16 +81,18 @@ def handle_testplugs(bot, event):
         threaded = event.args[1]
     except (ValueError, IndexError):
         threaded = 0
-    
-    teller = 0
-    msg = cpy(event)
 
+    threads = []
+    teller = 0
     for i in range(loop):
         if threaded:
-            start_new_thread(dotest, (bot, event))
+            threads.append(start_new_thread(dotest, (bot, event)))
         else:
             dotest(bot, event)
 
+    if threads:
+        for thread in threads:
+            thread.join()
     event.reply('%s tests run' % teller)
     if errors:
         event.reply("there are %s errors .. " % len(errors))

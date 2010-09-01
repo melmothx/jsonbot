@@ -43,6 +43,7 @@ class EventBase(LazyDict):
         if input:
             self.copyin(input)
         self.result = []
+        self.inqueue = Queue.Queue()
         self.outqueue = Queue.Queue()
         self.bottype = "botbase"
         self.closequeue = True
@@ -72,6 +73,7 @@ class EventBase(LazyDict):
                 self.chan = ChannelBase(self.userhost)
 
         self.makeargs()
+        self.origtxt = self.txt
         logging.info("eventbase - %s - %s (%s)" % (self.cbtype, self.usercmnd, self.userhost))
         #logging.debug("eventbase - %s" % self.dump())
 
@@ -103,6 +105,7 @@ class EventBase(LazyDict):
         if eventin.has_key('queues'):
             if eventin['queues']:
                 self.queues = eventin['queues']
+        self.inqueue = eventin.outqueue
         return self
 
     def writenocb(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
@@ -133,7 +136,6 @@ class EventBase(LazyDict):
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
         """ reply to this event """
-
         if self.checkqueues(result):
             return
         txt = self.makeresponse(txt, result, dot)
@@ -156,7 +158,7 @@ class EventBase(LazyDict):
 
     def done(self):
         """ tell the user we are done. """
-        self.reply('done')
+        self.reply('<b>done</b> - %s' % self.txt)
         return self
 
     def leave(self):

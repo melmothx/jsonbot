@@ -32,7 +32,7 @@ def handle_grep(bot, ievent):
 
     result = waitforqueue(ievent.inqueue, 30)
     if not result:
-        ievent.reply('no data to grep on')
+        ievent.reply('no data to grep on: %s' % ievent.txt)
         return
 
     doregex = False
@@ -90,5 +90,5 @@ def handle_grep(bot, ievent):
     else:
         ievent.reply('results: ', res)
 
-cmnds.add('grep', handle_grep, ['USER', 'GUEST', 'CLOUD'], threaded=True)
+cmnds.add('grep', handle_grep, ['USER', 'GUEST', 'CLOUD'])
 examples.add('grep', 'grep the output of a command', 'list | grep core')

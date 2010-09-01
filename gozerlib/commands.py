@@ -152,11 +152,11 @@ class Commands(LazyDict):
                     thread = start_bot_command(target.func, (bot, event))
                     #if wait:
 	                    #    thread.join(wait)
-                    #if bot.isgae and event.closequeue:
-                    #    if event.queues:
-                    #        for q in event.queues:
-                    #            q.put_nowait(None)
-                    #    event.outqueue.put_nowait(None)
+                    if bot.isgae and event.closequeue:
+                        if event.queues:
+                            for q in event.queues:
+                                q.put_nowait(None)
+                        event.outqueue.put_nowait(None)
                 else:
                     cmndrunner.put(target.modname, target.func, bot, event)
 

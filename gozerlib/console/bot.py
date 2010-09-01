@@ -90,6 +90,7 @@ class ConsoleBot(BotBase):
                         handle_exception()
                         continue
                 try:
+                    event.finish()
                     result = self.doevent(event)
                     if not result:
                             continue

@@ -27,7 +27,7 @@ def handle_learn(bot, event):
         event.chan.data.info = LazyDict()
     if not event.chan.data.info.has_key(what):
         event.chan.data.info[what] = []
-    if what not in event.chan.data.info[what]:
+    if description not in event.chan.data.info[what]:
         event.chan.data.info[what].append(description)
     event.chan.save()
     event.reply("item added to %s" % event.channel)
