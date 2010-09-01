@@ -198,7 +198,7 @@ class Runners(object):
                     runner.stop() 
                     self.runners.remove(runner)
 
-        logging.warning("runner sizes: %s" % str(self.runnersizes()))
+            logging.warning("runner sizes: %s" % str(self.runnersizes()))
 
 ## defines
 
