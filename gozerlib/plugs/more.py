@@ -4,8 +4,14 @@
 
 """ access the output cache. """
 
+## gozerlib imports
+
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
+
+## basic imports
+
+import logging
 
 def handle_morestatus(bot, ievent):
     ievent.reply("%s more entries available" % len(ievent.chan.data.outcache))
@@ -15,8 +21,9 @@ examples.add('more-status', "show nr op more items available", 'more-status')
 
 def handle_more(bot, ievent):
     """ pop message from the output cache. """
+    logging.warn("more - outputcache: %s" % bot.outcache.size(ievent.channel))
     try:
-        txt = bot.outcache.get(ievent.channel, 0, 0)
+        txt, size = bot.outcache.more(ievent.channel)
     except IndexError:
         txt = None 
     if not txt:
@@ -24,9 +31,9 @@ def handle_more(bot, ievent):
         return
 
     ievent.chan.save()
-    nritems = bot.outcache.size()
-    if nritems:
-        txt += "<b> - %s more</b>" % str(nritems)
+    #size = bot.outcache.size(0)
+    if size:
+        txt += "<b> - %s more</b>" % str(size)
 
     ievent.write(txt)
     bot.outmonitor(ievent.userhost, ievent.channel, txt)

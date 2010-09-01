@@ -154,6 +154,7 @@ class Runners(object):
  
     def put(self, *data):
         """ put a job on a free runner. """
+        self.cleanup()
         for runner in self.runners:
             if not runner.working:
                 runner.put(*data)
@@ -179,7 +180,6 @@ class Runners(object):
             runner.start()
             self.runners.append(runner)
         else:
-            self.cleanup()
             for i in self.runners:
                 if not i.working:
                     runner = i

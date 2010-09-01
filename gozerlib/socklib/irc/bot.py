@@ -21,7 +21,6 @@ from gozerlib.threads import start_new_thread, threaded
 from gozerlib.utils.dol import Dol
 from gozerlib.utils.pdod import Pdod
 from gozerlib.persiststate import PersistState
-from gozerlib.runner import runners_start
 from gozerlib.errors import NoSuchCommand
 from gozerlib.channelbase import ChannelBase
 from gozerlib.exit import globalshutdown

@@ -31,28 +31,19 @@ donot = ['quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
 'gcalc', 'identi', 'mail', 'part', 'cycle', 'exception', 'fleet', 'ln', 'markov-learn', 'pit', 'bugtracker', 'tu', 'banner', 'test', 'cloud', 'dispatch', 'lns', 'loglevel', \
 'cloneurl', 'clone', 'hb', 'rss-get', 'rss-sync']
 
+errors = {}
+
 def dummy(a, b=None):
     return ""
 
-## commands
+## functions
 
-def handle_testplugs(bot, event):
-    """ test the plugins by executing all the available examples. """
+def dotest(bot, event):
+    global errors
     match = ""
-    try:
-        loop = int(event.args[0])
-    except (ValueError, IndexError):
-        loop = 1
-    try:
-        threaded = event.args[1]
-    except (ValueError, IndexError):
-        threaded = 0
-    
     teller = 0
-    errors = {}
     msg = cpy(event)
-    for i in range(loop):
-        event.reply('starting loop %s' % str(i))
+    if True:
         examplez = examples.getexamples()
         random.shuffle(examplez)
         for example in examplez:
@@ -68,14 +59,33 @@ def handle_testplugs(bot, event):
             event.reply('command: ' + example)
             try:
                 msg.txt = "!" + example
-                if threaded:
-                    start_new_thread(bot.docmnd, (event.userhost, event.channel, example, msg))
-                else:
-                    bot.docmnd(event.userhost, event.channel, example, msg)
+                bot.docmnd(event.userhost, event.channel, example, msg)
             except Exception, ex:
                 errors[example] = exceptionmsg()
-            logging.warn("commandrunners sizes: %s" %  str(cmndrunner.runnersizes()))
-            logging.warn("callback runners sizes: %s" %  str(defaultrunner.runnersizes()))
+
+
+## commands
+
+def handle_testplugs(bot, event):
+    """ test the plugins by executing all the available examples. """
+    try:
+        loop = int(event.args[0])
+    except (ValueError, IndexError):
+        loop = 1
+    try:
+        threaded = event.args[1]
+    except (ValueError, IndexError):
+        threaded = 0
+    
+    teller = 0
+    msg = cpy(event)
+
+    for i in range(loop):
+        if threaded:
+            start_new_thread(dotest, (bot, event))
+        else:
+            dotest(bot, event)
+
     event.reply('%s tests run' % teller)
     if errors:
         event.reply("there are %s errors .. " % len(errors))

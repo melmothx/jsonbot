@@ -23,6 +23,7 @@ import copy
 import logging
 import Queue
 import types
+import socket
 
 ## defines
 
@@ -137,7 +138,10 @@ class EventBase(LazyDict):
             return
         txt = self.makeresponse(txt, result, dot)
         if self.isdcc:
-            self.sock.send(unicode(txt) + u"\n")
+            try:
+                self.sock.send(unicode(txt) + u"\n")
+            except socket.error:
+                pass
             return
         res1, nritems = self.less(txt, 1000+extend)
         self.bot.say(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
