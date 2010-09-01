@@ -16,7 +16,7 @@ examples.add('more-status', "show nr op more items available", 'more-status')
 def handle_more(bot, ievent):
     """ pop message from the output cache. """
     try:
-        txt = ievent.chan.data.outcache.pop(0)
+        txt = bot.outcache.get(ievent.channel, 0, 0)
     except IndexError:
         txt = None 
     if not txt:
@@ -24,7 +24,7 @@ def handle_more(bot, ievent):
         return
 
     ievent.chan.save()
-    nritems = len(ievent.chan.data.outcache)
+    nritems = bot.outcache.size()
     if nritems:
         txt += "<b> - %s more</b>" % str(nritems)
 

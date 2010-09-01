@@ -59,18 +59,20 @@ class EventBase(LazyDict):
         return e
 
     def finish(self):
+        self.result = []
         if not self.user and self.userhost:
             if mainconfig.auto_register:
                 self.bot.users.addguest(self.userhost)
             self.user = self.bot.users.getuser(self.userhost)
-        if self.channel:
-            self.chan = ChannelBase(self.channel)
-        elif self.userhost:
-            self.chan = ChannelBase(self.userhost)
+        if not self.chan:
+            if self.channel:
+                self.chan = ChannelBase(self.channel)
+            elif self.userhost:
+                self.chan = ChannelBase(self.userhost)
 
         self.makeargs()
         logging.info("eventbase - %s - %s (%s)" % (self.cbtype, self.usercmnd, self.userhost))
-        logging.debug("eventbase - %s" % self.dump())
+        #logging.debug("eventbase - %s" % self.dump())
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
@@ -202,9 +204,9 @@ class EventBase(LazyDict):
         res = txtlist[0]
         length = len(txtlist)
         # see if we need to store output in less cache
-        if length > 1:
+        if length > 1 and self.bot:
             logging.debug("addding %s lines to %s outputcache" % (len(txtlist), self.channel))
-            self.chan.data.outcache = txtlist[1:]
+            self.bot.outcache.add(self.channel, txtlist[1:])
             res += "<b> - %s more<b>" % (length - 1) 
             self.chan.save()
 

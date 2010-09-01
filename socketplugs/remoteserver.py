@@ -31,7 +31,7 @@ import logging
 
 ## VARS
 
-outurl = "http://jsonbot.appspot.com/remote/"
+outurl = "http://jsonbot.appspot.com/dispatch/"
 
 ## callbacks
 

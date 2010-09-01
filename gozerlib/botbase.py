@@ -260,7 +260,8 @@ class BotBase(LazyDict):
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
         e.closequeue = True
-        e.direct = True
+        if wait:
+            e.direct = True
         e.finish()
 
         try:

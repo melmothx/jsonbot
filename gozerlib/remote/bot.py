@@ -31,7 +31,7 @@ class RemoteBot(BotBase):
 
     def _raw(self, url, data, *args, **kwargs):
         container = Container(self.jid, data)
-        container.makeid()
+        #container.makeid()
         posturl(url, {}, {"container": container.dump()})
 
     def broadcast(self, data, *args, **kwargs):

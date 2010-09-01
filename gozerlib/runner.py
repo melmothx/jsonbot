@@ -4,8 +4,6 @@
 
 """ threads management to run jobs. """
 
-__copyright__ = 'this file is in the public domain'
-
 ## gozerlib imports
 
 from gozerlib.threads import getname, start_new_thread, start_bot_command
@@ -22,7 +20,7 @@ import thread
 import random
 import logging
 
-## define
+## defines
 
 runlock = thread.allocate_lock()
 locked = lockdec(runlock)
@@ -78,7 +76,7 @@ class Runner(RunnerLoop):
 
         self.working = False
 
-## CommandRunner class
+## BotEventRunner class
 
 class BotEventRunner(Runner):
 
@@ -127,15 +125,7 @@ class BotEventRunner(Runner):
 
 class Runners(object):
 
-    """
-        runners is a collection of runner objects.
-
-        :param max: maximum of runners
-        :type max: integer
-        :param runnertype: Runner class to instatiate runners with
-        :type runnertype: Runner
-
-    """
+    """ runners is a collection of runner objects. """
 
     def __init__(self, max=100, runnertype=Runner):
         self.max = max
@@ -144,49 +134,26 @@ class Runners(object):
         self.runnertype=runnertype
 
     def runnersizes(self):
-
-        """
-            return sizes of runner objects.
-
-            :rtype: list .. list of runner queue sizes
-
-        """
-
+        """ return sizes of runner objects. """
         result = []
-
         for runner in self.runners:
             result.append(runner.queue.qsize())
 
         return result
 
     def stop(self):
-
-        """
-            stop runners.
-
-        """
-
+        """ stop runners. """
         for runner in self.runners:
             runner.stop()
 
         self.cleanup()
 
     def start(self):
-
-        """
-            overload this if needed.
- 
-        """
-
+        """ overload this if needed. """
         pass
  
     def put(self, *data):
-
-        """
-            put a job on a free runner.
-
-        """
-
+        """ put a job on a free runner. """
         for runner in self.runners:
             if not runner.working:
                 runner.put(*data)
@@ -196,16 +163,8 @@ class Runners(object):
         runner.put(*data)
          
     def running(self):
-
-        """
-            return list of running jobs.
-
-            :rtype: list
-
-        """
-
+        """ return list of running jobs. """
         result = []
-
         for runner in self.runners:
             if runner.working:
                 result.append(runner.nowrunning)
@@ -213,75 +172,36 @@ class Runners(object):
         return result
 
     def makenew(self):
-
-        """
-            create a new runner.
-
-            :rtype: Runner or None
-
-        """
-
+        """ create a new runner. """
         runner = None
-        if len(self.runners) >= self.max:
-            self.cleanup()
-
         if len(self.runners) < self.max:
             runner = self.runnertype()
             runner.start()
             self.runners.append(runner)
-
         else:
+            self.cleanup()
             for i in self.runners:
                 if not i.working:
                     runner = i
                     break
- 
+            if not runner:
+                runner = random.choice(self.runners)
+
         return runner
 
     def cleanup(self):
+        """ clean up idle runners. """
+        nr = len(self.runners)
+        if nr > 1:
+            for runner in self.runners[1:]:
+                if not runner.working:
+                    runner.stop() 
+                    self.runners.remove(runner)
 
-        """
-            clean up idle runners.
-
-        """
-
-        for runner in self.runners:
-            if not runner.working:
-                runner.stop() 
-                self.runners.remove(runner)
-
-# start all runners
-def runners_start():
-    for runner in cbrunners:
-        runner.start()
-    for runner in cmndrunners:
-        runner.start()
-
-# stop all runners
-def runners_stop():
-    for runner in cbrunners:
-        runner.stop()
-    for runner in cmndrunners:
-        runner.stop()
+        logging.warning("runner sizes: %s" % str(self.runnersizes()))
 
 ## defines
-
-# callback runners
-#cbrunners = [Runners(12-i, BotEventRunner) for i in range(10)]
-
-# command runners
-#cmndrunners = [Runners(20-i, BotEventRunner) for i in range(10)]
-
-# sweep over all runners 
-#@minutely
-#def cleanall():
-#    for runners in cbrunners + cmndrunners:
-#        runners.cleanup()
-
-#cleanall()
 
 defaultrunner = Runners(10, BotEventRunner)
 cmndrunner = Runners(10, BotEventRunner)
 longrunner = Runners(10, BotEventRunner)
-
-

@@ -140,7 +140,7 @@ class Commands(LazyDict):
         event.iscmnd = True
         logging.info('commands - dispatching %s for %s - (%s seconds)' % (event.usercmnd, id, wait))
         try:
-            if bot.isgae or event.direct:
+            if bot.isgae or wait:
                 target.func(bot, event)
                 if event.closequeue and event.queues:
                     for q in event.queues:
@@ -148,15 +148,15 @@ class Commands(LazyDict):
                     event.outqueue.put_nowait(None)
             else:
                 if target.threaded:
-                    logging.info("commands - launching thread for %s" % event.usercmnd)
+                    logging.warning("commands - launching thread for %s" % event.usercmnd)
                     thread = start_bot_command(target.func, (bot, event))
-                    if wait:
-                        thread.join(wait)
-                    if bot.isgae and event.closequeue:
-                        if event.queues:
-                            for q in event.queues:
-                                q.put_nowait(None)
-                        event.outqueue.put_nowait(None)
+                    #if wait:
+	                    #    thread.join(wait)
+                    #if bot.isgae and event.closequeue:
+                    #    if event.queues:
+                    #        for q in event.queues:
+                    #            q.put_nowait(None)
+                    #    event.outqueue.put_nowait(None)
                 else:
                     cmndrunner.put(target.modname, target.func, bot, event)
 

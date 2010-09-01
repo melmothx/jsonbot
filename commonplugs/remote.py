@@ -26,7 +26,7 @@ import re
 
 ## defines
 
-outurl = "http://jsbbot.appspot.com/remote"
+outurl = "http://jsonbot.appspot.com/dispatch"
 state = PlugPersist('remote')
 
 if not state.data.outs:

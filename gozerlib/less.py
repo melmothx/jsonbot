@@ -39,9 +39,8 @@ class Less(object):
         """
         if not self.data.has_key(channel):
             self.data[channel] = []
-        self.data[channel].extend(listoftxt)
+        self.data[channel] = listoftxt
         self.index[channel] = 1
-        self.save()
 
     def get(self, channel, index1, index2):
         """

@@ -45,7 +45,6 @@ class ChannelBase(Persist):
         self.data.watched = self.data.watched or []
         self.data.passwords = self.data.passwords or {}
         self.data.createdfrom = whichmodule()
-        self.data.outcache = self.data.outcache or []
         self.data.cacheindex = 0
 
     def setpass(self, type, key):

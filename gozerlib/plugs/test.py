@@ -11,12 +11,14 @@ from gozerlib.eventbase import EventBase
 from gozerlib.users import users
 from gozerlib.threads import start_new_thread
 from gozerlib.socklib.utils.generic import waitforqueue
+from gozerlib.runner import cmndrunner, defaultrunner
 
 ## basic imports
 
 import time
 import random
 import copy
+import logging
 
 ## defines
 
@@ -35,20 +37,17 @@ def dummy(a, b=None):
 ## commands
 
 def handle_testplugs(bot, event):
-    #if bot.cfg['type'] == 'irc' and not event.isdcc:
-    #    event.reply('use this command in a /dcc chat with the bot')
-    #    return
-    #if bot.cfg['type'] == 'web':
-    #    event.reply("don't use this command on a web bot")
-    #    return
-    #if bot.cfg['type'] == 'wave':
-    #    event.reply("don't use this command on a wave bot")
-    #    return
+    """ test the plugins by executing all the available examples. """
     match = ""
     try:
         loop = int(event.args[0])
     except (ValueError, IndexError):
         loop = 1
+    try:
+        threaded = event.args[1]
+    except (ValueError, IndexError):
+        threaded = 0
+    
     teller = 0
     errors = {}
     msg = cpy(event)
@@ -69,9 +68,14 @@ def handle_testplugs(bot, event):
             event.reply('command: ' + example)
             try:
                 msg.txt = "!" + example
-                bot.docmnd(event.userhost, event.channel, example, msg)
+                if threaded:
+                    start_new_thread(bot.docmnd, (event.userhost, event.channel, example, msg))
+                else:
+                    bot.docmnd(event.userhost, event.channel, example, msg)
             except Exception, ex:
                 errors[example] = exceptionmsg()
+            logging.warn("commandrunners sizes: %s" %  str(cmndrunner.runnersizes()))
+            logging.warn("callback runners sizes: %s" %  str(defaultrunner.runnersizes()))
     event.reply('%s tests run' % teller)
     if errors:
         event.reply("there are %s errors .. " % len(errors))
@@ -86,6 +90,7 @@ cmnds.add('test-plugs', handle_testplugs, ['USER', ], threaded=True)
 examples.add('test-plugs', 'test all plugins by running there examples', 'test-plugs')
 
 def handle_forcedreconnect(bot, ievent):
+    """ do a forced reconnect. """
     if bot.type == "sxmpp":
         bot.disconnectHandler(Exception('test exception for reconnect'))
     else:
@@ -94,12 +99,14 @@ def handle_forcedreconnect(bot, ievent):
 cmnds.add('test-forcedreconnect', handle_forcedreconnect, 'OPER')
 
 def handle_forcedexception(bot, ievent):
+    """ raise a exception. """
     raise Exception('test exception')
 
 cmnds.add('test-forcedexception', handle_forcedexception, 'OPER')
 examples.add('test-forcedexception', 'throw an exception as test', 'test-forcedexception')
 
 def handle_testwrongxml(bot, ievent):
+    """ try sending borked xml. """
     if not bot.type == "sxmpp":
         ievent.reply('only sxmpp')
         return
@@ -109,12 +116,14 @@ def handle_testwrongxml(bot, ievent):
 cmnds.add('test-wrongxml', handle_testwrongxml, 'OPER')
 
 def handle_tojson(bot, ievent):
+    """ dump the event to json. """
     ievent.reply(str(ievent.dump()))
 
 cmnds.add('test-json', handle_tojson, 'OPER')
 examples.add('test-json', "dump the event as json", "test-json")
 
 def handle_testunicode(bot, ievent):
+    """ send unicode test down the output paths. """
     outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ .. AВы хотите говорить на русском языке, товарищ?"
     ievent.reply(outtxt)
     bot.say(ievent.channel, outtxt)
@@ -123,6 +132,7 @@ cmnds.add('test-unicode', handle_testunicode, 'OPER')
 examples.add('test-unicode', 'test if unicode output path is clear', 'test-unicode')
 
 def handle_testdocmnd(bot, ievent):
+    """ call bot.docmnd(). """
     if ievent.rest:
         bot.docmnd(ievent.origin, ievent.channel, ievent.rest)
     else:
