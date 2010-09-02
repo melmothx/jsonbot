@@ -24,6 +24,7 @@ import types
 import time
 import thread
 import logging
+import re
 
 ## locks
 
@@ -62,6 +63,7 @@ class Message(GozerEvent):
         if self.checkqueues(result):
             return
         restxt = self.makeresponse(txt, result, dot)
+        restxt = self.normalize(restxt)
         res1, res2 = self.less(restxt, 900+extend)
         self.out(res1, to)
         self.bot.outmonitor(self.userhost, to or self.channel, res1, self)
@@ -148,3 +150,14 @@ class Message(GozerEvent):
             logging.error('sxmpp.core - unhandled error %s' % code)
         except:
             handle_exception()
+
+    def normalize(self, what):
+        what = what.replace("<b>", "")
+        what = what.replace("</b>", "")
+        what = what.replace("&lt;b&gt;", "")
+        what = what.replace("&lt;/b&gt;", "")
+        what = what.replace("<i>", "")
+        what = what.replace("</i>", "")
+        what = what.replace("&lt;i&gt;", "")
+        what = what.replace("&lt;/i&gt;", "")
+        return what

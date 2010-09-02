@@ -41,6 +41,10 @@ class XMPPEvent(EventBase):
         what = what.replace("</b>", "")
         what = what.replace("&lt;b&gt;", "")
         what = what.replace("&lt;/b&gt;", "")
+        what = what.replace("<i>", "")
+        what = what.replace("</i>", "")
+        what = what.replace("&lt;i&gt;", "")
+        what = what.replace("&lt;/i&gt;", "")
         return what
 
     def _raw(self, txt):

@@ -632,6 +632,7 @@ class SXMPPBot(XMLStream, BotBase):
             self.outnocb(printto, res2, event, origin, groupchat)
 
     def outnocb(self, printto, txt, event, origin, groupchat):
+        txt = self.normalize(txt)
         if self.google:
             fromm = self.me
         if printto in self.state['joinedchannels'] or groupchat:
@@ -790,3 +791,14 @@ class SXMPPBot(XMLStream, BotBase):
         """ dispatch an msg on the bot. """
 
         self.doevent(msg)
+
+    def normalize(self, what):
+        what = what.replace("<b>", "")
+        what = what.replace("</b>", "")
+        what = what.replace("&lt;b&gt;", "")
+        what = what.replace("&lt;/b&gt;", "")
+        what = what.replace("<i>", "")
+        what = what.replace("</i>", "")
+        what = what.replace("&lt;i&gt;", "")
+        what = what.replace("&lt;/i&gt;", "")
+        return what
