@@ -19,6 +19,7 @@ from gozerlib.threads import start_new_thread
 from gozerlib.fleet import fleet
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
+from gozerlib.channelbase import ChannelBase
 
 ## gozerlib.socket imports
 
@@ -431,7 +432,7 @@ class SXMPPBot(XMLStream, BotBase):
     def errorHandler(self, event):
         """ error handler .. calls the errorhandler set in the event. """
         try:
-            logging.error("smpp.bot - error occured in %s" % str(event))
+            logging.error("smpp.bot - error occured in %s" % event.dump())
             event.errorHandler()
         except AttributeError:
             logging.error('sxmpp - unhandled error - %s' % event)
@@ -690,10 +691,8 @@ class SXMPPBot(XMLStream, BotBase):
                 nick = channel.split('/')[1]
         except IndexError:
             nick = self.nick
-        channel = channel.split('/')[0]
 
-        if not self.channels.has_key(channel):
-            self.channels.setdefault(channel, {})
+        channel = channel.split('/')[0]
 
         # setup error wait
         q = Queue.Queue()
@@ -719,29 +718,24 @@ class SXMPPBot(XMLStream, BotBase):
             return err
 
         self.timejoined[channel] = time.time()
-        chan = self.channels[channel]
+        chan = ChannelBase(channel)
         # if password is provided set it
-        chan['nick'] = nick
+        chan.data['nick'] = nick
 
         if password:
-            chan['key'] = password
+            chan.data['key'] = password
 
         # check for control char .. if its not there init to !
-        if not chan.has_key('cc'):
-            chan['cc'] = self.cfg['defaultcc'] or '!'
-
-        if not chan.has_key('perms'):
-            chan['perms'] = []
-
-        self.channels.save()
+        if not chan.data.has_key('cc'):
+            chan.data['cc'] = self.cfg['defaultcc'] or '!'
 
         if channel not in self.state['joinedchannels']:
             self.state['joinedchannels'].append(channel)
+            self.state.save()
 
         if channel in self.channels409:
             self.channels409.remove(channel)
 
-        self.state.save()
         return 1
 
     def part(self, channel):

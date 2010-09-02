@@ -42,13 +42,13 @@ class Message(GozerEvent):
     """ jabber message object. """
 
     def __init__(self, nodedict={}):
-        GozerEvent.__init__(self, nodedict)
         self.element = "message"
         self.jabber = True
         self.cmnd = "MESSAGE"
         self.cbtype = "MESSAGE"
         self.bottype = "xmpp"
         self.type = "normal"
+        GozerEvent.__init__(self, nodedict)
   
     def __copy__(self):
         return Message(self)
@@ -64,7 +64,7 @@ class Message(GozerEvent):
         restxt = self.makeresponse(txt, result, dot)
         res1, res2 = self.less(restxt, 900+extend)
         self.out(res1, to)
-        self.bot.outmonitor(self.userhost, self.channel, res1, self)
+        self.bot.outmonitor(self.userhost, to or self.channel, res1, self)
 
     def out(self, txt, to=""):
         outtype = self.type
@@ -72,27 +72,23 @@ class Message(GozerEvent):
         if not self.bot:
             raise BotNotSetInEvent("xmpp.message")
 
-        if to and to in self.bot.state['joinedchannels']:
+        if to  and to in self.bot.state['joinedchannels']:
             outtype = 'groupchat' 
             self.groupchat = True
             self.msg = False
 
-        repl = Message({'from': self.me, 'to': to or self.jid, 'type': outtype, 'txt': txt})
+        if self.type == "groupchat":
+            target = to or self.channel
+            self.groupchat = True
+        else:
+            target = to or self.userhost
 
-        if self.groupchat:
-            if self.resource == self.bot.nick:
-                return
-            if to:
-                pass
-            elif self.printto:
-                repl.to = self.printto
-            else:
-                repl.to = self.channel
+        repl = Message({'from': self.me, 'to': target, 'type': self.type, 'txt': txt})
 
-        if to:
-            repl.type = 'normal'
-        elif not repl.type:
+        if not repl.type:
             repl.type = 'chat'
+
+        logging.warn("sxmpp - target is %s - %s" % (target, self.type))
 
         self.bot.send(repl)
 
@@ -107,7 +103,6 @@ class Message(GozerEvent):
             pass
 
         self.channel = self['fromm'].split('/')[0]
-        self.chan = ChannelBase(self.channel)
         self.origchannel = self.channel
         self.nick = self.resource
         self.jid = self.fromm

@@ -44,6 +44,9 @@ class ChannelBase(Persist):
         self.data.forwards = self.data.forwards or []
         self.data.watched = self.data.watched or []
         self.data.passwords = self.data.passwords or {}
+        self.data.cc = self.data.cc or "!"
+        self.data.nick = self.data.nick or "jsonbot"
+        self.data.key = self.data.key or ""
         self.data.createdfrom = whichmodule()
         self.data.cacheindex = 0
 
