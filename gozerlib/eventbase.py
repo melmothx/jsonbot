@@ -106,7 +106,7 @@ class EventBase(LazyDict):
             if eventin['queues']:
                 self.queues = eventin['queues']
         if eventin.has_key("outqueue"):
-            self.inqueue = eventin.outqueue
+            self.inqueue = eventin['outqueue']
         return self
 
     def writenocb(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
