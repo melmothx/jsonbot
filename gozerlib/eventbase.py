@@ -105,7 +105,7 @@ class EventBase(LazyDict):
         if eventin.has_key('queues'):
             if eventin['queues']:
                 self.queues = eventin['queues']
-        if eventin.has_key("outqueue"]:
+        if eventin.has_key["outqueue"]:
             self.inqueue = eventin.outqueue
         return self
 
