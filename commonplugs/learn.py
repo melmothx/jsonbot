@@ -6,9 +6,14 @@
 
 ## gozerlib imports
 
+from gozerlib.callbacks import callbacks
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.utils.lazydict import LazyDict
+
+## basic imports
+
+import logging
 
 ## commands
 
@@ -45,3 +50,18 @@ def handle_whatis(bot, event):
 cmnds.add('whatis', handle_whatis, ['USER', 'OPER'])
 cmnds.add('?', handle_whatis, ['USER', 'OPER'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsonbot")
+
+def prelearn(bot, event):
+    if event.usercmnd and event.chan.data.info and event.usercmnd[1:] in event.chan.data.info:
+        return True
+    return False
+
+def learncb(bot, event):
+    try:
+       event.reply("%s is " % event.usercmnd[1:], event.chan.data.info[event.usercmnd[1:]])
+    except (KeyError, IndexError):
+       pass
+
+callbacks.add("PRIVMSG", learncb, prelearn)
+callbacks.add("MESSAGE", learncb, prelearn)
+callbacks.add("DISPATCH", learncb, prelearn)

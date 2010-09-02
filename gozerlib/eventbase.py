@@ -73,6 +73,7 @@ class EventBase(LazyDict):
                 self.chan = ChannelBase(self.userhost)
 
         self.makeargs()
+        self.usercmnd = self.txt.split()[0]
         self.origtxt = self.txt
         logging.info("eventbase - %s - %s (%s)" % (self.cbtype, self.usercmnd, self.userhost))
         #logging.debug("eventbase - %s" % self.dump())
