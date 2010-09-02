@@ -70,7 +70,7 @@ def forwardoutcb(bot, event):
             logging.info("forward - sending to %s" % jid)
             container = Container(outbot.jid, e.dump())
             container.isremote = True
-            outbot.saynocb(jid, container.dump()) 
+            outbot.outnocb(jid, container.dump()) 
     else:
         logging.debug("forward - no xmpp bot found in fleet")
 

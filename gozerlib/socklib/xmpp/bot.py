@@ -605,6 +605,7 @@ class SXMPPBot(XMLStream, BotBase):
         
     def say(self, printto, txt, event=None, origin="", extend=0, groupchat=False):
         """ say txt to channel/JID. """
+        self.fromm = origin or self.userhost
         if origin:
             res1, res2 = self.less(origin, txt, 900+extend)        
         else:
@@ -629,7 +630,7 @@ class SXMPPBot(XMLStream, BotBase):
  
         self.outnocb(printto, res1, event, origin, groupchat)
 
-    def outnocb(self, printto, txt, event, origin, groupchat):
+    def outnocb(self, printto, txt, event=None, origin=None, groupchat=False):
         #txt = self.normalize(txt)
         if self.google:
             fromm = self.me
@@ -642,7 +643,7 @@ class SXMPPBot(XMLStream, BotBase):
         else:
             message.fromm = self.jid
 
-        self.send(message)
+        self.sendnocb(message)
 
     def userwait(self, msg, txt):
         """ wait for user response. """
@@ -791,7 +792,6 @@ class SXMPPBot(XMLStream, BotBase):
         self.doevent(msg)
 
     def normalize(self, what):
-        what = unicode(what)
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
         what = what.replace("&lt;b&gt;", "")
