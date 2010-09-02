@@ -793,6 +793,7 @@ class SXMPPBot(XMLStream, BotBase):
         self.doevent(msg)
 
     def normalize(self, what):
+        what = unicode(what)
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
         what = what.replace("&lt;b&gt;", "")
