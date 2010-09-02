@@ -405,9 +405,6 @@ class SXMPPBot(XMLStream, BotBase):
             logging.debug("sxmpp - message is a response")
             return
 
-        if m.groupchat:
-            m.msg = False
-
         jid = None
         m.origjid = m.jid
 

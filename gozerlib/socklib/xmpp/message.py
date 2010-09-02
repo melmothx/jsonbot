@@ -109,7 +109,6 @@ class Message(GozerEvent):
         self.ruserhost = self.jid
         self.userhost = self.jid
         self.stripped = self.jid.split('/')[0]
-        self.auth = self.stripped
         self.printto = self.channel
 
         for node in self.subelements:
@@ -127,12 +126,10 @@ class Message(GozerEvent):
 
         if self.type == 'groupchat':
             self.groupchat = True
-            if self.jidchange:
-                self.userhost = self.stripped
+            self.auth = self.userhost
         else:
             self.groupchat = False
-            self.userhost = self.stripped
-
+            self.auth = self.stripped
         self.msg = not self.groupchat
         self.makeargs()
 
