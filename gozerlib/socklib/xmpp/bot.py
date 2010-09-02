@@ -224,7 +224,7 @@ class SXMPPBot(XMLStream, BotBase):
                     p = Presence({'to': chan})
                     self.send(p)
 
-    def connect(self, reconnect=True):
+    def connect(self, reconnect=True, joinchannels=True):
         """ connect the xmpp server. """
         if self.stopped:
             logging.warn('sxmpp - bot is stopped .. not connecting')
@@ -244,6 +244,8 @@ class SXMPPBot(XMLStream, BotBase):
             self._raw("<presence/>")
             self.connectok.set()
             self.sock.settimeout(None)
+            if joinchannels:
+                self.joinchannels()
             return True
         except Exception, ex:
             handle_exception()
@@ -364,8 +366,9 @@ class SXMPPBot(XMLStream, BotBase):
     def joinchannels(self):
         """ join all already joined channels. """
         for i in self.state['joinedchannels']:
-            key = self.channels.getkey(i)
-            nick = self.channels.getnick(i)
+            chan = ChannelBase(i)
+            key = chan.data.key or None
+            nick = chan.data.nick or "jsonbot"
             result = self.join(i, key, nick)
             if result == 1:
                 logging.warn('sxmpp - joined %s' % i)

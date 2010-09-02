@@ -88,7 +88,7 @@ class Message(GozerEvent):
         if not repl.type:
             repl.type = 'chat'
 
-        logging.warn("sxmpp - target is %s - %s" % (target, self.type))
+        logging.debug("sxmpp - target is %s - %s" % (target, self.type))
 
         self.bot.send(repl)
 
