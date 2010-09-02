@@ -37,7 +37,7 @@ def handle_learn(bot, event):
     event.chan.save()
     event.reply("item added to %s" % event.channel)
 
-cmnds.add('learn', handle_learn, ['USER', 'OPER'])
+cmnds.add('learn', handle_learn, ['USER', 'OPER', 'GUEST'])
 cmnds.add('=', handle_learn, ['USER', 'OPER'])
 examples.add('learn', 'learn the bot a description of an item.', "learn dunk is botpapa")
 
@@ -47,7 +47,7 @@ def handle_whatis(bot, event):
     else:
         event.reply("no information known about %s" % event.rest)
 
-cmnds.add('whatis', handle_whatis, ['USER', 'OPER'])
+cmnds.add('whatis', handle_whatis, ['USER', 'OPER', 'GUEST'])
 cmnds.add('?', handle_whatis, ['USER', 'OPER'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsonbot")
 

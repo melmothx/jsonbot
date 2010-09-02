@@ -427,6 +427,7 @@ class SXMPPBot(XMLStream, BotBase):
         except Exception, ex:
             handle_exception()
 
+        m.finish()
         self.doevent(m)
 
     def errorHandler(self, event):
@@ -609,9 +610,8 @@ class SXMPPBot(XMLStream, BotBase):
         else:
             res1, res2 = self.less(printto, txt, 900+extend)        
  
-        self.out(printto, res1, event, origin, groupchat)
-        if res2:
-            self.out(printto, res2, event, origin, groupchat)
+        if res1:
+            self.out(printto, res1, event, origin, groupchat)
 
     def out(self, printto, txt, event, origin, groupchat):
         self.outnocb(printto, txt, event, origin, groupchat)
@@ -628,11 +628,9 @@ class SXMPPBot(XMLStream, BotBase):
             res1, res2 = self.less(printto, txt, 900+extend)        
  
         self.outnocb(printto, res1, event, origin, groupchat)
-        if res2:
-            self.outnocb(printto, res2, event, origin, groupchat)
 
     def outnocb(self, printto, txt, event, origin, groupchat):
-        txt = self.normalize(txt)
+        #txt = self.normalize(txt)
         if self.google:
             fromm = self.me
         if printto in self.state['joinedchannels'] or groupchat:
