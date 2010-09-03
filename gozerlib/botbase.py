@@ -190,7 +190,10 @@ class BotBase(LazyDict):
         print txt
         return self
 
-    def out(self, printto, txt, event, origin, groupchat):
+    def out(self, printto, txt, event=None, origin=None, groupchat=None):
+        pass
+
+    def outnocb(self, printto, txt, event=None, origin=None, groupchat=None):
         pass
 
     def say(self, channel, txt, result=[], event=None, *args, **kwargs):

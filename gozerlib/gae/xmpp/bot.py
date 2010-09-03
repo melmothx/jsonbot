@@ -52,6 +52,12 @@ class XMPPBot(BotBase):
         logging.debug('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
+    def out(self, printto, txt, event=None, origin=None, groupchat=None):
+        self.say(printto, txt)
+
+    def outnocb(self, printto, txt, event=None, origin=None, groupchat=None):
+        self.saynocb(printto, txt)
+
     def invite(self, jid):
         from google.appengine.api import xmpp
         xmpp.send_invite(jid)

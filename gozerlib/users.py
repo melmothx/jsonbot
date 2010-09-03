@@ -316,7 +316,10 @@ class Users(Persist):
 
     def addguest(self, userhost):
         if not self.getname(userhost):
-            self.add(userhost, [userhost, ], ["GUEST",])
+            if mainconfig['guestasuser']:
+                self.add(userhost, [userhost, ], ["USER",])
+            else:
+                self.add(userhost, [userhost, ], ["GUEST",])
 
     def addemail(self, userhost, email):
         """ add an email address to the userhost. """
