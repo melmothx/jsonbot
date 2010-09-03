@@ -265,4 +265,4 @@ class PlugPersist(Persist):
         # retrieve plugname where object is constructed
         plugname = calledfrom(sys._getframe())
         # call base constructor with appropiate filename
-        Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + filename)
+        Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + stripname(filename))

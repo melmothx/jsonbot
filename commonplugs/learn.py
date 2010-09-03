@@ -10,6 +10,7 @@ from gozerlib.callbacks import callbacks
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.utils.lazydict import LazyDict
+from gozerlib.persist import PlugPersist
 
 ## basic imports
 
@@ -28,13 +29,14 @@ def handle_learn(bot, event):
         event.missing("<item> is <description>")
         return
         
-    if not event.chan.data.info:
-        event.chan.data.info = LazyDict()
-    if not event.chan.data.info.has_key(what):
-        event.chan.data.info[what] = []
-    if description not in event.chan.data.info[what]:
-        event.chan.data.info[what].append(description)
-    event.chan.save()
+    items = PlugPersist(event.channel)
+    if not items.data:
+        items.data = LazyDict()
+    if not items.data.has_key(what):
+        items.data[what] = []
+    if description not in items.data[what]:
+        items.data[what].append(description)
+    items.save()
     event.reply("item added to %s" % event.channel)
 
 cmnds.add('learn', handle_learn, ['USER', 'OPER', 'GUEST'])
@@ -42,8 +44,11 @@ cmnds.add('=', handle_learn, ['USER', 'OPER'])
 examples.add('learn', 'learn the bot a description of an item.', "learn dunk is botpapa")
 
 def handle_whatis(bot, event):
-    if event.chan.data.info and event.chan.data.info.has_key(event.rest):
-        event.reply("%s is " % event.rest, event.chan.data.info[event.rest], dot=" - ")
+    items = PlugPersist(event.channel)
+    if items.data.has_key(event.rest):
+        event.reply("%s is " % event.rest, items.data[event.rest], dot=", ")
+    elif event.chan.data.info and event.chan.data.info.has_key(event.rest):
+        event.reply("%s is " % event.rest, event.chan.data.info[event.rest], dot=", ")
     else:
         event.reply("no information known about %s" % event.rest)
 
@@ -52,15 +57,16 @@ cmnds.add('?', handle_whatis, ['USER', 'OPER'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsonbot")
 
 def prelearn(bot, event):
-    if event.usercmnd and event.chan.data.info and event.usercmnd[1:] in event.chan.data.info:
+    if event.usercmnd:
         return True
     return False
 
 def learncb(bot, event):
-    try:
-       event.reply("%s is " % event.usercmnd[1:], event.chan.data.info[event.usercmnd[1:]])
-    except (KeyError, IndexError):
-       pass
+    items = PlugPersist(event.channel)
+    if items.data.has_key(event.rest):
+        event.reply("%s is " % event.rest, items.data[event.rest], dot=", ")
+    elif event.chan.data.info and event.chan.data.info.has_key(event.rest):
+        event.reply("%s is " % event.rest, event.chan.data.info[event.rest], dot=", ")
 
 callbacks.add("PRIVMSG", learncb, prelearn)
 callbacks.add("MESSAGE", learncb, prelearn)
