@@ -278,6 +278,7 @@ def handle_helpplug(bot, ievent):
                             except AttributeError:
                                 cmndresult.append(i)
 
+    cmndresult.sort()
     if cmndresult and phelp:
         res = []
         for r in cmndresult:
@@ -315,6 +316,7 @@ def handle_apro(bot, ievent):
     for i in cmnds.apropos(re.escape(what)):
         result.append(i)
 
+    result.sort()
     if result:
         ievent.reply("commands matching %s: " % what, result)
     else: 

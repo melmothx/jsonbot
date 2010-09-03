@@ -35,6 +35,7 @@ from gozerlib.threadloop import TimedLoop
 from gozerlib.threads import start_new_thread
 from gozerlib.errors import NoSuchBotType
 from gozerlib.datadir import datadir
+from gozerlib.config import cfg as mainconfig
 
 import gozerlib.contrib.feedparser as feedparser
 
@@ -1084,7 +1085,7 @@ def doperiodical(*args, **kwargs):
 
 def init():
     taskmanager.add('rss', doperiodical)
-    periodical.addjob(300, 0, doperiodical)
+    periodical.addjob(mainconfig['rsspolltime'] or 300, 0, doperiodical)
 
 def shutdown():
     taskmanager.unload('rss')
