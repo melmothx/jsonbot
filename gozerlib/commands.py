@@ -75,6 +75,8 @@ class Commands(LazyDict):
             if not self.subs:
                 self.subs = LazyDict()
             if self.subs.has_key(c):
+                if not self.subs[c]:
+                    self.subs[c] = []
                 self.subs[c].append(Command(modname, c, func, perms, threaded, wait, cmnd))
             else:
                 self.subs[c] = [Command(modname, c, func, perms, threaded, wait, cmnd), ]
