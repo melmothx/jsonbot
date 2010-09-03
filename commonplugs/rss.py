@@ -1085,7 +1085,7 @@ def doperiodical(*args, **kwargs):
 
 def init():
     taskmanager.add('rss', doperiodical)
-    periodical.addjob(mainconfig['rsspolltime'] or 300, 0, doperiodical)
+    periodical.addjob(mainconfig['rsspolltime'] or 900, 0, doperiodical)
 
 def shutdown():
     taskmanager.unload('rss')
