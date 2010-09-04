@@ -129,8 +129,12 @@ def handle_twitter_auth(bot, ievent):
     except (TwitterError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
         return
-    ievent.reply("sign in at %s" % auth_url)
-    ievent.reply("use the provided code in the twitter-confirm command.")
+    if bot.type == "irc":
+        bot.say(ievent.nick, "sign in at %s" % auth_url)
+        bot.say(ievent.nick, "use the provided code in the twitter-confirm command.")
+    else:
+        ievent.reply("sign in at %s" % auth_url)
+        ievent.reply("use the provided code in the twitter-confirm command.")
 
 cmnds.add('twitter-auth', handle_twitter_auth, 'TWITTER')
 examples.add('twitter-auth', 'adds your twitter account', '1) twitter-auth')
