@@ -14,6 +14,9 @@ from gozerlib.boot import plugin_packages, savecmndtable, savepluginlist
 ## basic imports
 
 import os
+import logging
+
+## commands
 
 def handle_reload(bot, ievent):
     """ <list of plugins> .. reload plugins. """
@@ -35,6 +38,7 @@ def handle_reload(bot, ievent):
                     break
             except Exception, ex:
                 if 'No module named' in str(ex):
+                    logging.debug('reload - %s - %s' % (modname, str(ex)))
                     continue
                 errors.append(exceptionmsg())
 

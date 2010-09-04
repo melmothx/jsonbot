@@ -17,10 +17,17 @@ from gozerlib.utils.generic import waitforqueue
 from gozerlib.contrib.oauthtwitter import OAuthApi
 from gozerlib.contrib.twitter import TwitterError, User
 from gozerlib.persist import PlugPersist
-from gozerdata.config.credentials import CONSUMER_KEY, CONSUMER_SECRET
 from gozerlib.contrib.twitterauth import OAuthHandler
 import gozerlib.contrib.oauth as oauth
 
+go = True
+
+try:
+    from gozerdata.config.credentials import CONSUMER_KEY, CONSUMER_SECRET
+except ImportError:
+    import logging
+    logging.warn("the twitter plugin need the credentials.py file in the gozerdata/config dir.")
+    go = False
 
 ## basic imports
 
@@ -39,8 +46,8 @@ def twitterapi(token=None, *args, **kwargs):
     return api
 
 ## defines
-
-auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+if go:
+    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 
 ## classes
 
@@ -81,7 +88,7 @@ def handle_twitter(bot, ievent):
 
     try:
         twitteruser = TwitterUser("users")
-        token = twitteruser.data.get(ievent.userhost)
+        token = twitteruser.data.get(ievent.user.data.name)
         if not token:
             ievent.reply("you are not logged in yet .. run the twitter-auth command.")
             return 
@@ -114,10 +121,10 @@ def handle_twitter_confirm(bot, ievent):
         ievent.reply('twitter failed: %s' % (str(e),))
         return
     twitteruser = TwitterUser("users")
-    twitteruser.add(ievent.userhost, access_token.to_string())
+    twitteruser.add(ievent.user.data.name, access_token.to_string())
     ievent.reply("access token saved.")
 
-cmnds.add('twitter-confirm', handle_twitter_confirm, 'TWITTER')
+cmnds.add('twitter-confirm', handle_twitter_confirm, ['USER', 'OPER'])
 examples.add('twitter-confirm', 'confirm your twitter account', '1) twitter-confirm 6992762')
 
 def handle_twitter_auth(bot, ievent):
@@ -136,5 +143,5 @@ def handle_twitter_auth(bot, ievent):
         ievent.reply("sign in at %s" % auth_url)
         ievent.reply("use the provided code in the twitter-confirm command.")
 
-cmnds.add('twitter-auth', handle_twitter_auth, 'TWITTER')
+cmnds.add('twitter-auth', handle_twitter_auth, ['USER', 'OPER'])
 examples.add('twitter-auth', 'adds your twitter account', '1) twitter-auth')
