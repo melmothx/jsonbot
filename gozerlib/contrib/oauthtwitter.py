@@ -50,7 +50,7 @@ class OAuthApi(Api):
                     url,
                     post_data=None,
                     parameters=None,
-                    no_cache=None):
+                    no_cache=None, verifier=""):
         '''Fetch a URL, optionally caching for a specified time.
 
         Args:
@@ -82,7 +82,7 @@ class OAuthApi(Api):
             http_method = "GET"
 
         req = self._makeOAuthRequest(url, parameters=extra_params,
-                                                    http_method=http_method)
+                                                    http_method=http_method, verifier=verifier)
         self._signRequest(req, self._signature_method)
 
 
@@ -129,7 +129,7 @@ class OAuthApi(Api):
         return url_data
 
     def _makeOAuthRequest(self, url, token=None,
-                                        parameters=None, http_method="GET"):
+                                        parameters=None, http_method="GET", verifier=""):
         '''Make a OAuth request from url and parameters
 
         Args:
@@ -146,7 +146,7 @@ class OAuthApi(Api):
         request = oauth.OAuthRequest.from_consumer_and_token(
                             self._Consumer, token=token,
                             http_url=url, parameters=parameters,
-                            http_method=http_method)
+                            http_method=http_method, verifier=verifier)
         return request
 
     def _signRequest(self, req, signature_method=oauth.OAuthSignatureMethod_HMAC_SHA1()):
@@ -183,8 +183,8 @@ class OAuthApi(Api):
         signin_url = self.getAuthorizationURL(token, url)
         return signin_url
 
-    def getAccessToken(self, url=ACCESS_TOKEN_URL):
-        token = self._FetchUrl(url, no_cache=True)
+    def getAccessToken(self, url=ACCESS_TOKEN_URL, verifier=""):
+        token = self._FetchUrl(url, no_cache=True, verifier=verifier)
         return oauth.OAuthToken.from_string(token)
 
     def getRequestToken(self, url=REQUEST_TOKEN_URL):
