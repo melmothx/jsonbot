@@ -2,11 +2,44 @@ plugin documentation
 ====================
 
 
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+standard plugins
+----------------
+
 .. toctree::
     :maxdepth: 2
     :glob:
 
     plugs/*
+
+common plugins
+--------------
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
     commonplugs/*
+
+
+wave plugins
+------------
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
     waveplugs/*
+
+socket plugins
+--------------
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
     socketplugs/*

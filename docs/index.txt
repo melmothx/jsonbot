@@ -77,10 +77,9 @@ Contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
     * email: bthate@gmail.com
-    * wave: bthate@googlewave.com
-
-You can reach me by joining #dunkbots on FreeNode or IRCNet. If we are not online on irc please email bthate@gmail.com if you have any problems with the bot.
-
+    * jabber/xmpp: bthate@gmail.com
+    * IRC: #dunkbots on Freenode
+    
 Plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -97,7 +96,30 @@ Gozerlib code
         :maxdepth: 2
 
         gozerlib/index
+
+
+Commonplugs code
+~~~~~~~~~~~~~~~~
+
+    .. toctree::
+        :maxdepth: 2
+
         commonplugs/index
+
+Waveplugs code
+~~~~~~~~~~~~~~
+
+    .. toctree::
+        :maxdepth: 2
+
         waveplugs/index
+
+Socketplugs code
+~~~~~~~~~~~~~~~~
+
+
+    .. toctree::
+        :maxdepth: 2
+
         socketplugs/index
         
