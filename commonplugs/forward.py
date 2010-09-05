@@ -164,11 +164,15 @@ def handle_forwardstop(bot, event):
         return
 
     try:
-        del forward.data.channels[event.channel]
         for jid in event.args:
-            del forward.data.outs[jid]
-            if jid in event.chan.data.forwards:
-                event.chan.data.forwards.remove(jid)
+            try:
+                forward.data.channels[event.channel].remove(jid)
+                del forward.data.outs[jid]
+                if jid in event.chan.data.forwards:
+                    event.chan.data.forwards.remove(jid)
+            except ValueError:
+                pass
+
         forward.save()
         event.done()
     except KeyError, ex:
