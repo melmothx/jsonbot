@@ -34,7 +34,7 @@ from gozerlib.console.event import ConsoleEvent
 from gozerlib.plugins import Plugins
 from gozerlib.config import Config
 from gozerlib.datadir import makedirs, datadir
-from gozerlib.users import Users
+from gozerlib.users import Users, users
 from gozerlib.boot import boot
 from gozerlib.errors import NoOwnerSet
 from gozerlib.threads import start_new_thread
@@ -46,7 +46,6 @@ from gozerlib.fleet import fleet
 import getpass
 import logging
 import time
-
 import code
 import readline
 import atexit
@@ -56,17 +55,13 @@ import os
 
 makedirs()
 boot()
-#plugs = Plugins()
-#users = Users()
-#userid = getpass.getuser() + '@' + cfg.uuid
-#users.make_owner(userid)
+userid = getpass.getuser() + '@' + cfg.uuid
 
-#if userid not in cfg.owner:
-#    cfg.owner.append(userid)
+if userid not in cfg.owner:
+    cfg.owner.append(userid)
 
 try:
     bot = ConsoleBot(cfg)
-    #bot = ConsoleBot(cfg, plugs=plugs, users=users)
 except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
