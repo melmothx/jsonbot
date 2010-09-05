@@ -46,7 +46,9 @@ import logging
 
 logging.info(getversion('GAE XMPP'))
 
-## define
+boot()
+
+## defines
 
 bot = XMPPBot()
 

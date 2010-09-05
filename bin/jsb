@@ -55,16 +55,18 @@ import os
 ## start the bot
 
 makedirs()
-plugs = Plugins()
-users = Users()
-userid = getpass.getuser() + '@' + cfg.uuid
-users.make_owner(userid)
+boot()
+#plugs = Plugins()
+#users = Users()
+#userid = getpass.getuser() + '@' + cfg.uuid
+#users.make_owner(userid)
 
-if userid not in cfg.owner:
-    cfg.owner.append(userid)
+#if userid not in cfg.owner:
+#    cfg.owner.append(userid)
 
 try:
-    bot = ConsoleBot(cfg, plugs=plugs, users=users)
+    bot = ConsoleBot(cfg)
+    #bot = ConsoleBot(cfg, plugs=plugs, users=users)
 except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
