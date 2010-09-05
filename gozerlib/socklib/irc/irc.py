@@ -370,6 +370,10 @@ class Irc(BotBase):
                 if self.blocking and 'temporarily' in str(ex):
                     time.sleep(0.5)
                     continue
+                if self.blocking and 'Connection timed out' in str(ex):
+                    doreconnect = 1
+                    break
+                    continue
                 handle_exception()
                 doreconnect = 1
                 break
@@ -689,7 +693,7 @@ realname))
 
         logging.warn('irc - shutdown')
         self.stopoutputloop = 1
-        self.stopped = 1
+        #self.stopped = 1
         time.sleep(1)
         self.tickqueue.put_nowait('go')
         self.close()
@@ -743,7 +747,7 @@ realname))
                     logging.warn('irc - already connected .. not reconnecting')
                     return 1
             self.reconnectcount += 1
-            self.exit()
+            self.shutdown()
             logging.warn('reconnecting')
             result = self.start()
             return result
