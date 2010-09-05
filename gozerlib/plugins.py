@@ -112,8 +112,8 @@ class Plugins(LazyDict):
         """ load a plugin. """
         if self.has_key(modname):
             try:
+                logging.info("plugins - %s already loaded" % modname)                
                 self[modname] = reload(self[modname])
-                logging.info("plugins - %s loaded (true)" % modname)                
                 try:
                     init = getattr(self[modname], 'init')
                 except AttributeError:

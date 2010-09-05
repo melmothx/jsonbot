@@ -311,10 +311,10 @@ def handle_apro(bot, ievent):
         return
 
     result = []
-    perms = bot.users.getperms(ievent.userhost)
-
-    for i in cmnds.apropos(re.escape(what)):
-        result.append(i)
+    cmnds = getcmndtable()
+    for i in cmnds.keys():
+        if what in i:
+            result.append(i)
 
     result.sort()
     if result:
@@ -408,6 +408,13 @@ def handle_threads(bot, ievent):
 
 cmnds.add('threads', handle_threads, ['USER', 'OPER'])
 examples.add('threads', 'show running threads', 'threads')
+
+def handle_loaded(bot, event):
+    """ show a status line. """
+    event.reply("loaded plugins (cache): ", plugs.keys())
+
+cmnds.add('loaded', handle_loaded, ['OPER', 'USER', 'GUEST'])
+examples.add('loaded', 'show list of loaded plugins', 'loaded')
 
 def handle_statusline(bot, event):
     """ show a status line. """
