@@ -18,6 +18,8 @@ note: JSONBOT is in ALPHA stage right now and still subject to change of
 protocols and API.
 
 see http://jsonbot.googlecode.com
+running demo at http://jsonbot.appspot.com
+documentation is at http://jsonbot.appspot.com/docs
 
 this bot needs google_appengine installed in your home dir
 
@@ -108,6 +110,7 @@ jsonbot provides the following plugins:
   * test - test commands
   * tinyurl - get a tinyurl
   * todo - keep a todo list
+  * twitter - twitter plugin using oauth
   * underauth - undernet auth support (IRC)
   * uniq - make the result unique .. used in pipelines
   * user - user management
