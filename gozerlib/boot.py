@@ -96,19 +96,19 @@ def boot(force=False, encoding="utf-8", umask=None):
     
     from gozerlib.plugins import plugs
     if not cmndtable.data or force:
-        plugs.loadall(plugin_packages)
+        plugs.loadall(plugin_packages, force=True)
         loaded = True
         savecmndtable()
 
     if not pluginlist.data or force:
         if not loaded:
-            plugs.loadall(plugin_packages)
+            plugs.loadall(plugin_packages, force=True)
             loaded = True
         savepluginlist()
 
     if not callbacktable.data or force:
         if not loaded:
-            plugs.loadall(plugin_packages)
+            plugs.loadall(plugin_packages, force=True)
             loaded = True
         savecallbacktable()
 
@@ -137,7 +137,7 @@ def savecmndtable():
         if cmndname and c:
             cmndtable.data[cmndname] = c.modname   
 
-    logging.debug("saving command table")
+    logging.warn("saving command table")
     assert cmndtable
     cmndtable.save()
 
@@ -166,7 +166,7 @@ def savecallbacktable():
                     callbacktable.data[type] = []
                 callbacktable.data[type].append(c.modname)
 
-    logging.debug("saving callback table")
+    logging.warn("saving callback table")
     assert callbacktable
     callbacktable.save()
 
@@ -193,7 +193,7 @@ def savepluginlist():
         if c and c.plugname not in pluginlist.data:
             pluginlist.data.append(c.plugname)
     pluginlist.data.sort()
-    logging.debug("saving plugin list")
+    logging.warn("saving plugin list")
     assert pluginlist
     pluginlist.save()
 
