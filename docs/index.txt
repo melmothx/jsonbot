@@ -1,6 +1,10 @@
 Welcome to JSONBOT
 ==================
 
+JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. 
+
+This distribution provides bots built on this framework for console, IRC, XMPP for the shell and WWW and XMPP for the Google Application engine (appengine).
+
 JSONBOT is all of the following:
 
     * a shell console bot
@@ -12,7 +16,6 @@ JSONBOT is all of the following:
     * the XMPP bots are used to communicate between bots
     * plugin infrastructure to write your own functionality
     * event driven framework by the use of callbacks
-
 
 note: JSONBOT is in ALPHA stage right now and still subject to change of protocols and API.
 
@@ -82,7 +85,7 @@ Plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
 
     .. toctree::        
-        :maxdepth: 2
+        :maxdepth: 3
         :glob:
 
         plugins/index

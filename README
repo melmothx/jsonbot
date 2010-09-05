@@ -1,6 +1,12 @@
 JSONBOT README
 ==============
 
+JSONBOT is a remote event-driven framework for building bots that talk JSON
+to each other over XMPP. 
+
+This distribution provides bots built on this framework for console, IRC,
+XMPP for the shell and WWW and XMPP for the Google Application engine.
+
 JSONBOT is all of the following:
 
     * a shell console bot
