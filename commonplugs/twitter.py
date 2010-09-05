@@ -26,7 +26,7 @@ try:
     from gozerdata.config.credentials import CONSUMER_KEY, CONSUMER_SECRET
 except ImportError:
     import logging
-    logging.warn("the twitter plugin needs the credentials.py file in the gozerdata/config dir.")
+    logging.warn("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gpzerdata/examples")
     go = False
 
 ## basic imports
