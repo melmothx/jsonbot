@@ -44,6 +44,7 @@ import os
 import logging
 
 logging.warn(getversion('DISPATCH'))
+boot()
 
 bot = WebBot()
 
