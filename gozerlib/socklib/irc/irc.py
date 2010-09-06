@@ -371,9 +371,9 @@ class Irc(BotBase):
                     time.sleep(0.5)
                     continue
                 if self.blocking and 'Connection timed out' in str(ex):
+                    logging.error('connecting error: %s' % str(ex))
                     doreconnect = 1
                     break
-                    continue
                 handle_exception()
                 doreconnect = 1
                 break
@@ -672,6 +672,11 @@ realname))
                 self.connected = True
                 logging.warn('logged on !')
             self.connecting = False
+        except socket.error, ex:
+            if "Connection timed out" in str(ex):
+                logging.error('connecting error: %s' % str(ex))
+                self.reconnect()
+                return
         except AlreadyConnecting:
             return 0 
         except AlreadyConnected:
