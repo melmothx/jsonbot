@@ -55,7 +55,11 @@ class Users(Persist):
 
     def exists(self, name):
         name = name.lower()
-        return name in self.data.names.values()
+        names = self.data.names.values()
+        for n in names:
+            if name == n.lower():
+                return True
+        return False
 
     def all(self):
 
