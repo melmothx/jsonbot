@@ -3,3 +3,4 @@ recursive-include gozerdata/examples *
 recursive-include gozerdata/myplugs *
 recursive-include tests *
 recursive-include simplejson *
+recursive-include tweepy *

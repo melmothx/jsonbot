@@ -91,6 +91,7 @@ setup(
                ('gozerdata/myplugs', uploadlist('gozerdata/myplugs')),
                ('tests', uploadlist('tests')),
                ('simplejson', uploadlist('simplejson')),
+               ('tweepy', uploadlist('tweepy')),
                ('gaeupload', uploadlist('gaeupload')),
                ('gaeupload/webapp2', uploadlist('gaeupload/webapp2')),
                ('gaeupload/assets', uploadlist('gaeupload/assets')),
