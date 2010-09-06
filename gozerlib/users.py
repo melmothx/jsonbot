@@ -54,6 +54,7 @@ class Users(Persist):
         self.data.names = self.data.names or {}
 
     def exists(self, name):
+        name = name.lower()
         return name in self.data.names.values()
 
     def all(self):
@@ -81,6 +82,7 @@ class Users(Persist):
     def byname(self, name):
         """ return user by name. """ 
         try:
+            name = name.lower()
             name = stripname(name)
             user = JsonUser(name)
             if user.data.userhosts:
