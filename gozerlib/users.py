@@ -90,6 +90,7 @@ class Users(Persist):
 
     def merge(self, name, userhost):
         """ add userhosts to user with name """
+        name = name.lower()
         user = self.byname(name)
         if user:
             if not userhost in user.data.userhosts:
@@ -306,6 +307,7 @@ class Users(Persist):
 
     def add(self, name, userhosts, perms):
         """ add an user. """
+        name = name.lower()
         newuser = JsonUser(name, userhosts, perms)
         for userhost in userhosts:
             self.data.names[userhost] = name
@@ -463,6 +465,7 @@ class Users(Persist):
     def delete(self, name):
         """ delete user with name. """
         try:
+            name = name.lower()
             user = JsonUser(name)
             user.data.deleted = True
             user.save()
