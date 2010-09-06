@@ -1,4 +1,4 @@
 export PATH="./bin:.:$PATH"
 python setup.py bdist_egg
 jsb-nest -f dist/jsonbot*
-tar zcvf jsonnest-0.3.tar.gz jsonnest
+tar zcvf jsonnest-0.3.1.tar.gz jsonnest
