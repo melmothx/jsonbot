@@ -14,14 +14,15 @@ from gozerlib.examples import examples
 from gozerlib.utils.pdol import Pdol
 from gozerlib.utils.textutils import html_unescape
 from gozerlib.utils.generic import waitforqueue, strippedtxt
-from gozerlib.contrib.oauthtwitter import OAuthApi
-from gozerlib.contrib.twitter import TwitterError, User
 from gozerlib.persist import PlugPersist
 
 ## tweppy imports
 
 from tweepy.auth import OAuthHandler
+from tweepy.api import API
 from tweepy import oauth
+from tweepy.error import TweepError
+from tweepy.models import Status
 
 ## credentials
 
@@ -37,20 +38,19 @@ except ImportError:
 import os
 import urllib2
 
-## functions
+## defines
+
+if go:
+    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 
 def twitterapi(token=None, *args, **kwargs):
     if token:
-        api = OAuthApi(CONSUMER_KEY, CONSUMER_SECRET, token, *args, **kwargs)
+        api = API(auth, token, *args, **kwargs)
     else:
-        api = OAuthApi(CONSUMER_KEY, CONSUMER_SECRET, *args, **kwargs)
+        api = API(auth, *args, **kwargs)
        
     #api.SetXTwitterHeaders('gozerbot', 'http://gozerbot.org', __version__)
     return api
-
-## defines
-if go:
-    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 
 ## classes
 
@@ -95,16 +95,14 @@ def handle_twitter(bot, ievent):
         if not token:
             ievent.reply("you are not logged in yet .. run the twitter-auth command.")
             return 
-        token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
-        twitter = twitterapi(token)
-
+        twitter = twitterapi()
         for txt in result:
-            status = twitter.PostUpdate(txt[:119])
+            status = twitter.update_status(txt[:119])
         ievent.reply("%s tweet posted." % len(result))
     except KeyError:
         handle_exception()
         ievent.reply('you are not logged in yet. see the twitter-auth command.')
-    except (TwitterError, urllib2.HTTPError), e:
+    except (TweepError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
 
 cmnds.add('twitter', handle_twitter, 'USER')
@@ -120,7 +118,7 @@ def handle_twittercmnd(bot, ievent):
         ievent.missing('<text>')
         return
 
-    target =  "Get" + strippedtxt(ievent.args[0])
+    target =  strippedtxt(ievent.args[0])
 
     try:
         twitteruser = TwitterUser("users")
