@@ -102,7 +102,7 @@ def handle_twitter(bot, ievent):
 
         for txt in result:
             status = twitter.PostUpdate(txt[:119])
-        ievent.reply("zooi posted.")    
+        ievent.reply("%s tweet posted." % len(result))
     except KeyError:
         handle_exception()
         ievent.reply('you are not logged in yet. see the twitter-auth command.')
