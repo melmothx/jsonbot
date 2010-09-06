@@ -21,7 +21,7 @@ from gozerlib.persist import PlugPersist
 ## tweppy imports
 
 from tweepy.auth import OAuthHandler
-from tweepy.oauth as oauth
+from tweepy import oauth
 
 ## credentials
 
