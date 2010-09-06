@@ -161,9 +161,9 @@ def handle_delete(bot, ievent):
         ievent.missing('<name>')
         return
 
-    name = ievent.args[0].lower()
+    name = ievent.args[0]
     result = 0
-    name = stripname(name.lower())
+    name = stripname(name)
     name = name.lower()
     try:
         result = bot.users.delete(name)
