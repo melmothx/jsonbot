@@ -13,7 +13,7 @@ from gozerlib.datadir import datadir
 from gozerlib.examples import examples
 from gozerlib.utils.pdol import Pdol
 from gozerlib.utils.textutils import html_unescape
-from gozerlib.utils.generic import waitforqueue, strippedtxt
+from gozerlib.utils.generic import waitforqueue, strippedtxt, splittxt
 from gozerlib.persist import PlugPersist
 
 ## tweppy imports
@@ -40,17 +40,13 @@ import urllib2
 
 ## defines
 
-if go:
-    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 
 def twitterapi(token=None, *args, **kwargs):
     if token:
-        api = API(auth, token, *args, **kwargs)
-    else:
-        api = API(auth, *args, **kwargs)
-       
-    #api.SetXTwitterHeaders('gozerbot', 'http://gozerbot.org', __version__)
-    return api
+        auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+        auth.set_access_token(token.key, token.secret)
+    return API(auth, *args, **kwargs)
 
 ## classes
 
@@ -87,7 +83,7 @@ def handle_twitter(bot, ievent):
         ievent.missing('<text>')
         return
     else:
-        result = [ievent.rest, ]
+        result = splittxt(ievent.rest, 120)
 
     try:
         twitteruser = TwitterUser("users")
@@ -95,7 +91,9 @@ def handle_twitter(bot, ievent):
         if not token:
             ievent.reply("you are not logged in yet .. run the twitter-auth command.")
             return 
-        twitter = twitterapi()
+        token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
+        twitter = twitterapi(token)
+        
         for txt in result:
             status = twitter.update_status(txt[:119])
         ievent.reply("%s tweet posted." % len(result))
