@@ -320,7 +320,7 @@ def handle_apro(bot, ievent):
     if result:
         ievent.reply("commands matching %s: " % what, result)
     else: 
-        ievent.reply('no matching commands found for %s (%s)' % (what, ' .. '.join(perms)))
+        ievent.reply('no matching commands found for %s' % what)
 
 cmnds.add('apro', handle_apro, ['USER', 'GUEST'])
 examples.add('apro', 'apro <what> .. search for commands that contain <what>', 'apro com')
