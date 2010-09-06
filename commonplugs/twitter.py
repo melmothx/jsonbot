@@ -13,7 +13,7 @@ from gozerlib.datadir import datadir
 from gozerlib.examples import examples
 from gozerlib.utils.pdol import Pdol
 from gozerlib.utils.textutils import html_unescape
-from gozerlib.utils.generic import waitforqueue
+from gozerlib.utils.generic import waitforqueue, strippedtxt
 from gozerlib.contrib.oauthtwitter import OAuthApi
 from gozerlib.contrib.twitter import TwitterError, User
 from gozerlib.persist import PlugPersist
@@ -111,6 +111,45 @@ def handle_twitter(bot, ievent):
 
 cmnds.add('twitter', handle_twitter, 'USER')
 examples.add('twitter', 'adds a message to your twitter account', 'twitter just found the http://gozerbot.org project')
+
+def handle_twittercmnd(bot, ievent):
+
+    """ send a twitter message. """
+
+    #if ievent.inqueue:
+    #    result = waitforqueue(ievent.inqueue, 30)
+    if not ievent.args:
+        ievent.missing('<text>')
+        return
+
+    target =  "Get" + strippedtxt(ievent.args[0])
+
+    try:
+        twitteruser = TwitterUser("users")
+        token = twitteruser.data.get(ievent.user.data.name)
+        if not token:
+            ievent.reply("you are not logged in yet .. run the twitter-auth command.")
+            return 
+        token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
+        twitter = twitterapi(token)
+        try:
+            
+            method = getattr(twitter, target)
+        except AttributeError:
+            ievent.reply("choose one of: %s" % str(dir(twitter)))
+            return
+
+        # do the thing
+        result = method()
+        ievent.reply(result) 
+    except KeyError:
+        handle_exception()
+        ievent.reply('you are not logged in yet. see the twitter-auth command.')
+    except (TwitterError, urllib2.HTTPError), e:
+        ievent.reply('twitter failed: %s' % (str(e),))
+
+cmnds.add('twitter-cmnd', handle_twittercmnd, 'USER')
+examples.add('twitter-cmnd', 'do a cmnd on the twitter API', 'twitter-cmnd home_timeline')
 
 def handle_twitter_confirm(bot, ievent):
 
