@@ -2,7 +2,7 @@
 #
 #
 
-""" a twitter plugin for the JSONBOT. """
+""" a twitter plugin for the JSONBOT. uses tweepy oauth. """
 
 
 ## gozerlib imports
@@ -17,8 +17,13 @@ from gozerlib.utils.generic import waitforqueue
 from gozerlib.contrib.oauthtwitter import OAuthApi
 from gozerlib.contrib.twitter import TwitterError, User
 from gozerlib.persist import PlugPersist
-from gozerlib.contrib.twitterauth import OAuthHandler
-import gozerlib.contrib.oauth as oauth
+
+## tweppy imports
+
+from tweepy.auth import OAuthHandler
+from tweepy.oauth as oauth
+
+## credentials
 
 go = True
 
