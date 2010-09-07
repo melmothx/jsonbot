@@ -24,10 +24,11 @@ class XMPPEvent(EventBase):
 
     """ an XMPP event. """
 
-    def __init__(self): 
+    def __init__(self, bot=None): 
         EventBase.__init__(self)
         self.bottype = "xmpp"
         self.cbtype = 'MESSAGE'
+        self.bot = bot
 
     def __deepcopy__(self, a):
 
@@ -80,14 +81,13 @@ class XMPPEvent(EventBase):
         self.to = stripped(self['to'])
         self.channel = stripped(self.userhost)
         self.stripped = stripped(self.userhost)
-        self.chan = ChannelBase(self.channel)
         self.origin = self.channel
         input = self.body or self.stanza
         input = input.strip()
         self.origtxt = input
         self.txt = input
         self.usercmnd = self.txt.split()[0].lower()
-        self.makeargs()
+        self.finish()
         logging.debug(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 

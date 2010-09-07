@@ -67,9 +67,6 @@ class XMPPHandler(webapp.RequestHandler):
 
     """ relay incoming messages to the bot. """
 
-    def get(self):
-        xmppbox(self.response)
-
     def post(self):
         logging.info("XMPP incoming: %s" % self.request.remote_addr)
 
@@ -81,8 +78,8 @@ class XMPPHandler(webapp.RequestHandler):
             logging.debug('no to in POST: %s' % str(self.request.POST))
             return
 
-        event = XMPPEvent().parse(self.request, self.response)
-        event.bot = bot
+        event = XMPPEvent(bot=bot).parse(self.request, self.response)
+        #event.bot = bot
         bot.doevent(event)
 
 application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler), ],

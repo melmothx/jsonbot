@@ -62,10 +62,11 @@ class EventBase(LazyDict):
 
     def finish(self):
         self.result = []
-        if not self.user and self.userhost:
+        target = self.auth or self.userhost
+        if not self.user and target:
             if mainconfig.auto_register:
-                self.bot.users.addguest(self.userhost)
-            self.user = self.bot.users.getuser(self.userhost)
+                self.bot.users.addguest(target)
+            self.user = self.bot.users.getuser(target)
         if not self.chan:
             if self.channel:
                 self.chan = ChannelBase(self.channel)
