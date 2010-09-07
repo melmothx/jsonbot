@@ -243,7 +243,7 @@ class SXMPPBot(XMLStream, BotBase):
             self.requestroster()
             self._raw("<presence/>")
             self.connectok.set()
-            self.sock.settimeout(None)
+            self.sock.settimeout(200)
             if joinchannels:
                 self.joinchannels()
             return True
@@ -260,10 +260,13 @@ class SXMPPBot(XMLStream, BotBase):
         """ logon on the xmpp server. """
         iq = self.initstream()
         if not self.auth(user, password, iq.id):
+            logging.warn("sxmpp - sleeping 20 seconds")
+            time.sleep(20)
             if self.register(user, password):
                 time.sleep(5)
                 self.auth(user, password)
             else:
+                time.sleep(10)
                 self.exit()
                 return
         XMLStream.logon(self)
@@ -305,6 +308,8 @@ class SXMPPBot(XMLStream, BotBase):
             logging.warn('sxmpp - register FAILED - %s' % iq.error)
             if iq.error.code == "405":
                 logging.error("sxmpp - this server doesn't allow registration by the bot, you need to create an account for it yourself")
+            elif iq.error.code == "500":
+                logging.error("sxmpp - %s" % iq.error.text.data)
             else:
                 logging.error("sxmpp - %s" % xmpperrors[iq.error.code])
             self.error = iq.error
@@ -436,7 +441,7 @@ class SXMPPBot(XMLStream, BotBase):
             logging.error("smpp.bot - error occured in %s" % event.dump())
             event.errorHandler()
         except AttributeError:
-            logging.error('sxmpp - unhandled error - %s' % event)
+            logging.error('sxmpp - unhandled error - %s' % event.dump())
 
     def handle_presence(self, data):
         """ presence handler. """
@@ -531,14 +536,21 @@ class SXMPPBot(XMLStream, BotBase):
         self.exit()
         time.sleep(15)
         botjid = self.jid
-        newbot = SXMPPBot(self.cfg, self.users, self.plugs, botjid)
 
-        if newbot.connect(True, False):
-            self.jid += '.old'
-            newbot.joinchannels()
-            if fleet.replace(botjid, newbot):
-                return True
+        try:
+            newbot = SXMPPBot(self.cfg, self.users, self.plugs, botjid)
 
+            if newbot.connect(True, False):
+                self.jid += '.old'
+                newbot.joinchannels()
+                if fleet.replace(botjid, newbot):
+                    return True
+            else:
+                logging.error("sxmpp - reconnect failed .. trying again.")
+                return self.reconnect()
+        except Exception, ex:
+            handle_exception()
+            return self.reconnect()
         return False
 
     def invite(self, jid):
@@ -672,12 +684,16 @@ class SXMPPBot(XMLStream, BotBase):
         presence['from'] = self.me
         self.send(presence)
         time.sleep(1)
-        
+
+    def shutdown(self):
+        self.quit()
+        self.outqueue.put_nowait(None)
+
+ 
     def exit(self):
         """ exit the bot. """
-        self.quit()
         self.stopped = 1
-        self.outqueue.put_nowait(None)
+        self.shutdown()
         self.save()
         time.sleep(3)
         logging.warn('sxmpp - exit')

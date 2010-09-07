@@ -97,8 +97,8 @@ class XMLStream(NodeBuilder):
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        logging.error("sxmpp - STREAMERROR: %s" % data)
-        self.exit()
+        logging.error("sxmpp - STREAMERROR: %s" % data.orig)
+        self.reconnect()
 
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
@@ -434,5 +434,5 @@ class XMLStream(NodeBuilder):
         """
         self.stop = True
         logging.warn('disconnected: %s' % str(ex))
-        self.reconnect()
+        #self.reconnect()
 
