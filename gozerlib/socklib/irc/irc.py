@@ -250,11 +250,7 @@ class Irc(BotBase):
             return 0
 
         logging.warn("irc - connect")
-        try:
-            self._connect()
-        except (AlreadyConnected, AlreadyConnecting):
-            logging.warn("irc - already connected")
-            return 0
+        self._connect()
         # start input and output loops
         logging.warn("irc - starting loops")
         start_new_thread(self._readloop, ())
@@ -370,20 +366,22 @@ class Irc(BotBase):
                 if self.blocking and 'temporarily' in str(ex):
                     time.sleep(0.5)
                     continue
-                if self.blocking and 'Connection timed out' in str(ex):
-                    logging.error('connecting error: %s' % str(ex))
-                    doreconnect = 1
-                    break
-                handle_exception()
+                logging.error('connecting error: %s' % str(ex))
                 doreconnect = 1
                 break
-            except socket.error:
+                #handle_exception()
+                #doreconnect = 1
+                #break
+            except socket.error, ex:
                 if self.blocking and 'temporarily' in str(ex):
                     time.sleep(0.5)
                     continue
-                handle_exception()
+                logging.error('connecting error: %s' % str(ex))
                 doreconnect = 1
                 break
+                #handle_exception()
+                #doreconnect = 1
+                #break
             except Exception, ex:
                 if self.stopped or self.stopreadloop:
                     break
@@ -672,11 +670,11 @@ realname))
                 self.connected = True
                 logging.warn('logged on !')
             self.connecting = False
-        except socket.error, ex:
-            if "Connection timed out" in str(ex):
-                logging.error('connecting error: %s' % str(ex))
-                self.reconnect()
-                return
+        except (socket.gaierror, socket.error), ex:
+            #if "Connection timed out" in str(ex):
+            logging.error('connecting error: %s' % str(ex))
+            self.reconnect()
+            return
         except AlreadyConnecting:
             return 0 
         except AlreadyConnected:
@@ -756,6 +754,11 @@ realname))
             logging.warn('reconnecting')
             result = self.start()
             return result
+        except (socket.gaierror, socket.error), ex:
+            logging.error("irc - socket error while reconnecting: %s" % str(ex))
+            logging.error("irc - sleeping 15 sec before next attempt")
+            time.sleep(15)
+            self.reconnect()
         except Exception, ex:
             handle_exception()
 
@@ -1114,7 +1117,7 @@ pingtime2)
 
         logging.debug('irc - sending ping')
         try:
-            self.putonqueue(1, 'PING :%s' % self.server)
+            self._raw('PING :%s' % self.server)
             return 1
         except Exception, ex:
             logging.debug("irc - can't send ping: %s" % str(ex))

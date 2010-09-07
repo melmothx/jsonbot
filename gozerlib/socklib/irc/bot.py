@@ -261,6 +261,9 @@ class IRCBot(Irc):
         try:
             Irc.start(self)
             self.joinchannels()
+        except (socket.gaierror, socket.error), ex:
+            logging.error("irc - connect error: %s" % str(ex))
+            Irc.reconnect(self)
         except (KeyboardInterrupt, EOFError):
             globalshutdown() 
 
