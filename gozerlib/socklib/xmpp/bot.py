@@ -133,7 +133,7 @@ class SXMPPBot(XMLStream, BotBase):
                 except Exception, ex:
                     self.error = str(ex)
                     handle_exception()
-                    continue
+                    break
                 lastsend = time.time()
                 charssend += len(what)
             else:
@@ -142,7 +142,7 @@ class SXMPPBot(XMLStream, BotBase):
                         self._raw(what)
                     except Exception, ex:
                         handle_exception()
-                        continue
+                        break
                     lastsend = time.time()
                     charssend = len(what)
                     continue
@@ -162,6 +162,9 @@ class SXMPPBot(XMLStream, BotBase):
                     handle_exception()
 
         logging.debug('sxmpp - stopping outputloop .. %s' % (self.error or 'no error set'))
+
+        if not self.stopped:
+            self.reconnect()
 
     def _keepalive(self):
 
@@ -243,7 +246,7 @@ class SXMPPBot(XMLStream, BotBase):
             self.requestroster()
             self._raw("<presence/>")
             self.connectok.set()
-            self.sock.settimeout(200)
+            self.sock.settimeout(None)
             if joinchannels:
                 self.joinchannels()
             return True
