@@ -27,6 +27,7 @@ from utils.generic import splittxt, toenc, fromenc, waitforqueue
 from utils.trace import whichmodule
 from fleet import fleet
 from utils.name import stripname
+from tick import tickloop
 
 ## basic imports
 
@@ -119,6 +120,7 @@ class BotBase(LazyDict):
             periodical.start()
             defaultrunner.start()
             cmndrunner.start()
+            tickloop.start(self)
 
         logging.debug("botbase - created bot %s - %s" % (self.name, self.dump()))
 

@@ -161,6 +161,7 @@ sleeptime=15*60, running=0):
             self.data['sleeptime'] = self.data.sleeptime or int(sleeptime)
             self.data['running'] = self.data.running or running
             self.data['result'] = self.data.result or []
+            self.data['lastpoll'] = self.data.lastpoll or 0
             self.itemslists = Pdol(filebase + '-itemslists')
             self.markup = Pdod(filebase + '-markup')
             self.lastpeek = Persist(filebase + '-lastpeek')
@@ -225,7 +226,7 @@ sleeptime=15*60, running=0):
         """ refresh cached data of a feed. """
 
         if not self.data.running:
-            logging.info("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
+            logging.debug("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
             return
 
         logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
@@ -1067,9 +1068,11 @@ def dosync(feedname):
     except RssException, ex:
        logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
-def doperiodical(*args, **kwargs):
+lastpeek = 0
+
+def doperiodical(names=[], *args, **kwargs):
     """ rss periodical function. """
-    names = watcher.data['names']
+    names = names or watcher.data['names']
     logging.debug("rss - periodical - launching %s" % ", ".join(names))
     for feed in names:
         time.sleep(0.2)
@@ -1083,9 +1086,30 @@ def doperiodical(*args, **kwargs):
                 handle_exception()
                 time.sleep(1)
 
+
+def pollcheck(bot, event):
+    global lastpeek
+    names = watcher.data['names']
+    dofeeds = []
+    logging.debug("rss - checking for poll %s" % ", ".join(names))
+
+    for feed in names:
+        f = watcher.byname(feed)
+        if f and time.time() - f.data.lastpoll < f.data.sleeptime:
+            continue
+        elif f:
+            f.data.lastpoll = time.time()
+            f.save()
+            dofeeds.append(feed)
+
+    if dofeeds:
+        doperiodical(dofeeds)
+
+callbacks.add('TICK', pollcheck)
+
 def init():
     taskmanager.add('rss', doperiodical)
-    periodical.addjob(mainconfig['rsspolltime'] or 900, 0, doperiodical)
+    #periodical.addjob(mainconfig['rsspolltime'] or 900, 0, doperiodical)
 
 def shutdown():
     taskmanager.unload('rss')
