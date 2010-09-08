@@ -318,9 +318,9 @@ class IRCBot(Irc):
                 self._raw('QUIT :%s' % self.cfg['quitmsg'])
             except IOError:
                 pass
+        Irc.exit(self)
         self.stop()
         partyline.stop(self)
-        Irc.exit(self)
         self.save()
         logging.warn('irc - exit')
         return 1

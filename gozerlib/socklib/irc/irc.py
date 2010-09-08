@@ -249,15 +249,15 @@ class Irc(BotBase):
             logging.warn("irc - bot is stopped .. not starting.")
             return 0
 
-        logging.warn("irc - connect")
+        logging.warn("irc - starting")
         self._connect()
         # start input and output loops
-        logging.warn("irc - starting loops")
+        logging.info("irc - starting loops")
         start_new_thread(self._readloop, ())
         start_new_thread(self._outloop, ())
 
         # logon and start monitor
-        logging.warn("irc - logon")
+        logging.info("irc - logon")
         self._logon()
         self.nickchanged = 0
         self.reconnectcount = 0
@@ -273,7 +273,7 @@ class Irc(BotBase):
         self.stopped = 0
         doreconnect = 1
         timeout = 1
-        logging.debug('irc - starting readloop')
+        logging.info('irc - starting readloop')
         prevtxt = ""
 
         while not self.stopped and not self.stopreadloop:
@@ -400,7 +400,7 @@ class Irc(BotBase):
                 doreconnect = 1
                 break
 
-        logging.error('irc - readloop stopped')
+        logging.info('irc - readloop stopped')
         self.connectok.clear()
         self.connected = False
 
@@ -727,7 +727,7 @@ realname))
     def exit(self):
 
         """ exit the bot. """
-
+        self.quit()
         self.stopreadloop = 1
         self.stopped = 1
         self.connected = 0
@@ -963,6 +963,7 @@ realname))
         logging.debug('irc - sending quit')
         try:
             self._raw('QUIT :%s' % reason)
+            time.sleep(1)
         except IOError:
             pass
 
