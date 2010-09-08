@@ -113,11 +113,11 @@ def boot(force=False, encoding="utf-8", umask=None):
         savecallbacktable()
 
     if not loaded:
-        logging.warn("boot - plugins not loaded .. loading defaults")
+        logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
             plugs.reload(plug)
 
-    logging.warning("boot - done")
+    logging.info("boot - done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """

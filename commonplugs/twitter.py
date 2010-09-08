@@ -24,28 +24,37 @@ from tweepy import oauth
 from tweepy.error import TweepError
 from tweepy.models import Status
 
-## credentials
-
 go = True
-
-try:
-    from gozerdata.config.credentials import CONSUMER_KEY, CONSUMER_SECRET
-except ImportError:
-    raise Exception("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
 
 ## basic imports
 
 import os
 import urllib2
 import types
+import logging
+
+## credentials
+
+try:
+    from gozerdata.config.credentials import CONSUMER_KEY, CONSUMER_SECRET
+    go = True
+except ImportError:
+    logging.info("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples".upper())
+    go = False
 
 ## defines
 
-auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+if go:
+    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+else:
+    auth = None
 
 ## functions
 
 def twitterapi(token=None, *args, **kwargs):
+    if not go:
+        logging.warn("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples".upper())
+        return None
     if token:
         auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         auth.set_access_token(token.key, token.secret)
@@ -80,6 +89,9 @@ def handle_twitter(bot, ievent):
 
     """ send a twitter message. """
 
+    if not go:
+        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        return
     #if ievent.inqueue:
     #    result = waitforqueue(ievent.inqueue, 30)
     if not ievent.rest:
@@ -110,9 +122,10 @@ cmnds.add('twitter', handle_twitter, 'USER')
 examples.add('twitter', 'adds a message to your twitter account', 'twitter just found the http://gozerbot.org project')
 
 def handle_twittercmnd(bot, ievent):
-
-    """ send a twitter message. """
-
+    """ do a twitter API cmommand. """
+    if not go:
+        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        return
     #if ievent.inqueue:
     #    result = waitforqueue(ievent.inqueue, 30)
     if not ievent.args:
@@ -171,8 +184,10 @@ cmnds.add('twitter-cmnd', handle_twittercmnd, 'USER')
 examples.add('twitter-cmnd', 'do a cmnd on the twitter API', 'twitter-cmnd home_timeline')
 
 def handle_twitter_confirm(bot, ievent):
-
-    """ set twitter id. """
+    """ confirm auth with PIN. """
+    if not go:
+        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        return
 
     pin = ievent.args[0]
     if not pin:
@@ -191,8 +206,10 @@ cmnds.add('twitter-confirm', handle_twitter_confirm, ['USER', 'OPER'])
 examples.add('twitter-confirm', 'confirm your twitter account', '1) twitter-confirm 6992762')
 
 def handle_twitter_auth(bot, ievent):
-
-    """ set twitter id. """
+    """ get auth url. """
+    if not go:
+        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        return
 
     try:
         auth_url = auth.get_authorization_url()
