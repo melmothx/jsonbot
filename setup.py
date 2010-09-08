@@ -8,6 +8,20 @@ import os
 
 upload = []
 
+def uploadfiles(dir):
+    upl = []
+    
+    for file in os.listdir(dir):
+        if not file or file.startswith('.'):
+            continue
+        d = dir + os.sep + file
+        if not os.path.isdir(d):
+            if file.endswith(".pyc"):
+                continue
+            upl.append(d)   
+
+    return upl
+
 def uploadlist(dir):
     upl = []
     
@@ -92,7 +106,7 @@ setup(
                ('tests', uploadlist('tests')),
                ('simplejson', uploadlist('simplejson')),
                ('tweepy', uploadlist('tweepy')),
-               ('gaeupload', uploadlist('gaeupload')),
+               ('gaeupload', uploadfiles('gaeupload')),
                ('gaeupload/webapp2', uploadlist('gaeupload/webapp2')),
                ('gaeupload/assets', uploadlist('gaeupload/assets')),
                ('gaeupload/templates', uploadlist('gaeupload/templates')),
