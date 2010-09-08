@@ -28,12 +28,17 @@ class Less(object):
             pass
 
     def add(self, channel, listoftxt):
-        """ add listoftxt to channel's output .. set index for used by more commands. """
+        """ add listoftxt to channel's output. """
         channel = channel.lower()
         if not self.data.has_key(channel):
             self.data[channel] = []
         
         self.data[channel].extend(listoftxt)
+
+    def set(self, channel, listoftxt):
+        """ set listoftxt to channel's output. """
+        channel = channel.lower()
+        self.data[channel] = listoftxt
 
     def get(self, channel):
         """ return 1 item popped from outcache. """

@@ -37,10 +37,13 @@ except ImportError:
 
 import os
 import urllib2
+import types
 
 ## defines
 
 auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+
+## functions
 
 def twitterapi(token=None, *args, **kwargs):
     if token:
@@ -126,20 +129,42 @@ def handle_twittercmnd(bot, ievent):
             return 
         token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
         twitter = twitterapi(token)
+        cmndlist = dir(twitter)
+        cmnds = []
+        for cmnd in cmndlist:
+            if cmnd.startswith("_") or cmnd == "auth":
+                continue
+            else:
+                cmnds.append(cmnd)
+        if target not in cmnds:
+            ievent.reply("choose one of: %s" % ", ".join(cmnds))
+            return
+
         try:
             
             method = getattr(twitter, target)
         except AttributeError:
-            ievent.reply("choose one of: %s" % str(dir(twitter)))
+            ievent.reply("choose one of: %s" % ", ".join(cmnds))
             return
 
         # do the thing
         result = method()
-        ievent.reply(result) 
+        res = []
+        if type(result) != types.ListType:
+           result = [result, ]
+  
+        for item in result:
+            try:
+                res.append(unicode(item.__getstate__()))
+            except Exception, ex:
+                #handle_exception()
+                res.append(unicode(item))
+
+        ievent.reply("result of %s: " % target, res) 
     except KeyError:
-        handle_exception()
+        #handle_exception()
         ievent.reply('you are not logged in yet. see the twitter-auth command.')
-    except (TwitterError, urllib2.HTTPError), e:
+    except (TweepError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
 
 cmnds.add('twitter-cmnd', handle_twittercmnd, 'USER')
@@ -155,7 +180,7 @@ def handle_twitter_confirm(bot, ievent):
         return
     try:
         access_token = auth.get_access_token(pin)
-    except (TwitterError, urllib2.HTTPError), e:
+    except (TweeprError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
         return
     twitteruser = TwitterUser("users")
@@ -171,7 +196,7 @@ def handle_twitter_auth(bot, ievent):
 
     try:
         auth_url = auth.get_authorization_url()
-    except (TwitterError, urllib2.HTTPError), e:
+    except (TweepError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
         return
     if bot.type == "irc":

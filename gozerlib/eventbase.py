@@ -216,7 +216,7 @@ class EventBase(LazyDict):
         # see if we need to store output in less cache
         if length > 1 and self.bot:
             logging.debug("addding %s lines to %s outputcache" % (len(txtlist), self.channel))
-            self.bot.outcache.add(self.channel, txtlist[1:])
+            self.bot.outcache.set(self.channel, txtlist[1:])
             res += "<b> - %s more<b>" % (length - 1) 
             self.chan.save()
 
