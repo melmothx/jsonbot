@@ -19,6 +19,10 @@ from gozerlib.container import Container
 from gozerlib.errors import NoProperDigest
 from gozerlib.utils.exception import handle_exception
 
+## commonplugs imports
+
+from commonplugs.twitter import postmsg
+
 ## basic imports
 
 import logging
@@ -61,13 +65,17 @@ def forwardoutcb(bot, event):
     e.forwarded = True
     e.source = bot.jid
     e.botname = bot.server or bot.name
-    outbot = fleet.getfirstjabber()
-    if bot.isgae and not outbot:
-        outbot = fleet.makebot('xmpp', 'forwardbot')
-    if outbot:
-        e.source = outbot.jid
-        for jid in forward.data.channels[event.channel.lower()]:
-            logging.info("forward - sending to %s" % jid)
+    for jid in forward.data.channels[event.channel.lower()]:
+        logging.info("forward - sending to %s" % jid)
+        if jid == "twitter":
+            postmsg(forward.data.outs[jid], e.txt)
+            continue
+
+        outbot = fleet.getfirstjabber()
+        if bot.isgae and not outbot:
+            outbot = fleet.makebot('xmpp', 'forwardbot')
+        if outbot:
+            e.source = outbot.jid
             container = Container(outbot.jid, e.dump())
             container.isremote = True
             outbot.outnocb(jid, container.dump()) 
@@ -94,7 +102,7 @@ def handle_forwardadd(bot, event):
         event.missing('<JID>')
         return
     if "@" in event.rest:
-        forward.data.outs[event.rest] = bot.type
+        forward.data.outs[event.rest] = event.user.data.name
         forward.save()
         if not event.rest in event.chan.forwards:
             event.chan.forwards.append(event.rest)
@@ -145,7 +153,7 @@ def handle_forward(bot, event):
 
     forward.data.channels[event.channel.lower()] =  event.args
     for jid in event.args:
-        forward.data.outs[jid] = bot.type
+        forward.data.outs[jid] = event.user.data.name
         if not jid in event.chan.data.forwards:
             event.chan.data.forwards = event.args
 

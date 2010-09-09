@@ -15,6 +15,7 @@ from gozerlib.utils.pdol import Pdol
 from gozerlib.utils.textutils import html_unescape
 from gozerlib.utils.generic import waitforqueue, strippedtxt, splittxt
 from gozerlib.persist import PlugPersist
+from gozerlib.utils.twitter import twitterapi, twittertoken
 
 ## tweppy imports
 
@@ -51,15 +52,18 @@ else:
 
 ## functions
 
-def twitterapi(token=None, *args, **kwargs):
-    if not go:
-        logging.warn("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples".upper())
-        return None
-    if token:
-        auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-        auth.set_access_token(token.key, token.secret)
-    return API(auth, *args, **kwargs)
-
+def postmsg(username, txt):
+    result = splittxt(txt, 120)
+    twitteruser = TwitterUser("users")
+    token = twittertoken(CONSUMER_KEY, CONSUMER_SECRET, twitteruser, username)
+    if not token:
+        raise TweepError("Can't get twitter token")
+    twitter = twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token)
+    for txt in result:
+        status = twitter.update_status(txt[:119])
+    # BHJTW need to check status
+    return len(result)
+    
 ## classes
 
 class TwitterUser(PlugPersist):
@@ -92,32 +96,19 @@ def handle_twitter(bot, ievent):
     if not go:
         ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
         return
-    #if ievent.inqueue:
-    #    result = waitforqueue(ievent.inqueue, 30)
     if not ievent.rest:
         ievent.missing('<text>')
         return
     else:
-        result = splittxt(ievent.rest, 120)
-
-    try:
-        twitteruser = TwitterUser("users")
-        token = twitteruser.data.get(ievent.user.data.name)
-        if not token:
-            ievent.reply("you are not logged in yet .. run the twitter-auth command.")
-            return 
-        token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
-        twitter = twitterapi(token)
-        
-        for txt in result:
-            status = twitter.update_status(txt[:119])
-        ievent.reply("%s tweet posted." % len(result))
-    except KeyError:
-        handle_exception()
-        ievent.reply('you are not logged in yet. see the twitter-auth command.')
-    except (TweepError, urllib2.HTTPError), e:
-        ievent.reply('twitter failed: %s' % (str(e),))
-
+        try:
+             nritems = postmsg(ievent.user.data.name, ievent.rest)
+             ievent.reply("%s tweets posted" % nritems)
+        except KeyError:
+            #handle_exception()
+            ievent.reply('you are not logged in yet. see the twitter-auth command.')
+        except (TweepError, urllib2.HTTPError), e:
+            ievent.reply('twitter failed: %s' % (str(e),))
+ 
 cmnds.add('twitter', handle_twitter, 'USER')
 examples.add('twitter', 'adds a message to your twitter account', 'twitter just found the http://gozerbot.org project')
 
