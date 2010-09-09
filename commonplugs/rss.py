@@ -12,6 +12,7 @@
 
 ## gozerlib imports
 
+from gozerlib.periodical import interval, periodical
 from gozerlib.persist import Persist, PlugPersist
 from gozerlib.utils.url import geturl2, striphtml, useragent
 from gozerlib.utils.exception import handle_exception
@@ -225,14 +226,13 @@ sleeptime=15*60, running=0):
         """ refresh cached data of a feed. """
 
         if not self.data.running:
-            logging.debug("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
+            logging.info("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
             return
 
         logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
         cachedresult = get(self.data.url, namespace='rss')
         got = False
-
 
         if cachedresult != result:
             set(self.data.url, result, namespace='rss')
@@ -307,6 +307,11 @@ sleeptime=15*60, running=0):
 
         return res
 
+    def shouldpoll(self, curtime):
+        if curtime - self.data.lastpoll > self.data.sleeptime:
+            self.data.lastpoll = curtime
+            self.save()
+            return True
 
 class Rssdict(PlugPersist):
 
@@ -577,6 +582,9 @@ class Rsswatcher(Rssdict):
 
         return self.feeds
        
+    def shouldpoll(self, name, curtime):
+        return self.byname(name).shouldpoll(curtime)
+
     def get(self, name, userhost, save=True):
         return self.byname(name).get(userhost, save)
 
@@ -1063,18 +1071,21 @@ def dosync(feedname):
 
        if localwatcher.sync(feedname):
            localwatcher.peek(feedname)
-
+       #feed = localwatcher.byname(feedname)
+       #feed.data.lastpoll = time.time()
+       #feed.save()
     except RssException, ex:
        logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
-lastpeek = 0
-
-def doperiodical(names=[], *args, **kwargs):
+def doperiodical(*args, **kwargs):
     """ rss periodical function. """
-    names = names or watcher.data['names']
-    logging.debug("rss - periodical - launching %s" % ", ".join(names))
+    names = watcher.data['names']
+    curtime = time.time()
     for feed in names:
-        time.sleep(0.2)
+        if not watcher.shouldpoll(feed, curtime):
+            continue
+        logging.debug("rss - periodical - launching %s" % feed)
+
         try:
             from google.appengine.ext.deferred import defer
             defer(dosync, feed)
@@ -1085,32 +1096,15 @@ def doperiodical(names=[], *args, **kwargs):
                 handle_exception()
                 time.sleep(1)
 
-
-def pollcheck(bot=None, event=None):
-    global lastpeek
-    names = watcher.data['names']
-    dofeeds = []
-    logging.debug("rss - checking for poll %s" % ", ".join(names))
-
-    for feed in names:
-        f = watcher.byname(feed)
-        if f and time.time() - f.data.lastpoll < f.data.sleeptime:
-            continue
-        elif f:
-            f.data.lastpoll = time.time()
-            f.save()
-            dofeeds.append(feed)
-
-    if dofeeds:
-        doperiodical(dofeeds)
-
-callbacks.add('TICK', pollcheck)
+callbacks.add('TICK', doperiodical)
 
 def init():
-    taskmanager.add('rss', pollcheck)
-
+    taskmanager.add('rss', doperiodical)
+    #periodical.addjob(mainconfig['rsspolltime'] or 900, 0, doperiodical)
+    
 def shutdown():
     taskmanager.unload('rss')
+    #periodical.killgroup('commonplugs.rss')
 
 def size():
     """ return number of watched rss entries. """

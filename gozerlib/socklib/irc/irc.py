@@ -115,7 +115,7 @@ class Irc(BotBase):
  
         """ send raw text to the server. """
 
-        if not txt or self.stopped:
+        if not txt or self.stopped or not self.sock:
             logging.warn("irc - bot is stopped .. not sending.")
             return 0
 

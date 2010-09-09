@@ -536,7 +536,7 @@ class SXMPPBot(XMLStream, BotBase):
             return
 
         logging.warn('sxmpp - reconnecting .. sleeping 15 seconds')
-        self.exit()
+        self.quit()
         time.sleep(15)
         botjid = self.jid
 
@@ -548,9 +548,6 @@ class SXMPPBot(XMLStream, BotBase):
                 newbot.joinchannels()
                 if fleet.replace(botjid, newbot):
                     return True
-            else:
-                logging.error("sxmpp - reconnect failed .. trying again.")
-                return self.reconnect()
         except Exception, ex:
             handle_exception()
             return self.reconnect()

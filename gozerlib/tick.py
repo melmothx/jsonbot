@@ -24,4 +24,4 @@ class TickLoop(TimedLoop):
     def handle(self):
         callbacks.check(self.bot, self.event)
 
-tickloop = TickLoop('tickloop', 10)
+tickloop = TickLoop('tickloop', 60)
