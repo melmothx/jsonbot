@@ -116,7 +116,7 @@ class BotEventRunner(Runner):
                 logging.debug('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
 
         except Exception, ex:
-            handle_exception(ievent)
+            handle_exception()
 
         self.working = False
 

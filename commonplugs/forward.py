@@ -68,7 +68,10 @@ def forwardoutcb(bot, event):
     for jid in forward.data.channels[event.channel.lower()]:
         logging.info("forward - sending to %s" % jid)
         if jid == "twitter":
-            postmsg(forward.data.outs[jid], e.txt)
+            try:
+                postmsg(forward.data.outs[jid], e.txt)
+            except Exception, ex:
+                handle_exception()
             continue
 
         outbot = fleet.getfirstjabber()
