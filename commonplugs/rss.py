@@ -177,14 +177,15 @@ sleeptime=15*60, running=0):
 
         return False
 
-    def save(self):
+    def save(self, coreonly=False):
 
         """ save rss data. """
 
         Persist.save(self)
-        self.itemslists.save()
-        self.markup.save()
-        self.lastpeek.save()
+        if not coreonly:
+            self.itemslists.save()
+            self.markup.save()
+            self.lastpeek.save()
 
     def getdata(self):
         url = self.data['url']
@@ -238,7 +239,7 @@ sleeptime=15*60, running=0):
             set(self.data.url, result, namespace='rss')
             logging.debug('rss - result - %s' % result)
             self.data['result'] = result
-            self.save()
+            self.save(True)
             got = True
 
         return got
@@ -310,7 +311,7 @@ sleeptime=15*60, running=0):
     def shouldpoll(self, curtime):
         if curtime - self.data.lastpoll > self.data.sleeptime:
             self.data.lastpoll = curtime
-            self.save()
+            self.save(True)
             return True
 
 class Rssdict(PlugPersist):
@@ -504,7 +505,7 @@ class Rsswatcher(Rssdict):
         result = feedparser.parse(data)
         url = find_self_url(result.feed.links)
         logging.debug("rss - insert - %s - %s" % (url, data))
-        
+        	
         try:
 
             rssitem = self.byurl(url)
@@ -792,10 +793,10 @@ class Rsswatcher(Rssdict):
                     continue
 
                 #res2 = self.get(name, channel, False)
-                res2 = self.check(name, channel, False)
+                res2 = self.check(name, channel, True)
 
                 if not res2:
-                    logging.info("no updates for %s (%s) feed available" % (rssitem.data.name, channel))
+                    logging.debug("rss - no updates for %s (%s) feed available" % (rssitem.data.name, channel))
                     continue
 
                 got = True
@@ -1797,7 +1798,7 @@ def handle_rsssetsleeptime(bot, ievent):
             ievent.reply("failed to set interval: %s" % str(ex))
             return
 
-    watcher.save()
+    watcher.save(name)
     ievent.reply('sleeptime set')
 
 cmnds.add('rss-setsleeptime', handle_rsssetsleeptime, ['USER', ])

@@ -145,7 +145,7 @@ try:
                 if 'gozerlib' in cfrom:
                     cfrom = whichmodule(3)
 
-            logging.debug('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
+            logging.info('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
             set(self.fn, bla)
 
 except ImportError:
@@ -252,7 +252,7 @@ except ImportError:
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
 
-                logging.debug('persist - %s saved' % self.fn)
+                logging.info('persist - %s saved' % self.fn)
 
             finally:
                 pass
