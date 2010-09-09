@@ -1086,7 +1086,7 @@ def doperiodical(names=[], *args, **kwargs):
                 time.sleep(1)
 
 
-def pollcheck(bot, event):
+def pollcheck(bot=None, event=None):
     global lastpeek
     names = watcher.data['names']
     dofeeds = []
