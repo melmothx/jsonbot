@@ -6,7 +6,6 @@
 
 ## gozerlib imports
 
-from periodical import periodical
 from runner import defaultrunner, cmndrunner
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
@@ -117,9 +116,9 @@ class BotBase(LazyDict):
             fleet.bots.append(self)
 
         if not self.isgae:
-            periodical.start()
             defaultrunner.start()
             cmndrunner.start()
+            #longrunner.start()
             tickloop.start(self)
 
         logging.debug("botbase - created bot %s - %s" % (self.name, self.dump()))

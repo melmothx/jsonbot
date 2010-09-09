@@ -10,7 +10,6 @@ from gozerlib.threads import getname, start_new_thread, start_bot_command
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import lockdec
 from gozerlib.threadloop import RunnerLoop
-from gozerlib.periodical import minutely
 
 ## basic imports
 
