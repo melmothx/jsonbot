@@ -256,15 +256,14 @@ def handle_helpplug(bot, ievent):
       
     if phelp:
 
-        if bot.users:
-            perms = bot.users.getperms(ievent.userhost)
+        perms = ievent.user.data.perms
 
         if not perms:
             perms = ['GUEST', ]
 
         counter = 1
         for i, j in cmnds.iteritems():
-            if modname == j.modname:
+            if what == j.plugname:
                 for perm in j.perms:
                     if perm in perms:
                         if True:
@@ -297,10 +296,10 @@ def handle_helpplug(bot, ievent):
         #    txt = '<b>HELP ON %s</b><br><br><b><i>%s</i></b><br><br>%s' % (what, phelp.strip(), "<br>".join(res))
         #    ievent.reply(txt)
         #else:
-        res.insert(0, u'%s - %s\n' % (what, phelp.strip()))
-        ievent.reply('HELP ON %s\n\n' % what, res, dot="\n")
+        res.insert(0, "%s\n" % phelp.strip())
+        ievent.reply('HELP ON %s \n\n' % what, res, dot="\n")
     else:
-        ievent.reply('no commands available')
+        ievent.reply('no commands available for permissions: %s' % ", ".join(perms))
 
 
 cmnds.add('help', handle_helpplug, ['USER', 'GUEST'])

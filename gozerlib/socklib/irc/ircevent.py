@@ -177,7 +177,7 @@ class Ircevent(EventBase):
         makeargrest(self)
         return self
 
-    def reply(self, txt, result=[], to="", dot=", ", extend=15, raw=True):
+    def reply(self, txt, result=[], to="", dot=", ", extend=15, raw=False):
         if self.checkqueues(result):
             return
         if result:
@@ -185,8 +185,8 @@ class Ircevent(EventBase):
         restxt = self.makeresponse(txt, result, dot)
         if not raw:
             restxt = strippedtxt(restxt)
+        restxt = self.bot.normalize(restxt)
         if self.isdcc:
-            restxt = self.bot.normalize(restxt)
             self.sock.send(restxt)
             self.sock.send("\n")
             return

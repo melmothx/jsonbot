@@ -121,6 +121,7 @@ class Plugins(LazyDict):
 
                 init()
                 logging.debug('plugins - %s init called' % modname)
+                logging.warning("%s reloaded" % modname)
                 return self[modname]
             except KeyError:
                 pass
@@ -132,7 +133,7 @@ class Plugins(LazyDict):
         #    except KeyError:
         #        pass
 
-        logging.info("plugins - loading %s" % modname)
+        logging.info("plugins - trying %s" % modname)
         mod = _import(modname)
 
         try:
@@ -151,7 +152,7 @@ class Plugins(LazyDict):
             logging.debug('plugins - %s init called' % modname)
         except Exception, ex:
             handle_exception()
-
+        logging.warning("%s loaded" % modname)
         return self[modname]
 
     def reload(self, modname, force=True):

@@ -63,7 +63,7 @@ class Message(GozerEvent):
         if self.checkqueues(result):
             return
         restxt = self.makeresponse(txt, result, dot)
-        #restxt = self.normalize(restxt)
+        restxt = self.normalize(restxt)
         res1, res2 = self.less(restxt, 900+extend)
         self.out(res1, to)
         self.bot.outmonitor(self.userhost, to or self.channel, res1, self)

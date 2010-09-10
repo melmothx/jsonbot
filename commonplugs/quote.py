@@ -22,6 +22,7 @@ if not quotes.data.index:
     quotes.data.index = 0
 
 def handle_quoteadd(bot, event):
+    """ add a quote. """
     quotes.data.index += 1
     quotes.data[quotes.data.index] = event.rest
     quotes.save()
@@ -31,6 +32,7 @@ cmnds.add('quote-add', handle_quoteadd, ['USER', 'OPER'])
 examples.add('quote-add' , 'add a quote to the bot', 'quote-add blablabla')
 
 def handle_quote(bot, event):
+    """ get a quote. """
     possible = quotes.data.keys()
     possible.remove('index')
     if possible:
