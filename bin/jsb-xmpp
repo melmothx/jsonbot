@@ -62,8 +62,9 @@ if opts.channel and not opts.channel in bot.state['joinedchannels']:
     bot.state['joinedchannels'].append(opts.channel)
     bot.state.save()
 
-if opts.fleet:
-    fleet.addbot(bot)
+if opts.all:
+    print "available fleet bots: %s" % fleet.avail()
 
+fleet.addbot(bot)
 bot.start()
 mainloop()

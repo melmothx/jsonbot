@@ -79,8 +79,10 @@ else:
         bot.state['joinedchannels'].append(opts.channel)
         bot.state.save()
 
-    if opts.fleet:
-        fleet.addbot(bot)
+    if opts.all:
+        print "available fleet bots: %s" % fleet.avail()
+
+    fleet.addbot(bot)
 
     if opts.forward:
         fleet.addbot(bot)

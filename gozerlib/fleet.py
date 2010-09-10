@@ -54,14 +54,15 @@ class Fleet(Persist):
         self.startok = threading.Event()
         self.bots = []
 
-    def loadall(self):
+    def loadall(self, names=[]):
         """ load all bots. """ 
-        if not self.data.names:
+        target = names or self.data.names
+        if not target:
             logging.error("fleet - no bots in fleet")
         else:
-            logging.warning("fleet - loading %s" % " .. ".join(self.data.names))
+            logging.warning("fleet - loading %s" % ", ".join(target))
 
-        for name in self.data.names:
+        for name in target:
             if not name:
                 logging.debug("fleet - name is not set")
                 continue
@@ -71,6 +72,8 @@ class Fleet(Persist):
                 pass
             except KeyError:
                 logging.error("no type know for %s bot" % name)
+            except Exception, ex:
+                handle_exception()
 
     def avail(self):
         """ return available bots. """

@@ -328,7 +328,7 @@ class BotBase(LazyDict):
             self.reconnectcount += 1
             logging.warn('%s - reconnecting .. sleeping %s seconds' % (self.name, self.reconnectcount*15))
             time.sleep(self.reconnectcount * 15)   
-            newbot = fleet.makebot(self.type, self.name, self)
+            newbot = fleet.makebot(self.type, self.name, self.cfg)
             if not newbot:
                 logging.error("botbase - can't make bot for reconnect")
             else:

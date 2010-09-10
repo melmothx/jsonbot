@@ -51,10 +51,10 @@ dest='port',
     parser.add_option('', '--save', action='store_true', default=False,
 dest='save', 
                   help="save to config file")
-    parser.add_option('-f', '--fleet', action='store_true', default=False,
-dest='fleet', 
-                  help="add bot to the fleet")
-    parser.add_option('-a', '--ssl', action='store_true', default=False,
+    parser.add_option('-a', '--all', action='store_true', default=False,
+dest='all', 
+                  help="show available fleet bots")
+    parser.add_option('', '--ssl', action='store_true', default=False,
 dest='ssl', 
                   help="use ssl")
     parser.add_option('-y', '--nossl', action='store_true', default=False,
