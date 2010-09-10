@@ -41,8 +41,8 @@ class Config(LazyDict):
 
     """
 
-    def __init__(self, filename=None, verbose=False, *args, **kw):
-        LazyDict.__init__(self, *args, **kw)
+    def __init__(self, filename=None, verbose=False, input={}, *args, **kw):
+        LazyDict.__init__(self, input, *args, **kw)
         #self.dir = os.path.abspath(os.path.dirname(os.path.realpath(__file__ + os.sep + '..')))
         self.filename = filename or 'mainconfig'
         self.dir = datadir + os.sep + 'config'

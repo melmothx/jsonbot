@@ -49,6 +49,7 @@ fleet.loadall(opts.args)
 if opts.doresume:
     fleet.resume(opts.doresume)
     os.unlink(opts.doresume) # bye
+else:
+    fleet.startall()
 
-fleet.startall()
 mainloop()

@@ -17,6 +17,7 @@ from errors import NoSuchBotType, BotNotEnabled
 from threads import start_new_thread
 from eventhandler import mainhandler
 from datadir import datadir
+from utils.name import stripname
 
 ## waveapi imports
 
@@ -97,7 +98,7 @@ class Fleet(Persist):
 
     def settype(self, name, type):
         """ set the type of a bot. """
-        cfg = Config('fleet' + os.sep + name + os.sep + 'config')
+        cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
         cfg['name'] = name
         logging.debug("fleet - %s - setting type to %s" % (self.cfile, type))
         cfg.type = type
@@ -117,10 +118,11 @@ class Fleet(Persist):
             :type cfg: gozerlib.config.Config
 
         """
-        logging.warn('fleet - making %s (%s) bot - %s' % (type, name, cfg.dump()))
+        if cfg:
+            logging.warn('fleet - making %s (%s) bot - %s' % (type, name, cfg.dump()))
         bot = None
         if not cfg:
-            cfg = Config('fleet' + os.sep + name + os.sep + 'config')
+            cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
             cfg['name'] = name
         if not cfg.type and type:
             logging.debug("fleet - %s - setting type to %s" % (cfg.cfile, type))
