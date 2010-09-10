@@ -444,6 +444,8 @@ class Fleet(Persist):
         logging.warn("fleet - resuming %s bot" % botname)
         # see if we need to exit the old bot
         oldbot = self.byname(botname)
+        if oldbot:
+            oldbot.exit()
         # recreate config file of the bot
         cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
 
