@@ -262,23 +262,27 @@ def handle_helpplug(bot, ievent):
         if not perms:
             perms = ['GUEST', ]
 
+        counter = 1
         for i, j in cmnds.iteritems():
-            if what == j.plugname:
+            if modname == j.modname:
                 for perm in j.perms:
                     if perm in perms:
                         if True:
                             try:
-                                descr = j.func.__doc__.strip()
-                                cmndhelp = cmnds.gethelp(i)
+                                descr = j.func.__doc__
+                                if not descr:
+                                    descr = "no description provided"
+                                #cmndhelp = cmnds.gethelp(i)
                                 try:
                                     cmndresult.append(u"    <b>!%s</b> - <i>%s</i> - examples: %s" % (i, descr, examples[i].example))
                                 except KeyError:
                                     cmndresult.append(u"    <b>!%s</b> - <i>%s</i> - no examples" % (i, descr))
 
                             except AttributeError:
-                                cmndresult.append(i)
+                                pass
+                            counter += 1
+                            break
 
-    cmndresult.sort()
     if cmndresult and phelp:
         res = []
         for r in cmndresult:
