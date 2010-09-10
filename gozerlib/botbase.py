@@ -150,9 +150,10 @@ class BotBase(LazyDict):
         self.plugs.loadall(packagelist)
         return self.plugs
 
-    def start(self):
+    def start(self, connect=True):
         """ start the mainloop of the bot. """
-        self.connect()
+        if connect:
+            self.connect()
         self.status == "running"
         self.joinchannels()
         self.dostart(self.botname, self.type)

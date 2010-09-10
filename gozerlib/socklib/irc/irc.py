@@ -108,7 +108,7 @@ class Irc(BotBase):
             return 0
 
         logging.debug("%s - sending %s" % (self.name, txt))
-
+        
         try:
             self.lastoutput = time.time()
             itxt = fromenc(outputmorphs.do(txt), self.encoding)
@@ -225,12 +225,12 @@ class Irc(BotBase):
         return 1
 
     @threaded
-    def start(self):
+    def start(self, connect=True):
         """ start the bot. """
         logging.warn("%s - starting" % self.name)
         # start input and output loops
         logging.info("%s - starting loops" % self.name)
-        BotBase.start(self)
+        BotBase.start(self, connect)
         start_new_thread(self._readloop, ())
         start_new_thread(self._outloop, ())
         # logon and start monitor
@@ -496,7 +496,7 @@ realname))
 
         try:
             if data['ssl']:
-                self.connectwithjoin()
+                self.start()
                 return 1
         except KeyError:
             pass
@@ -508,15 +508,6 @@ realname))
             fd = None
             logging.error("%s - can't determine file descriptor" % self.name)
             return 0
- 
-        self.connecting = False # we're already connected
-        self.nick = data['nick']
-        self.orignick = self.nick
-        self.server = str(data['server'])
-        self.port = int(data['port'])
-        self.password = data['password']
-        self.ipv6 = data['ipv6']
-        self.ssl = data['ssl']
 
         # create socket
         if self.ipv6:
@@ -532,9 +523,7 @@ realname))
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # do the connect .. set timeout to 30 sec upon connecting
-        logging.info('%s - resuming to %s' % (self.name, self.server))
         self.sock.settimeout(30)
-        self.stopped = 0
         # make file socket
         self.fsock = self.sock.makefile("r")
         # set blocking
@@ -548,11 +537,6 @@ realname))
             else:
                 socktimeout = float(socktimeout)
             self.sock.settimeout(socktimeout)
-
-        # start readloop
-        logging.debug('%s - resuming readloop' % self.name)
-        start_new_thread(self._readloop, ())
-        start_new_thread(self._outloop, ())
 
         # init 
         self.reconnectcount = 0
@@ -585,7 +569,7 @@ realname))
             'password': self.password,
             'ipv6': self.ipv6,
             'ssl': self.ssl,
-            'fd': fd
+            'fd': fd,
             }}
 
 

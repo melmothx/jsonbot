@@ -63,8 +63,8 @@ if opts.doresume and os.path.isfile(opts.doresume):
 
     partyline.resume(opts.doresume)
     os.unlink(opts.doresume) # bye
-    fleet.startall()
-
+    #fleet.startall()
+    
 else:
 
     ## start bot

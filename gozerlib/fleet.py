@@ -417,11 +417,12 @@ class Fleet(Persist):
         session = load(open(sessionfile))
 
         #  resume bots in session file
-        for name in session['bots'].keys():
-            reto = None
-            if name == session['name']:
-                reto = session['channel']
-            start_new_thread(self.resumebot, (name, session['bots'][name], reto))
+        for name, session in session['bots'].iteritems():
+            try:
+                reto = session['nick']
+            except KeyError:
+                reto = None
+            start_new_thread(self.resumebot, (name, session, reto))
 
         # allow 5 seconds for bots to resurrect
         time.sleep(5)
@@ -440,28 +441,22 @@ class Fleet(Persist):
             :param printto: whom to reply to that resuming is done
             :type printto: nick or JID
         """
+        logging.warn("fleet - resuming %s bot" % botname)
         # see if we need to exit the old bot
         oldbot = self.byname(botname)
-        if oldbot:
-            oldbot.exit()
-
         # recreate config file of the bot
         cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
 
         # make the bot and resume (IRC) or reconnect (Jabber)
         logging.warn("fleet - resuming bot .. %s" % str(data))
         bot = self.makebot(data['type'], botname, cfg)
-
-        if bot:
-            if oldbot:
-                self.replace(oldbot, bot)
-            else:
-                self.bots.append(bot)
-
-            if not bot.type == "sxmpp":
-                bot._resume(data, printto)
-            else:
-                start_new_thread(bot.connectwithjoin, ())
+        if oldbot:
+            self.replace(oldbot, bot)
+        if not bot.type == "sxmpp":
+            bot._resume(data, printto)
+            bot.start(False)
+        else:
+            start_new_thread(bot.start, ())
 
 ## defines
 
