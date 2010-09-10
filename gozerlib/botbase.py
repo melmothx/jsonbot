@@ -187,6 +187,9 @@ class BotBase(LazyDict):
     def exit(self):
         """ overload this. """
         self.stopped = True
+        self.quit()
+        self.shutdown()
+        self.save()
 
     def _raw(self, txt):
         """ override this. """ 

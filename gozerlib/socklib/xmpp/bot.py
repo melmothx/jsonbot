@@ -180,6 +180,10 @@ class SXMPPBot(XMLStream, BotBase):
 
             self.sendpresence()
 
+    def start(self):
+        self.connect()
+        BotBase.start(self)
+ 
     def sendpresence(self):
         """ send presence based on status and status text set by user. """
 
@@ -229,10 +233,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def connect(self, reconnect=True, joinchannels=True):
         """ connect the xmpp server. """
-        if self.stopped:
-            logging.warn('sxmpp - bot is stopped .. not connecting')
-            return
-
+        
         try:
             if not XMLStream.connect(self):
                 logging.error('sxmpp - connect to %s:%s failed' % (self.host, self.port))
@@ -254,10 +255,6 @@ class SXMPPBot(XMLStream, BotBase):
             handle_exception()
             if reconnect:
                 self.reconnect()
-
-    def start(self):
-        self.connect()
-        BotBase.start(self)
 
     def logon(self, user, password):
         """ logon on the xmpp server. """
@@ -365,11 +362,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def disconnectHandler(self, ex):
         """ disconnect handler. """
-        logging.error("sxmpp - disconnected - %s" % str(ex)) 
-        if not self.stopped:
-            self.reconnect()
-        else:
-            self.exit()
+        self.reconnect()
 
     def joinchannels(self):
         """ join all already joined channels. """
@@ -688,15 +681,6 @@ class SXMPPBot(XMLStream, BotBase):
     def shutdown(self):
         self.quit()
         self.outqueue.put_nowait(None)
-
- 
-    def exit(self):
-        """ exit the bot. """
-        self.stopped = 1
-        self.shutdown()
-        self.save()
-        time.sleep(3)
-        logging.warn('sxmpp - exit')
 
     def join(self, channel, password=None, nick=None):
         """ join conference. """

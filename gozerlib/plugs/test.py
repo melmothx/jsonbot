@@ -109,7 +109,7 @@ examples.add('test-plugs', 'test all plugins by running there examples', 'test-p
 def handle_forcedreconnect(bot, ievent):
     """ do a forced reconnect. """
     if bot.type == "sxmpp":
-        bot.disconnectHandler(Exception('test exception for reconnect'))
+        bot.connection.shutdown(2)
     else:
         bot.sock.shutdown(2)
 
