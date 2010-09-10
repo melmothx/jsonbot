@@ -63,25 +63,26 @@ class BotBase(LazyDict):
             self.botname = botname
         else:
             self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
+        logging.warn("botbase - name is %s" % self.botname)
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
         if cfg:
             self.cfg = cfg
             self.update(cfg)
         else:
             self.cfg = Config(self.fleetdir + os.sep + u'config')
-        logging.debug(u"botbase - %s - %s" % (str(cfg), botname))
+        #logging.debug(u"botbase - %s - %s" % (str(cfg), self.botname))
         LazyDict.__init__(self)
         try:
             import waveapi
             self.isgae = True
-            logging.info("botbase - bot is a GAE bot (%s)" % botname)
+            logging.info("botbase - bot is a GAE bot (%s)" % self.botname)
         except ImportError:
             self.isgae = False
-            logging.info("botbase - bot is a shell bot (%s)" % botname)
+            logging.info("botbase - bot is a shell bot (%s)" % self.botname)
         self.starttime = time.time()
         self.type = "base"
         self.status = "init"
-        self.networkname = self.cfg.networkname or botname or ""
+        self.networkname = self.cfg.networkname or self.botname or ""
 
         if not self.uuid:
             if self.cfg and self.cfg.uuid:
@@ -124,7 +125,7 @@ class BotBase(LazyDict):
             #longrunner.start()
             tickloop.start(self)
 
-        logging.debug("botbase - created bot %s - %s" % (self.name, self.dump()))
+        logging.warn("botbase - created bot %s - %s" % (self.name, self.cfg.dump()))
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -189,6 +190,7 @@ class BotBase(LazyDict):
 
     def exit(self):
         """ overload this. """
+        logging.warn("%s - exit" % self.name)
         self.stopped = True
         self.quit()
         self.shutdown()
@@ -353,6 +355,7 @@ class BotBase(LazyDict):
 
     def quit(self, reason="", *args, **kwargs):
         """ close connection with the server. """
+        logging.error("botbase - please implement the quit method")
         pass
 
     def connect(self, reconnect=True, *args, **kwargs):

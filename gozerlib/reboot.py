@@ -44,7 +44,8 @@ def reboot_stateful(bot, ievent, fleet, partyline):
     for i in fleet.bots:
         logging.warn("reboot - updating %s" % i.name)
         session['bots'].update(i._resumedata())
-
+        if i.bottype == "sxmpp":
+            i.exit()
     session['partyline'] = partyline._resumedata()
     sessionfile = tempfile.mkstemp('-session', 'gozerbot-')[1]
     dump(session, open(sessionfile, 'w'))

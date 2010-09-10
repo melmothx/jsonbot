@@ -111,6 +111,7 @@ class SXMPPBot(XMLStream, BotBase):
             'port': self.port,
             'password': self.password,
             'ipv6': self.ipv6,
+            'user': self.user
             }}
 
     def _outputloop(self):
@@ -646,10 +647,9 @@ class SXMPPBot(XMLStream, BotBase):
         presence = Presence({'type': 'unavailable', 'to': self.jid})
         presence['from'] = self.me
         self.send(presence)
-        time.sleep(1)
 
     def shutdown(self):
-        self.quit()
+        #self.quit()
         self.outqueue.put_nowait(None)
 
     def join(self, channel, password=None, nick=None):

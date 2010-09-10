@@ -245,7 +245,7 @@ except ImportError:
                     os.rename(tmp, self.fn)
 
                 set(self.fn, data)
-                logging.info('persist - %s saved (%s)' % (self.fn, len(data)))
+                logging.warn('persist - %s saved (%s)' % (self.fn, len(data)))
 
             finally:
                 pass

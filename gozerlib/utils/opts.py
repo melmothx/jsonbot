@@ -84,7 +84,7 @@ def makeconfig(type, opts, botname=None):
     if opts.user:
         cfg.user = opts.user
     else:
-        cfg.user = "%s@gozerbot.org" % cfg.uuid
+        cfg.user = cfg.user or "%s@gozerbot.org" % cfg.uuid
 
     if opts.user:
         try:

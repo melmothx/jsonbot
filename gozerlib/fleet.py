@@ -117,7 +117,7 @@ class Fleet(Persist):
             :type cfg: gozerlib.config.Config
 
         """
-        logging.debug('fleet - making %s (%s) bot - %s' % (type, name, str(cfg)))
+        logging.warn('fleet - making %s (%s) bot - %s' % (type, name, cfg.dump()))
         bot = None
         if not cfg:
             cfg = Config('fleet' + os.sep + name + os.sep + 'config')
@@ -443,14 +443,16 @@ class Fleet(Persist):
         logging.warn("fleet - resuming %s bot" % botname)
         # see if we need to exit the old bot
         oldbot = self.byname(botname)
-        cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
+        if oldbot and data['type'] == "sxmpp":
+            oldbot.exit()
+        cfg = Config('fleet' + os.sep + stripname(botname) + os.sep + 'config')
 
         # make the bot and resume (IRC) or reconnect (Jabber)
-        logging.warn("fleet - resuming bot .. %s" % str(data))
-        bot = self.makebot(data['type'], botname, cfg)
-        if oldbot:
-            self.replace(oldbot, bot)
-        if not bot.type == "sxmpp":
+        logging.warn("fleet - resuming %s bot .. %s" % (botname, str(data)))
+        bot = self.makebot(data['type'], botname)
+        if data['type'] != "sxmpp":
+            if oldbot:
+                self.replace(oldbot, bot)
             bot._resume(data, printto)
             bot.start(False)
         else:

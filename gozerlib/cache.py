@@ -23,7 +23,7 @@ def get(name, namespace=""):
 
 def set(name, item, namespace=""):
     """ set data in the cache. """
-    logging.warn("cache - setting %s (%s)" % (name, len(item)))
+    logging.debug("cache - setting %s (%s)" % (name, len(item)))
     cache[name] = item
 
 def delete(name, namespace=""):
