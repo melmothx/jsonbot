@@ -158,19 +158,7 @@ except ImportError:
 
     persistlock = thread.allocate_lock()
     persistlocked = lockdec(persistlock)
-    cache = {}
-    
-    def get(name):
-        try:
-            logging.debug("persist - fetching %s from cache" % name)
-            return cache[name]
-        except KeyError:
-            return None
-
-    def set(name, data):
-        global cache
-        logging.debug("persist - returning %s from cache" % name)
-        cache[name] = data
+    from gozerlib.cache import get, set
 
     ## classes
 
@@ -199,6 +187,10 @@ except ImportError:
                    datafile = open(self.fn, 'r')
                    data = datafile.read()
                    datafile.close()
+                   set(self.fn, data)
+                   logging.warn("persist - read %s (%s) *file*" % (len(data), self.fn))
+                else:
+                   logging.warn("persist - read %s (%s) *cache*" % (len(data), self.fn))
             except IOError, ex:
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
@@ -252,6 +244,7 @@ except ImportError:
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
 
+                set(self.fn, data)
                 logging.info('persist - %s saved' % self.fn)
 
             finally:
