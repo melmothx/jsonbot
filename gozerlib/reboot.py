@@ -49,5 +49,5 @@ def reboot_stateful(bot, ievent, fleet, partyline):
     sessionfile = tempfile.mkstemp('-session', 'gozerbot-')[1]
     dump(session, open(sessionfile, 'w'))
     fleet.save()
-    fleet.exit(jabber=True)
+    #fleet.exit()
     os.execl(sys.argv[0], sys.argv[0], '-r', sessionfile)

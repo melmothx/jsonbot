@@ -569,7 +569,7 @@ realname))
             'password': self.password,
             'ipv6': self.ipv6,
             'ssl': self.ssl,
-            'fd': fd,
+            'fd': fd
             }}
 
 

@@ -417,12 +417,11 @@ class Fleet(Persist):
         session = load(open(sessionfile))
 
         #  resume bots in session file
-        for name, session in session['bots'].iteritems():
-            try:
-                reto = session['nick']
-            except KeyError:
-                reto = None
-            start_new_thread(self.resumebot, (name, session, reto))
+        for name in session['bots'].keys():
+            reto = None
+            if session['name'] == name:
+                reto = session['channel']
+            start_new_thread(self.resumebot, (name, session['bots'][name], reto))
 
         # allow 5 seconds for bots to resurrect
         time.sleep(5)
@@ -444,9 +443,6 @@ class Fleet(Persist):
         logging.warn("fleet - resuming %s bot" % botname)
         # see if we need to exit the old bot
         oldbot = self.byname(botname)
-        if oldbot:
-            oldbot.exit()
-        # recreate config file of the bot
         cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
 
         # make the bot and resume (IRC) or reconnect (Jabber)

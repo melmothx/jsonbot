@@ -154,8 +154,8 @@ class BotBase(LazyDict):
         """ start the mainloop of the bot. """
         if connect:
             self.connect()
+            self.joinchannels()
         self.status == "running"
-        self.joinchannels()
         self.dostart(self.botname, self.type)
 
     def doevent(self, event):
