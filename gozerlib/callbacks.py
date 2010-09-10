@@ -216,7 +216,10 @@ class Callbacks(object):
             if not cb.func:
                 return
 
-            logging.warn('callbacks - excecuting %s (%s)' % (getname(cb.func), event.userhost or event.cbtype))
+            if event.cbtype != "TICK":
+                logging.warn('callbacks - excecuting %s (%s)' % (getname(cb.func), event.userhost or event.cbtype))
+            else:
+                logging.debug('callbacks - excecuting %s (%s)' % (getname(cb.func), event.userhost or event.cbtype))
             event.iscallback = True
 
             # launch the callback
