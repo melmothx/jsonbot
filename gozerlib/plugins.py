@@ -117,13 +117,15 @@ class Plugins(LazyDict):
                 try:
                     init = getattr(self[modname], 'init')
                 except AttributeError:
+                    logging.warning("%s reloaded - no init" % modname)
                     return self[modname]
 
                 init()
                 logging.debug('plugins - %s init called' % modname)
-                logging.warning("%s reloaded" % modname)
+                logging.warning("%s reloaded - with init" % modname)
                 return self[modname]
             except KeyError:
+                logging
                 pass
 
         #if force:
@@ -145,6 +147,7 @@ class Plugins(LazyDict):
         try:
             init = getattr(self[modname], 'init')
         except AttributeError:
+            logging.warning("%s loaded - no init" % modname)
             return self[modname]
 
         try:
@@ -152,7 +155,7 @@ class Plugins(LazyDict):
             logging.debug('plugins - %s init called' % modname)
         except Exception, ex:
             handle_exception()
-        logging.warning("%s loaded" % modname)
+        logging.warning("%s loaded - with init" % modname)
         return self[modname]
 
     def reload(self, modname, force=True):
