@@ -50,18 +50,6 @@ outlocked = lockdec(outlock)
 
 ## exceptions
 
-class AlreadyConnected(Exception):
-
-    """ already connected exception """
-
-    pass
-
-class AlreadyConnecting(Exception):
-
-    """ bot is already connecting exception """
-
-    pass
-
 class Irc(BotBase):
 
     """ the irc class, provides interface to irc related stuff. """
@@ -153,12 +141,6 @@ class Irc(BotBase):
 
         """ connect to server/port using nick. """
 
-        if self.connecting:
-            raise AlreadyConnecting()
-
-        if self.connected:
-            raise AlreadyConnected()
-
         self.stopped = 0
         self.connecting = True
         self.connectok.clear()
@@ -242,23 +224,18 @@ class Irc(BotBase):
         self.connecttime = time.time()
         return 1
 
+    @threaded
     def start(self):
         """ start the bot. """
         logging.warn("irc - starting")
-        self._connect()
         # start input and output loops
         logging.info("irc - starting loops")
+        BotBase.start(self)
         start_new_thread(self._readloop, ())
         start_new_thread(self._outloop, ())
-
         # logon and start monitor
-        logging.info("irc - logon")
-        self._logon()
-        self.nickchanged = 0
-        self.reconnectcount = 0
         self.connectok.wait()
-        logging.warn("irc - logged on!")
-        BotBase.start(self)
+        self.joinchannels()        
         return True
 
     def _readloop(self):
@@ -449,7 +426,7 @@ class Irc(BotBase):
 
         logging.debug('irc - stopping output loop')
 
-    def _logon(self):
+    def logon(self):
 
         """ log on to the network. """
 
@@ -476,7 +453,6 @@ class Irc(BotBase):
 realname))
 
         # wait on login
-        self.connectok.wait()
 
     def _onconnect(self):
 
@@ -649,19 +625,20 @@ realname))
         if self.state:
             self.state.save()
 
-    def connect(self, reconnect=True):
-
+    def connect(self):
         """ connect to server/port using nick .. connect can timeout so catch
             exception .. reconnect if enabled.
         """
-
-        res = 0
-
         try:
-            res = self.start()
-            if res:
-                logging.warn("waiting for connectok")
-                self.connectok.wait()
+            if True:
+                self._connect()
+                #logging.warn("waiting for connectok")
+                logging.info("irc - logon")
+                self.logon()
+                time.sleep(1)
+                self.nickchanged = 0
+                self.reconnectcount = 0
+                logging.warn("irc - logged on!")
                 self._onconnect()
                 self.connected = True
                 logging.warn('logged on !')
@@ -671,20 +648,9 @@ realname))
             logging.error('connecting error: %s' % str(ex))
             self.reconnect()
             return
-        except AlreadyConnecting:
-            return 0 
-        except AlreadyConnected:
-            return 0
         except Exception, ex:
-            if self.stopped:
-                return 0
             logging.error('connecting error: %s' % str(ex))
-            if reconnect:
-                self.reconnect()
-                return
-            raise
-
-        return res
+            self.reconnect()
 
     def shutdown(self):
 

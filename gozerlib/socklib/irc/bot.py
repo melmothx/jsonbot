@@ -255,19 +255,6 @@ class IRCBot(Irc):
         # were connected .. start dcc loop
         self._dodcc(sock, nick, userhost, userhost)
 
-    @threaded
-    def start(self):
-        """ start the bot. """
-        try:
-            Irc.start(self)
-        except (socket.gaierror, socket.error), ex:
-            logging.error("irc - connect error: %s" % str(ex))
-            Irc.reconnect(self)
-        except (KeyboardInterrupt, EOFError):
-            globalshutdown() 
-
-        BotBase.start(self)
-
     def joinchannels(self):
 
         """ join channels. """
@@ -302,19 +289,12 @@ class IRCBot(Irc):
         # shut down handlers
         logging.warn('irc - stopped')
 
-    def exit(self):
+    def quit(self):
         """ save data, quit the bot and do shutdown. """
-        if self.connectok.isSet():
-            try:
-                self._raw('QUIT :%s' % self.cfg['quitmsg'])
-            except IOError:
-                pass
-        Irc.exit(self)
-        self.stop()
-        partyline.stop(self)
-        self.save()
-        logging.warn('irc - exit')
-        return 1
+        try:
+            self._raw('QUIT :%s' % self.cfg['quitmsg'])
+        except IOError:
+            pass
 
     def getchannelmode(self, channel):
         """ send MODE request for channel. """

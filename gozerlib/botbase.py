@@ -28,6 +28,7 @@ from utils.trace import whichmodule
 from fleet import fleet
 from utils.name import stripname
 from tick import tickloop
+from threads import start_new_thread, threaded
 
 ## basic imports
 
@@ -151,11 +152,10 @@ class BotBase(LazyDict):
 
     def start(self):
         """ start the mainloop of the bot. """
-        # basic loop
-        if self.connect():
-            self.status == "running"
-            self.joinchannels()
-            self.dostart(self.botname, self.type)
+        self.connect()
+        self.status == "running"
+        self.joinchannels()
+        self.dostart(self.botname, self.type)
 
     def doevent(self, event):
         """ dispatch an event. """
@@ -332,13 +332,11 @@ class BotBase(LazyDict):
                 logging.error("%s - can't make bot for reconnect" % self.name)
             else:
                 self.exit()
-                if newbot.start():
-                    if fleet.replace(self, newbot):
-                        return True
+                newbot.start()
+                fleet.replace(self, newbot)
         except Exception, ex: 
             handle_exception()
-            return self.reconnect()
-        return False
+            self.reconnect()
 
     def invite(self, *args, **kwargs):
         """ invite another user/bot. """
