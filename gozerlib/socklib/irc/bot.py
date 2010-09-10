@@ -106,7 +106,7 @@ class IRCBot(Irc):
             self.sock = sock = listensock.accept()[0]
         except Exception, ex:
             handle_exception()
-            logging.error('irc - dcc error: %s' % str(ex))
+            logging.error('%s - dcc error: %s' % (self.name, str(ex)))
             return
 
         # connected
@@ -128,7 +128,7 @@ class IRCBot(Irc):
             sock.send("control character is ! .. bot broadcast is @\n")
         except Exception, ex:
             handle_exception()
-            logging.error('irc - dcc error: %s' % str(ex))
+            logging.error('%s - dcc error: %s' % (self.name, str(ex)))
             return
         start_new_thread(self._dccloop, (sock, nick, userhost, channel))
 
@@ -147,10 +147,10 @@ class IRCBot(Irc):
             try:
                 # read from socket
                 res = sockfile.readline()
-                logging.debug("irc - dcc - %s got %s" % (userhost, res))
+                logging.debug("%s - dcc - %s got %s" % (self.name, userhost, res))
                 # if res == "" than the otherside had disconnected
                 if self.stopped or not res:
-                    logging.warn('irc - closing dcc with ' + nick)
+                    logging.warn('%s - closing dcc with %s' % (self.name, nick))
                     partyline.del_party(nick)
                     return
             except socket.timeout:
@@ -170,7 +170,7 @@ class IRCBot(Irc):
             except Exception, ex:
                 # other exception occured .. close connection
                 handle_exception()
-                logging.warn('irc - closing dcc with ' + nick)
+                logging.warn('%s - closing dcc with %s' % (self.name, nick))
                 partyline.del_party(nick)
                 return
             try:
@@ -193,7 +193,7 @@ class IRCBot(Irc):
                 ievent.speed = 1
                 ievent.isdcc = True
                 ievent.msg = True
-                logging.debug("irc - dcc - constructed event")
+                logging.debug("%s - dcc - constructed event" % self.name)
                 # check if its a command if so dispatch
                 if ievent.txt[0] == "!":
                     self.doevent(ievent)
@@ -233,7 +233,7 @@ class IRCBot(Irc):
                 handle_exception()
 
         sockfile.close()
-        logging.warn('irc - closing dcc with ' + nick)
+        logging.warn('%s - closing dcc with %s' %  (self.name, nick))
 
     def _dccconnect(self, nick, userhost, addr, port):
 
@@ -241,7 +241,7 @@ class IRCBot(Irc):
 
         try:
             port = int(port)
-            logging.warn("irc - dcc - connecting to %s:%s (%s)" % (addr, port, userhost))
+            logging.warn("%s - dcc - connecting to %s:%s (%s)" % (self.name, addr, port, userhost))
             if re.search(':', addr):
                 sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
                 sock.connect((addr, port))
@@ -249,7 +249,7 @@ class IRCBot(Irc):
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.connect((addr, port))
         except Exception, ex:
-            logging.error('irc - dcc error: %s' % str(ex))
+            logging.error('%s - dcc error: %s' % (self.name, str(ex)))
             return
 
         # were connected .. start dcc loop
@@ -269,7 +269,7 @@ class IRCBot(Irc):
                 start_new_thread(self.join, (i, key))
                 time.sleep(1)
             except Exception, ex:
-                logging.warn('irc - failed to join %s: %s' % (i, str(ex)))
+                logging.warn('%s - failed to join %s: %s' % (self.name, i, str(ex)))
                 handle_exception()
 
     def broadcast(self, txt):
@@ -287,7 +287,7 @@ class IRCBot(Irc):
         """ stop the bot. """
         self.stopped = 1
         # shut down handlers
-        logging.warn('irc - stopped')
+        logging.warn('%s - stopped' % self.name)
 
     def quit(self):
         """ save data, quit the bot and do shutdown. """
@@ -333,7 +333,7 @@ class IRCBot(Irc):
         """ check if PRIVMSG is command, if so dispatch. """
 
         if ievent.nick in self.nicks401:
-            logging.debug("irc - %s is available again" % ievent.nick)
+            logging.debug("%s - %s is available again" % (self.name, ievent.nick))
             self.nicks401.remove(ievent.nick)
 
         if not ievent.txt:
@@ -398,20 +398,20 @@ class IRCBot(Irc):
         """ handle joins. """
 
         if ievent.nick in self.nicks401:
-             logging.debug("irc - %s is available again" % ievent.nick)
+             logging.debug("%s - %s is available again" % (self.name, ievent.nick))
              self.nicks401.remove(ievent.nick)
         chan = ievent.channel
         nick = ievent.nick
 
         # see if its the bot who is joining
         if nick == self.nick:
-            logging.warn("irc - joined %s" % ievent.channel)
+            logging.warn("%s - joined %s" % (self.name, ievent.channel))
             # check if we already have a channels object, if not init it
             time.sleep(0.5)
             self.who(chan)
             return
 
-        logging.info("%s joined %s" % (ievent.nick, ievent.channel))
+        logging.info("%s - %s joined %s" % (self.name, ievent.nick, ievent.channel))
         # sync joined user with userhosts cache
         self.userhosts[nick] = ievent.userhost
         #if self.userchannels:
@@ -454,7 +454,7 @@ class IRCBot(Irc):
 
         # see if its the bot who is parting
         if ievent.nick == self.nick:
-            logging.warn('irc - parted channel %s' % chan)
+            logging.warn('%s - parted channel %s' % (self.name, chan))
             # remove from joinedchannels
             if chan in self.state['joinedchannels']:
                 self.state['joinedchannels'].remove(chan)
@@ -492,7 +492,7 @@ class IRCBot(Irc):
 
         """ check if mode is about channel if so request channel mode. """
 
-        logging.warn("irc - mode change %s" % str(ievent.arguments))
+        logging.warn("%s - mode change %s" % (self.name, str(ievent.arguments)))
 
         try:
             dummy = ievent.arguments[2]
@@ -509,7 +509,7 @@ class IRCBot(Irc):
         target, nick, user, host, dummy = ievent.arguments
         nick = nick
         userhost = "%s@%s" % (user, host)
-        logging.debug('irc - adding %s to userhosts: %s' % (nick, userhost))
+        logging.debug('%s - adding %s to userhosts: %s' % (self.name, nick, userhost))
         # userhosts cache is accessed by lower case nick
         self.userhosts[nick] = userhost
 
@@ -523,7 +523,7 @@ class IRCBot(Irc):
         user = args[2]
         host = args[3]
         userhost = "%s@%s" % (user, host)
-        logging.debug('adding %s to userhosts: %s' % (nick, userhost))
+        logging.debug('%s - adding %s to userhosts: %s' % (self.name, nick, userhost))
         self.userhosts[nick] = userhost
         #if self.userchannels:
         #    self.userchannels.adduniq(nick, channel)

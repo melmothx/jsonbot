@@ -23,7 +23,8 @@ from tweepy.auth import OAuthHandler
 from tweepy.api import API
 from tweepy import oauth
 from tweepy.error import TweepError
-from tweepy.models import Status
+from tweepy.models import Status, User
+import tweepy
 
 go = True
 
@@ -117,8 +118,6 @@ def handle_twittercmnd(bot, ievent):
     if not go:
         ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
         return
-    #if ievent.inqueue:
-    #    result = waitforqueue(ievent.inqueue, 30)
     if not ievent.args:
         ievent.missing('<text>')
         return
@@ -132,7 +131,7 @@ def handle_twittercmnd(bot, ievent):
             ievent.reply("you are not logged in yet .. run the twitter-auth command.")
             return 
         token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
-        twitter = twitterapi(token)
+        twitter = twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token)
         cmndlist = dir(twitter)
         cmnds = []
         for cmnd in cmndlist:
@@ -154,15 +153,19 @@ def handle_twittercmnd(bot, ievent):
         # do the thing
         result = method()
         res = []
-        if type(result) != types.ListType:
-           result = [result, ]
-  
+
         for item in result:
             try:
-                res.append(unicode(item.__getstate__()))
-            except Exception, ex:
-                #handle_exception()
-                res.append(unicode(item))
+                res.append("%s - %s" % (item.screen_name, item.text))
+            except AttributeError:
+                try:
+                    res.append("%s - %s" % (item.screen_name, item.description))
+                except AttributeError:
+                    try:
+                        res.append(unicode(item.__getstate__()))
+                    except AttributeError:
+                        res.append(dir(i))
+                        res.append(unicode(item))
 
         ievent.reply("result of %s: " % target, res) 
     except KeyError:
@@ -216,3 +219,40 @@ def handle_twitter_auth(bot, ievent):
 
 cmnds.add('twitter-auth', handle_twitter_auth, ['USER', 'OPER'])
 examples.add('twitter-auth', 'adds your twitter account', '1) twitter-auth')
+
+def handle_twitterfriends(bot, ievent):
+    """ do a twitter API cmommand. """
+    if not go:
+        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        return
+
+    try:
+        twitteruser = TwitterUser("users")
+        token = twitteruser.data.get(ievent.user.data.name)
+        if not token:
+            ievent.reply("you are not logged in yet .. run the twitter-auth command.")
+            return 
+        token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
+        twitter = twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token)
+        method = getattr(twitter, "friends_timeline")
+
+        # do the thing
+        result = method()
+        res = []
+        for item in result:
+            try:
+                res.append("%s - %s" % (item.author.screen_name, item.text))
+                #logging.warn("twitter - %s" % dir(item.author))
+                #res.append(unicode(item.__getstate__()))
+            except Exception, ex:
+                handle_exception()
+
+        ievent.reply("results: ", res) 
+    except KeyError:
+        #handle_exception()
+        ievent.reply('you are not logged in yet. see the twitter-auth command.')
+    except (TweepError, urllib2.HTTPError), e:
+        ievent.reply('twitter failed: %s' % (str(e),))
+
+cmnds.add('twitter-friends', handle_twitterfriends, 'USER')
+examples.add('twitter-friends', 'show your friends_timeline', 'twitter-friends')

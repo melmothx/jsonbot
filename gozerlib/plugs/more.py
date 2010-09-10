@@ -35,10 +35,10 @@ def handle_more(bot, ievent):
     if size:
         txt += "<b> - %s more</b>" % str(size)
 
-    ievent.write(txt)
+    bot.saynocb(ievent.nick or ievent.userhost, txt)
     bot.outmonitor(ievent.userhost, ievent.channel, txt)
 
-cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'], threaded=True)
+cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'])
 examples.add('more', 'return txt from output cache', 'more')
 
 def handle_clear(bot, ievent):
