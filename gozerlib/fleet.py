@@ -132,8 +132,8 @@ class Fleet(Persist):
             raise Exception("no bot type specified")
         if not cfg.owner:
             cfg.owner = mainconfig.owner
-        if not cfg['domain'] and domain:
-            cfg['domain'] = domain
+        if not cfg.domain and domain:
+            cfg.domain = domain
         if not cfg:
             raise Exception("can't make config for %s" % name)
         cfg.save()

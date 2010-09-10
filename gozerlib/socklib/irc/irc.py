@@ -148,7 +148,6 @@ class Irc(BotBase):
             except:
                 pass
             logging.warn("irc - ERROR: can't send %s" % str(ex))
-            self.reconnect()
 
     def _connect(self):
 
@@ -727,40 +726,12 @@ realname))
     def exit(self):
 
         """ exit the bot. """
+        self.stopped = True
+        self.stopreadloop = True
+        self.connected = False
         self.quit()
-        self.stopreadloop = 1
-        self.stopped = 1
-        self.connected = 0
+        time.sleep(1)
         self.shutdown()
-
-    def reconnect(self):
-
-        """ reconnect to the irc server. """
-
-        try:
-            # determine how many seconds to sleep
-            if self.reconnectcount > 0:
-                reconsleep = self.reconnectcount*15
-                logging.warn('irc - sleeping %s seconds for reconnect' % reconsleep)
-                time.sleep(reconsleep)
-                #if self.stopped:
-                #    logging.warn('irc - stopped.. not reconnecting')
-                #    return 1
-                if self.connected:
-                    logging.warn('irc - already connected .. not reconnecting')
-                    return 1
-            self.reconnectcount += 1
-            self.shutdown()
-            logging.warn('reconnecting')
-            result = self.start()
-            return result
-        except (socket.gaierror, socket.error), ex:
-            logging.error("irc - socket error while reconnecting: %s" % str(ex))
-            logging.error("irc - sleeping 15 sec before next attempt")
-            time.sleep(15)
-            self.reconnect()
-        except Exception, ex:
-            handle_exception()
 
     def handle_pong(self, ievent):
 

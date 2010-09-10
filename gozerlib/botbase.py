@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from utils.exception import handle_exception
 from runner import defaultrunner, cmndrunner
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
@@ -52,6 +53,7 @@ eventlocked = lockdec(eventlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
+        self.reconnectcount = 0
         self.stopped = False
         self.plugs = plugs or coreplugs
         if not botname and cfg:
@@ -313,9 +315,29 @@ class BotBase(LazyDict):
         """ send action to channel. """
         pass
 
-    def reconnect(self, *args, **kwargs):
-        """ do a server reconnect. """
-        pass
+    def reconnect(self):
+        """ reconnect to the server. """
+        if self.stopped:
+            logging.warn('%s - bot is stopped .. not reconnecting' % self.name)
+            return
+
+        try:
+            self.reconnectcount += 1
+            logging.warn('%s - reconnecting .. sleeping %s seconds' % (self.name, self.reconnectcount*15))
+            time.sleep(self.reconnectcount * 15)   
+            newbot = fleet.makebot(self.type, self.name, self)
+            if not newbot:
+                logging.error("botbase - can't make bot for reconnect")
+            else:
+                self.name += '.old'   
+                self.exit()
+                if newbot.connect():
+                    if fleet.replace(self, newbot):
+                        return True
+        except Exception, ex: 
+            handle_exception()
+            return self.reconnect()
+        return False
 
     def invite(self, *args, **kwargs):
         """ invite another user/bot. """
