@@ -216,7 +216,7 @@ class Callbacks(object):
             if not cb.func:
                 return
 
-            logging.debug('callbacks - excecuting %s (%s)' % (str(cb.func), event.userhost))
+            logging.warn('callbacks - excecuting %s (%s)' % (getname(cb.func), event.userhost or event.cbtype))
             event.iscallback = True
 
             # launch the callback

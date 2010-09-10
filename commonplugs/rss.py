@@ -44,9 +44,7 @@ import gozerlib.contrib.feedparser as feedparser
 try:
     from google.appengine.api.memcache import get, set, delete
 except ImportError:
-    def get(*args, **kwargs): return
-    def set(*args, **kwargs): return
-    def delete(*args, **kwargs): return
+    from gozerlib.cache import get, set, delete
 
 ## tinyurl import
 
@@ -209,7 +207,7 @@ sleeptime=15*60, running=0):
         logging.debug("rss - fetch - got result from %s" % url)
         
         if result and result.has_key('bozo_exception'):
-            logging.info('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
+            logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
 
         try:
             status = result.status
@@ -227,17 +225,17 @@ sleeptime=15*60, running=0):
         """ refresh cached data of a feed. """
 
         if not self.data.running:
-            logging.info("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
+            logging.debug("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
             return
 
-        logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
+        logging.warn("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
         cachedresult = get(self.data.url, namespace='rss')
         got = False
 
         if cachedresult != result:
             set(self.data.url, result, namespace='rss')
-            logging.debug('rss - result - %s' % result)
+            #logging.debug('rss - result - %s' % result)
             self.data['result'] = result
             self.save(True)
             got = True
@@ -276,7 +274,7 @@ sleeptime=15*60, running=0):
                     return False
 
                 dtt = time.mktime(dt)
-                logging.debug("rss - %s - %s" % (dtt, r))
+                #logging.debug("rss - %s - %s" % (dtt, r))
                 if dtt > r:
                     tobereturned.append(LazyDict(res))
                     r = dtt
@@ -287,7 +285,7 @@ sleeptime=15*60, running=0):
             if got and save:
                 self.lastpeek.save()
 
-        logging.debug("rss - %s" % str(tobereturned))
+        #logging.debug("rss - %s" % str(tobereturned))
         return tobereturned
 
     def all(self):
@@ -367,7 +365,7 @@ class Rssdict(PlugPersist):
 
         """ add rss item. """
 
-        logging.info('rss - adding %s - %s - (%s)' % (name, url, owner))
+        logging.warn('rss - adding %s - %s - (%s)' % (name, url, owner))
 
         if name not in self.data['names']:
             self.data['names'].append(name)
@@ -461,7 +459,7 @@ class Rssdict(PlugPersist):
             rssitem.data.stoprunning = 0
             rssitem.save()
  
-        logging.info('rss - started %s rss watch' % name)
+        logging.warn('rss - started %s rss watch' % name)
 
 class Rsswatcher(Rssdict):
 
@@ -504,7 +502,7 @@ class Rsswatcher(Rssdict):
 
         result = feedparser.parse(data)
         url = find_self_url(result.feed.links)
-        logging.debug("rss - insert - %s - %s" % (url, data))
+        logging.debug("rss - insert - %s" % url)
         	
         try:
 
@@ -636,7 +634,7 @@ class Rsswatcher(Rssdict):
         rssitem = self.byname(name)
 
         if not rssitem == None:
-            logging.info("rss - no %s rss item available" % name)
+            logging.error("rss - no %s rss item available" % name)
             return
 
         while 1:
@@ -655,7 +653,7 @@ class Rsswatcher(Rssdict):
         """ make a result (txt) of a feed depending on its itemlist. """
         rssitem = self.byname(name)
         if not rssitem == None:
-            logging.info("rss - no %s rss item available" % name)
+            logging.error("rss - no %s rss item available" % name)
             return
             
         res = []
@@ -682,7 +680,7 @@ class Rsswatcher(Rssdict):
         """ loop over result to make a response. """
         rssitem = self.byname(name)
         if not rssitem:
-            logging.info("rss - no %s rss item available" % name)
+            logging.error("rss - no %s rss item available" % name)
             return
 
         result = u"[%s] - " % name 
@@ -927,7 +925,7 @@ class Rsswatcher(Rssdict):
         try:
             result = self.getdata(name)
         except RssException, ex:
-            logging.info('rss - %s error: %s' % (name, str(ex)))
+            logging.error('rss - scan - %s error: %s' % (name, str(ex)))
             return
 
         if not result:
@@ -1017,7 +1015,7 @@ class Rsswatcher(Rssdict):
         rssitem = self.byname(name)
 
         if rssitem == None:
-            logging.info("we don't have a %s rss object" % name)
+            logging.warn("we don't have a %s rss object" % name)
             return False
 
         target = channel

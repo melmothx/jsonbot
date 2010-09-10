@@ -339,8 +339,9 @@ class Irc(BotBase):
                 if self.blocking and 'temporarily' in str(ex):
                     time.sleep(0.5)
                     continue
-                logging.error('connecting error: %s' % str(ex))
-                doreconnect = 1
+                if not self.stopped:
+                    logging.error('connecting error: %s' % str(ex))
+                    doreconnect = 1
                 break
                 #handle_exception()
                 #doreconnect = 1
