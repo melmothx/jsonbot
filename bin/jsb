@@ -23,8 +23,8 @@ cfg = makeconfig('console', opts) # sxmpp for the forward bot
 ## set loglevel
 
 from gozerlib.utils.log import setloglevel
-setloglevel(opts.loglevel)
-
+setloglevel(opts.loglevel or "error")
+ 
 # gozerlib imports
 
 from gozerlib.utils.mainloop import mainloop

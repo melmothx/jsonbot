@@ -140,7 +140,7 @@ class Commands(LazyDict):
         """ do the dispatching. """
         id = event.auth or event.userhost
         event.iscmnd = True
-        logging.warn('commands - dispatching %s for %s - (%s seconds)' % (event.usercmnd, id, wait))
+        logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
             if bot.isgae or wait:
                 target.func(bot, event)

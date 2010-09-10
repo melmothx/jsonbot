@@ -135,7 +135,7 @@ class LazyDict(dict):
         return res
 
     def dump(self, ignore=[]):
-        logging.info("lazydict - dumping - %s" %  type(self))
+        logging.debug("lazydict - dumping - %s" %  type(self))
         result = dumpelement(self, defaultignore + ignore)
         return dumps(result)
 

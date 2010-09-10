@@ -36,7 +36,7 @@ dest='server',
     parser.add_option('-c', '--channel', type='string', default=False,
 dest='channel', 
                   help="channel to join")
-    parser.add_option('-l', '--loglevel', type='string', default="warning",
+    parser.add_option('-l', '--loglevel', type='string', default="",
 dest='loglevel', 
                   help="loglevel of the bot .. the lower the more it logs")
     parser.add_option('-p', '--password', type='string', default=False,
