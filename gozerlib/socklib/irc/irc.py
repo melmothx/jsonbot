@@ -244,10 +244,6 @@ class Irc(BotBase):
 
     def start(self):
         """ start the bot. """
-        if self.stopped:
-            logging.warn("irc - bot is stopped .. not starting.")
-            return 0
-
         logging.warn("irc - starting")
         self._connect()
         # start input and output loops
@@ -262,6 +258,7 @@ class Irc(BotBase):
         self.reconnectcount = 0
         self.connectok.wait()
         logging.warn("irc - logged on!")
+        BotBase.start(self)
         return True
 
     def _readloop(self):

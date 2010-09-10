@@ -89,7 +89,7 @@ class XMLStream(NodeBuilder):
 
     def handle_proceed(self, data):
         """ default stream handler. """
-        logging.debug("sxmpp - proceeding")
+        logging.debug("%s - proceeding" % self.name)
 
     def handle_stream(self, data):
         """ default stream handler. """
@@ -97,8 +97,7 @@ class XMLStream(NodeBuilder):
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        logging.error("sxmpp - STREAMERROR: %s" % data.orig)
-        self.reconnect()
+        logging.error("%s - STREAMERROR: %s" % (self.name, data.orig))
 
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
@@ -157,9 +156,9 @@ class XMLStream(NodeBuilder):
             self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
-                logging.error("sxmpp - data is not well formed: %s" % data)
+                logging.error("%s - data is not well formed: %s" % (self.name, data))
                 return {}
-            logging.debug("sxmpp - ALERT: %s - %s" % (str(ex), data))
+            logging.debug("%s - ALERT: %s - %s" % (self.name, str(ex), data))
         except Exception, ex:
             handle_exception()
             return {}
@@ -168,7 +167,7 @@ class XMLStream(NodeBuilder):
 
     def _doprocess(self):
         """ proces all incoming data. """
-        logging.debug('starting readloop')
+        logging.debug('%s - starting readloop' % self.name)
         self.buffer = ""
 
         while not self.stopped:
@@ -176,7 +175,7 @@ class XMLStream(NodeBuilder):
                 data = self.connection.read()
                 #logging.debug("sxmpp - incoming - %s" % data)
                 if data == "":
-                    logging.error('remote disconnected')
+                    logging.error('%s - remote disconnected' % self.name)
                     self.error = 'disconnected'
                     self.disconnectHandler(Exception('remote %s disconnected' %  self.host))
                     break
@@ -192,7 +191,7 @@ class XMLStream(NodeBuilder):
                     self.loop_one(self.buffer)
 
             except xml.parsers.expat.ExpatError, ex:
-                logging.error("sxmpp - %s - %s" % (str(ex), data))
+                logging.error("%s - %s - %s" % (self.name, str(ex), data))
                 self.buffer = ""
                 self.error = str(ex)
                 self.disconnectHandler(ex)
@@ -204,36 +203,33 @@ class XMLStream(NodeBuilder):
                 self.disconnectHandler(ex)
                 break
 
-        logging.info('sxmpp - stopping readloop .. %s' % (self.error or 'error not set'))
+        logging.info('%s - stopping readloop .. %s' % (self.name, self.error or 'error not set'))
 
     def _raw(self, stanza):
         """ output a xml stanza to the socket. """
         try:
             stanza = stanza.strip()
             if not stanza:
-                logging.debug("sxmpp - no stanze provided. called from: %s" % whichmodule())
-                return
-            if self.stopped:
-                logging.debug('sxmpp - bot is stopped .. not sending')
+                logging.debug("%s - no stanze provided. called from: %s" % (self.name, whichmodule()))
                 return
 
-            #what = jabberstrip(stanza)
+            what = jabberstrip(stanza)
             what = toenc(stanza)
             if not what.endswith('>') or not what.startswith('<'):
-                logging.error('sxmpp - invalid stanza: %s' % what)
+                logging.error('%s - invalid stanza: %s' % (self.name, what))
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
-                logging.debug("sxmpp - raw - %s" % what)
+                logging.debug("%s - raw - %s" % (self.name, what))
                 try:
                     self.connection.send(what + u"\r\n")
                 except AttributeError:
                     self.connection.write(what)
             else:
-                logging.error('sxmpp - invalid stanza: %s' % what)
+                logging.error('%s - invalid stanza: %s' % (self.name, what))
 
         except socket.error, ex:
             if 'Broken pipe' in str(ex):
-                logging.debug('sxmpp - core - broken pipe .. ignoring')
+                logging.debug('%s - core - broken pipe .. ignoring' % self.name)
                 time.sleep(0.01)
                 return
             self.error = str(ex)
@@ -245,9 +241,6 @@ class XMLStream(NodeBuilder):
 
     def connect(self):
         """ connect to the server. """
-        if self.stopped:
-            logging.warn('sxmpp - bot is stopped not connecting to %s' % self.host)
-            return
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(30)
         if not self.port:
@@ -256,21 +249,21 @@ class XMLStream(NodeBuilder):
             self.host = self.server
         else:
             self.host = self.cfg.host
-        logging.warn("sxmpp - connecting to %s:%s" % (self.host, self.port))
+        logging.warn("%s - connecting to %s:%s" % (self.name, self.host, self.port))
         self.sock.connect((self.host, self.port))
         self.sock.setblocking(False)
         self.sock.settimeout(60)
         time.sleep(1) 
-        logging.debug("sxmpp - starting stream")
+        logging.debug("%s - starting stream" % self.name)
         self.sock.send('<stream:stream to="%s" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams" version="1.0">\r\n' % self.user.split('@')[1])
         time.sleep(3)
         result = self.sock.recv(1500)
-        logging.debug("sxmpp - " + str(result))
+        logging.debug("%s - %s" %  (self.name, str(result)))
         self.loop_one(result)
         self.sock.send('<starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"/>\r\n')
         time.sleep(3)
         result = self.sock.recv(1500)
-        logging.debug("sxmpp - " + str(result))
+        logging.debug("%s - %s" % (self.name, str(result)))
         self.loop_one(result)
         self.sock.settimeout(60)
         return self.dossl()
@@ -279,10 +272,10 @@ class XMLStream(NodeBuilder):
         """ enable ssl on the socket. """
         try:
             import ssl
-            logging.debug("sxmpp - wrapping ssl socket")
+            logging.debug("%s - wrapping ssl socket" % self.name)
             self.connection = ssl.wrap_socket(self.sock)
         except ImportError:
-            logging.debug("sxmpp - making ssl socket")
+            logging.debug("%s - making ssl socket" % self.name)
             self.connection = socket.ssl(self.sock)
         if self.connection:
             return True
@@ -306,9 +299,9 @@ class XMLStream(NodeBuilder):
         self.final['subelements'] = self.subelements
 
         for subelement in self.subelements:
-            logging.debug("sxmpp - %s" % str(subelement))
+            logging.debug("%s - %s" % (self.name, str(subelement)))
             for elem in subelement:
-                logging.debug("setting %s handler" % elem)
+                logging.debug("%s - setting %s handler" % (self.name, elem))
                 methods.append(self.getHandler(elem))
             for method in methods:
                 if not method:
@@ -324,7 +317,7 @@ class XMLStream(NodeBuilder):
 
         if self.tags:
             element = self.tags[0]
-            logging.debug("setting element: %s" % element)
+            logging.debug("%s - setting element: %s" % (self.name, element))
         else:
             element = 'stream'
 
@@ -344,7 +337,7 @@ class XMLStream(NodeBuilder):
                 handle_exception()
                 result = {}
         else:
-            logging.error("sxmpp - can't find handler for %s" % element)
+            logging.error("%s - can't find handler for %s" % (self.name, element))
             result = {}
 
         self.final = {}
@@ -411,19 +404,6 @@ class XMLStream(NodeBuilder):
 
         self.subelements.append(res)
 
-    def exit(self):
-        """ stop the stream handling. """
-        self.stopped = True
-
-
-    def reconnect(self):
-        """ reconnect to the server. """
-        logging.warn('reconnecting')
-        self.exit()
-        logging.warn('sleeping 15 seconds')
-        time.sleep(15)
-        return self.connect()
-
     def disconnectHandler(self, ex):
         """
             handler called on disconnect.
@@ -432,7 +412,6 @@ class XMLStream(NodeBuilder):
             :type ex: Exception
 
         """
-        self.stop = True
-        logging.warn('disconnected: %s' % str(ex))
+        logging.warn('%s - disconnected: %s' % (self.name, str(ex)))
         #self.reconnect()
 

@@ -260,7 +260,6 @@ class IRCBot(Irc):
         """ start the bot. """
         try:
             Irc.start(self)
-            self.joinchannels()
         except (socket.gaierror, socket.error), ex:
             logging.error("irc - connect error: %s" % str(ex))
             Irc.reconnect(self)
@@ -268,14 +267,6 @@ class IRCBot(Irc):
             globalshutdown() 
 
         BotBase.start(self)
-
-    @threaded
-    def reconnect(self):
-
-        """ reconnect and if succesfull join channels. """
-
-        if Irc.reconnect(self):
-            self.joinchannels()
 
     def joinchannels(self):
 

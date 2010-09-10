@@ -152,18 +152,20 @@ class BotBase(LazyDict):
     def start(self):
         """ start the mainloop of the bot. """
         # basic loop
-        self.status == "running"
-        self.dostart(self.botname, self.type)
+        if self.connect():
+            self.status == "running"
+            self.joinchannels()
+            self.dostart(self.botname, self.type)
 
     def doevent(self, event):
         """ dispatch an event. """
         if not event:
             raise NoEventProvided()
         if event.status == "done":
-            logging.debug("botbase - event is done .. ignoring")
+            logging.debug("%s - event is done .. ignoring" % self.name)
             return
         if event.ttl <= 0:
-            logging.debug("botbase - ttl of event is 0 .. ignoring")
+            logging.debug("%s - botbase - ttl of event is 0 .. ignoring" % self.name)
             return
 
         self.status = "callback"
@@ -236,7 +238,7 @@ class BotBase(LazyDict):
         if event:
             e.copyin(event)
         if e.status == "done":
-            logging.debug("botbase - outmonitor - event is done .. ignoring")
+            logging.debug("%s - outmonitor - event is done .. ignoring" % self.name)
             return
         e.bot = self
         e.origin = origin
@@ -292,7 +294,7 @@ class BotBase(LazyDict):
 
         # send first block
         if not txtlist:
-            logging.debug("can't split txt from %s" % what)
+            logging.debug("%s - can't split txt from %s" % (self.name, what))
             return ["", ""]
 
         res = txtlist[0]
@@ -301,7 +303,7 @@ class BotBase(LazyDict):
         # see if we need to store output in less cache
         result = ""
         if len(txtlist) > 1:
-            logging.debug("addding %s lines to %s outputcache" % (len(txtlist), who))
+            logging.debug("%s - addding %s lines to %s outputcache" % (self.name, len(txtlist), who))
             self.outcache.add(who, txtlist[1:])
 
         return [res, size]
@@ -320,21 +322,17 @@ class BotBase(LazyDict):
 
     def reconnect(self):
         """ reconnect to the server. """
-        if self.stopped:
-            logging.warn('%s - bot is stopped .. not reconnecting' % self.name)
-            return
-
         try:
+            self.exit()
             self.reconnectcount += 1
             logging.warn('%s - reconnecting .. sleeping %s seconds' % (self.name, self.reconnectcount*15))
             time.sleep(self.reconnectcount * 15)   
-            newbot = fleet.makebot(self.type, self.name, self.cfg)
+            newbot = fleet.makebot(self.type, self.name)
             if not newbot:
-                logging.error("botbase - can't make bot for reconnect")
+                logging.error("%s - can't make bot for reconnect" % self.name)
             else:
-                self.name += '.old'   
                 self.exit()
-                if newbot.connect():
+                if newbot.start():
                     if fleet.replace(self, newbot):
                         return True
         except Exception, ex: 

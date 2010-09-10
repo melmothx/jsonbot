@@ -61,7 +61,7 @@ except NoOwnerSet, ex:
 if opts.channel and not opts.channel in bot.state['joinedchannels']:
     bot.state['joinedchannels'].append(opts.channel)
     bot.state.save()
-
+    
 if opts.all:
     print "available fleet bots: %s" % fleet.avail()
 
