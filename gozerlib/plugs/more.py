@@ -35,8 +35,11 @@ def handle_more(bot, ievent):
     if size:
         txt += "<b> - %s more</b>" % str(size)
 
-    bot.saynocb(ievent.nick or ievent.userhost, txt)
-    bot.outmonitor(ievent.userhost, ievent.channel, txt)
+    if ievent.bottype == "irc" and ievent.msg:
+        bot.say(ievent.nick, txt)
+    else:
+        ievent.write(txt)
+        bot.outmonitor(ievent.userhost, ievent.channel, txt)
 
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'])
 examples.add('more', 'return txt from output cache', 'more')
