@@ -304,7 +304,7 @@
               resp(request);
           }
 
-          request.open("POST", url, true);
+          request.open("POST", url + "?" + cmnd, true);
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
           request.setRequestHeader("Cache-Control", "no-cache");

@@ -151,6 +151,7 @@ class BotBase(LazyDict):
         self.plugs.loadall(packagelist)
         return self.plugs
 
+    @threaded
     def start(self, connect=True):
         """ start the mainloop of the bot. """
         if connect:

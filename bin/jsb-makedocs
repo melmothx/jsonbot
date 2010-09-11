@@ -148,6 +148,7 @@ def gendoc(mod, f, output):
                 output.write('\n    ::\n\n        <user> !%s' % i.strip() + '\n')
                 out = None
                 try:
+                    print "\nDOING %s\n" % i.strip()
                     out = bot.docmnd("test@test", "#test", i.strip(), wait=5.0)
                     #res = waitforqueue(out.outqueue)
                     #print out.result

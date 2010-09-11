@@ -50,7 +50,7 @@ class TaskManager(object):
             logging.debug('tasks - no handler for %s found' % taskname)
             return
 
-        logging.info("dispatching task %s - %s" % (taskname, str(handler)))
+        logging.warn("dispatching task %s - %s" % (taskname, str(handler)))
         return handler(*args, **kwargs)
 
 taskmanager = TaskManager()

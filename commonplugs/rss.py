@@ -12,7 +12,6 @@
 
 ## gozerlib imports
 
-from gozerlib.periodical import interval, periodical
 from gozerlib.persist import Persist, PlugPersist
 from gozerlib.utils.url import geturl2, striphtml, useragent
 from gozerlib.utils.exception import handle_exception
@@ -1067,12 +1066,9 @@ def dosync(feedname):
     """ main level function to be deferred by periodical. """
     try:
        localwatcher = Rsswatcher('rss', feedname)
-
        if localwatcher.sync(feedname):
            localwatcher.peek(feedname)
-       #feed = localwatcher.byname(feedname)
-       #feed.data.lastpoll = time.time()
-       #feed.save()
+
     except RssException, ex:
        logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
@@ -1099,11 +1095,9 @@ callbacks.add('TICK', doperiodical)
 
 def init():
     taskmanager.add('rss', doperiodical)
-    #periodical.addjob(mainconfig['rsspolltime'] or 900, 0, doperiodical)
     
 def shutdown():
     taskmanager.unload('rss')
-    #periodical.killgroup('commonplugs.rss')
 
 def size():
     """ return number of watched rss entries. """
