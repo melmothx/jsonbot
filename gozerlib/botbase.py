@@ -46,8 +46,8 @@ import threading
 
 cpy = copy.deepcopy
 
-eventlock = thread.allocate_lock()
-eventlocked = lockdec(eventlock)
+reconnectlock = threading.RLock()
+reconnectlocked = lockdec(reconnectlock)
 
 ## classes
 
@@ -154,7 +154,6 @@ class BotBase(LazyDict):
     def joinchannels(self):
         pass
 
-    @threaded
     def start(self, connect=True):
         """ start the mainloop of the bot. """
         if connect:
@@ -193,11 +192,15 @@ class BotBase(LazyDict):
         return False
 
     def exit(self):
-        """ overload this. """
+        """ exit the bot. """ 
         logging.warn("%s - exit" % self.name)
-        self.stopped = True
+        self.stopped = True   
+        self.stopreadloop = True  
+        self.connected = False
         self.quit()
+        time.sleep(1)
         self.shutdown()
+        self.stopped = True
         self.save()
 
     def _raw(self, txt):
@@ -334,16 +337,9 @@ class BotBase(LazyDict):
             self.reconnectcount += 1
             logging.warn('%s - reconnecting .. sleeping %s seconds' % (self.name, self.reconnectcount*15))
             time.sleep(self.reconnectcount * 15)   
-            newbot = fleet.makebot(self.type, self.name)
-            if not newbot:
-                logging.error("%s - can't make bot for reconnect" % self.name)
-            else:
-                self.exit()
-                newbot.start()
-                fleet.replace(self, newbot)
+            self.start()
         except Exception, ex: 
             handle_exception()
-            self.reconnect()
 
     def invite(self, *args, **kwargs):
         """ invite another user/bot. """

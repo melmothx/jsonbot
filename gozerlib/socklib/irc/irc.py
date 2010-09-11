@@ -141,7 +141,7 @@ class Irc(BotBase):
 
         """ connect to server/port using nick. """
 
-        self.stopped = 0
+        self.stopped = False
         self.connecting = True
         self.connectok.clear()
 
@@ -224,32 +224,28 @@ class Irc(BotBase):
         self.connecttime = time.time()
         return 1
 
-    @threaded
     def start(self, connect=True):
         """ start the bot. """
         logging.warn("%s - starting" % self.name)
         # start input and output loops
-        logging.info("%s - starting loops" % self.name)
         BotBase.start(self, connect)
-        start_new_thread(self._readloop, ())
+        logging.info("%s - starting loops" % self.name)
         start_new_thread(self._outloop, ())
-        # logon and start monitor
-        self.connectok.wait()
-        self.joinchannels()        
+        start_new_thread(self._readloop, ())
         return True
 
     def _readloop(self):
 
         """ loop on the socketfile. """
 
-        self.stopreadloop = 0
-        self.stopped = 0
-        doreconnect = 1
+        self.stopreadloop = False
+        self.stopped = False
+        doreconnect = True
         timeout = 1
         logging.info('%s - starting readloop' % self.name)
         prevtxt = ""
 
-        while not self.stopped and not self.stopreadloop:
+        while not self.stopped and not self.stopreadloop and self.sock and self.fsock:
 
             try:
                 time.sleep(0.01)
@@ -341,20 +337,17 @@ class Irc(BotBase):
                     continue
                 if not self.stopped:
                     logging.error('%s - connecting error: %s' % (self.name, str(ex)))
+                    handle_exception()
                     doreconnect = 1
                 break
-                #handle_exception()
-                #doreconnect = 1
-                #break
             except socket.error, ex:
                 if self.blocking and 'temporarily' in str(ex):
                     time.sleep(0.5)
                     continue
-                logging.error('%s - connecting error: %s' % (self.name, str(ex)))
-                doreconnect = 1
-                break
-                #handle_exception()
-                #doreconnect = 1
+                if not self.stopped:
+                    logging.error('%s - connecting error: %s' % (self.name, str(ex)))
+                    #handle_exception()
+                    doreconnect = 1
                 #break
             except Exception, ex:
                 if self.stopped or self.stopreadloop:
@@ -672,16 +665,6 @@ realname))
             self.fsock.close()
         except:
             pass
-
-    def exit(self):
-
-        """ exit the bot. """
-        self.stopped = True
-        self.stopreadloop = True
-        self.connected = False
-        self.quit()
-        time.sleep(1)
-        self.shutdown()
 
     def handle_pong(self, ievent):
 
