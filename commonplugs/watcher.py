@@ -161,7 +161,7 @@ def watchcallback(bot, event):
             orig = event.nick
 
         if orig == bot.nick:
-            txt = u"[!] %s" % event.txt
+            txt = u"[%s] %s" % (botname, event.txt)
         else:
             txt = u"[%s] %s" % (orig, event.txt)
         #logging.debug("watcher - %s - %s" % (type, txt))
