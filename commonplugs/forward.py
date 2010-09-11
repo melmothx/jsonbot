@@ -18,6 +18,7 @@ from gozerlib.config import cfg
 from gozerlib.container import Container
 from gozerlib.errors import NoProperDigest
 from gozerlib.utils.exception import handle_exception
+from gozerlib.utils.locking import locked
 
 ## commonplugs imports
 
@@ -58,6 +59,7 @@ def forwardoutpre(bot, event):
         if not event.how == "background":
             return True
 
+@locked
 def forwardoutcb(bot, event):
     e = cpy(event)
     logging.debug("forward - cbtype is %s" % event.cbtype)
@@ -74,7 +76,7 @@ def forwardoutcb(bot, event):
                 handle_exception()
             continue
 
-        outbot = fleet.getfirstjabber()
+        outbot = fleet.getfirstjabber(bot.isgae)
         if bot.isgae and not outbot:
             outbot = fleet.makebot('xmpp', 'forwardbot')
         if outbot:

@@ -13,6 +13,7 @@ from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
 from gozerlib.gae.wave.waves import Wave
+from gozerlib.utils.locking import locked
 
 ## basic imports
 
@@ -133,6 +134,7 @@ def prewatchcallback(bot, event):
     #logging.debug("watcher - pre - %s - %s - %s" % (event.channel, event.userhost, event.txt))
     return watched.check(event.channel) and event.txt and not event.how == "background"
 
+@locked
 def watchcallback(bot, event):
     """ the watcher callback, see if channels are followed and if so send data. """
     if not event.txt:

@@ -8,7 +8,7 @@
 
 from gozerlib.threads import getname, start_new_thread, start_bot_command
 from gozerlib.utils.exception import handle_exception
-from gozerlib.utils.locking import lockdec
+from gozerlib.utils.locking import locked, lockdec
 from gozerlib.threadloop import RunnerLoop
 
 ## basic imports
@@ -18,11 +18,6 @@ import time
 import thread
 import random
 import logging
-
-## defines
-
-runlock = thread.allocate_lock()
-locked = lockdec(runlock)
 
 ## Runner class
 
@@ -171,7 +166,6 @@ class Runners(object):
 
         return result
 
-    @locked
     def makenew(self):
         """ create a new runner. """
         runner = None
@@ -189,7 +183,6 @@ class Runners(object):
 
         return runner
 
-    @locked
     def cleanup(self):
         """ clean up idle runners. """
         nr = len(self.runners)

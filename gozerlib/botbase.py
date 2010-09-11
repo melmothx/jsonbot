@@ -151,6 +151,9 @@ class BotBase(LazyDict):
         self.plugs.loadall(packagelist)
         return self.plugs
 
+    def joinchannels(self):
+        pass
+
     @threaded
     def start(self, connect=True):
         """ start the mainloop of the bot. """

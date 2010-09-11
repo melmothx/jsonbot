@@ -6,19 +6,15 @@
 
 ## lib imports
 
+from exception import handle_exception
 from trace import whichmodule
-from lockmanager import LockManager, RLockManager
+from lockmanager import lockmanager, rlockmanager
+from gozerlib.threads import getname
 
 ## generic imports
 
 import logging
 import sys
-
-## defines
-
-locks = []
-lockmanager = LockManager()
-rlockmanager = RLockManager()
 
 ## classes
 
@@ -54,14 +50,12 @@ def lockdec(lock):
             where = whichmodule(1)
             logging.debug('locking - locking on %s' % where)
             lock.acquire()
-            locks.append(str(func))
             res = None
 
             try:
                 res = func(*args, **kwargs)
             finally:
                 lock.release()
-                locks.remove(str(func))
                 logging.debug('locking - releasing %s' % where)
             return res
 
@@ -69,23 +63,26 @@ def lockdec(lock):
 
     return locked
 
-def funclocked(func):
+def locked(func):
 
     """ locking function for %s """ % str(func)
 
     def lockedfunc(*args, **kwargs):
         """ the locked function. """
-        where = whichmodule(1)
-        logging.debug('locking - locking on %s' % where)
-        rlockmanager.acquire(func)
-        locks.append(str(func))
-        res = None
-
+        where = repr(func)
         try:
-            res = func(*args, **kwargs)
-        finally:
-            rlockmanager.release(func)
-            locks.remove(str(func))
+            logging.warn('locking - *acquire* on %s' % where)
+            rlockmanager.acquire(where)
+            res = None
+
+            try:
+                res = func(*args, **kwargs)
+            finally:
+                logging.warn('locking - *release* on %s' % where)
+                rlockmanager.release(where)
+        except Exception, ex:
+            handle_exception()
+            rlockmanager.release(where)
 
         return res
 
