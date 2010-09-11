@@ -78,14 +78,6 @@ class Watched(PlugPersist):
         channel = channel.lower()
         return self.data.channels.has_key(channel)
 
-    #def channels(self, channel):
-    #    """ return all subscribers of a channel. """
-    #    channel = channel.lower()
-    #    try:
-    #        return self.data.channels[channel]
-    #    except KeyError:
-    #        return None
-
     def enable(self, channel):
         """ add channel to whitelist. """
         channel = channel.lower()
@@ -237,7 +229,7 @@ def handle_watcherchannels(bot, event):
         res = []
         for chan in chans: 
             try:
-                res.append("%s (%s)" % (chan, watched.data.descriptions[chan]))
+                res.append(chan)
             except KeyError:
                 res.append(chan)
 
