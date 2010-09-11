@@ -68,7 +68,7 @@ class Dispatch_Handler(RequestHandler):
         """ this is where the command get disaptched. """
 
         try:
-            logging.debug("DISPATCH incoming: %s" % self.request.remote_addr)
+            logging.warn("DISPATCH incoming: %s - %s" % (self.request.get('content'), self.request.remote_addr))
             if not gusers.get_current_user():
                 logging.warn("denied access for %s - %s - %s" % self.request.remote_addr)
                 self.response.set_status(400)
