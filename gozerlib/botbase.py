@@ -125,7 +125,7 @@ class BotBase(LazyDict):
             #longrunner.start()
             tickloop.start(self)
 
-        logging.warn("botbase - created bot %s - %s" % (self.name, self.cfg.dump()))
+        logging.info("botbase - created bot %s - %s" % (self.name, self.cfg.dump()))
 
     def setstate(self, state=None):
         """ set state on the bot. """
