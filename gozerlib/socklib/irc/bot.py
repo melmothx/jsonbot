@@ -361,7 +361,7 @@ class IRCBot(Irc):
         # check for /msg
         if chan == self.nick:
             ievent.msg = 1
-            ievent.speed =  7
+            ievent.speed =  4
             ievent.printto = ievent.nick
             ccs = ['!', '@', self.cfg['defaultcc']]
             # check for PRIVMSG waiting callback

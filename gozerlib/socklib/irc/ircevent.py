@@ -131,7 +131,7 @@ class Ircevent(EventBase):
 
         # set ircevent attributes
         if self.cmnd == 'PING':
-            self.speed = 10
+            self.speed = 9
         if self.cmnd == 'PRIVMSG':
             self.channel = self.arguments[0]
             if '\001' in self.txt:

@@ -82,6 +82,7 @@ def locked(func):
                 rlockmanager.release(where)
         except Exception, ex:
             handle_exception()
+        finally:
             rlockmanager.release(where)
 
         return res

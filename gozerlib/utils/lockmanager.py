@@ -45,8 +45,10 @@ class LockManager(object):
     def release(self, name):
         """ release lock """
         logging.debug('lockmanager - *releasing* %s' % name)
-        self.locks[name].release()
-
+        try:
+            self.locks[name].release()
+        except RuntimeError:
+            pass
 
 class RLockManager(LockManager):
 

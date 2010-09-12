@@ -415,8 +415,7 @@ class Irc(BotBase):
                     continue
                 if not self.stopped and not self.stopoutloop and printto not in self.nicks401:
                     self.out(printto, what, who, how, fromm, speed)
-            else:
-                time.sleep(0.1)
+            time.sleep(0.1)
 
         logging.debug('%s - stopping output loop' % self.name)
 
@@ -580,7 +579,7 @@ realname))
         """ broadcast txt to all joined channels. """
 
         for i in self.state['joinedchannels']:
-            self.say(i, txt, speed=-1)
+            self.say(i, txt, speed=1)
 
     def normalize(self, what):
         txt = re.sub("\s+", " ", what)

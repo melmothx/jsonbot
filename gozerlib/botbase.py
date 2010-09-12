@@ -173,6 +173,8 @@ class BotBase(LazyDict):
             logging.debug("%s - botbase - ttl of event is 0 .. ignoring" % self.name)
             return
 
+        if event.msg or event.isdcc:
+            event.speed = 2
         self.status = "callback"
         starttime = time.time()
         e1 = cpy(event)
