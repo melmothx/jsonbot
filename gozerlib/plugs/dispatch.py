@@ -24,8 +24,8 @@ def predispatch(bot, event):
     if event.ttl <= 0:
         logging.debug("botbase - ttl of event is 0 .. ignoring")
         return
-    if event.isremote and not event.remotecmnd:
-        logging.debug("event is remote but not command .. not dispatching")
+    if event.isremote:
+        logging.warn("event is remote .. not dispatching")
         return
     return True
 

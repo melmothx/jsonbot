@@ -147,8 +147,6 @@ class Runners(object):
         for runner in self.runners:
             runner.stop()
 
-        self.cleanup()
-
     def start(self):
         """ overload this if needed. """
         pass
@@ -197,7 +195,6 @@ class Runners(object):
             for runner in self.runners[1:]:
                 if not runner.working:
                     runner.stop() 
-                    self.runners.remove(runner)
 
             logging.info("runner sizes: %s" % str(self.runnersizes()))
 
