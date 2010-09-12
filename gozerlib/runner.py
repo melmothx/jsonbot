@@ -9,6 +9,7 @@
 from gozerlib.threads import getname, start_new_thread, start_bot_command
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import locked, lockdec
+from gozerlib.utils.lockmanager import rlockmanager
 from gozerlib.threadloop import RunnerLoop
 
 ## basic imports
@@ -53,9 +54,10 @@ class Runner(RunnerLoop):
         """
 
         self.working = True
+        name = getname(str(func))
 
         try:
-            name = getname(str(func))
+            rlockmanager.acquire(name)
             logging.debug('runner - running %s: %s' % (descr, name))
             self.starttime = time.time()
             func(*args, **kwargs)
@@ -67,6 +69,8 @@ class Runner(RunnerLoop):
 
         except Exception, ex:
             handle_exception()
+        finally:
+            rlockmanager.release(name)
 
         self.working = False
 
@@ -91,11 +95,12 @@ class BotEventRunner(Runner):
         """
 
         self.working = True
+        name = getname(str(func))
 
         try:
-            name = getname(str(func))
             logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
+            rlockmanager.acquire(name)
             func(bot, ievent, *args, **kwargs)
 
             
@@ -112,6 +117,8 @@ class BotEventRunner(Runner):
 
         except Exception, ex:
             handle_exception()
+        finally:
+            rlockmanager.release(name)
 
         self.working = False
 
