@@ -98,7 +98,7 @@ class XMLStream(NodeBuilder):
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        self.stopped = True
+        #self.stopped = True
         logging.error("%s - STREAMERROR - %s" % (self.name, data.orig))
  
     def handle_streamfeatures(self, data):
