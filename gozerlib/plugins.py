@@ -109,7 +109,6 @@ class Plugins(LazyDict):
 
         return True
 
-    @locked
     def load(self, modname, force=False):
         """ load a plugin. """
         if self.has_key(modname):
@@ -126,17 +125,9 @@ class Plugins(LazyDict):
                 logging.debug('plugins - %s init called' % modname)
                 logging.info("%s reloaded - with init" % modname)
                 return self[modname]
-            except KeyError:
-                logging
-                pass
-
-        #if force:
-        #    try:
-        #        del sys.modules[modname]
-        #        logging.warn("plugins - removed %s from sys.modules" % modname)
-        #    except KeyError:
-        #        pass
-
+            except Exception, ex:
+                handle_exception()
+                
         logging.debug("plugins - trying %s" % modname)
         try:
             mod = _import(modname)

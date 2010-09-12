@@ -71,15 +71,8 @@ def locked(func):
         """ the locked function. """
         where = getname(str(func))
         try:
-            logging.debug('locking - *acquire* on %s' % where)
             rlockmanager.acquire(where)
-            res = None
-
-            try:
-                res = func(*args, **kwargs)
-            finally:
-                logging.debug('locking - *release* on %s' % where)
-                rlockmanager.release(where)
+            res = func(*args, **kwargs)
         except Exception, ex:
             handle_exception()
         finally:

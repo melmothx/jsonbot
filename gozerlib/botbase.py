@@ -197,6 +197,7 @@ class BotBase(LazyDict):
         e1 = cpy(event)
         e2 = cpy(event)
         e3 = cpy(event)
+        
         first_callbacks.check(self, e1)
         callbacks.check(self, e2)
         last_callbacks.check(self, e3)

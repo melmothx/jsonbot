@@ -169,9 +169,9 @@ class Callbacks(object):
         """
         #event.finish()
         type = event.cbtype or event.cmnd
+        self.reloadcheck(event)
         #self.reloadcheck(event)
         logging.debug("callbacks - %s - %s" % (event.userhost, type))
-        self.reloadcheck(event)
         # check for "ALL" callbacks
         if self.cbs.has_key('ALL'):
             for cb in self.cbs['ALL']:
@@ -254,11 +254,12 @@ class Callbacks(object):
 
         for name in plugins:
             if name in plugs:
+                logging.warn("callbacks - %s already loaded" % name)
                 continue
             else:
                 logging.warn("on demand reloading of %s" % name)
                 try:
-                    plugloaded.append(plugs.reload(name))
+                    plugloaded.append(plugs.reload(name, True))
                 except Exception, ex:
                     handle_exception()
 

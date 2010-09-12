@@ -369,25 +369,12 @@ class IRCBot(Irc):
             if ievent.isresponse:
                 return
             if self.cfg['noccinmsg'] and self.msg:
-                self.doevent(ievent)
+                self.put(ievent)
             elif ievent.txt[0] in ccs: 
-                self.doevent(ievent)
+                self.put(ievent)
             return
 
-        #ievent.printto = channel
-
-        # see if we can get channel control character
-
-        try:
-            channel = ChannelBase(chan)
-            cchar = channel.data.cc
-        except Exception, ex:
-            handle_exception()
-            cchar = "!"
-        if not cchar:
-            cchar = "!"
-
-        self.doevent(ievent)
+        self.put(ievent)
 
         if not ievent.iscmnd:
             # check for PRIVMSG waiting callback

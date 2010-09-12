@@ -9,7 +9,7 @@
 from gozerlib.threads import getname, start_new_thread, start_bot_command
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import locked, lockdec
-from gozerlib.utils.lockmanager import rlockmanager
+from gozerlib.utils.lockmanager import rlockmanager, lockmanager
 from gozerlib.threadloop import RunnerLoop
 
 ## basic imports
@@ -57,7 +57,8 @@ class Runner(RunnerLoop):
         name = getname(str(func))
 
         try:
-            #rlockmanager.acquire(name)
+            rlockmanager.acquire(getname(str(func)))
+            name = getname(str(func))
             logging.debug('runner - running %s: %s' % (descr, name))
             self.starttime = time.time()
             func(*args, **kwargs)
@@ -69,8 +70,8 @@ class Runner(RunnerLoop):
 
         except Exception, ex:
             handle_exception()
-        #finally:
-        #    rlockmanager.release(name)
+        finally:
+            rlockmanager.release()
 
         self.working = False
 
@@ -94,15 +95,15 @@ class BotEventRunner(Runner):
 
         """
 
-        self.working = True
-        name = getname(str(func))
 
         try:
             logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
-            rlockmanager.acquire(name)
+            #lockmanager.acquire(getname(str(func)))
+            name = getname(str(func))
+            self.working = True
+            logging.warn("runner - now running %s" % name)
             func(bot, ievent, *args, **kwargs)
-
             
             if ievent.closequeue and ievent.queues:
                 logging.debug("closing %s queues" % len(ievent.queues))
@@ -117,8 +118,8 @@ class BotEventRunner(Runner):
 
         except Exception, ex:
             handle_exception()
-        finally:
-            rlockmanager.release(name)
+        #finally:
+        #    lockmanager.release(getname(str(func)))
 
         self.working = False
 
@@ -131,7 +132,6 @@ class Runners(object):
     def __init__(self, max=100, runnertype=Runner):
         self.max = max
         self.runners = []
-        self.cleanup()
         self.runnertype=runnertype
 
     def runnersizes(self):
@@ -153,12 +153,13 @@ class Runners(object):
  
     def put(self, *data):
         """ put a job on a free runner. """
-        self.cleanup()
+        logging.info("runner sizes: %s" % str(self.runnersizes()))
         for runner in self.runners:
-            if not runner.working:
+            if not runner.queue.qsize():
                 runner.put(*data)
                 return
 
+        self.cleanup()
         runner = self.makenew()
         runner.put(*data)
          
@@ -166,7 +167,7 @@ class Runners(object):
         """ return list of running jobs. """
         result = []
         for runner in self.runners:
-            if runner.working:
+            if runner.queue.qsize():
                 result.append(runner.nowrunning)
 
         return result
@@ -174,17 +175,15 @@ class Runners(object):
     def makenew(self):
         """ create a new runner. """
         runner = None
+        for i in self.runners:
+            if not i.queue.qsize():
+                return i
         if len(self.runners) < self.max:
             runner = self.runnertype()
             runner.start()
             self.runners.append(runner)
         else:
-            for i in self.runners:
-                if not i.working:
-                    runner = i
-                    break
-            if not runner:
-                runner = random.choice(self.runners)
+            runner = random.choice(self.runners)
 
         return runner
 
@@ -192,11 +191,10 @@ class Runners(object):
         """ clean up idle runners. """
         nr = len(self.runners)
         if nr > 1:
-            for runner in self.runners[1:]:
-                if not runner.working:
+            for runner in self.runners:
+                if not runner.queue.qsize():
                     runner.stop() 
 
-            logging.info("runner sizes: %s" % str(self.runnersizes()))
 
 ## defines
 
