@@ -89,7 +89,8 @@ class Users(Persist):
             name = name.lower()
             name = stripname(name)
             user = JsonUser(name)
-            return user
+            if user.data.userhosts:
+                return user
         except KeyError:
             raise NoSuchUser(name)
 
