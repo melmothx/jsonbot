@@ -389,7 +389,7 @@ class Irc(BotBase):
 
         """ put output onto one of the output queues. """
 
-        self.outqueues[nr].put_nowait(*args)
+        self.outqueues[10-nr].put_nowait(*args)
         self.tickqueue.put_nowait('go')
 
     def _outloop(self):
