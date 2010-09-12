@@ -41,6 +41,7 @@ import os
 import thread
 import types
 import threading
+import Queue
 
 ## define
 
@@ -54,6 +55,7 @@ reconnectlocked = lockdec(reconnectlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
+        self.inqueue = Queue.Queue()
         self.reconnectcount = 0
         self.stopped = False
         self.plugs = plugs or coreplugs
@@ -124,8 +126,21 @@ class BotBase(LazyDict):
             cmndrunner.start()
             #longrunner.start()
             tickloop.start(self)
-
         logging.info("botbase - created bot %s - %s" % (self.name, self.cfg.dump()))
+
+    def put(self, event):
+        self.inqueue.put_nowait(event)
+
+    def _inputloop(self):
+        """ fetch events from the inqueue and handle them. """
+        logging.warn("%s - inputloop started" % self.name)
+        while not self.stopped:
+            event = self.inqueue.get()
+            if not event:
+                break
+            self.doevent(event)
+
+        logging.warn("%s - inputloop stopped" % self.name)
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -156,6 +171,8 @@ class BotBase(LazyDict):
 
     def start(self, connect=True):
         """ start the mainloop of the bot. """
+        if not self.isgae:
+            start_new_thread(self._inputloop, ())
         if connect:
             self.connect()
             self.joinchannels()
@@ -199,6 +216,7 @@ class BotBase(LazyDict):
         self.stopped = True   
         self.stopreadloop = True  
         self.connected = False
+        self.put(None)
         self.quit()
         time.sleep(1)
         self.shutdown()

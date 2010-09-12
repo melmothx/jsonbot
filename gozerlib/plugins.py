@@ -142,7 +142,7 @@ class Plugins(LazyDict):
             mod = _import(modname)
         except ImportError, ex:
             logging.warn("plugins - import error on %s - %s" % (modname, str(ex)))
-            return 
+            raise NoSuchPlugin(modname)
         try:
             self[modname] = mod
         except KeyError:

@@ -79,6 +79,7 @@ class SXMPPBot(XMLStream, BotBase):
         XMLStream.__init__(self, self.host, self.port, self.name)   
         self.type = 'sxmpp'
         self.outqueue = Queue.Queue()
+        self.inqueue = Queue.Queue()
         self.sock = None
         self.me = self.user
         self.jid = self.me
@@ -424,7 +425,7 @@ class SXMPPBot(XMLStream, BotBase):
             handle_exception()
 
         m.finish()
-        self.doevent(m)
+        self.put(m)
 
     def errorHandler(self, event):
         """ error handler .. calls the errorhandler set in the event. """

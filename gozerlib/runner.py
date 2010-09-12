@@ -57,7 +57,7 @@ class Runner(RunnerLoop):
         name = getname(str(func))
 
         try:
-            rlockmanager.acquire(name)
+            #rlockmanager.acquire(name)
             logging.debug('runner - running %s: %s' % (descr, name))
             self.starttime = time.time()
             func(*args, **kwargs)
@@ -69,8 +69,8 @@ class Runner(RunnerLoop):
 
         except Exception, ex:
             handle_exception()
-        finally:
-            rlockmanager.release(name)
+        #finally:
+        #    rlockmanager.release(name)
 
         self.working = False
 

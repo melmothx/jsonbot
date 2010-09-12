@@ -256,7 +256,7 @@ class Callbacks(object):
             if name in plugs:
                 continue
             else:
-                logging.debug("on demand reloading of %s" % name)
+                logging.warn("on demand reloading of %s" % name)
                 try:
                     plugloaded.append(plugs.reload(name))
                 except Exception, ex:

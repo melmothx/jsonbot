@@ -57,9 +57,7 @@ if True:
             else:
                 raise NoProperDigest()
 
-
             remote_callbacks.check(bot, e)
-            e.leave()
             return
 
     callbacks.add("MESSAGE", remotecb, preremotecb)
