@@ -414,6 +414,7 @@ class XMLStream(NodeBuilder):
             :type ex: Exception
 
         """
+        self.stopped = True
         logging.warn('%s - disconnected: %s' % (self.name, str(ex)))
         #self.reconnect()
 
