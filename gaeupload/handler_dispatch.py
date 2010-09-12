@@ -70,7 +70,7 @@ class Dispatch_Handler(RequestHandler):
         try:
             logging.warn("DISPATCH incoming: %s - %s" % (self.request.get('content'), self.request.remote_addr))
             if not gusers.get_current_user():
-                logging.warn("denied access for %s - %s - %s" % self.request.remote_addr)
+                logging.warn("denied access for %s - %s" % (self.request.remote_addr, self.request.get('content')))
                 self.response.set_status(400)
                 return
             #logging.debug(str(self.request))
