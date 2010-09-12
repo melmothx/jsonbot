@@ -266,7 +266,6 @@ class BotBase(LazyDict):
         e.nick = self.nick or self.botname
         e.finish()
         first_callbacks.check(self, e)
-        #e.leave()
 
     def docmnd(self, origin, channel, txt, event=None, wait=0):
         """ do a command. """

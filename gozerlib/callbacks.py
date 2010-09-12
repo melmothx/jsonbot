@@ -170,7 +170,7 @@ class Callbacks(object):
         #event.finish()
         type = event.cbtype or event.cmnd
         #self.reloadcheck(event)
-        logging.info("callbacks - %s - %s" % (event.userhost, type))
+        logging.debug("callbacks - %s - %s" % (event.userhost, type))
         self.reloadcheck(event)
         # check for "ALL" callbacks
         if self.cbs.has_key('ALL'):
@@ -217,9 +217,9 @@ class Callbacks(object):
                 return
 
             if event.cbtype != "TICK":
-                logging.warn('callbacks - excecuting %s - %s (%s)' % (getname(cb.func), cb.modname, event.userhost or event.cbtype))
+                logging.warn('callbacks - excecuting %s - %s - %s' % (getname(cb.func), cb.modname, event.auth or event.userhost or event.cbtype))
             else:
-                logging.debug('callbacks - excecuting %s - %s (%s)' % (getname(cb.func), cb.modname, event.userhost or event.cbtype))
+                logging.debug('callbacks - excecuting %s - %s - %s' % (getname(cb.func), cb.modname, event.auth or event.userhost or event.cbtype))
             event.iscallback = True
 
             # launch the callback

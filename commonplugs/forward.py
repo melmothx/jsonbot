@@ -59,7 +59,6 @@ def forwardoutpre(bot, event):
         if not event.how == "background":
             return True
 
-@locked
 def forwardoutcb(bot, event):
     e = cpy(event)
     logging.debug("forward - cbtype is %s" % event.cbtype)
@@ -77,15 +76,15 @@ def forwardoutcb(bot, event):
             continue
 
         outbot = fleet.getfirstjabber(bot.isgae)
-        if bot.isgae and not outbot:
+        if not outbot and bot.isgae:
             outbot = fleet.makebot('xmpp', 'forwardbot')
         if outbot:
             e.source = outbot.jid
             container = Container(outbot.jid, e.dump())
             container.isremote = True
             outbot.outnocb(jid, container.dump()) 
-    else:
-        logging.debug("forward - no xmpp bot found in fleet")
+        else:
+            logging.error("forward - no xmpp bot found in fleet".upper())
 
 first_callbacks.add('BLIP_SUBMITTED', forwardoutcb, forwardoutpre)
 first_callbacks.add('MESSAGE', forwardoutcb, forwardoutpre)
