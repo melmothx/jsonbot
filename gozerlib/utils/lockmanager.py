@@ -39,12 +39,12 @@ class LockManager(object):
         """ acquire lock """
         if not self.locks.has_key(name):
             self.allocate(name)
-        logging.info('lockmanager - *acquire* %s' % name)
+        logging.debug('lockmanager - *acquire* %s' % name)
         self.locks[name].acquire()
 
     def release(self, name):
         """ release lock """
-        logging.info('lockmanager - *releasing* %s' % name)
+        logging.debug('lockmanager - *releasing* %s' % name)
         self.locks[name].release()
 
 

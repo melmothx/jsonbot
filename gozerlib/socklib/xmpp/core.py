@@ -94,12 +94,13 @@ class XMLStream(NodeBuilder):
 
     def handle_stream(self, data):
         """ default stream handler. """
-        #logging.debug("sxmpp.core - STREAM: %s" % data)
+        logging.warn("%s - stream - %s" % (self.name, data.text))
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        logging.error("%s - STREAMERROR: %s" % (self.name, data.orig))
-
+        self.stopped = True
+        logging.error("%s - STREAMERROR - %s" % (self.name, data.orig))
+ 
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
         #logging.debug("sxmpp.core - STREAMFEATURES: %s" % data)
