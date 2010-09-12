@@ -358,7 +358,6 @@ class BotBase(LazyDict):
 
     def quit(self, reason="", *args, **kwargs):
         """ close connection with the server. """
-        logging.error("botbase - please implement the quit method")
         pass
 
     def connect(self, reconnect=True, *args, **kwargs):
