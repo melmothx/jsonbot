@@ -54,3 +54,12 @@ def handle_adminmakebot(bot, ievent):
 
 cmnds.add('admin-makebot', handle_adminmakebot, 'OPER')
 examples.add('admin-makebot', 'create a bot', 'admin-makebot cmndxmpp xmpp')
+
+def handle_adminstop(bot, ievent):
+    if bot.isgae:
+        ievent.reply("this command doesn't work on the GAE")
+        return
+    mainhandler.put(0, globalshutdown)
+
+cmnds.add("admin-stop", handle_adminstop, "OPER")
+examples.add("admin-stop", "stop the bot.", "stop")

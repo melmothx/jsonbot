@@ -89,8 +89,7 @@ class Users(Persist):
             name = name.lower()
             name = stripname(name)
             user = JsonUser(name)
-            if user.data.userhosts:
-                return user
+            return user
         except KeyError:
             raise NoSuchUser(name)
 
@@ -121,10 +120,11 @@ class Users(Persist):
 
     def getuser(self, userhost):
         try:
-            user = self.byname(self.data.names[userhost])
+            user = self.byname(self.data.names[stripped(userhost)])
             if user:
                 return user
         except KeyError:
+            logging.warn("user - can't find %s in names cache" % userhost) 
             return
 
     ### Check functions

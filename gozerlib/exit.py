@@ -10,7 +10,7 @@ from utils.trace import whichmodule
 #from eventhandler import mainhandler
 from plugins import plugs
 from fleet import fleet
-from runner import defaultrunner
+from runner import defaultrunner, cmndrunner
 from gozerlib.config import cfg as config
 
 ## basic imports
@@ -23,15 +23,16 @@ import logging
 
 def globalshutdown():
     """ shutdown the bot. """
+    defaultrunner.stop()
+    cmndrunner.stop()
     sys.stdout.write("\n")
-    logging.warning('shutting down')
+    logging.error('shutting down'.upper())
 
     try:
         os.remove('gozerlib.pid')
     except:
         pass
 
-    defaultrunner.stop()
     logging.info('shutting down fleet')
     fleet.exit()
     logging.info('shutting down plugins')

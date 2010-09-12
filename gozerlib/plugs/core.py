@@ -39,15 +39,6 @@ cpy = copy.deepcopy
 
 ## commands
 
-def handle_stop(bot, ievent):
-    if bot.isgae:
-        ievent.reply("this command doesn't work on the GAE")
-        return
-    mainhandler.put(0, globalshutdown)
-
-cmnds.add("stop", handle_stop, "OPER")
-examples.add("stop", "stop the bot.", "stop")
-
 def handle_reboot(bot, ievent):
     if bot.isgae:
         ievent.reply("this command doesn't work on the GAE")

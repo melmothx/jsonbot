@@ -14,6 +14,7 @@ from utils.lazydict import LazyDict
 from utils.exception import handle_exception
 from boot import cmndtable, plugin_packages
 from errors import NoSuchPlugin
+from utils.locking import locked
 from jsbimport import force_import, _import
 
 ## basic imports
@@ -108,6 +109,7 @@ class Plugins(LazyDict):
 
         return True
 
+    @locked
     def load(self, modname, force=False):
         """ load a plugin. """
         if self.has_key(modname):
