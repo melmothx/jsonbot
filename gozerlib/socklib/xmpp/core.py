@@ -19,6 +19,7 @@ from gozerlib.utils.locking import lockdec
 from gozerlib.threads import start_new_thread
 from gozerlib.utils.trace import whichmodule
 from gozerlib.gozerevent import GozerEvent
+from gozerlib.fleet import fleet
 
 ## xmpp import
 
@@ -169,6 +170,7 @@ class XMLStream(NodeBuilder):
         """ proces all incoming data. """
         logging.debug('%s - starting readloop' % self.name)
         self.buffer = ""
+        self.error = ""
 
         while not self.stopped:
             try:
@@ -415,3 +417,14 @@ class XMLStream(NodeBuilder):
         logging.warn('%s - disconnected: %s' % (self.name, str(ex)))
         #self.reconnect()
 
+    def doreconnect(self):
+        """ reconnect to the server. """
+        botjid = self.jid
+        newbot = fleet.makebot('sxmpp', self.name, self.cfg)
+        if newbot.connect():
+            self.jid += '.old'
+            newbot.joinchannels()
+            if fleet.replace(botjid, newbot):
+                return True
+
+        return False
