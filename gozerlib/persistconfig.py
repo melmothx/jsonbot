@@ -214,7 +214,7 @@ class PersistConfig(Config):
         """ define initial value. """
         if name:
             name = name.lower()
-        if not exposed:
+        if not exposed and not key in self.hide:
             self.hide.append(key)
         if not self.has_key(key):
             if name == None:
