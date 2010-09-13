@@ -320,7 +320,7 @@ class Users(Persist):
             self.data.names[userhost] = name
         newuser.save()
         self.save()
-        logging.info('users - %s %s %s added to user database' % (name, userhosts, perms))
+        logging.warn('users - %s %s %s added to user database' % (name, userhosts, perms))
         return True
 
     def addguest(self, userhost):
