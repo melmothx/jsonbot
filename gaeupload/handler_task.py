@@ -43,59 +43,46 @@ class TaskHandler(webapp.RequestHandler):
     """ the bots task handler. """
 
     def get(self):
-
-        """ this is where the task gets dispatched. """
-
-        path = self.request.path
-
-        if path.endswith('/'):
-            path = path[:-1]
-
-        taskname = path.split('/')[-1].strip()
-        logging.debug("using taskname: %s" % taskname)
-
-        inputdict = {}
-
-        for name, value in self.request.environ.iteritems():
-
-            if not 'wsgi' in name:
-                inputdict[name] = value
-
         try:
+            """ this is where the task gets dispatched. """
+            path = self.request.path
+            if path.endswith('/'):
+                path = path[:-1]
+            taskname = path.split('/')[-1].strip()
+            logging.debug("using taskname: %s" % taskname)
+
+            inputdict = {}
+            for name, value in self.request.environ.iteritems():
+                if not 'wsgi' in name:
+                    inputdict[name] = value
+
             taskmanager.dispatch(taskname, inputdict)
 
         except Exception, ex:
             handle_exception()
+            self.send_error(500)
 
     def post(self):
-
         """ this is where the task gets dispatched. """
-
-        
-        path = self.request.path
-
-        if path.endswith('/'):
-            path = path[:-1]
-
-        taskname = path.split('/')[-1].strip()
-        logging.debug("using taskname: %s taken from %s" % (taskname, path))
-
-        if not taskname:
-            return
-
-        inputdict = {}
-
-        for name, value in self.request.environ.iteritems():
-
-            if not 'wsgi' in name:
-                inputdict[name] = value
-
         try:
+            path = self.request.path
+            if path.endswith('/'):
+                path = path[:-1]
+            taskname = path.split('/')[-1].strip()
+            logging.debug("using taskname: %s taken from %s" % (taskname, path))
+            if not taskname:
+                return
+
+            inputdict = {}
+            for name, value in self.request.environ.iteritems():
+                if not 'wsgi' in name:
+                    inputdict[name] = value
+
             taskmanager.dispatch(taskname, inputdict)
 
         except Exception, ex:
             handle_exception()
-
+            self.send_error(500)
 
 # the application 
 

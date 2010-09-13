@@ -31,34 +31,43 @@ class OpenIdLoginHandler(webapp.RequestHandler):
         return "/_ah/login?continue=%s" % urllib.quote(continue_url)
 
     def get(self):
-        cont = self.request.get('continue')
-        logging.info('openid - login form %s' % cont)
-        urlstring = u""
-        for name, url in loginurl(self.request, self.response).iteritems():
-            urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
-        template_values = {
-            'continue': cont,
-            'urlstring': urlstring[:-3],
-            'appname': getversion()
-        }
+        try:
+            cont = self.request.get('continue')
+            logging.info('openid - login form %s' % cont)
+            urlstring = u""
+            for name, url in loginurl(self.request, self.response).iteritems():
+                urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
+            template_values = {
+                'continue': cont,
+                'urlstring': urlstring[:-3],
+                'appname': getversion()
+            }
 
-        path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
-        from google.appengine.ext.webapp import template
-        logging.info("openid - diplaying page to %s" % self.request.remote_addr)
-        self.response.out.write(template.render(path, template_values))      
+            path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+            from google.appengine.ext.webapp import template
+            logging.info("openid - diplaying page to %s" % self.request.remote_addr)
+            self.response.out.write(template.render(path, template_values))      
+
+        except Exception, ex:
+            handle_exception()
+            self.send_error(500)
 
     def post(self):
-        cont = self.request.get('continue')
-        conturl = self.create_openid_url(cont)
-        logging.info('openid - %s' % cont)
-        openid = self.request.get('openid_identifier')
-        if openid:
-            login_url = users.create_login_url(cont, None, openid)
-            logging.info('openid - redirecting to url %s (%s)' % (login_url, openid))
-            self.redirect(login_url)
-        else:
-            logging.warn("denied access for %s - %s - %s" % (self.request.remote_addr, cont, openid))
-            self.send_error(400)
+        try:
+            cont = self.request.get('continue')
+            conturl = self.create_openid_url(cont)
+            logging.info('openid - %s' % cont)
+            openid = self.request.get('openid_identifier')
+            if openid:
+                login_url = users.create_login_url(cont, None, openid)
+                logging.info('openid - redirecting to url %s (%s)' % (login_url, openid))
+                self.redirect(login_url)
+            else:
+                logging.warn("denied access for %s - %s - %s" % (self.request.remote_addr, cont, openid))
+                self.send_error(400)
+        except Exception, ex:
+            handle_exception()
+            self.send_error(500)
 
 ## the application 
 

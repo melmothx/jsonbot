@@ -4,12 +4,6 @@
 
 """ xmpp request handler. """
 
-
-# set start time
-import time
-
-starttime = time.time()
-
 ## gozerlib imports
 
 from gozerlib.utils.generic import fromenc, toenc, getversion
@@ -68,19 +62,23 @@ class XMPPHandler(webapp.RequestHandler):
     """ relay incoming messages to the bot. """
 
     def post(self):
-        logging.info("XMPP incoming: %s" % self.request.remote_addr)
+        try:
+            logging.info("XMPP incoming: %s" % self.request.remote_addr)
 
-        if not self.request.POST.has_key('from'):
-            logging.debug('no from in POST: %s' % str(self.request.POST))
-            return
+            if not self.request.POST.has_key('from'):
+                logging.debug('no from in POST: %s' % str(self.request.POST))
+                return
 
-        if not self.request.POST.has_key('to'):
-            logging.debug('no to in POST: %s' % str(self.request.POST))
-            return
+            if not self.request.POST.has_key('to'):
+                logging.debug('no to in POST: %s' % str(self.request.POST))
+                return
 
-        event = XMPPEvent(bot=bot).parse(self.request, self.response)
-        #event.bot = bot
-        bot.doevent(event)
+            event = XMPPEvent(bot=bot).parse(self.request, self.response)
+            bot.doevent(event)
+
+        except Exception, ex:
+            handle_exception()
+            self.send_error(500)
 
 application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler), ],
                                       debug=True)

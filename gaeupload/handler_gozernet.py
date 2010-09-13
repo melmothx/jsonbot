@@ -4,10 +4,6 @@
 
 """ gozernet handler. handlers incoming events (json). """
 
-import time
-
-starttime = time.time()
-
 ## gozerlib imports
 
 from gozerlib.gozernet.bot import GozerNetBot
@@ -40,32 +36,35 @@ import types
 import os
 import logging
 
+## boot
+
 logging.warn(getversion('GOZERNET'))
 
 boot()
 bot = GozerNetBot('gozernet')
 plugs.loadall()
 
+## classes
+
 class GozerNetHandler(webapp.RequestHandler):
 
     """ gozernet request handler. """
 
     def post(self):
-
         """ this is where the command get disaptched. """
-
-        (userhost, user, u, nick) = checkuser(self.response, self.request)
-        logging.debug("GOZERNET incoming: %s" % self.request.remote_addr)
-        event = RemoteEvent()
-        event.parse(self.response, self.request)
-        event.bot = bot
-        event.title = event.channel
-
         try:
+            (userhost, user, u, nick) = checkuser(self.response, self.request)
+            logging.debug("GOZERNET incoming: %s" % self.request.remote_addr)
+            event = RemoteEvent()
+            event.parse(self.response, self.request)
+            event.bot = bot
+            event.title = event.channel
+
             event.bot.doevent(event)
 
         except Exception, ex:
             handle_exception()
+            self.send_error(500)
 
     get = post
 

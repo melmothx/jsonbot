@@ -86,6 +86,7 @@ class Dispatch_Handler(RequestHandler):
             event.reply("no such command: %s" % event.usercmnd)
         except Exception, ex:
             handle_exception()
+            self.send_error(500)
 
     get = post
 

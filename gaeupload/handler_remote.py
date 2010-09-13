@@ -64,6 +64,7 @@ class EventNetHandler(webapp.RequestHandler):
 
         except Exception, ex:
             handle_exception()
+            self.send_error(500)
 
     get = post
 

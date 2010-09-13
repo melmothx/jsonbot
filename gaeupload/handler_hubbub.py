@@ -25,7 +25,7 @@ import urllib
 import urlparse
 import uuid
 
-logging.warn(getversion('HUBBUB'))
+logging.warn(getversion('GAE HUBBUB'))
 
 if not plugs.has_key("commonplugs.hubbub"):
     p = plugs.load("commonplugs.hubbub")
@@ -58,6 +58,9 @@ class CallbackHandler(webapp.RequestHandler):
         p.watcher.incoming(self.request.body)
     except IndexError:
         logging.error("hubbub plugin did not load properly")
+    except Exception, ex:
+        handle_exception()
+        self.send_error(500)
 
 application = webapp.WSGIApplication([('/(?:hubbub)', CallbackHandler)], debug=False)
 
