@@ -65,4 +65,4 @@ def handle_exception(event=None, log=True, txt=""):
         exceptionevents.append((event, errormsg))
         if event.bot:
             event.bot.error = errormsg
-            event.reply(errormsg)
+            event.bot.saynocb(event.channel, "*sorry* - an exception occured - %s" % errormsg)

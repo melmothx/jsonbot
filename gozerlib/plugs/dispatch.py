@@ -42,6 +42,7 @@ def dispatch(bot, event):
             event.usercmnd = execstr.split()[0]
             event.txt = execstr
             event.finish()
+            event.showexception = True
             result = bot.plugs.dispatch(bot, event)
         else:
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.userhost, execstr))

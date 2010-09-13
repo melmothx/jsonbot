@@ -99,7 +99,7 @@ class BotEventRunner(Runner):
         try:
             #logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
-            #lockmanager.acquire(getname(str(func)))
+            lockmanager.acquire(getname(str(func)))
             name = getname(str(func))
             self.working = True
             logging.debug("runner - now running %s" % name)
@@ -117,9 +117,12 @@ class BotEventRunner(Runner):
                 logging.debug('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
 
         except Exception, ex:
-            handle_exception()
-        #finally:
-        #    lockmanager.release(getname(str(func)))
+            if ievent.showexception:
+                handle_exception(ievent)
+            else:
+                handle_exception()
+        finally:
+            lockmanager.release(getname(str(func)))
 
         self.working = False
 
