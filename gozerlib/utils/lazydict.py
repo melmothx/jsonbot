@@ -69,10 +69,10 @@ def dumpelement(element, ignore=[], prev={}):
                 continue
             if prop == None:
                 continue
-            if checkignore(prop, ignore):
-                logging.debug("lazydict - dump - ignoring %s" % type(prop))
-                newer[name] = unicode(type(prop))
-                continue                
+            #if checkignore(prop, ignore):
+            #    logging.debug("lazydict - dump - ignoring %s" % type(prop))
+            #    newer[name] = unicode(type(prop))
+            #    continue                
 
             try:
                  if type(prop) in [types.StringType, types.UnicodeType]:
@@ -133,6 +133,19 @@ class LazyDict(dict):
             res += "%r=%r " % (item, value)
 
         return res
+
+    def undump(self, event=None):
+        tmp = cpy(self)
+        for name, item in self.iteritems():
+            if type(item) != types.StringType and type(item) != types.UnicodeType:
+                continue
+            if item.startswith("<class "):
+                del tmp[name]
+            if item.startswith("<type "):
+                del tmp[name]
+            if item.startswith("jsonbot-ignored "):
+                del tmp[name]
+        return tmp
 
     def dump(self, ignore=[]):
         logging.debug("lazydict - dumping - %s" %  type(self))

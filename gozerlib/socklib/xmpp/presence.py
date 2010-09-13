@@ -27,7 +27,7 @@ class Presence(GozerEvent):
         self.cbtype = "PRESENCE"
         self.bottype = "xmpp"
 
-    def toirc(self):
+    def parse(self):
         """ set ircevent compatible attributes """
         self.cmnd = 'Presence'
         try:
@@ -49,6 +49,3 @@ class Presence(GozerEvent):
             self.groupchat = True
         else:
             self.groupchat = False
-
-        if self.txt:
-            makeargrest(self)

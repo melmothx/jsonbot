@@ -59,6 +59,7 @@ class RemoteEvent(GozerEvent):
         container = Container()
         container.load(event.txt)
         self.load(container.payload)
+        self.finish()
         self.isremote = True
         self.response = response
         self.request = request

@@ -437,6 +437,7 @@ class SXMPPBot(XMLStream, BotBase):
     def handle_presence(self, data):
         """ presence handler. """
         p = Presence(data)
+        p.parse()
         frm = p.fromm
         nickk = ""
         nick = p.nick

@@ -167,11 +167,10 @@ class Callbacks(object):
             :param event: event that needs to be checked
 
         """
-        #event.finish()
         type = event.cbtype or event.cmnd
         self.reloadcheck(event)
-        #self.reloadcheck(event)
         logging.debug("callbacks - %s - %s" % (event.userhost, type))
+
         # check for "ALL" callbacks
         if self.cbs.has_key('ALL'):
             for cb in self.cbs['ALL']:
@@ -185,7 +184,6 @@ class Callbacks(object):
             for cb in target:
                 self.callback(cb, bot, event)
 
-        #event.leave()
         return self
 
     def callback(self, cb, bot, event):
@@ -198,12 +196,8 @@ class Callbacks(object):
             :param event: the event that triggered the callback
 
         """
-        #logging.warn("callbacks - registered in %s" % cb.modname)
         event.calledfrom = cb.modname
         try:
-            #if event.ttl <= 0:
-            #    logging.debug("callback - event ttl is 0 .. ignoring")
-            #    return
             if event.status == "done":
                 logging.debug("callback - event is done .. ignoring")
                 return

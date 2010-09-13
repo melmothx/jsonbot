@@ -8,7 +8,7 @@
 
 from channelbase import ChannelBase
 from utils.lazydict import LazyDict
-from utils.generic import splittxt
+from utils.generic import splittxt, stripped
 from errors import NoSuchUser
 from config import cfg as mainconfig
 
@@ -60,8 +60,10 @@ class EventBase(LazyDict):
         e.copyin(self)
         return e
 
-    def finish(self):
+    def finish(self, bot=None):
         self.result = []
+        if bot:
+            self.bot = bot
         target = self.auth
         if not self.user and target:
             if mainconfig.auto_register:
@@ -79,7 +81,7 @@ class EventBase(LazyDict):
         if self.txt:
             self.usercmnd = self.txt.split()[0]
         self.origtxt = self.txt
-        logging.debug("eventbase - %s - %s (%s)" % (self.cbtype, self.usercmnd, self.userhost))
+        logging.debug("eventbase - prepared event - %s - %s (%s)" % (self.cbtype, self.usercmnd, self.userhost))
         #logging.debug("eventbase - %s" % self.dump())
 
     def _raw(self, txt):
@@ -91,10 +93,9 @@ class EventBase(LazyDict):
         self.bot = event.bot
         self.origin = event.origin
         self.ruserhost = self.origin
-        self.auth = self.origin
         self.userhost = self.origin
         self.channel = event.channel
-        self.auth = self.userhost
+        self.auth = stripped(self.userhost)
 
     def copyin(self, eventin):
         """ copy in an event. """

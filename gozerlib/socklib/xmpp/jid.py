@@ -25,7 +25,6 @@ class JID(object):
         if not self.validate(str):
             raise InvalidJID(str)
         self.full = str
-        self.user = self.full.split('@')[0]
         self.userhost = self.full.split('/')[0]
         try:
              self.host = self.userhost.split('@')[1]

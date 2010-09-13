@@ -8,8 +8,9 @@
 
 from gozerlib.utils.generic import strippedtxt, fromenc
 from gozerlib.utils.exception import handle_exception
-from gozerlib.callbacks import callbacks, remote_callbacks
+from gozerlib.callbacks import callbacks, remote_callbacks, first_callbacks
 from gozerlib.container import Container
+from gozerlib.eventbase import EventBase
 from gozerlib.remote.event import RemoteEvent
 from gozerlib.errors import NoProperDigest
 
@@ -44,7 +45,8 @@ if True:
             return
         if container.isremote:
             logging.debug('doing REMOTE callback')
-            e = RemoteEvent()
+            e = EventBase()
+            e.parse(event)
             try:
                 digest = hmac.new(str(container.hashkey), str(container.payload), hashlib.sha512).hexdigest()
                 logging.debug("forward - digest is %s" % digest)
@@ -56,8 +58,10 @@ if True:
                 e.copyin(loads(container.payload))
             else:
                 raise NoProperDigest()
-
+            e = e.undump()
+            e.finish(bot)
             remote_callbacks.check(bot, e)
+            event.status = "done"  
             return
 
-    callbacks.add("MESSAGE", remotecb, preremotecb)
+    first_callbacks.add("MESSAGE", remotecb, preremotecb)
