@@ -24,7 +24,7 @@ cpy = copy.deepcopy
 
 def handle_test(bot, ievent):
     """ give test response. """
-    ievent.reply("%s - %s" % (ievent.auth, ievent.userhost))
+    ievent.reply("%s - %s - it works!" % (ievent.auth or ievent.userhost, ievent.user.data.name))
     
 cmnds.add('test', handle_test, ['USER', 'GUEST', ])
 examples.add('test', 'give test response',' test')
@@ -45,7 +45,7 @@ examples.add('source', 'show source url', 'source')
 
 def handle_time(bot, ievent):
     """ show current time """
-    event.reply("time is %s" % time.ctime(time.localtime()))
+    ievent.reply("time is %s" % time.ctime(time.time()))
 
 cmnds.add('time', handle_time, ['USER', 'GUEST'])
 examples.add('time', 'show current time', 'time')
