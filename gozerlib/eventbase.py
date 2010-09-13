@@ -62,7 +62,7 @@ class EventBase(LazyDict):
 
     def finish(self):
         self.result = []
-        target = self.userhost
+        target = self.auth
         if not self.user and target:
             if mainconfig.auto_register:
                 self.bot.users.addguest(target)
@@ -92,6 +92,7 @@ class EventBase(LazyDict):
         self.auth = self.origin
         self.userhost = self.origin
         self.channel = event.channel
+        self.auth = self.userhost
 
     def copyin(self, eventin):
         """ copy in an event. """

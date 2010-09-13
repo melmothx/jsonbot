@@ -21,7 +21,7 @@ import logging
 
 def handle_whoami(bot, ievent):
     """ get your username. """
-    ievent.reply('%s' % bot.users.getname(ievent.userhost))
+    ievent.reply('%s' % bot.users.getname(ievent.auth))
 
 cmnds.add('user-whoami', handle_whoami, ['USER', 'GUEST'])
 examples.add('user-whoami', 'get your username', 'user-whoami')
@@ -137,7 +137,7 @@ def handle_import(bot, ievent):
         ievent.reply("can't merge owner")
         return
 
-    name = bot.users.getname(ievent.userhost)
+    name = bot.users.getname(ievent.auth)
     if not name:
         ievent.reply("i don't know you %s" % ievent.userhost)
         return
@@ -211,7 +211,7 @@ examples.add('user-names', 'show names of registered users', 'user-names')
 
 def handle_name(bot, ievent):
     """ user-name .. show name of user giving the command. """
-    ievent.reply('your name is %s' % bot.users.getname(ievent.userhost))
+    ievent.reply('your name is %s' % bot.users.getname(ievent.auth))
 
 cmnds.add('user-name', handle_name, ['USER', 'GUEST'])
 examples.add('user-name', 'show name of user giving the commands', 'user-name')
@@ -294,7 +294,7 @@ def handle_perms(bot, ievent):
         ievent.reply("use getperms to get the permissions of somebody else")
         return
 
-    name = bot.users.getname(ievent.userhost)
+    name = bot.users.getname(ievent.auth)
     if not name:
          ievent.reply("can't find username for %s" % ievent.userhost)
          return
@@ -544,7 +544,7 @@ examples.add('user-email', 'get email', 'user-email')
 
 def handle_delemail(bot, ievent):
     """ reset email of user giving the command. """
-    name = bot.users.getname(ievent.userhost)
+    name = bot.users.getname(ievent.auth)
     if not name:
         ievent.reply("can't find user for %s" % ievent.userhost)
         return
@@ -569,7 +569,7 @@ def handle_addpermit(bot, ievent):
         ievent.reply("can't find username of %s" % who)
         return
 
-    name = bot.users.getname(ievent.userhost)
+    name = bot.users.getname(ievent.auth)
     if not name:
         ievent.reply("i dont know %s" % ievent.userhost)
         return
@@ -592,7 +592,7 @@ def handle_permit(bot, ievent):
         ievent.reply("use the user-addpermit command to allow somebody something .. use getname <nick> to get the username of somebody .. this command shows what permits you have")
         return
 
-    name = bot.users.getname(ievent.userhost)
+    name = bot.users.getname(ievent.auth)
     if not name:
         ievent.reply("can't find user for %s" % ievent.userhost)
         return
@@ -618,7 +618,7 @@ def handle_userdelpermit(bot, ievent):
         ievent.reply("can't find registered name of %s" % who)
         return
 
-    name = bot.users.getname(ievent.userhost)
+    name = bot.users.getname(ievent.auth)
     if not name:
         ievent.reply("i don't know you %s" % ievent.userhost)
         return

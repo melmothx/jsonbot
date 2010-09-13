@@ -91,9 +91,9 @@ class Commands(LazyDict):
         """
 
         if event.groupchat:
-            id = event.userhost
+            id = event.auth = event.userhost
         else:
-            id = event.auth or event.userhost
+            id = event.auth
                          
         if mainconfig.auto_register:
             bot.users.addguest(id)

@@ -128,8 +128,10 @@ class Message(GozerEvent):
 
         if self.type == 'groupchat':
             self.groupchat = True
+            self.auth = self.userhost
         else:
             self.groupchat = False
+            self.auth = self.stripped
 
         self.msg = not self.groupchat
         self.makeargs()
