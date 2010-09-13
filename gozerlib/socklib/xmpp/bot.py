@@ -424,7 +424,6 @@ class SXMPPBot(XMLStream, BotBase):
         except Exception, ex:
             handle_exception()
 
-        m.finish()
         self.put(m)
 
     def errorHandler(self, event):

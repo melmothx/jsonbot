@@ -90,10 +90,9 @@ class ConsoleBot(BotBase):
                         handle_exception()
                         continue
                 try:
-                    event.finish()
                     result = self.doevent(event)
                     if not result:
-                            continue
+                        continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
                 except NoSuchCommand:
                     print "no such command: %s" % event.usercmnd

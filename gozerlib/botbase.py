@@ -194,10 +194,16 @@ class BotBase(LazyDict):
             event.speed = 2
         self.status = "callback"
         starttime = time.time()
+        event.finish()
+
+        if event.nodispatch:
+            logging.warn("%s - %s - nodispatch is set - ignoring %s (%s)" % (self.name, event.type, event.userhost, self.type))
+            return
+
         e1 = cpy(event)
         e2 = cpy(event)
         e3 = cpy(event)
-        
+                 
         first_callbacks.check(self, e1)
         callbacks.check(self, e2)
         last_callbacks.check(self, e3)

@@ -87,7 +87,6 @@ class XMPPEvent(EventBase):
         self.origtxt = input
         self.txt = input
         self.usercmnd = self.txt.split()[0].lower()
-        self.finish()
         logging.debug(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 

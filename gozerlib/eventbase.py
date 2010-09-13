@@ -72,6 +72,8 @@ class EventBase(LazyDict):
                 self.chan = ChannelBase(self.channel)
             elif self.userhost:
                 self.chan = ChannelBase(self.userhost)
+        if not self.user:
+            self.nodispatch = True
 
         self.makeargs()
         if self.txt:
