@@ -63,7 +63,7 @@ class EventNetHandler(webapp.RequestHandler):
             event.bot.doevent(event)
 
         except Exception, ex:
-            handle_exception(event)
+            handle_exception()
 
     get = post
 
