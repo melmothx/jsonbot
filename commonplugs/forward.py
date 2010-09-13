@@ -88,7 +88,7 @@ def forwardoutcb(bot, event):
 
 first_callbacks.add('BLIP_SUBMITTED', forwardoutcb, forwardoutpre)
 first_callbacks.add('MESSAGE', forwardoutcb, forwardoutpre)
-first_callbacks.add('PRESENCE', forwardoutcb, forwardoutpre)
+#first_callbacks.add('PRESENCE', forwardoutcb, forwardoutpre)
 first_callbacks.add('PRIVMSG', forwardoutcb, forwardoutpre)
 first_callbacks.add('JOIN', forwardoutcb, forwardoutpre)
 first_callbacks.add('PART', forwardoutcb, forwardoutpre)

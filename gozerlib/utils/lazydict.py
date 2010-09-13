@@ -69,10 +69,10 @@ def dumpelement(element, ignore=[], prev={}):
                 continue
             if prop == None:
                 continue
-            #if checkignore(prop, ignore):
-            #    logging.debug("lazydict - dump - ignoring %s" % type(prop))
-            #    newer[name] = unicode(type(prop))
-            #    continue                
+            if checkignore(prop, ignore):
+                logging.debug("lazydict - dump - ignoring %s" % type(prop))
+                newer[name] = unicode(type(prop))
+                continue                
 
             try:
                  if type(prop) in [types.StringType, types.UnicodeType]:

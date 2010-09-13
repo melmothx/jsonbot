@@ -394,7 +394,7 @@ class SXMPPBot(XMLStream, BotBase):
             return
 
         if data.get('x').xmlns == 'jabber:x:delay':
-            logging.debug("%s - ignoring delayed message" % self.name)
+            logging.warn("%s - ignoring delayed message" % self.name)
             return
 
         self.privwait.check(m)
