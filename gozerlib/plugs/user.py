@@ -21,7 +21,7 @@ import logging
 
 def handle_whoami(bot, ievent):
     """ get your username. """
-    ievent.reply('%s' % bot.users.getname(ievent.auth))
+    ievent.reply('%s' % bot.users.getname(ievent.userhost))
 
 cmnds.add('user-whoami', handle_whoami, ['USER', 'GUEST'])
 examples.add('user-whoami', 'get your username', 'user-whoami')

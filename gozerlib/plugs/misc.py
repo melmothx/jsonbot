@@ -24,7 +24,7 @@ cpy = copy.deepcopy
 
 def handle_test(bot, ievent):
     """ give test response. """
-    ievent.reply("%s .. it works!" % ievent.auth)
+    ievent.reply("%s .. it works!" % ievent.userhost)
     
 cmnds.add('test', handle_test, ['USER', 'GUEST', ])
 examples.add('test', 'give test response',' test')
