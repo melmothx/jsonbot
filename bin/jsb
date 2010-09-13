@@ -69,8 +69,11 @@ except NoOwnerSet:
 
 if opts.command:
     result = bot.docmnd(userid, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
-    waitforqueue(result.inqueue, 60)
-    print "command done. ltrs"    
+    if result:
+        waitforqueue(result.inqueue, 60)
+        print "command done. ltrs"
+    else:
+        print "can't execute %s" % opts.command    
     os._exit(0)
 elif opts.forward:
     fleet.addbot(bot)
