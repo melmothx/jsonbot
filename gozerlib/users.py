@@ -121,7 +121,7 @@ class Users(Persist):
 
     def getuser(self, userhost):
         try:
-            user = self.byname(self.data.names[stripped(userhost)])
+            user = self.byname(self.data.names[userhost])
             if user:
                 return user
         except KeyError:

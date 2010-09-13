@@ -89,11 +89,14 @@ class Commands(LazyDict):
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
         """
-        if mainconfig.auto_register:
-            bot.users.addguest(event.userhost)
 
-        # identity of the caller
-        id = event.auth or event.userhost
+        if event.groupchat:
+            id = event.userhost
+        else:
+            id = event.auth or event.userhost
+                         
+        if mainconfig.auto_register:
+            bot.users.addguest(id)
 
         if event.usercmnd:
             logging.debug("setting user to %s" % id)
