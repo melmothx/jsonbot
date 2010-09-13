@@ -46,7 +46,7 @@ if True:
         if container.isremote:
             logging.debug('doing REMOTE callback')
             e = EventBase()
-            e.parse(event)
+            #e.parse(event)
             try:
                 digest = hmac.new(str(container.hashkey), str(container.payload), hashlib.sha512).hexdigest()
                 logging.debug("forward - digest is %s" % digest)

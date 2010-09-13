@@ -40,6 +40,7 @@ class Presence(GozerEvent):
         self.userhost = str(self.jid)
         self.resource = self.nick
         self.stripped = self.jid.split('/')[0]
+        self.auth = self.stripped
         self.channel = self.fromm.split('/')[0]
         self.printto = self.channel
         self.origtxt = self.txt

@@ -197,7 +197,7 @@ class BotBase(LazyDict):
         event.finish()
 
         if event.nodispatch:
-            logging.warn("%s - %s - *nodispatch* is set - ignoring %s (%s)" % (self.name, event.type, event.auth, self.type))
+            logging.warn("%s - %s - *nodispatch* is set - ignoring %s (%s)" % (self.name, event.type, event.auth or event.userhost, self.type))
             return
         else:
             logging.warn("%s - %s - *allowing* %s (%s)" % (self.name, event.cbtype, event.auth, self.type))
