@@ -140,7 +140,7 @@ class XMLStream(NodeBuilder):
         except KeyError:
             return None
 
-    @inlocked
+    #@inlocked
     def loop_one(self, data):
         """
             handle one xml stanza.

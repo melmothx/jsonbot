@@ -150,10 +150,10 @@ class SXMPPBot(XMLStream, BotBase):
                     continue
                 else:
                     charssend = 0
-                    sleeptime = self.cfg['jabberoutsleep']
+                    sleeptime = 0.1 or self.cfg['jabberoutsleep']
 
                 if not sleeptime:
-                    sleeptime = 1
+                    sleeptime = 0
 
                 logging.debug('%s - out - sleeping %s seconds' % (self.name, sleeptime))
                 time.sleep(sleeptime)

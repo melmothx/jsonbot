@@ -254,7 +254,7 @@ class Callbacks(object):
 
         for name in plugins:
             if name in plugs:
-                logging.warn("callbacks - %s already loaded" % name)
+                logging.debug("callbacks - %s already loaded" % name)
                 continue
             else:
                 logging.warn("on demand reloading of %s" % name)

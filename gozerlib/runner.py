@@ -97,12 +97,12 @@ class BotEventRunner(Runner):
 
 
         try:
-            logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
+            #logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
             #lockmanager.acquire(getname(str(func)))
             name = getname(str(func))
             self.working = True
-            logging.warn("runner - now running %s" % name)
+            logging.debug("runner - now running %s" % name)
             func(bot, ievent, *args, **kwargs)
             
             if ievent.closequeue and ievent.queues:
