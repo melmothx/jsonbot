@@ -74,7 +74,7 @@ class Message(GozerEvent):
         if not self.bot:
             raise BotNotSetInEvent("xmpp.message")
 
-        if to  and to in self.bot.state['joinedchannels']:
+        if to and to in self.bot.state['joinedchannels']:
             outtype = 'groupchat' 
             self.groupchat = True
             self.msg = False
@@ -128,10 +128,9 @@ class Message(GozerEvent):
 
         if self.type == 'groupchat':
             self.groupchat = True
-            self.auth = self.userhost
         else:
             self.groupchat = False
-            self.auth = self.stripped
+
         self.msg = not self.groupchat
         self.makeargs()
 

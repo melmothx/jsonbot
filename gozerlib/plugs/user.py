@@ -34,7 +34,7 @@ def handle_meet(bot, ievent):
         ievent.missing('<nick>')
         return
 
-    if bot.users.exists(nick):
+    if bot.users.exist(nick):
         ievent.reply('there is already a user with username %s' % nick)
         return
 
@@ -101,7 +101,7 @@ def handle_merge(bot, ievent):
     if name == 'owner' and not bot.ownercheck(ievent.userhost):
          ievent.reply("you are not the owner")
          return 
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("we have no user %s" % name)
         return
     userhost = getwho(bot, nick)
@@ -248,7 +248,7 @@ def handle_addperm(bot, ievent):
     name, perm = ievent.args
     perm = perm.upper()
     name = name.lower()
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -275,7 +275,7 @@ def handle_getperms(bot, ievent):
         return
 
     name = name.lower()
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -315,7 +315,7 @@ def handle_delperm(bot, ievent):
     name, perm = ievent.args
     perm = perm.upper()
     name = name.lower()
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -338,7 +338,7 @@ def handle_addstatus(bot, ievent):
     name, status = ievent.args
     status = status.upper()
     name = name.lower()
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
     if bot.users.gotstatus(name, status):
@@ -363,7 +363,7 @@ def handle_getstatus(bot, ievent):
         return
 
     name = name.lower()
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -397,7 +397,7 @@ def handle_delstatus(bot, ievent):
     status = status.upper()
     name = name.lower()
 
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -420,7 +420,7 @@ def handle_adduserhost(bot, ievent):
 
     name, userhost = ievent.args
     name = name.lower()
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
     if bot.users.gotuserhost(name, userhost):
@@ -447,7 +447,7 @@ def handle_deluserhost(bot, ievent):
     if bot.ownercheck(userhost):
         ievent.reply('can delete userhosts from owner')
         return
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -496,7 +496,7 @@ def handle_getemail(bot, ievent):
         ievent.missing('<name>')
         return
     name = name.lower()
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -517,7 +517,7 @@ def handle_setemail(bot, ievent):
         ievent.missing('<name> <email>')
         return
 
-    if not bot.users.exists(name):
+    if not bot.users.exist(name):
         ievent.reply("can't find user %s" % name)
         return
 
@@ -565,7 +565,7 @@ def handle_addpermit(bot, ievent):
     except ValueError:
         ievent.missing("<name> <permit>")
         return
-    if not bot.users.exists(who):
+    if not bot.users.exist(who):
         ievent.reply("can't find username of %s" % who)
         return
 
@@ -614,7 +614,7 @@ def handle_userdelpermit(bot, ievent):
         ievent.missing("<name> <permit>")
         return
 
-    if not bot.users.exists(who):
+    if not bot.users.exist(who):
         ievent.reply("can't find registered name of %s" % who)
         return
 

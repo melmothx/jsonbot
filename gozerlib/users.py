@@ -31,7 +31,7 @@ class JsonUser(Persist):
 
     def __init__(self, name, userhosts=[], perms=[], permits=[], status=[], email=[]):
         assert name
-        name = stripname(name)
+        name = stripname(name.lower())
         Persist.__init__(self, datadir + os.sep + 'users' + os.sep + name)
         self.data.datadir = datadir
         self.data.name = self.data.name or name
@@ -53,13 +53,13 @@ class Users(Persist):
             self.data = LazyDict()
         self.data.names = self.data.names or {}
 
-    def exists(self, name):
-        name = name.lower()
-        names = self.data.names.values()
-        for n in names:
-            if name == n.lower():
-                return True
-        return False
+    #def exists(self, name):
+    #    name = name.lower()
+    #    names = self.data.names.values()
+    #    for n in names:
+    #        if name == n.lower():
+    #            return True
+    #    return False
 
     def all(self):
 
@@ -199,7 +199,7 @@ class Users(Persist):
     def getname(self, userhost):
         """ get name of user belonging to <userhost> """
         try:
-            return self.data.names[stripped(userhost)]
+            return self.data.names[userhost]
         except KeyError:
             try:
                 return self.data.names[userhost]
