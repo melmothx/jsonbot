@@ -227,7 +227,7 @@ sleeptime=15*60, running=0):
             logging.debug("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
             return
 
-        logging.warn("rss - syncing %s - %s" % (self.data.name, self.data.url))
+        logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
         cachedresult = get(self.data.url, namespace='rss')
         got = False
@@ -469,7 +469,7 @@ class Rsswatcher(Rssdict):
         """ get data of rss feed. """
 
         result = feedparser.parse(url, agent=useragent())
-        logging.warn("rss - fetch - got result from %s" % url)
+        logging.info("rss - fetch - got result from %s" % url)
         
         if result and result.has_key('bozo_exception'):
             event.reply('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
@@ -1014,7 +1014,7 @@ class Rsswatcher(Rssdict):
         rssitem = self.byname(name)
 
         if rssitem == None:
-            logging.warn("we don't have a %s rss object" % name)
+            logging.warn("rss - we don't have a %s rss object" % name)
             return False
 
         target = channel
@@ -1029,7 +1029,7 @@ class Rsswatcher(Rssdict):
         rssitem.data.stoprunning = 0
         rssitem.save()
         watcher.watch(name)
-        logging.warn("started %s feed in %s channel" % (name, channel))
+        logging.warn("rss - started %s feed in %s channel" % (name, channel))
         return True
 
     def stop(self, botname, bottype, name, channel):
@@ -1041,7 +1041,7 @@ class Rsswatcher(Rssdict):
         try:
             rssitem.data.watchchannels.remove([botname, bottype, channel])
             rssitem.save()
-            logging.warn("stopped %s feed in %s channel" % (name, channel))
+            logging.warn("rss - stopped %s feed in %s channel" % (name, channel))
         except ValueError:
             return False
 

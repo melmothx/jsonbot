@@ -22,6 +22,7 @@ from gozerlib.fleet import fleet
 from gozerlib.socklib.partyline import partyline
 from gozerlib.exit import globalshutdown
 from gozerlib.runner import defaultrunner, cmndrunner, longrunner
+from gozerlib.errors import NoSuchPlugin
 
 ## basic imports
 
@@ -227,9 +228,12 @@ def handle_helpplug(bot, ievent):
     for package in plugin_packages:
         try:
              modname = "%s.%s" % (package, what)
-             plugin = plugs.reload(modname)
-             if plugin:
-                 break
+             try:
+                 plugin = plugs.reload(modname)
+                 if plugin:
+                     break
+             except NoSuchPlugin:
+                 continue
         except(KeyError, ImportError):
              pass
 
