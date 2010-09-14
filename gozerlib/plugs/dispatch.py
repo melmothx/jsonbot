@@ -33,7 +33,7 @@ def dispatch(bot, event):
     """ dispatch an event. """
 
     if event.nodispatch:
-        logging.warn("dispatch - nodispatch option is set - ignoring %s" % self.userhost)
+        logging.warn("dispatch - nodispatch option is set - ignoring %s" % event.userhost)
         return
     bot.status = "dispatch"
     bot.curevent = event

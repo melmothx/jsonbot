@@ -44,6 +44,8 @@ def dumpelement(element, withtypes=True):
     """ check each attribute of element whether it is dumpable. """
     new = {}
     for name in element:
+        if not element[name]:
+            continue
         try:
             dumps(element[name])
             new[name] = element[name]
