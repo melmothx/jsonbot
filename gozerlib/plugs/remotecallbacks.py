@@ -55,10 +55,9 @@ if True:
                 logging.error("forward - can't load payload - %s" % container.payload)
                 return
             if container.digest == digest:
-                e.copyin(loads(container.payload))
+                e.load(container.payload)
             else:
                 raise NoProperDigest()
-            e = e.undump()
             e.finish(bot)
             remote_callbacks.check(bot, e)
             event.status = "done"  

@@ -258,7 +258,7 @@ class IRCBot(Irc):
     def joinchannels(self):
 
         """ join channels. """
-
+        time.sleep(3)
         for i in self.state['joinedchannels']:
             try:
                 channel = ChannelBase(i)

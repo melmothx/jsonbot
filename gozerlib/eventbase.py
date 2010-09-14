@@ -50,7 +50,6 @@ class EventBase(LazyDict):
         self.printto = self.channel
         self.origin = self.userhost
         self.isremote = False
-        self.iscmnd = False
         self.ttl = 1
         self.how = "normal"
 

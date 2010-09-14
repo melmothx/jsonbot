@@ -126,7 +126,6 @@ class BotBase(LazyDict):
             cmndrunner.start()
             #longrunner.start()
             tickloop.start(self)
-        logging.info("botbase - created bot %s - %s" % (self.name, self.cfg.dump()))
 
     def put(self, event):
         self.inqueue.put_nowait(event)
@@ -175,7 +174,7 @@ class BotBase(LazyDict):
             start_new_thread(self._inputloop, ())
         if connect:
             self.connect()
-            self.joinchannels()
+            start_new_thread(self.joinchannels, ())
         self.status == "running"
         self.dostart(self.botname, self.type)
 
