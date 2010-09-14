@@ -127,9 +127,6 @@ class BotBase(LazyDict):
             #longrunner.start()
             tickloop.start(self)
 
-    def tojson(self):
-        return self.dump(["botname", "type", "status", "jid", "networkname", "starttime", "stopped"])
-
     def put(self, event):
         self.inqueue.put_nowait(event)
 

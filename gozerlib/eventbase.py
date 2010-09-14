@@ -53,10 +53,6 @@ class EventBase(LazyDict):
         self.ttl = 1
         self.how = "normal"
 
-
-    def tojson(self):
-        return self.dump(["bottype", "userhost", "ruserhost", "channel", "txt", "printo", "origin", "isremote", "ttl", "how"])
-
     def __deepcopy__(self, a):
         """ deepcopy an event. """
         e = EventBase()
