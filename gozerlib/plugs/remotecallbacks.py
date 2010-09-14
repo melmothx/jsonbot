@@ -58,7 +58,7 @@ if True:
                 e.load(container.payload)
             else:
                 raise NoProperDigest()
-            e.finish(bot)
+            e.prepare(bot)
             remote_callbacks.check(bot, e)
             event.status = "done"  
             return

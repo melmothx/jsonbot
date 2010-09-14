@@ -38,10 +38,8 @@ class EventBase(LazyDict):
     def __init__(self, input=None, bot=None):
         """ EventBase constructor """
         LazyDict.__init__(self)
-        if bot:
-            self.bot = bot
-        if input:
-            self.copyin(input)
+        if bot: self.bot = bot
+        if input: self.copyin(input)
         self.result = []
         self.inqueue = Queue.Queue()
         self.outqueue = Queue.Queue()
@@ -59,29 +57,26 @@ class EventBase(LazyDict):
         e.copyin(self)
         return e
 
-    def finish(self, bot=None):
+    def prepare(self, bot=None):
         self.result = []
-        if bot:
-            self.bot = bot
+        if bot: self.bot = bot
+        self.origtxt = self.txt
+        self.makeargs()
+        logging.debug("%s - prepared event - %s" % (self.auth, self.tojson()))
+
+    def finish(self, bot=None):
+        """ finish a event to execute a command on it. """
         target = self.auth
         if not self.user and target:
-            if mainconfig.auto_register:
-                self.bot.users.addguest(target)
+            if mainconfig.auto_register: self.bot.users.addguest(target)
             self.user = self.bot.users.getuser(target)
         if not self.chan:
-            if self.channel:
-                self.chan = ChannelBase(self.channel)
-            elif self.userhost:
-                self.chan = ChannelBase(self.userhost)
-        if not self.user:
-            self.nodispatch = True
-
-        self.makeargs()
-        if self.txt:
-            self.usercmnd = self.txt.split()[0]
-        self.origtxt = self.txt
-        logging.debug("eventbase - prepared event - %s - %s (%s)" % (self.cbtype, self.usercmnd, self.userhost))
-        #logging.debug("eventbase - %s" % self.dump())
+            if self.channel: self.chan = ChannelBase(self.channel)
+            elif self.userhost: self.chan = ChannelBase(self.userhost)
+        if not self.user: self.nodispatch = True
+        self.prepare()
+        if self.txt: self.usercmnd = self.txt.split()[0]
+        logging.debug("%s - finish - %s" % (self.auth, self.dump()))
 
     def _raw(self, txt):
         """ put rawstring to the server .. overload this """
@@ -102,22 +97,16 @@ class EventBase(LazyDict):
             logging.error("no event given in copyin")
             return self
         self.update(eventin)
-        if eventin.has_key("sock"):
-            self.sock = eventin['sock']
-        if eventin.has_key("chan") and eventin['chan']:
-            self.chan = eventin['chan']
-        if eventin.has_key("user"):
-            self.user = eventin['user']
+        if eventin.has_key("sock"): self.sock = eventin['sock']
+        if eventin.has_key("chan") and eventin['chan']: self.chan = eventin['chan']
+        if eventin.has_key("user"): self.user = eventin['user']
         if eventin.has_key('queues'):
-            if eventin['queues']:
-                self.queues = eventin['queues']
-        if eventin.has_key("outqueue"):
-            self.inqueue = eventin['outqueue']
+            if eventin['queues']: self.queues = eventin['queues']
+        if eventin.has_key("outqueue"): self.inqueue = eventin['outqueue']
         return self
 
     def writenocb(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
-        if self.checkqueues(result):
-            return
+        if self.checkqueues(result): return
         txt = self.makeresponse(txt, result, dot)
         if self.isdcc:
             self.sock.send(unicode(txt) + u"\n")
@@ -129,8 +118,7 @@ class EventBase(LazyDict):
         return self
 
     def write(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
-        if self.checkqueues(result):
-            return
+        if self.checkqueues(result): return
         txt = self.makeresponse(txt, result, dot)
         if self.isdcc:
             self.sock.send(unicode(txt) + u"\n")
@@ -143,8 +131,7 @@ class EventBase(LazyDict):
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
         """ reply to this event """
-        if self.checkqueues(result):
-            return
+        if self.checkqueues(result): return
         txt = self.makeresponse(txt, result, dot)
         if self.isdcc:
             try:
@@ -170,27 +157,22 @@ class EventBase(LazyDict):
 
     def leave(self):
         self.ttl -= 1
-        if self.ttl <= 0 :
-            self.status = "done"
+        if self.ttl <= 0 : self.status = "done"
 
     def makeargs(self):
         """ make arguments and rest attributes from self.txt. """
-        try:
-            self.args = self.txt.split()[1:]
-            self.rest = ' '.join(self.args)
-        except:
-            self.args = None
+        args = self.txt.split()
+        if len(args) > 1: self.args = args[1:]
+        self.rest = ' '.join(self.args)
           
     def checkqueues(self, resultlist):
         """ check if resultlist is to be sent to the queues. if so do it. """
         if self.queues:
             for queue in self.queues:   
                 for item in resultlist:
-                    if item:
-                        queue.put_nowait(item)
+                    if item: queue.put_nowait(item)
             for item in resultlist:
-                if item:
-                    self.outqueue.put_nowait(item)      
+                if item: self.outqueue.put_nowait(item)      
             return True
         return False
 
@@ -200,52 +182,37 @@ class EventBase(LazyDict):
 
     def less(self, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
-        
-        if type(what) == types.ListType:
-            txtlist = what
+        if type(what) == types.ListType: txtlist = what
         else:
             what = what.strip()
             txtlist = splittxt(what, nr)
-
         size = 0
-
-        # send first block
         if not txtlist:   
             logging.debug("can't split txt from %s" % what)
             return ["", ""]
-
         res = txtlist[0]
         length = len(txtlist)
-        # see if we need to store output in less cache
         if length > 1 and self.bot:
             logging.debug("addding %s lines to %s outputcache" % (len(txtlist), self.channel))
             self.bot.outcache.set(self.channel, txtlist[1:])
             res += "<b> - %s more<b>" % (length - 1) 
             self.chan.save()
-
         return [res, length]
 
     def iscmnd(self):
         """ check if event is a command. """
         cc = "!"
-        if self.chan:
+        if self.chan: 
             cc = self.chan.data.cc
             if not cc:
                 self.chan.data.cc = "!"
                 self.chan.save()
-        if not cc:
-            cc = "!"
-        if self.type == "DISPATCH":
-            cc += "!"
+        if not cc: cc = "!"
+        if self.type == "DISPATCH": cc += "!"
         logging.debug("cc for %s is %s (%s)" % (self.title or self.channel or event.userhost, cc, self.bot.nick))
         matchnick = unicode(self.bot.nick + u":")
-        #logging.debug("dispatch - %s" % event.txt)        
-
-        if self.txt and self.txt[0] in cc:
-            return self.txt[1:]
-        elif self.txt.startswith(matchnick):
-            return self.txt[len(matchnick):]
-
+        if self.txt and self.txt[0] in cc: return self.txt[1:]
+        elif self.txt.startswith(matchnick): return self.txt[len(matchnick):]
         return False
 
     def normalize(self, txt):
