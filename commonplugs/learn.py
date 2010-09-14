@@ -82,7 +82,7 @@ cmnds.add('?', handle_whatis, ['USER', 'OPER'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsonbot")
 
 def prelearn(bot, event):
-    if event.usercmnd:
+    if event.usercmnd and not event.isremote:
         return True
     return False
 
@@ -94,8 +94,6 @@ def learncb(bot, event):
         return
     if items.data.has_key(target):
         event.reply("%s is " % target, items.data[target], dot=", ")
-    elif event.chan.data.info and event.chan.data.info.has_key(target):
-        event.reply("%s is " % target, event.chan.data.info[target], dot=", ")
 
 callbacks.add("PRIVMSG", learncb, prelearn)
 callbacks.add("MESSAGE", learncb, prelearn)

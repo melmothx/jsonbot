@@ -166,7 +166,7 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         event.prepare()
-        msg = "%s - %s - handling event %s (%s)" % (self.name.upper(), event.cbtype, event.auth, self.type)
+        msg = "%s - %s - handling event %s (%s)" % (event.auth.upper(), self.name, event.cbtype, self.type)
         logging.warn(msg)
         e1 = cpy(event)
         e2 = cpy(event)
