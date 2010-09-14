@@ -175,8 +175,7 @@ class BotBase(LazyDict):
             start_new_thread(self._inputloop, ())
         if connect:
             self.connect()
-            time.sleep(2)
-            self.joinchannels()
+            start_new_thread(self.joinchannels, ())
         self.status == "running"
         self.dostart(self.botname, self.type)
 
