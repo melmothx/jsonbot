@@ -187,8 +187,8 @@ class Irc(BotBase):
         # do the connect .. set timeout to 30 sec upon connecting
         logging.warn('%s - connecting to %s (%s)' % (self.name, server, self.server))
         self.oldsock.settimeout(15)
-        self.oldsock.connect((server, int(self.port)))
-
+        self.oldsock.connect((server, int(str(self.port))))	
+   
         # we are connected
         logging.warn('%s - connection ok' % self.name)
         self.connected = True

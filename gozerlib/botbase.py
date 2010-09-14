@@ -126,7 +126,9 @@ class BotBase(LazyDict):
             cmndrunner.start()
             #longrunner.start()
             tickloop.start(self)
-        logging.info("botbase - created bot %s - %s" % (self.name, self.cfg.dump()))
+
+    def tojson(self):
+        return self.dump(["botname", "type", "status", "jid", "networkname", "starttime", "stopped"])
 
     def put(self, event):
         self.inqueue.put_nowait(event)

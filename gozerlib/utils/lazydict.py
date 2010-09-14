@@ -23,86 +23,28 @@ import types
 
 ## defines
 
-defaultignore = ['pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins']
-raw = ['payload', ]
+defaultignore = ['cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
 
 cpy = copy.deepcopy
 
 ## functions
 
-def checkignore(element, ignore):
-    if unicode(element).startswith('_'):
+def checkignore(name, ignore):
+    if name.startswith('_'):
         return True
     for item in ignore:
-        if item in unicode(element):
-            #logging.warn("lazydict - ignoring on %s - %s" % (item, str(element)))
+        if item == name:
+            logging.warn("lazydict - ignoring on %s" % name)
             return True
     return False
 
-def dumpelement(element, ignore=[], prev={}):
-    #logging.warn("lazydict - in - %s - %s" % (str(element), str(prev)))
-    from gozerlib.utils.generic import toenc
-    if element == prev:
-        return unicode(type(prev))
-    try:
-        newer = dict(prev) or {}
-    except (ValueError, KeyError):
-        if type(prev) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType]:
-            return toenc(unicode(prev))
-        else:
-            logging.debug("lazydict - returning prev - type %s" % type(prev))
-            return unicode(type(prev))
-
-    for name in element:
-        try:
-            if checkignore(name, ignore):
-                newer[name] = u"jsonbot-ignored"
-                continue
-            if name in raw:
-                logging.debug("lazydict - inserting raw element - %s" % name)
-                newer[name] = toenc(getattr(element, name))
-                continue
-            try:
-                prop = getattr(element, name)
-            except AttributeError:
-                logging.debug("lazydict - no %s element" % name)
-                continue
-            if prop == None:
-                continue
-            #if checkignore(prop, ignore):
-            #    logging.debug("lazydict - dump - ignoring %s" % type(prop))
-            #    newer[name] = unicode(type(prop))
-            #    continue                
-
-            try:
-                 if type(prop) in [types.StringType, types.UnicodeType]:
-                     newer[name] = toenc(unicode(prop))
-                 else:
-                     dumps(prop)
-                     newer[name] = prop
-            except (TypeError, AttributeError):
-                logging.debug("lazydict - can't dump element - %s - %s" % (name, unicode(type(prop))))
-                #handle_exception()
-                newer[name] = unicode(type(prop))
-                try:
-                    if prop != element:
-                        newer[name] = dumpelement(prop, ignore, prop)
-                    else:
-                        return str(type(prop))
-                except (TypeError, AttributeError):
-                    if type(prop) in [types.StringType, types.UnicodeType, types.IntType, types.FloatType, types.DictType]:
-                        newer[name] =  prop
-                    else:
-                        newer[name] = str(type(prop))
-
-        except TypeError:
-            newer[name] = str(type(element))
-
-    for name in newer.keys():
-        if checkignore(name, ignore):
-            newer[name] = "jsonbot-ignored"
-
-    return newer
+def dumpelement(element, attribs=[], prev={}):
+    new = {}
+    for name in attribs:
+        if name not in defaultignore:
+            if element.has_key(name):
+                new[name] = element[name]
+    return new
 
 ## classes
 
@@ -147,9 +89,9 @@ class LazyDict(dict):
                 del tmp[name]
         return tmp
 
-    def dump(self, ignore=[]):
+    def dump(self, attribs=[]):
         logging.debug("lazydict - dumping - %s" %  type(self))
-        result = dumpelement(self, defaultignore + ignore)
+        result = dumpelement(self, attribs)
         return dumps(result)
 
     def load(self, input):
