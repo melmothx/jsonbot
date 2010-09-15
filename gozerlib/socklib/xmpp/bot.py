@@ -159,7 +159,7 @@ class SXMPPBot(XMLStream, BotBase):
                 time.sleep(sleeptime)
 
                 try:
-                    self._raw(what)
+                    self._raw(toenc(what))
                 except Exception, ex:
                     handle_exception()
 

@@ -111,7 +111,7 @@ class Irc(BotBase):
         
         try:
             self.lastoutput = time.time()
-            itxt = fromenc(outputmorphs.do(txt), self.encoding)
+            itxt = toenc(outputmorphs.do(txt), self.encoding)
             if self.cfg.has_key('ssl') and self.cfg['ssl']:
                 self.sock.write(itxt + '\n')
             else:

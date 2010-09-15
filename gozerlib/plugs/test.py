@@ -61,7 +61,7 @@ def dotest(bot, event):
             try:
                 msg.txt = "!" + example
                 msg.finish()
-                bot.docmnd(event.userhost, event.channel, example, msg)
+                bot.docmnd(event.auth or event.userhost, event.channel, example, msg)
             except Exception, ex:
                 errors[example] = exceptionmsg()
     if errors:

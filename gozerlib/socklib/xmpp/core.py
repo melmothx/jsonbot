@@ -154,7 +154,6 @@ class XMLStream(NodeBuilder):
         self._dispatch_depth = 2
 
         try:
-            #data = XMLunescape(data.strip())
             self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
@@ -175,7 +174,7 @@ class XMLStream(NodeBuilder):
 
         while not self.stopped:
             try:
-                data = self.connection.read()
+                data = jabberstrip(fromenc(self.connection.read()))
                 #logging.debug("sxmpp - incoming - %s" % data)
                 if data == "":
                     logging.error('%s - remote disconnected' % self.name)
