@@ -24,7 +24,7 @@ def handle_learn(bot, event):
         event.missing("<item> is <description>")
         return
     try:
-        (what, description) = event.rest.split(" is ")
+        (what, description) = event.rest.split(" is ", 1)
     except ValueError:
         event.missing("<item> is <description>")
         return
