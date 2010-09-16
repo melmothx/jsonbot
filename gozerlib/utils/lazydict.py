@@ -25,7 +25,7 @@ import types
 
 jsontypes = [types.StringType, types.UnicodeType, types.DictType, types.ListType, types.IntType]
 
-defaultignore = ['cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
+defaultignore = ['body', 'subs', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
 
 cpy = copy.deepcopy
 
@@ -44,6 +44,8 @@ def dumpelement(element, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
     new = {}
     for name in element:
+        if checkignore(name, defaultignore):
+            continue
         if not element[name]:
             continue
         try:
