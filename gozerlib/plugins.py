@@ -192,7 +192,7 @@ class Plugins(LazyDict):
             e.usercmnd = e.txt.split()[0].lower()
             logging.debug('creating event for %s' % e.txt)
             e.bot = bot
-            e.makeargs()
+            #e.makeargs()
             events.append(e)
 
         # loop over events .. chain queues

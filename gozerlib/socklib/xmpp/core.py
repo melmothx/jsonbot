@@ -217,6 +217,7 @@ class XMLStream(NodeBuilder):
 
             what = jabberstrip(stanza)
             what = toenc(stanza)
+            logging.debug("%s - incoming - %s" % (self.name, what))
             if not what.endswith('>') or not what.startswith('<'):
                 logging.error('%s - invalid stanza: %s' % (self.name, what))
                 return

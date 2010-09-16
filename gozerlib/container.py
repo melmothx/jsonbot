@@ -54,6 +54,3 @@ class Container(GozerEvent):
         self.hash = "sha512"
         self.hashkey = key
         self.digest = hmac.new(key, str(self.payload), hashlib.sha512).hexdigest()
-
-    def tojson(self):
-        return self.dump(idattributes)

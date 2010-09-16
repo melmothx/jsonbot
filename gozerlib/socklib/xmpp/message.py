@@ -134,7 +134,7 @@ class Message(GozerEvent):
             self.auth = self.stripped
 
         self.msg = not self.groupchat
-        self.makeargs()
+        #self.makeargs()
 
     def errorHandler(self):
         """ dispatch errors to their handlers. """

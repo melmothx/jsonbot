@@ -109,7 +109,7 @@ class Commands(LazyDict):
         try:
             cmnd = event.chan.data.aliases[cmnd]
             event.usercmnd = cmnd
-            event.makeargs()
+            #event.makeargs()
         except (TypeError, KeyError, AttributeError):
             pass
 
