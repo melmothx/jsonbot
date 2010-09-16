@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.gozerevent import GozerEvent
-
+from simplejson import dumps
 ## basic imports
 
 import hmac
@@ -53,4 +53,4 @@ class Container(GozerEvent):
     def makehmac(self, key):
         self.hash = "sha512"
         self.hashkey = key
-        self.digest = hmac.new(key, str(self.payload), hashlib.sha512).hexdigest()
+        self.digest = hmac.new(key, dumps(self.payload), hashlib.sha512).hexdigest()

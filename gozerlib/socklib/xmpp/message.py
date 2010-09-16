@@ -65,7 +65,7 @@ class Message(GozerEvent):
         restxt = self.makeresponse(txt, result, dot)
         restxt = self.normalize(restxt)
         res1, res2 = self.less(restxt, 900+extend)
-        self.out(res1, to)
+        self.bot.out(res1, to)
         self.bot.outmonitor(self.userhost, to or self.channel, res1, self)
 
     def out(self, txt, to=""):
