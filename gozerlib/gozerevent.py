@@ -29,6 +29,9 @@ import logging
 
 ## classes
 
+def XMLescape(txt):
+    return txt
+
 class GozerEvent(EventBase):
 
 

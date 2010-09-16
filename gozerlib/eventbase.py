@@ -63,7 +63,7 @@ class EventBase(LazyDict):
         self.origin = self.bot.user or self.bot.server
         self.origtxt = self.txt
         self.makeargs()
-        logging.debug("%s - prepared event - %s" % (self.auth, self.tojson()))
+        logging.debug("%s - prepared event - %s" % (self.auth, self.dump()))
 
     def finish(self, bot=None):
         """ finish a event to execute a command on it. """

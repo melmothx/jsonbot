@@ -99,7 +99,7 @@ class XMLStream(NodeBuilder):
     def handle_streamerror(self, data):
         """ default stream error handler. """
         #self.stopped = True
-        logging.error("%s - STREAMERROR - %s" % (self.name, data.orig))
+        logging.error("%s - STREAMERROR - %s" % (self.name, data))
  
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
@@ -311,7 +311,7 @@ class XMLStream(NodeBuilder):
                 try:
                     result = GozerEvent(subelement)
                     result.bot = self
-                    result.orig = data
+                    #result.orig = data
                     result.jabber = True
                     method(result) 
                 except Exception, ex:
@@ -331,7 +331,7 @@ class XMLStream(NodeBuilder):
             try:
                 result = GozerEvent(self.final)
                 result.bot = self
-                result.orig = data
+                #result.orig = data
                 result.jabber = True
                 method(result) 
 

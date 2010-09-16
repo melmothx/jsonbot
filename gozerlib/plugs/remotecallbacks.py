@@ -36,7 +36,8 @@ def preremotecb(bot, event):
 def remotecb(bot, event):
     """ dispatch an event. """
     try:
-        container = Container().load(event.txt)
+        #container = Container().load(event.txt)
+        container = Container(event.txt)
     except TypeError:
         logging.debug("remotecallbacks - not a remote event - %s " % event.userhost)
         return

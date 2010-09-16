@@ -40,7 +40,7 @@ def checkignore(name, ignore):
             return True
     return False
 
-def dumpelement(element, withtypes=True):
+def dumpelement(element, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
     new = {}
     for name in element:
@@ -52,9 +52,9 @@ def dumpelement(element, withtypes=True):
         except TypeError:
             if type(element) not in jsontypes:
                 if withtypes:
-                    new[name] =  unicode(type(element))
+                    new[name] = unicode(type(element))
             else:
-                new[name] = dumpelement(element[name], element)
+                new[name] = dumpelement(element[name])
     return new
 
 ## classes
@@ -88,11 +88,11 @@ class LazyDict(dict):
         return res
 
     def tojson(self):
-        return dumps(dumpelement(self, withtypes=False))
+        return dumps(dumpelement(self))
 
     def dump(self, attribs=[]):
         logging.debug("lazydict - dumping - %s" %  type(self))
-        return dumps(dumpelement(self, withtypes=True))
+        return dumpelement(self)
 
     def load(self, input):
         """ load from json string. """  
