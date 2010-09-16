@@ -96,10 +96,8 @@ class LazyDict(dict):
 
     def load(self, input):
         """ load from json string. """  
-        instr = input
-        print input
         try:   
-            temp = loads(instr)
+            temp = loads(input)
         except ValueError:
             handle_exception()
             logging.error("lazydict - can't decode %s" % input)

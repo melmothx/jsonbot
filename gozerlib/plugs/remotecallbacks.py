@@ -37,17 +37,13 @@ def preremotecb(bot, event):
 def remotecb(bot, event):
     """ dispatch an event. """
     try:
-        #container = Container().load(event.txt)
         container = Container().load(event.txt)
-        print container.dump()
     except TypeError:
         handle_exception()
         logging.warn("remotecallbacks - not a remote event - %s " % event.userhost)
         return
     if container.isremote:
         logging.debug('doing REMOTE callback')
-        #e = EventBase()
-        #e.parse(event)
         try:
             digest = hmac.new(str(container.hashkey), dumps(container.payload), hashlib.sha512).hexdigest()
             logging.warn("forward - digest is %s" % digest)
