@@ -60,7 +60,7 @@ class EventBase(LazyDict):
         self.result = []
         if bot: self.bot = bot
         assert(self.bot)
-        self.server = self.bot.server
+        self.server = self.bot.host or self.bot.server
         self.origtxt = self.txt
         self.makeargs()
         logging.debug("%s - prepared event - %s" % (self.auth, self.tojson()))

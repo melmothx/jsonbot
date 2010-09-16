@@ -54,14 +54,14 @@ else:
 ## functions
 
 def postmsg(username, txt):
-    result = splittxt(txt, 120)
+    result = splittxt(txt, 139)
     twitteruser = TwitterUser("users")
     token = twittertoken(CONSUMER_KEY, CONSUMER_SECRET, twitteruser, username)
     if not token:
         raise TweepError("Can't get twitter token")
     twitter = twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token)
     for txt in result:
-        status = twitter.update_status(txt[:119])
+        status = twitter.update_status(txt)
     # BHJTW need to check status
     return len(result)
     

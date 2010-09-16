@@ -162,15 +162,15 @@ class BotBase(LazyDict):
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
+        event.prepare()
         if event.server != self.server:
-            if self.gatekeeper.isblocked(event.server or event.origin): return
+            if self.gatekeeper.isblocked(event.server): return
         if event.status == "done":
             logging.debug("%s - event is done .. ignoring" % self.name)
             return
         if event.msg or event.isdcc: event.speed = 2
         self.status = "callback"
         starttime = time.time()
-        event.prepare()
         msg = "botbase - handling %s - %s" % (event.cbtype, event.auth)
         logging.warn(msg)
         e1 = cpy(event)
