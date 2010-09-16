@@ -72,8 +72,6 @@ def handle_whatis(bot, event):
     items = PlugPersist(event.channel)
     if items.data.has_key(event.rest) and items.data[event.rest]:
         event.reply("%s is " % event.rest, items.data[event.rest], dot=", ")
-    elif event.chan.data.info and event.chan.data.info.has_key(event.rest) and event.chan.info[event.rest]:
-        event.reply("%s is " % event.rest, event.chan.data.info[event.rest], dot=", ")
     else:
         event.reply("no information known about %s" % event.rest)
 

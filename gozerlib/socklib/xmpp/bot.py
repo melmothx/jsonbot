@@ -81,7 +81,7 @@ class SXMPPBot(XMLStream, BotBase):
         self.outqueue = Queue.Queue()
         self.inqueue = Queue.Queue()
         self.sock = None
-        self.me = self.user
+        self.me = self.cfg.user
         self.jid = self.me
         self.lastin = None
         self.test = 0

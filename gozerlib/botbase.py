@@ -29,6 +29,7 @@ from fleet import fleet
 from utils.name import stripname
 from tick import tickloop
 from threads import start_new_thread, threaded
+from gatekeeper import GateKeeper
 
 ## basic imports
 
@@ -55,10 +56,6 @@ reconnectlocked = lockdec(reconnectlock)
 class BotBase(LazyDict):
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
-        self.inqueue = Queue.Queue()
-        self.reconnectcount = 0
-        self.stopped = False
-        self.plugs = plugs or coreplugs
         if not botname and cfg: botname = cfg.botname
         if botname: self.botname = botname
         else: self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
@@ -67,6 +64,12 @@ class BotBase(LazyDict):
         if cfg: self.update(cfg)
         self.cfg = cfg or Config(self.fleetdir + os.sep + u'config')
         LazyDict.__init__(self)
+        self.inqueue = Queue.Queue()
+        self.reconnectcount = 0
+        self.stopped = False
+        self.plugs = plugs or coreplugs
+        self.gatekeeper = GateKeeper(self.botname)
+        self.gatekeeper.allow(self.host or self.server)
         try:
             import waveapi
             self.isgae = True
@@ -159,6 +162,8 @@ class BotBase(LazyDict):
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
+        if event.server != self.server:
+            if self.gatekeeper.isblocked(event.server or event.origin): return
         if event.status == "done":
             logging.debug("%s - event is done .. ignoring" % self.name)
             return

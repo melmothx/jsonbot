@@ -28,13 +28,11 @@ import hashlib
 ## defines
 
 cpy = copy.deepcopy
-gatekeeper = GateKeeper('gatekeeper-remote')
 
 ## callback
 
 def preremotecb(bot, event):
-    if gatekeeper.isblocked(event.auth or event.userhost): return False
-    if event.txt.startswith("{"): return True
+    if event.txt.startswith("{") and event.isremote: return True
     return False
 
 def remotecb(bot, event):
@@ -65,23 +63,3 @@ def remotecb(bot, event):
         return
 
 first_callbacks.add("MESSAGE", remotecb, preremotecb)
-
-def handle_remoteallow(bot, event):
-    if not event.rest:
-        event.missing("<userhost>")
-        return
-    gatekeeper.allow(event.rest)
-    event.done()
-       
-cmnds.add('remote-allow', handle_remoteallow, 'OPER')
-examples.add('remote-allow', 'add JID of remote bot that we allow to receice events from', 'remote-allow jsonbot@appspot.com')
-
-def handle_remotedeny(bot, event):
-    if not event.rest:
-        event.missing("<userhost>")
-        return
-    gatekeeper.deny(event.rest)
-    event.done()
-       
-cmnds.add('remote-deny', handle_remotedeny, 'OPER')
-examples.add('remote-deny', 'remove JID of remote bot', 'remote-deny evilfscker@pissof.com')

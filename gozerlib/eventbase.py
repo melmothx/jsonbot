@@ -46,7 +46,6 @@ class EventBase(LazyDict):
         self.bottype = "botbase"
         self.closequeue = True
         self.printto = self.channel
-        self.origin = self.userhost
         self.isremote = False
         self.ttl = 1
         self.how = "normal"
@@ -60,6 +59,8 @@ class EventBase(LazyDict):
     def prepare(self, bot=None):
         self.result = []
         if bot: self.bot = bot
+        assert(self.bot)
+        self.server = self.bot.server
         self.origtxt = self.txt
         self.makeargs()
         logging.debug("%s - prepared event - %s" % (self.auth, self.tojson()))

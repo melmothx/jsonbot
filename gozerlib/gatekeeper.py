@@ -22,7 +22,7 @@ class GateKeeper(Persist):
     def isblocked(self, userhost):
         userhost = userhost.lower()
         if userhost in self.data.whitelist:
-            logging.warn("%s - allowed %s" % (self.fn, userhost))
+            logging.debug("%s - allowed %s" % (self.fn, userhost))
             return False
         logging.warn("%s - denied %s" % (self.fn, userhost))
         return True
