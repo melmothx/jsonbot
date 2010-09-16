@@ -11,7 +11,6 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.callbacks import callbacks, remote_callbacks, first_callbacks
 from gozerlib.container import Container
 from gozerlib.eventbase import EventBase
-from gozerlib.remote.event import RemoteEvent
 from gozerlib.errors import NoProperDigest
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples

@@ -9,7 +9,6 @@
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks, remote_callbacks, last_callbacks, first_callbacks
 from gozerlib.eventbase import EventBase
-from gozerlib.remote.event import Container, RemoteEvent
 from gozerlib.persist import PlugPersist
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.examples import examples
