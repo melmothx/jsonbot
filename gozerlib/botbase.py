@@ -163,8 +163,8 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         event.prepare()
-        if event.server != self.server:
-            if self.gatekeeper.isblocked(event.server): return
+        if 'xmpp' in self.type and event.origin != self.user:
+            if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
             logging.debug("%s - event is done .. ignoring" % self.name)
             return
