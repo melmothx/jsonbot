@@ -69,7 +69,7 @@ class BotBase(LazyDict):
         self.stopped = False
         self.plugs = plugs or coreplugs
         self.gatekeeper = GateKeeper(self.botname)
-        self.gatekeeper.allow(self.host or self.server)
+        self.gatekeeper.allow(self.user or self.jid or self.server)
         try:
             import waveapi
             self.isgae = True
@@ -163,8 +163,7 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         event.prepare()
-        if 'xmpp' in self.type and event.origin != self.user:
-            if self.gatekeeper.isblocked(event.origin): return
+        if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
             logging.debug("%s - event is done .. ignoring" % self.name)
             return

@@ -13,7 +13,6 @@ from gozerlib.container import Container
 from gozerlib.eventbase import EventBase
 from gozerlib.remote.event import RemoteEvent
 from gozerlib.errors import NoProperDigest
-from gozerlib.gatekeeper import GateKeeper
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
@@ -32,7 +31,7 @@ cpy = copy.deepcopy
 ## callback
 
 def preremotecb(bot, event):
-    if event.txt.startswith("{") and event.isremote: return True
+    if event.txt.startswith("{"): return True
     return False
 
 def remotecb(bot, event):
@@ -45,7 +44,7 @@ def remotecb(bot, event):
     if container.isremote:
         logging.debug('doing REMOTE callback')
         e = EventBase()
-            #e.parse(event)
+        #e.parse(event)
         try:
             digest = hmac.new(str(container.hashkey), str(container.payload), hashlib.sha512).hexdigest()
             logging.debug("forward - digest is %s" % digest)
