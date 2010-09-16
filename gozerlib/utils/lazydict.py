@@ -25,7 +25,7 @@ import types
 
 jsontypes = [types.StringType, types.UnicodeType, types.DictType, types.ListType, types.IntType]
 
-defaultignore = ['body', 'subs', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
+defaultignore = ['origtxt', 'body', 'subelements', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
 
 cpy = copy.deepcopy
 
