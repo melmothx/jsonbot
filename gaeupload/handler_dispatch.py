@@ -78,15 +78,15 @@ class Dispatch_Handler(RequestHandler):
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
             event.finish()
-            #(userhost, user, u, nick) = checkuser(self.response, self.request, event)
-            #logging.("launching event: %s" % event.dump())
+            (userhost, user, u, nick) = checkuser(self.response, self.request, event)
+            bot.gatekeeper.allow(userhost)
             bot.doevent(event)
 
         except NoSuchCommand:
             event.reply("no such command: %s" % event.usercmnd)
         except Exception, ex:
             handle_exception()
-            self.send_error(500)
+            #self.send_error(500)
 
     get = post
 

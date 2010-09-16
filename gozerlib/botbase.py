@@ -69,7 +69,7 @@ class BotBase(LazyDict):
         self.stopped = False
         self.plugs = plugs or coreplugs
         self.gatekeeper = GateKeeper(self.botname)
-        self.gatekeeper.allow(self.user or self.jid or self.server)
+        self.gatekeeper.allow(self.user or self.jid or self.server or self.botname)
         try:
             import waveapi
             self.isgae = True

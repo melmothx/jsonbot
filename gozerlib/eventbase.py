@@ -62,8 +62,7 @@ class EventBase(LazyDict):
         assert(self.bot)
         self.origin = self.bot.user or self.bot.server
         self.origtxt = self.txt
-        if not self.isremote:
-            self.makeargs()
+        self.makeargs()
         logging.debug("%s - prepared event - %s" % (self.auth, self.dump()))
 
     def finish(self, bot=None):
