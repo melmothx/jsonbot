@@ -65,6 +65,7 @@ class BotBase(LazyDict):
         self.cfg = cfg or Config(self.fleetdir + os.sep + u'config')
         LazyDict.__init__(self)
         self.inqueue = Queue.Queue()
+        self.outqueue = Queue.Queue()
         self.reconnectcount = 0
         self.stopped = False
         self.plugs = plugs or coreplugs
@@ -149,13 +150,8 @@ class BotBase(LazyDict):
                 except Queue.Empty:
                     continue
                 if not res: continue
-                try:
-                    (printto, what, who, how, fromm, speed) = res
-                except ValueError:
-                    self.send(res)
-                    continue
                 if not self.stopped and not self.stopoutloop and printto not in self.nicks401:
-                    self.output(printto, what, who, how, fromm, speed)
+                    self.out(*res)
             time.sleep(0.1)
         logging.debug('%s - stopping output loop' % self.name)
 
@@ -212,7 +208,7 @@ class BotBase(LazyDict):
                 self.connect()
                 start_new_thread(self._outloop, ())
                 start_new_thread(self._eventloop, ())
-                if self.type == "irc": start_new_thread(self._readloop, ())
+                start_new_thread(self._readloop, ())
                 start_new_thread(self.joinchannels, ())
         self.status == "running"
         self.dostart(self.botname, self.type)

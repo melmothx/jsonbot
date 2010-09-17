@@ -19,42 +19,35 @@ import logging
 def predispatch(bot, event):
     #logging.debug(u"predispatch: %s" % unicode(event.dump()))
     if event.status == "done":
-        logging.debug("botbase - event is done .. ignoring")
-        return
-    if event.ttl <= 0:
-        logging.debug("botbase - ttl of event is 0 .. ignoring")
+        logging.debug("dispatch - event is done .. ignoring")
         return
     if event.isremote:
-        logging.warn("event is remote .. not dispatching")
+        logging.warn("dispatch - event is remote .. not dispatching")
         return
     return True
 
 def dispatch(bot, event):
     """ dispatch an event. """
-
     if event.nodispatch:
         logging.warn("dispatch - nodispatch option is set - ignoring %s" % event.userhost)
         return
     bot.status = "dispatch"
     bot.curevent = event
     go = False
-
     try:
+        event.finish()
         execstr = event.iscmnd()
         if execstr:
             event.usercmnd = execstr.split()[0]
             event.txt = execstr
-            event.finish()
             event.showexception = True
             result = bot.plugs.dispatch(bot, event)
         else:
-            logging.debug("dispatch - no go for %s (cc is %s)" % (event.userhost, execstr))
+            logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))
             result =  []
     except NoSuchCommand:
         logging.info("no such command: %s" % event.usercmnd)
-        #event.reply("no such command: %s" % event.usercmnd)
         result = []
-
     return result
 
 last_callbacks.add('PRIVMSG', dispatch, predispatch)

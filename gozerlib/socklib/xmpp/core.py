@@ -49,26 +49,13 @@ connectlocked = lockdec(connectlock)
 
 class XMLStream(NodeBuilder):
 
-    """
-        XMLStream.
-
-        :param host: host to connect to
-        :type host: string
-        :param port: port to connect to
-        :type port: int
-        :param name: name of the xmlstream
-        :type name: string
-
-    """
+    """ XMLStream. """
 
     def __init__(self, host, port, name='sxmpp'):
-        # start sets these
         self.name = name
-        # the connection
         self.connection = None
         self.encoding = "utf-8"
         self.stop = False
-        # parse state
         self.result = LazyDict()
         self.final = LazyDict()
         self.subelements = []
@@ -77,7 +64,6 @@ class XMLStream(NodeBuilder):
         self.tags = []
         self.host = host
         self.port = port
-        # handlers
         self.handlers = LazyDict()
         self.addHandler('proceed', self.handle_proceed)
         self.addHandler('message', self.handle_message)
@@ -98,61 +84,29 @@ class XMLStream(NodeBuilder):
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        #self.stopped = True
         logging.error("%s - STREAMERROR - %s" % (self.name, data))
  
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
-        #logging.debug("sxmpp.core - STREAMFEATURES: %s" % data)
+        logging.debug("sxmpp.core - STREAMFEATURES: %s" % LazyDict(data).dump())
          
     def addHandler(self, namespace, func):
-        """
-            add a namespace handler.
-
-            :param namespace: namespace to register handler for
-            :type namespace: string
-            :param func: handler function
-            :type func: function or method
-
-        """
+        """ add a namespace handler. """
         self.handlers[namespace] = func
 
     def delHandler(self, namespace):
-        """
-            delete a namespace handler.
-
-            :param namespace: namespace to delete handler for
-            :type namespace: string
-
-        """
+        """ delete a namespace handler. """
         del self.handlers[namespace]
 
     def getHandler(self, namespace):
-        """
-            get a namespace handler.
+        """ get a namespace handler. """
+        try: return self.handlers[namespace]
+        except KeyError: return None
 
-            :param namespace: namespace get handler for
-            :type namespace: string
-
-        """
-        try:
-            return self.handlers[namespace]
-        except KeyError:
-            return None
-
-    #@inlocked
     def loop_one(self, data):
-        """
-            handle one xml stanza.
-
-            :param data: data as received on the socket
-            :type data: string
-            :rtype: gozerbot.utils.lazydict.LazyDict
-
-        """
+        """ handle one xml stanza. """
         NodeBuilder.__init__(self)
         self._dispatch_depth = 2
-
         try:
             self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
@@ -163,19 +117,16 @@ class XMLStream(NodeBuilder):
         except Exception, ex:
             handle_exception()
             return {}
-
         return self.finish(data)
 
-    def _doprocess(self):
+    def _readloop(self):
         """ proces all incoming data. """
         logging.debug('%s - starting readloop' % self.name)
         self.buffer = ""
         self.error = ""
-
         while not self.stopped:
             try:
                 data = jabberstrip(fromenc(self.connection.read()))
-                #logging.debug("sxmpp - incoming - %s" % data)
                 if data == "":
                     logging.error('%s - remote disconnected' % self.name)
                     self.error = 'disconnected'
@@ -185,26 +136,19 @@ class XMLStream(NodeBuilder):
                     if not data.endswith(">"):
                         self.buffer += data
                         continue
-                    else:
-                        self.buffer += data
-
-                    #logging.debug('sxmpp.core - trying: %s' % self.buffer)
-                    #buf = XMLunescape(self.buffer)
+                    else: self.buffer += data
                     self.loop_one(self.buffer)
-
             except xml.parsers.expat.ExpatError, ex:
                 logging.error("%s - %s - %s" % (self.name, str(ex), data))
                 self.buffer = ""
                 self.error = str(ex)
                 self.disconnectHandler(ex)
                 break
-
             except Exception, ex:
                 handle_exception()
                 self.error = str(ex)
                 self.disconnectHandler(ex)
                 break
-
         logging.info('%s - stopping readloop .. %s' % (self.name, self.error or 'error not set'))
 
     def _raw(self, stanza):
@@ -214,7 +158,6 @@ class XMLStream(NodeBuilder):
             if not stanza:
                 logging.debug("%s - no stanze provided. called from: %s" % (self.name, whichmodule()))
                 return
-
             what = jabberstrip(stanza)
             what = toenc(stanza)
             logging.debug("%s - incoming - %s" % (self.name, what))
@@ -222,14 +165,9 @@ class XMLStream(NodeBuilder):
                 logging.error('%s - invalid stanza: %s' % (self.name, what))
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
-                #logging.debug("%s - raw - %s" % (self.name, what))
-                try:
-                    self.connection.send(what + u"\r\n")
-                except AttributeError:
-                    self.connection.write(what)
-            else:
-                logging.error('%s - invalid stanza: %s' % (self.name, what))
-
+                try: self.connection.send(what + u"\r\n")
+                except AttributeError: self.connection.write(what)
+            else: logging.error('%s - invalid stanza: %s' % (self.name, what))
         except socket.error, ex:
             if 'Broken pipe' in str(ex):
                 logging.debug('%s - core - broken pipe .. ignoring' % self.name)
@@ -237,7 +175,6 @@ class XMLStream(NodeBuilder):
                 return
             self.error = str(ex)
             handle_exception()
-
         except Exception, ex:
             self.error = str(ex)
             handle_exception()
@@ -246,12 +183,9 @@ class XMLStream(NodeBuilder):
         """ connect to the server. """
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(30)
-        if not self.port:
-            self.port = 5222
-        if self.server != 'localhost':
-            self.host = self.server
-        else:
-            self.host = self.cfg.host
+        if not self.port: self.port = 5222
+        if self.server != 'localhost': self.host = self.server
+        else: self.host = self.cfg.host
         logging.warn("%s - connecting to %s:%s" % (self.name, self.host, self.port))
         self.sock.connect((self.host, self.port))
         self.sock.setblocking(False)
@@ -290,59 +224,42 @@ class XMLStream(NodeBuilder):
         start_new_thread(self._doprocess, ())
 
     def finish(self, data):
-        """
-            finish processing of an xml stanza.
-
-            :param data: data which has been used to process the stanza
-            :type data: string
-            :rtype: gozerbot.utils.lazydict.LazyDict
-
-        """
+        """ finish processing of an xml stanza. """
         methods = []
         self.final['subelements'] = self.subelements
-
         for subelement in self.subelements:
             logging.debug("%s - %s" % (self.name, str(subelement)))
             for elem in subelement:
                 logging.debug("%s - setting %s handler" % (self.name, elem))
                 methods.append(self.getHandler(elem))
             for method in methods:
-                if not method:
-                    continue
+                if not method: continue
                 try:
                     result = GozerEvent(subelement)
                     result.bot = self
-                    #result.orig = data
+                    result.orig = data
                     result.jabber = True
                     method(result) 
-                except Exception, ex:
-                    handle_exception()
-
+                except Exception, ex: handle_exception()
         if self.tags:
             element = self.tags[0]
             logging.debug("%s - setting element: %s" % (self.name, element))
-        else:
-            element = 'stream'
-
+        else: element = 'stream'
         self.final['element'] = element
-
         method = self.getHandler(element)
-
         if method:
             try:
                 result = GozerEvent(self.final)
                 result.bot = self
-                #result.orig = data
+                result.orig = data
                 result.jabber = True
                 method(result) 
-
             except Exception, ex:
                 handle_exception()
                 result = {}
         else:
             logging.error("%s - can't find handler for %s" % (self.name, element))
             result = {}
-
         self.final = {}
         self.reslist = []
         self.tags = []
@@ -354,10 +271,8 @@ class XMLStream(NodeBuilder):
         """ handler called by the self._parser on start of a unknown start tag. """
         NodeBuilder.unknown_starttag(self, tag, attrs)
         self.cur = tag
-        if not self.tags:
-            self.final.update(attrs)
-        else:
-            self.result[tag] = attrs
+        if not self.tags: self.final.update(attrs)
+        else: self.result[tag] = attrs
         self.tags.append(tag)
  
     def unknown_endtag(self,  tag):
@@ -377,47 +292,30 @@ class XMLStream(NodeBuilder):
         data = dom.getData()
         if data:
             self.final[parentname] = data
-            if parentname == 'body':
-                self.final['txt'] = data
+            if parentname == 'body': self.final['txt'] = data
         attrs = dom.getAttributes()
         ns = dom.getNamespace()
         res[parentname] = LazyDict()
         res[parentname]['data'] = data
         res[parentname].update(attrs) 
-
-        if ns:
-            res[parentname]['xmlns'] = ns
-
+        if ns: res[parentname]['xmlns'] = ns
         for child in dom.getChildren():  
             name = child.getName()
             data = child.getData()
-
-            if data:
-                self.final[name] = data
-
+            if data: self.final[name] = data
             attrs = child.getAttributes()
             ns = child.getNamespace()
             res[parentname][name] = LazyDict()
             res[parentname][name]['data'] = data
             res[parentname][name].update(attrs) 
             self.final.update(attrs)
-
-            if ns:
-                res[parentname][name]['xmlns'] = ns
-
+            if ns: res[parentname][name]['xmlns'] = ns
         self.subelements.append(res)
 
     def disconnectHandler(self, ex):
-        """
-            handler called on disconnect.
-
-            :param ex: exception leading to the disconnect
-            :type ex: Exception
-
-        """
+        """ handler called on disconnect. """
         self.stopped = True
         logging.warn('%s - disconnected: %s' % (self.name, str(ex)))
-        #self.reconnect()
 
     def doreconnect(self):
         """ reconnect to the server. """
@@ -426,7 +324,5 @@ class XMLStream(NodeBuilder):
         if newbot.connect():
             self.jid += '.old'
             newbot.joinchannels()
-            if fleet.replace(botjid, newbot):
-                return True
-
+            if fleet.replace(botjid, newbot): return True
         return False

@@ -174,8 +174,9 @@ class EventBase(LazyDict):
                 self.chan.save()
         if not cc: cc = "!"
         if self.type == "DISPATCH": cc += "!"
-        logging.debug("cc for %s is %s (%s)" % (self.title or self.channel or event.userhost, cc, self.bot.nick))
+        logging.debug("dispatch - cc for %s is %s (%s)" % (self.title or self.channel or event.userhost, cc, self.bot.nick))
         matchnick = unicode(self.bot.nick + u":")
+        logging.warn("dispatch - trying to match %s" % self.txt)
         if self.txt and self.txt[0] in cc: return self.txt[1:]
         elif self.txt.startswith(matchnick): return self.txt[len(matchnick):]
         return False

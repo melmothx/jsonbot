@@ -29,12 +29,9 @@ class Presence(GozerEvent):
 
     def parse(self):
         """ set ircevent compatible attributes """
-        self.cmnd = 'Presence'
-        try:
-            self.nick = self.fromm.split('/')[1]
-        except (AttributeError, IndexError):
-            self.nick = ""
-
+        self.cmnd = 'PRESENCE'
+        try: self.nick = self.fromm.split('/')[1]
+        except (AttributeError, IndexError): self.nick = ""
         self.jid = self.jid or self.fromm
         self.ruserhost = self.jid
         self.userhost = str(self.jid)
@@ -45,8 +42,5 @@ class Presence(GozerEvent):
         self.printto = self.channel
         self.origtxt = self.txt
         self.time = time.time()
-        
-        if self.type == 'groupchat':
-            self.groupchat = True
-        else:
-            self.groupchat = False
+        if self.type == 'groupchat': self.groupchat = True
+        else: self.groupchat = False
