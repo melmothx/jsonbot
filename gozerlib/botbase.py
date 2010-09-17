@@ -105,26 +105,71 @@ class BotBase(LazyDict):
         except:
             pass
         self.setstate()
+        self.stopreadloop = False
+        self.stopoutloop = False
+        self.outputlock = thread.allocate_lock()
+        self.outqueues = [Queue.Queue() for i in range(10)]
+        self.tickqueue = Queue.Queue()
+        self.encoding = self.cfg.encoding or "utf-8"
         if not fleet.byname(self.name):
             fleet.bots.append(self)
         if not self.isgae:
             defaultrunner.start()
             cmndrunner.start()
             longrunner.start()
-            tickloop.start(self)
-
+            
     def put(self, event):
         self.inqueue.put_nowait(event)
 
-    def _inputloop(self):
+    def _eventloop(self):
         """ fetch events from the inqueue and handle them. """
-        logging.warn("%s - inputloop started" % self.name)
+        logging.warn("%s - eventloop started" % self.name)
         while not self.stopped:
             event = self.inqueue.get()
             if not event:
                 break
             self.doevent(event)
-        logging.warn("%s - inputloop stopped" % self.name)
+        logging.warn("%s - eventloop stopped" % self.name)
+
+    def _getqueue(self):
+        """ get one of the outqueues. """
+        go = self.tickqueue.get()
+        for index in range(len(self.outqueues)):
+            if not self.outqueues[index].empty(): return self.outqueues[index]
+
+    def _outloop(self):
+        """ output loop. """
+        logging.debug('%s - starting output loop' % self.name)
+        self.stopoutloop = 0
+        while not self.stopped and not self.stopoutloop:
+            queue = self._getqueue()
+            if queue:
+                try:
+                    res = queue.get() 
+                except Queue.Empty:
+                    continue
+                if not res: continue
+                try:
+                    (printto, what, who, how, fromm, speed) = res
+                except ValueError:
+                    self.send(res)
+                    continue
+                if not self.stopped and not self.stopoutloop and printto not in self.nicks401:
+                    self.output(printto, what, who, how, fromm, speed)
+            time.sleep(0.1)
+        logging.debug('%s - stopping output loop' % self.name)
+
+    def putonqueue(self, nr, *args):
+        """ put output onto one of the output queues. """
+        self.outqueues[10-nr].put_nowait(*args)
+        self.tickqueue.put_nowait('go')
+
+    def outputsizes(self):
+        """ return sizes of output queues. """
+        result = []  
+        for q in self.outqueues:
+            result.append(q.qsize())
+        return result
 
     def setstate(self, state=None):
         """ set state on the bot. """
@@ -137,7 +182,6 @@ class BotBase(LazyDict):
         if users:
             self.users = users
             return
-        # initialize users 
         import gozerlib.users as u
         if not u.users: u.users_boot()
         self.users = u.users
@@ -148,14 +192,28 @@ class BotBase(LazyDict):
         return self.plugs
 
     def joinchannels(self):
-        pass
+        """ join channels. """
+        time.sleep(3)
+        for i in self.state['joinedchannels']:
+            try:
+                channel = ChannelBase(i)
+                if channel: key = channel.getpass()
+                else: key=None
+                start_new_thread(self.join, (i, key))
+                time.sleep(1)
+            except Exception, ex:
+                logging.warn('%s - failed to join %s: %s' % (self.name, i, str(ex)))
+                handle_exception()
 
     def start(self, connect=True):
         """ start the mainloop of the bot. """
-        if not self.isgae: start_new_thread(self._inputloop, ())
-        if connect:
-            self.connect()
-            start_new_thread(self.joinchannels, ())
+        if not self.isgae: 
+            if connect:
+                self.connect()
+                start_new_thread(self._outloop, ())
+                start_new_thread(self._eventloop, ())
+                if self.type == "irc": start_new_thread(self._readloop, ())
+                start_new_thread(self.joinchannels, ())
         self.status == "running"
         self.dostart(self.botname, self.type)
 
@@ -171,7 +229,7 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         msg = "botbase - handling %s - %s" % (event.cbtype, event.auth)
-        logging.warn(msg)
+        logging.warn(msg.upper())
         e1 = cpy(event)
         e2 = cpy(event)
         e3 = cpy(event)
@@ -193,6 +251,7 @@ class BotBase(LazyDict):
         self.stopreadloop = True  
         self.connected = False
         self.put(None)
+        self.tickqueue.put_nowait('go')
         self.quit()
         time.sleep(1)
         self.shutdown()
@@ -336,8 +395,7 @@ class BotBase(LazyDict):
             handle_exception()
 
     def doreconnect(self):
-        #self.start()
-        pass
+        self.start()
 
     def invite(self, *args, **kwargs):
         """ invite another user/bot. """

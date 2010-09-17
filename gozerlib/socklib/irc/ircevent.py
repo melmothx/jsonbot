@@ -77,7 +77,6 @@ class Ircevent(EventBase):
 
         self.bottype = "irc"
         self.bot = bot
-        bot.nrevents += 1 
         self.ttl = 2
         rawstr = rawstr.rstrip()
         splitted = re.split('\s+', rawstr)
