@@ -372,7 +372,7 @@ class Irc(BotBase):
             'fd': fd
             }}
 
-    def outnocb(self, printto, what, how):
+    def outnocb(self, printto, what, how='msg'):
         if how == 'notice': self.notice(printto, what)
         elif how == 'ctcp': self.ctcp(printto, what)
         else: self.privmsg(printto, what)
