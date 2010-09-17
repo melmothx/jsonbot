@@ -226,6 +226,7 @@ class BotBase(LazyDict):
         starttime = time.time()
         msg = "botbase - handling %s - %s" % (event.cbtype, event.auth)
         logging.warn(msg.upper())
+        self.reloadcheck(event)
         e1 = cpy(event)
         e2 = cpy(event)
         e3 = cpy(event)
@@ -299,7 +300,6 @@ class BotBase(LazyDict):
         e.txt = e.origtxt
         e.cbtype = 'START'
         e.botoutput = False
-        e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname
         callbacks.check(self, e)
@@ -321,7 +321,6 @@ class BotBase(LazyDict):
         e.txt = txt
         e.cbtype = 'OUTPUT'
         e.botoutput = True
-        e.iscmnd = False
         e.ttl = 1
         e.nick = self.nick or self.botname
         e.prepare()
@@ -436,3 +435,31 @@ class BotBase(LazyDict):
         if txt: return unicode(txt) + dot.join(res)   
         elif res: return dot.join(res)
         return ""
+
+    def reloadcheck(self, event):
+        """ check if plugin need to be reloaded for callback, """
+        plugloaded = []
+        target = event.cbtype or event.cmnd
+        logging.debug("callbacks - checking for reload of %s (%s)" % (target, event.userhost))
+
+        try:
+            from boot import getcallbacktable   
+            plugins = getcallbacktable()[target]
+        except KeyError:
+            logging.debug("callbacks - can't find plugin to reload for %s" % event.cmnd)
+            return
+
+        from plugins import plugs
+
+        for name in plugins: 
+            if name in plugs:
+                logging.debug("callbacks - %s already loaded" % name)
+                continue
+            else:
+                logging.warn("on demand reloading of %s" % name)
+                try:
+                    plugloaded.append(plugs.reload(name, True))
+                except Exception, ex: 
+                    handle_exception()
+
+        return plugloaded

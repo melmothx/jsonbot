@@ -272,7 +272,7 @@ class IRCBot(Irc):
                 self.put(ievent)
             return
         self.put(ievent)
-        if not ievent.iscmnd: self.privwait.check(ievent)
+        if not ievent.iscmnd(): self.privwait.check(ievent)
 
     def handle_join(self, ievent):
         """ handle joins. """
