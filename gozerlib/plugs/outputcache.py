@@ -16,9 +16,10 @@ from gozerlib.examples import examples
 def handle_outputcache(bot, event):
     """ forward the output cache to the user. """
     res = get(event.channel)
-    if res:
+    if res and res[0]:
         for result in res:
-            event.writenocb(result)
+            if result:
+                event.writenocb(result)
 
 cmnds.add('outputcache', handle_outputcache, ['OPER', 'USER', 'GUEST'])
 examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache')

@@ -51,7 +51,6 @@ class WebEvent(EventBase):
             if not how:
                 try: how = request.GET['how']
                 except KeyError: pass
-        logging.warn("web - setting how to %s" % how)
         self.how = how
         if self.how == "undefined": self.how = "normal"
         input = request.get('content') or request.get('cmnd')
@@ -65,7 +64,6 @@ class WebEvent(EventBase):
                 try:
                     input = request.GET['content'] or request.GET['cmnd']
                 except KeyError: pass
-        logging.warn("web - input is %s" % input)
         self.isweb = True
         self.origtxt = fromenc(input.strip())
         self.txt = self.origtxt
@@ -81,7 +79,7 @@ class WebEvent(EventBase):
         self.stripped = stripped(self.auth)
         self.domain = None
         self.channel = stripped(userhost)
-        logging.info(u'web - parsed - %s (%s)' % (self.txt, self.userhost)) 
+        logging.info(u'web - parsed - %s - %s' % (self.txt, self.userhost)) 
         self.makeargs()
         return self
 
@@ -89,7 +87,7 @@ class WebEvent(EventBase):
         """ reply to this event """
         if self.checkqueues(result): return
         txt = self.bot.makeoutput(self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
-        self.bot._raw(self.response, txt)
+        self.bot._raw(txt, self.response)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self

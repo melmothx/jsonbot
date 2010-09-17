@@ -43,7 +43,7 @@ import types
 import os
 import logging
 
-logging.warn(getversion('DISPATCH'))
+logging.warn(getversion('GAE DISPATCH'))
 boot()
 
 bot = WebBot()

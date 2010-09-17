@@ -29,9 +29,11 @@ def handle_more(bot, ievent):
     if not txt:
         ievent.reply('no more data available for %s' % ievent.channel)
         return
-    if size:
-        txt += "<b> - %s more</b>" % str(size)
-    bot.out(ievent.channel, txt)
+    if size: txt += "<b> - %s more</b>" % str(size)
+    if bot.type == "web":
+        bot._raw(txt, ievent.response)
+    else:
+        bot.outnocb(ievent.channel, txt)
     bot.outmonitor(ievent.origin or ievent.userhost, ievent.channel, txt)
 
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'])

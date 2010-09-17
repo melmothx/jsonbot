@@ -121,9 +121,9 @@ try:
                     cfrom = whichmodule(3)
 
             if gotcache:
-                logging.info('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
+                logging.debug('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
             else:
-                logging.info('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
+                logging.debug('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
 
         def save(self):
             """ save json data to database. """
@@ -245,7 +245,7 @@ except ImportError:
                     os.rename(tmp, self.fn)
 
                 set(self.fn, data)
-                logging.info('persist - %s saved (%s)' % (self.fn, len(data)))
+                logging.warn('persist - %s saved (%s)' % (self.fn, len(data)))
 
             finally:
                 pass
