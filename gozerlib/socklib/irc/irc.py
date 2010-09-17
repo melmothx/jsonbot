@@ -372,16 +372,7 @@ class Irc(BotBase):
             'fd': fd
             }}
 
-    def output(self, printto, what, how):
-        what = self.normalize(what)
-        if 'socket' in repr(printto):
-            try:
-                printto.send(what + '\n')
-                time.sleep(0.001)
-            except Exception, ex :
-                if "Broken pipe" in str(ex) or "Bad file descriptor" in str(ex): return
-                raise
-            return   
+    def outnocb(self, printto, what, how):
         if how == 'notice': self.notice(printto, what)
         elif how == 'ctcp': self.ctcp(printto, what)
         else: self.privmsg(printto, what)

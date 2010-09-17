@@ -270,13 +270,13 @@ class BotBase(LazyDict):
         res1, nritems = self.less(printto, txt, nr+extend)
         return res1
 
-    def out(self, printto, txt, event=None, origin=None, *args, **kwargs):
-        self.outnocb(printto, txt)
+    def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
+        self.outnocb(printto, txt, how)
         self.outmonitor(origin or self.me, printto, txt)
 
     write = out
 
-    def outnocb(self, printto, txt, *args, **kwargs):
+    def outnocb(self, printto, txt, how="msg", *args, **kwargs):
         self._raw(txt)
 
     writenocb = outnocb
