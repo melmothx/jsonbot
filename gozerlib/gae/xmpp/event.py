@@ -11,6 +11,7 @@ from gozerlib.eventbase import EventBase
 from gozerlib.utils.xmpp import stripped, resource
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.gae.utils.auth import checkuser
+from gozerlib.utils.generic import  strippedtxt
 
 ## basic imports
 
@@ -37,7 +38,8 @@ class XMPPEvent(EventBase):
         return XMPPEvent().copyin(self)
 
     def normalize(self, what):
-        what = re.sub("\s+", " ", unicode(what))
+        #what = re.sub("\s+", " ", unicode(what))
+        what = strippedtxt(unicode(what))
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
         what = what.replace("&lt;b&gt;", "")
@@ -53,7 +55,7 @@ class XMPPEvent(EventBase):
         """ output data to user. txt is NOT escaped. """
 
         txt = self.normalize(txt)
-        txt = unicode(txt)
+        #txt = unicode(txt)
         logging.debug(u"xmpp - out - %s - %s" (self.userhost, txt))
 
         if txt:
@@ -113,6 +115,6 @@ class XMPPEvent(EventBase):
             #if not raw:
             #    txt = cgi.escape(txt)
             txt = self.normalize(txt)
-            logging.debug(u"xmpp - out - %s - %s" % (self.userhost, txt))
-            xmpp.send_message([self.userhost, ], txt, raw_xml=raw)
-            self.bot.outmonitor(self.origin, self.channel, txt, self)
+            logging.debug(u"xmpp - out - %s - %s" % (self.channel, txt))
+            xmpp.send_message([self.channel, ], txt, raw_xml=raw)
+            self.bot.outmonitor(self.channel, self.channel, txt, self)

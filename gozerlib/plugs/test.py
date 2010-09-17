@@ -161,3 +161,11 @@ def handle_testdocmnd(bot, ievent):
 
 cmnds.add('test-docmnd', handle_testdocmnd, 'OPER')
 examples.add('test-docmnd', 'test the bot.docmnd() method', 'test-docmnd version')
+
+def handle_testbork(bot, ievent):
+    txtlist = ["\00%s" % i for i in range(40)]
+    ievent.reply("borkers: 0 \000 1 \001 2 \002 3 \003 4 \004 5 \005 6 \006 7 \007 8 \008 9 \009 10 \010 11 \011 12 \012 13 \013 14 \014 15 \015 16 \016 17 \017 18 \018 19 \019 20 \020 21 \021 22 \022 23 \023 24 \024 25 \025 26 \026 27 \027 28 \028 29 \029 30 \030 31 \031")
+    bot.say(ievent.channel, "borkers: 0 \000 1 \001 2 \002 3 \003 4 \004 5 \005 6 \006 7 \007 8 \008 9 \009 10 \010 11 \011 12 \012 13 \013 14 \014 15 \015 16 \016 17 \017 18 \018 19 \019 20 \020 21 \021 22 \022 23 \023 24 \024 25 \025 26 \026 27 \027 28 \028 29 \029 30 \030 31 \031")
+
+cmnds.add('test-bork', handle_testbork, 'OPER')
+examples.add('test-bork', 'send all possible ascii chars', 'test-bork')

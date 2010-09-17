@@ -202,21 +202,33 @@ class BotBase(LazyDict):
     def _raw(self, txt):
         """ override this. """ 
         print txt
-        return self
 
-    def out(self, printto, txt, event=None, origin=None, groupchat=None):
-        pass
+    def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
+        txt = self.makeresponse(txt, result, dot)
+        if self.isdcc and self.sock:
+            self.sock.send(unicode(txt) + u"\n")
+            return True
+        res1, nritems = self.less(printto, txt, nr+extend)
+        return res1
 
-    def outnocb(self, printto, txt, event=None, origin=None, groupchat=None):
-        pass
+    def out(self, printto, txt, event=None, origin=None, *args, **kwargs):
+        self.outnocb(printto, txt)
+        self.outmonitor(origin or self.me, printto, txt)
 
-    def say(self, channel, txt, result=[], event=None, *args, **kwargs):
-        self._raw(self.makeresponse(txt, result))
-        return self
+    write = out
 
-    def saynocb(self, channel, txt, result=[], event=None, *args, **kwargs):
-        self._raw(self.makeresponse(txt, result))
-        return self
+    def outnocb(self, printto, txt, *args, **kwargs):
+        self._raw(txt)
+
+    writenocb = outnocb
+
+    def say(self, channel, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
+        txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
+        if txt: self.out(channel, txt)
+        
+    def saynocb(self, channel, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
+        txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
+        self.outnocb(channel, txt)
 
     def dostart(self, botname, bottype, *args, **kwargs):
         """ create an START event and send it to callbacks. """
@@ -282,23 +294,23 @@ class BotBase(LazyDict):
         except NoSuchCommand:
             e.reply("no such command: %s" % e.usercmnd)
 
-    def less(self, who, what, nr=365):
+    def less(self, printto, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
         if type(what) == types.ListType: txtlist = what
         else:
             what = what.strip()
             txtlist = splittxt(what, nr)
         size = 0
-        if not txtlist:
-            logging.debug("%s - can't split txt from %s" % (self.name, what))
+        if not txtlist:   
+            logging.debug("can't split txt from %s" % what)
             return ["", ""]
         res = txtlist[0]
-        size = len(txtlist) - 1
-        result = ""
-        if len(txtlist) > 1:
-            logging.debug("%s - addding %s lines to %s outputcache" % (self.name, len(txtlist), who))
-            self.outcache.add(who, txtlist[1:])
-        return [res, size]
+        length = len(txtlist)
+        if length > 1:
+            logging.debug("addding %s lines to %s outputcache" % (len(txtlist), printto))
+            self.outcache.set(printto, txtlist[1:])
+            res += "<b> - %s more<b>" % (length - 1) 
+        return [res, length]
 
     def join(self, channel, password, *args, **kwargs):
         """ join a channel. """
@@ -324,7 +336,8 @@ class BotBase(LazyDict):
             handle_exception()
 
     def doreconnect(self):
-        self.start()
+        #self.start()
+        pass
 
     def invite(self, *args, **kwargs):
         """ invite another user/bot. """
@@ -352,14 +365,11 @@ class BotBase(LazyDict):
 
     def save(self, *args, **kwargs):
         """ save bot state if available. """
-        if self.state:
-            self.state.save()
+        if self.state: self.state.save()
 
     def makeresponse(self, txt, result=[], dot=", ", *args, **kwargs):
         """ create a response from a string and result list. """
         res = []
-        # check if there are list in list
-
         if result:
             for i in result:
                 if type(i) == types.ListType or type(i) == types.TupleType:
@@ -369,11 +379,6 @@ class BotBase(LazyDict):
                         res.extend(i)
                 else:   
                     res.append(i)
-
-        if txt: 
-            return unicode(txt) + dot.join(res)   
-        elif result:
-            return dot.join(res)
-        return ""   
-
-    
+        if txt: return unicode(txt) + dot.join(res)   
+        elif res: return dot.join(res)
+        return ""

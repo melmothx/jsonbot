@@ -106,21 +106,14 @@ class ConsoleBot(BotBase):
 
         console.save_history()
 
-    def say(self, printto, txt, *args, **kwargs):
-        if not txt:
-            logging.warn("console - %s - no txt provided" % printto)
-            return
-        txt = self.normalize(txt)
-        self._raw(txt)
-        self.outmonitor(self.name, printto, txt)
-
     def _raw(self, txt):
         sys.stdout.write("\n")
         sys.stdout.write(txt)
         sys.stdout.write('\n')
 
     def normalize(self, what):
-        what = re.sub("\s+", " ", what)
+        #what = re.sub("\s+", " ", what)
+        what = strippedtxt(what)
         what = what.replace("<b>", self.BOLD)
         what = what.replace("</b>", self.ENDC)
         what = what.replace("&lt;b&gt;", self.BOLD)

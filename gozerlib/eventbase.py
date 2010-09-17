@@ -108,40 +108,18 @@ class EventBase(LazyDict):
 
     def writenocb(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
         if self.checkqueues(result): return
-        txt = self.makeresponse(txt, result, dot)
-        if self.isdcc:
-            self.sock.send(unicode(txt) + u"\n")
-            return
-        res1, nritems = self.less(txt, 1000+extend)
-        self.bot.saynocb(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        self.bot.writenocb(txt, result)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
-        return self
 
-    def write(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
-        if self.checkqueues(result): return
-        txt = self.makeresponse(txt, result, dot)
-        if self.isdcc:
-            self.sock.send(unicode(txt) + u"\n")
-            return
-        res1, nritems = self.less(txt, 1000+extend)
-        self.bot.saynocb(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
-        self.result.append(txt)
+    def write(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
+        self.writenocb(txt, result, event, origin, dot, nr, extend, *args, **kwargs)
         self.outqueue.put_nowait(txt)
-        return self
 
-    def reply(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
+    def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result): return
-        txt = self.makeresponse(txt, result, dot)
-        if self.isdcc:
-            try:
-                self.sock.send(unicode(txt) + u"\n")
-            except socket.error:
-                pass
-            return
-        res1, nritems = self.less(txt, 1000+extend)
-        self.bot.say(self.channel, res1, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self
@@ -184,22 +162,7 @@ class EventBase(LazyDict):
 
     def less(self, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
-        if type(what) == types.ListType: txtlist = what
-        else:
-            what = what.strip()
-            txtlist = splittxt(what, nr)
-        size = 0
-        if not txtlist:   
-            logging.debug("can't split txt from %s" % what)
-            return ["", ""]
-        res = txtlist[0]
-        length = len(txtlist)
-        if length > 1 and self.bot:
-            logging.debug("addding %s lines to %s outputcache" % (len(txtlist), self.channel))
-            self.bot.outcache.set(self.channel, txtlist[1:])
-            res += "<b> - %s more<b>" % (length - 1) 
-            self.chan.save()
-        return [res, length]
+        return self.bot.less(what, nr)
 
     def iscmnd(self):
         """ check if event is a command. """

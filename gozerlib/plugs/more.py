@@ -29,17 +29,10 @@ def handle_more(bot, ievent):
     if not txt:
         ievent.reply('no more data available for %s' % ievent.channel)
         return
-
-    ievent.chan.save()
-    #size = bot.outcache.size(0)
     if size:
         txt += "<b> - %s more</b>" % str(size)
-
-    if ievent.bottype == "irc" and ievent.msg:
-        bot.say(ievent.nick, txt)
-    else:
-        ievent.write(txt)
-        bot.outmonitor(ievent.userhost, ievent.channel, txt)
+    bot.out(ievent.channel, txt)
+    bot.outmonitor(ievent.origin or ievent.userhost, ievent.channel, txt)
 
 cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'])
 examples.add('more', 'return txt from output cache', 'more')

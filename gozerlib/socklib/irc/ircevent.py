@@ -190,11 +190,11 @@ class Ircevent(EventBase):
             self.sock.send(restxt)
             self.sock.send("\n")
             return
-        res1, nritems = self.less(restxt, 365+extend)
+        #res1, nritems = self.less(restxt, 365+extend)
+        res1 = restxt
         target = to or self.printto
-        if res1:
-            self.bot.out(target, res1, 'msg')
-            self.bot.outmonitor(self.userhost, target, res1, self)
+        self.bot.out(target, res1, 'msg')
+        self.bot.outmonitor(self.userhost, target, res1, self)
 
 ## postfix count aka how many arguments
 
