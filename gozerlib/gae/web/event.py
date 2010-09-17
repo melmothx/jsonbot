@@ -41,41 +41,30 @@ class WebEvent(EventBase):
 
     def parse(self, response, request):
         """ parse request/response into a WebEvent. """
-        #logging.warn('%s %s' % (dir(request), dir(response)))
-        #logging.warn(str(request.environ))
         how = request.get('how')
         if not how:
-            try:
-                how = request.params.getone('how')
-            except KeyError:
-                how = "normal"
+            try: how = request.params.getone('how')
+            except KeyError: how = "normal"
             except Exception, ex:
                 how = "normal"
                 handle_exception()
             if not how:
-                try:
-                    how = request.GET['how']
-                except KeyError:
-                    pass
+                try: how = request.GET['how']
+                except KeyError: pass
         logging.warn("web - setting how to %s" % how)
         self.how = how
-        if self.how == "undefined":
-            self.how = "normal"
+        if self.how == "undefined": self.how = "normal"
         input = request.get('content') or request.get('cmnd')
         if not input:
-            try:
-                input = request.params.getone('content') or request.params.getone('cmnd')
-            except KeyError:
-                input = ""
+            try: input = request.params.getone('content') or request.params.getone('cmnd')
+            except KeyError: input = ""
             except Exception, ex:
                 input = ""
                 handle_exception()
             if not input:
                 try:
                     input = request.GET['content'] or request.GET['cmnd']
-                except KeyError:
-                    pass
-        #logging.warn(dir(request))
+                except KeyError: pass
         logging.warn("web - input is %s" % input)
         self.isweb = True
         self.origtxt = fromenc(input.strip())
@@ -93,48 +82,14 @@ class WebEvent(EventBase):
         self.domain = None
         self.channel = stripped(userhost)
         logging.info(u'web - parsed - %s (%s)' % (self.txt, self.userhost)) 
+        self.makeargs()
         return self
 
-    def _raw(self, txt, end=u""):
-        """ 
-            put txt onto the reponse object .. adding end string if provided. 
-            output is NOT escaped.
-
-        """
-        #logging.debug(u'web - out - %s - %s' % (self.userhost, str(txt)))
-        self.response.out.write(txt + end)
-
-    def write(self, txt, start=u"", end=u"<br>", raw=False):
-        self.writenocb(txt, start, end, raw)
+    def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
+        """ reply to this event """
+        if self.checkqueues(result): return
+        txt = self.bot.makeoutput(self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        self.bot._raw(self.response, txt)
         self.result.append(txt)
-        self.bot.outmonitor(self.userhost, self.channel, txt, self)
-
-    def writenocb(self, txt, start=u"", end=u"<br>", raw=False):
-        """ 
-            put txt onto the reponse object .. adding end string if provided. 
-            output IS escaped.
-
-        """
-        if not raw:
-            txt = cgi.escape(txt)
-            txt = self.normalize(txt)
-        if "http://" in txt:
-            for item in re_url_match.findall(txt):
-                 logging.debug("web - raw - found url - %s" % item)
-                 txt = re.sub(item, '<a href="%s" onclick="window.open(\'%s\'); return false;">%s</a>' % (item, item, item), txt)
-        self.result.append(txt)
-        self._raw(start + txt + end)
-
-    def reply(self, txt, resultlist=[], event=None, origin=u"", dot=u", ", raw=False, *args, **kwargs):
-        """ send reply to the web user. """
-
-        if self.checkqueues(resultlist):
-            return
-
-        if resultlist:
-            txt = u"<b>" + txt + u"</b>"
-        result = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
-
-        (res1, res2) = self.less(result, 1500)
-        self.write(res1, raw=raw)
-
+        self.outqueue.put_nowait(txt)
+        return self

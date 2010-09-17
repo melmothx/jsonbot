@@ -141,6 +141,7 @@ class Commands(LazyDict):
 
     def doit(self, bot, event, target, wait=0):
         """ do the dispatching. """
+        event.makeargs()
         id = event.auth or event.userhost
         event.iscmnd = True
         logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))

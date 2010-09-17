@@ -25,12 +25,12 @@ class WebBot(BotBase):
             self.cfg['type'] = u'web'
         self.isgae = True
         self.type = u"web"
-        
-    def say(self, channel, txt, *args, **kwargs):
-        """ saying on a webbot add it to the output cache. """
-        self.saynocb(channel, txt, *args, **kwargs)        
-        self.outmonitor(self.name, channel, txt)
 
-    def saynocb(self, channel, txt, *args, **kwargs):
-        logging.debug(u"web - out - %s - %s" % (channel, txt))
+    def _raw(self, response, txt, end=u""):
+        """  put txt to the client. """
+        logging.warn(u'web - OUT - %s - %s' % (self.userhost, str(txt)))
+        response.out.write(txt + end)
+        
+    def outnocb(self, channel, txt, *args, **kwargs):
+        logging.debug(u"web - OUT - %s - %s" % (channel, txt))
         add(channel, [txt, ])

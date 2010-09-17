@@ -217,7 +217,7 @@ def handle_helpplug(bot, ievent):
 
     try:
         what = ievent.args[0]
-    except IndexError:
+    except (IndexError, TypeError):
         ievent.reply("available plugins: ", getpluginlist())
         ievent.write('see !help <plugin> for help on a plugin.')
         return

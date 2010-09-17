@@ -36,6 +36,7 @@ def dispatch(bot, event):
     go = False
     try:
         event.finish()
+        event.makeargs()
         execstr = event.iscmnd()
         if execstr:
             event.usercmnd = execstr.split()[0]
