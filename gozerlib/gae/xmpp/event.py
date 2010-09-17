@@ -90,7 +90,7 @@ class XMPPEvent(EventBase):
         logging.debug(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 
-    def reply(self, txt, resultlist=[], event=None, origin="", dot=", ", extend=0, raw=True, *args, **kwargs):
+    def reply(self, txt, resultlist=[], event=None, origin="", dot=", ", extend=0, raw=False, *args, **kwargs):
 
         """ reply with txt and optional resultlist. result lists can be 
             passed on onto the events queues. 
@@ -110,9 +110,9 @@ class XMPPEvent(EventBase):
 
         if txt:
             from google.appengine.api import xmpp
-            if not raw:
-                txt = cgi.escape(txt)
+            #if not raw:
+            #    txt = cgi.escape(txt)
             txt = self.normalize(txt)
             logging.debug(u"xmpp - out - %s - %s" % (self.userhost, txt))
-            xmpp.send_message([self.userhost, ], txt)
+            xmpp.send_message([self.userhost, ], txt, raw_xml=raw)
             self.bot.outmonitor(self.origin, self.channel, txt, self)

@@ -36,7 +36,7 @@ class XMPPBot(BotBase):
         if type(jids) == types.StringType:
             jids = [jids, ]
 
-        logging.debug('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
+        #logging.debug('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
         for jid in jids:
             self.outmonitor(self.nick, jid, body)
@@ -49,7 +49,7 @@ class XMPPBot(BotBase):
         if type(jids) == types.StringType:
             jids = [jids, ]
 
-        logging.debug('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
+        #logging.debug('xmpp - out - %s - %s' % (unicode(jids), unicode(body)))
         xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
     def out(self, printto, txt, event=None, origin=None, groupchat=None):

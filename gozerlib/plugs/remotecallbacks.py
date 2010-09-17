@@ -15,6 +15,7 @@ from gozerlib.eventbase import EventBase
 from gozerlib.errors import NoProperDigest
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
+from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape, XMLunescape
 
 ## basic imports
 
