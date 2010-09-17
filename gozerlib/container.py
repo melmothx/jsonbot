@@ -53,4 +53,4 @@ class Container(GozerEvent):
     def makehmac(self, key):
         self.hash = "sha512"
         self.hashkey = key
-        self.digest = hmac.new(key, dumps(self.payload), hashlib.sha512).hexdigest()
+        self.digest = hmac.new(key, self.payload, hashlib.sha512).hexdigest()
