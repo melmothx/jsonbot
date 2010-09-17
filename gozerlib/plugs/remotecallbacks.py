@@ -45,14 +45,14 @@ def remotecb(bot, event):
     if container.isremote:
         logging.debug('doing REMOTE callback')
         try:
-            digest = hmac.new(str(container.hashkey), dumps(container.payload), hashlib.sha512).hexdigest()
+            digest = hmac.new(str(container.hashkey), container.payload, hashlib.sha512).hexdigest()
             logging.warn("forward - digest is %s" % digest)
         except TypeError:
             handle_exception()
             logging.error("forward - can't load payload - %s" % container.payload)
             return
         if container.digest == digest:
-            e = EventBase(container.payload)
+            e = EventBase().load(container.payload)
         else:
             raise NoProperDigest()
         remote_callbacks.check(bot, e)
