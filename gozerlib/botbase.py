@@ -192,6 +192,7 @@ class BotBase(LazyDict):
         time.sleep(3)
         for i in self.state['joinedchannels']:
             try:
+                logging.warn("%s - joining %s" % (self.name, i))
                 channel = ChannelBase(i)
                 if channel: key = channel.getpass()
                 else: key=None
