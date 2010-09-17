@@ -150,7 +150,7 @@ class BotBase(LazyDict):
                 except Queue.Empty:
                     continue
                 if not res: continue
-                if not self.stopped and not self.stopoutloop and printto not in self.nicks401:
+                if not self.stopped and not self.stopoutloop:
                     self.out(*res)
             time.sleep(0.1)
         logging.debug('%s - stopping output loop' % self.name)
@@ -268,7 +268,7 @@ class BotBase(LazyDict):
 
     def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
         self.outnocb(printto, txt, how)
-        self.outmonitor(origin or self.me, printto, txt)
+        self.outmonitor(origin or printto	, printto, txt)
 
     write = out
 

@@ -192,7 +192,7 @@ class Ircevent(EventBase):
         #res1, nritems = self.less(restxt, 365+extend)
         res1 = restxt
         target = to or self.printto
-        self.bot.out(target, res1, 'msg')
+        self.bot.outnocb(target, res1, 'msg')
         self.bot.outmonitor(self.userhost, target, res1, self)
 
 ## postfix count aka how many arguments
