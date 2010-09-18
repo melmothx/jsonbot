@@ -129,8 +129,8 @@ def toenc(what, encoding='utf-8'):
         what=  u""
 
     try:
-        #w = unicode(what)
-        return what.encode(encoding)
+        w = unicode(what)
+        return w.encode(encoding)
     except UnicodeDecodeError:
         logging.debug("%s - can't encode %s to %s" % (whichmodule(2), what, encoding))
         raise

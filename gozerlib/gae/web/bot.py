@@ -8,6 +8,7 @@
 
 from gozerlib.botbase import BotBase
 from gozerlib.outputcache import add
+from gozerlib.utils.generic import toenc, fromenc
 
 ## basic imports
 
@@ -28,17 +29,25 @@ class WebBot(BotBase):
     def _raw(self, txt, response=None, end=u""):
         """  put txt to the client. """
         if txt and response: 
-            logging.warn(u'web - OUT - %s' % str(txt))
-            response.out.write(txt + end)
+            logging.warn(u'web - OUT - %s' % unicode(txt))
+            response.out.write(toenc(txt + end))
 
     def send(self, printto, txt, response=None, end=u""):
         if response:
             self._raw(txt, response)
-            self.outmonitor(self.me, printto, txt)
+            self.outmonitor(self.nick or self.me, printto, txt)
 
     def sendnocb(self, printto, txt, response=None, end=u""):
         if response:
             self._raw(txt, response)
      
+    def out(self, channel, txt, *args, **kwargs):
+        self.outnocb(channel, [txt, ])
+        self.outmonitor(self.nick or self.me, channel, txt)
+
+    write = out
+
     def outnocb(self, channel, txt, *args, **kwargs):
         add(channel, [txt, ])
+     
+    writenocb = outnocb

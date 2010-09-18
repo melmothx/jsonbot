@@ -65,7 +65,7 @@ class WebEvent(EventBase):
                     input = request.GET['content'] or request.GET['cmnd']
                 except KeyError: pass
         self.isweb = True
-        self.origtxt = fromenc(input.strip())
+        self.origtxt = fromenc(input.strip(), self.bot.encoding)
         self.txt = self.origtxt
         self.usercmnd = self.txt and self.txt.split()[0]
         self.groupchat = False

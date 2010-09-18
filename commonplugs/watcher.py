@@ -119,13 +119,9 @@ watched = Watched('channels')
 ## functions
 
 def writeout(botname, type, channel, txt):
-    if True:
-        watchbot = fleet.byname(botname)
-        if not watchbot:
-            watchbot = fleet.makebot(type, botname)
-
-        if watchbot:
-            watchbot.outnocb(channel, txt)
+    watchbot = fleet.byname(botname)
+    if not watchbot: watchbot = fleet.makebot(type, botname)
+    if watchbot: watchbot.outnocb(channel, txt)
 
 ## callbacks
 

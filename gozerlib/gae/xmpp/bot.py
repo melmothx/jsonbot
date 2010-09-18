@@ -28,27 +28,18 @@ class XMPPBot(BotBase):
         self.isgae = True
         self.type = "xmpp"
 
-    def say(self, jids, body, from_jid=None, message_type=None, raw_xml=False, extend=0, *args, **kwargs):
+    def out(self, jids, txt, how="msg", event=None, origin=None, groupchat=None, *args, **kwargs):
         """ output xmpp message. """
-        from google.appengine.api import xmpp
-        if not message_type: message_type = xmpp.MESSAGE_TYPE_CHAT
-        if type(jids) == types.StringType: jids = [jids, ]
-        xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
+        self.outnocb(printto, txt)
         for jid in jids:
-            self.outmonitor(self.nick, jid, body)
+            self.outmonitor(self.nick, jid, txt)
 
-    def saynocb(self, jids, body, from_jid=None, message_type=None, raw_xml=False, extend=0):
+    def outnocb(self, jids, txt, from_jid=None, message_type=None, raw_xml=False, event=None, origin=None, groupchat=None, *args, **kwargs):
         """ output xmpp message. """
         from google.appengine.api import xmpp
         if not message_type: message_type = xmpp.MESSAGE_TYPE_CHAT
         if type(jids) == types.StringType: jids = [jids, ]
-        xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
-
-    def out(self, printto, txt, how="msg", event=None, origin=None, groupchat=None, *args, **kwargs):
-        self.say(printto, txt)
-
-    def outnocb(self, printto, txt, event=None, origin=None, groupchat=None, *args, **kwargs):
-        self.saynocb(printto, txt)
+        xmpp.send_message(jids, txt, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
     def invite(self, jid):
         from google.appengine.api import xmpp

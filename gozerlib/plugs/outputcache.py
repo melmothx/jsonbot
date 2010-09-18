@@ -18,8 +18,7 @@ def handle_outputcache(bot, event):
     res = get(event.channel)
     if res:
         for result in res:
-            if result:
-                bot.writenocb(event.channel, result)
+            bot.writenocb(event.channel, result)
 
 cmnds.add('outputcache', handle_outputcache, ['OPER', 'USER', 'GUEST'])
 examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache')
