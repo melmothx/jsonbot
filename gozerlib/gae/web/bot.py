@@ -27,8 +27,14 @@ class WebBot(BotBase):
 
     def _raw(self, txt, response=None, end=u""):
         """  put txt to the client. """
-        logging.warn(u'web - OUT - %s' % str(txt))
-        if response: response.out.write(txt + end)
-        
+        if txt and response: 
+            logging.warn(u'web - OUT - %s' % str(txt))
+            response.out.write(txt + end)
+
+    def send(self, printto, txt, response=None, end=u""):
+        if response:
+            self._raw(txt, response)
+            self.outmonitor(self.me, printto, txt)
+     
     def outnocb(self, channel, txt, *args, **kwargs):
         add(channel, [txt, ])

@@ -46,7 +46,6 @@ class EventBase(LazyDict):
         self.bottype = "botbase"
         self.closequeue = True
         self.printto = self.channel
-        self.isremote = False
         self.ttl = 1
         self.how = "normal"
 
@@ -164,8 +163,12 @@ class EventBase(LazyDict):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
         return self.bot.less(what, nr)
 
+    def isremote(self):
+        if self.txt: return self.txt.startswith('{"')
+
     def iscmnd(self):
         """ check if event is a command. """
+        if self.txt and self.txt.startswith('{"'): return # isremote
         cc = "!"
         if self.chan: 
             cc = self.chan.data.cc

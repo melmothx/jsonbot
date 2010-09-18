@@ -31,7 +31,7 @@ def handle_more(bot, ievent):
         return
     if size: txt += "<b> - %s more</b>" % str(size)
     if bot.type == "web":
-        bot._raw(txt, ievent.response)
+        bot.send(ievent.channel, txt, ievent.response)
     else:
         bot.outnocb(ievent.channel, txt)
     bot.outmonitor(ievent.origin or ievent.userhost, ievent.channel, txt)

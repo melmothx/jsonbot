@@ -11,7 +11,7 @@ from runner import defaultrunner, cmndrunner, longrunner
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
-from callbacks import callbacks, first_callbacks, last_callbacks
+from callbacks import callbacks, first_callbacks, last_callbacks, remote_callbacks
 from eventbase import EventBase
 from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet, NoEventProvided
 from datadir import datadir
@@ -218,22 +218,32 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         event.prepare()
-        if self.gatekeeper.isblocked(event.origin): return
-        if event.status == "done":
-            logging.debug("%s - event is done .. ignoring" % self.name)
-            return
-        if event.msg or event.isdcc: event.speed = 2
         self.status = "callback"
         starttime = time.time()
         msg = "botbase - handling %s - %s" % (event.cbtype, event.auth)
         logging.warn(msg.upper())
+        logging.warn("botbase - event dump - %s" % event.dump())
+        if self.gatekeeper.isblocked(event.origin): return
+        if event.status == "done":
+            logging.debug("%s - event is done .. ignoring" % self.name)
+            return
         self.reloadcheck(event)
+        if event.isremote():
+            logging.warn("botbase - event is REMOTE")
+            e0 = cpy(event)
+            e0.speed = 1
+            remote_callbacks.check(self, e0)
+            return
+        if event.msg or event.isdcc: event.speed = 2
         e1 = cpy(event)
         e2 = cpy(event)
         e3 = cpy(event)
         first_callbacks.check(self, e1)
-        callbacks.check(self, e2)
-        last_callbacks.check(self, e3)
+        if not event.forwarded:
+            e2 = cpy(event)
+            callbacks.check(self, e2)
+            e3 = cpy(event)
+            last_callbacks.check(self, e3)
         event.callbackdone = True
 
     def ownercheck(self, userhost):

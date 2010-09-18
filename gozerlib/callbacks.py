@@ -58,7 +58,6 @@ class Callbacks(object):
     """
 
     def __init__(self):
-        # self.cbs holds the dict of lists. entry value is the event (string).
         self.cbs = Dol()
 
     def size(self):
@@ -155,8 +154,9 @@ class Callbacks(object):
                     return
             if not cb.func:
                 return
-            if event.cbtype != "TICK": logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
-            else: logging.debug('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
+            if event.isremote(): logging.warn('REMOTE - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
+            elif event.cbtype != "TICK": logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
+            else: logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             event.iscallback = True
             if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
             else:

@@ -54,14 +54,14 @@ cpy = copy.deepcopy
 
 def forwardoutpre(bot, event):
     logging.debug("forward - pre - %s" % event.channel)
-    if event.channel.lower() in forward.data.channels and not event.isremote:
-        if not event.how == "background":
+    if event.channel.lower() in forward.data.channels and not event.isremote():
+        if event.how != u"background":
             return True
+    return False
 
 def forwardoutcb(bot, event):
     e = cpy(event)
-    logging.debug("forward - cbtype is %s" % event.cbtype)
-    e.isremote = True
+    logging.warn("forward - cbtype is %s - %s" % (event.cbtype, event.how))
     e.forwarded = True
     e.source = bot.jid
     e.botname = bot.server or bot.name
@@ -73,17 +73,13 @@ def forwardoutcb(bot, event):
             except Exception, ex:
                 handle_exception()
             continue
-
         outbot = fleet.getfirstjabber(bot.isgae)
-        if not outbot and bot.isgae:
-            outbot = fleet.makebot('xmpp', 'forwardbot')
+        if not outbot and bot.isgae: outbot = fleet.makebot('xmpp', 'forwardbot')
         if outbot:
             e.source = outbot.jid
             container = Container(outbot.jid, e.tojson())
-            container.isremote = True
             outbot.outnocb(jid, container.tojson()) 
-        else:
-            logging.error("forward - no xmpp bot found in fleet".upper())
+        else: logging.error("forward - no xmpp bot found in fleet".upper())
 
 first_callbacks.add('BLIP_SUBMITTED', forwardoutcb, forwardoutpre)
 first_callbacks.add('MESSAGE', forwardoutcb, forwardoutpre)

@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks, remote_callbacks
+from gozerlib.callbacks import callbacks, remote_callbacks, last_callbacks, first_callbacks
 from gozerlib.persist import PlugPersist
 from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
@@ -125,40 +125,30 @@ def writeout(botname, type, channel, txt):
             watchbot = fleet.makebot(type, botname)
 
         if watchbot:
-            watchbot.saynocb(channel, txt)
+            watchbot.outnocb(channel, txt)
 
 ## callbacks
 
 def prewatchcallback(bot, event):
     """ watch callback precondition. """
-    #logging.debug("watcher - pre - %s - %s - %s" % (event.channel, event.userhost, event.txt))
-    return watched.check(event.channel) and event.txt and not event.how == "background"
+    logging.warn("watcher - checking %s - %s" % (event.channel, event.userhost))
+    return watched.check(event.channel) and event.txt and event.how != "background" and event.forwarded
 
 @locked
 def watchcallback(bot, event):
     """ the watcher callback, see if channels are followed and if so send data. """
-    if not event.txt:
-        return
-
+    if not event.txt: return
     subscribers = watched.subscribers(event.channel)
     watched.data.descriptions[event.channel.lower()] = event.title
-    logging.debug("watcher - out - %s - %s" % (str(subscribers), event.txt))
+    logging.warn("watcher - %s - %s" % (event.channel, str(subscribers)))
     for item in subscribers:
         try:
             (botname, type, channel) = item
-        except ValueError:
-            continue
-
-        if not event.nick:
-            orig = event.stripped or event.userhost
-        else:
-            orig = event.nick
-
-        if orig == bot.nick:
-            txt = u"[!] %s" % event.txt
-        else:
-            txt = u"[%s] %s" % (orig, event.txt)
-        #logging.debug("watcher - %s - %s" % (type, txt))
+        except ValueError: continue
+        if not event.nick: orig = event.stripped or event.userhost
+        else: orig = event.nick
+        if orig == bot.nick: txt = u"[!] %s" % event.txt
+        else: txt = u"[%s] %s" % (orig, event.txt)
         if txt.count('] [') > 2:
             logging.debug("watcher - %s - skipping %s" % (type, txt))
             continue
@@ -170,17 +160,17 @@ def watchcallback(bot, event):
             writeout(botname, type, channel, txt)
 
 
-remote_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
-remote_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
-remote_callbacks.add('JOIN', watchcallback, prewatchcallback)
-remote_callbacks.add('PART', watchcallback, prewatchcallback)
-remote_callbacks.add('QUIT', watchcallback, prewatchcallback)
-remote_callbacks.add('NICK', watchcallback, prewatchcallback)
-remote_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
-remote_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
-remote_callbacks.add('CONSOLE', watchcallback, prewatchcallback)
-remote_callbacks.add('WEB', watchcallback, prewatchcallback)
-remote_callbacks.add('DISPATCH', watchcallback, prewatchcallback)
+first_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
+first_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
+first_callbacks.add('JOIN', watchcallback, prewatchcallback)
+first_callbacks.add('PART', watchcallback, prewatchcallback)
+first_callbacks.add('QUIT', watchcallback, prewatchcallback)
+first_callbacks.add('NICK', watchcallback, prewatchcallback)
+first_callbacks.add('OUTPUT', watchcallback, prewatchcallback)
+first_callbacks.add('MESSAGE', watchcallback, prewatchcallback)
+first_callbacks.add('CONSOLE', watchcallback, prewatchcallback)
+first_callbacks.add('WEB', watchcallback, prewatchcallback)
+first_callbacks.add('DISPATCH', watchcallback, prewatchcallback)
 
 ## commands
 

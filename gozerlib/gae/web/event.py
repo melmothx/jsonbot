@@ -48,9 +48,9 @@ class WebEvent(EventBase):
             except Exception, ex:
                 how = "normal"
                 handle_exception()
-            if not how:
-                try: how = request.GET['how']
-                except KeyError: pass
+        if not how:
+            try: how = request.GET['how']
+            except KeyError: pass
         self.how = how
         if self.how == "undefined": self.how = "normal"
         input = request.get('content') or request.get('cmnd')
@@ -87,7 +87,7 @@ class WebEvent(EventBase):
         """ reply to this event """
         if self.checkqueues(result): return
         txt = self.bot.makeoutput(self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
-        self.bot._raw(txt, self.response)
+        self.bot.send(self.channel, txt, self.response)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self

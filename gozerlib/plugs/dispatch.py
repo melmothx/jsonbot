@@ -1,4 +1,4 @@
-# gozerlib/botbase.py
+# gozerlib/plugs/dispatch.py
 #
 #
 
@@ -21,7 +21,7 @@ def predispatch(bot, event):
     if event.status == "done":
         logging.debug("dispatch - event is done .. ignoring")
         return
-    if event.isremote:
+    if event.isremote():
         logging.warn("dispatch - event is remote .. not dispatching")
         return
     return True

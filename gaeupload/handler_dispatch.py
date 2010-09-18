@@ -73,7 +73,6 @@ class Dispatch_Handler(RequestHandler):
                 logging.warn("denied access for %s - %s" % (self.request.remote_addr, self.request.get('content')))
                 self.response.set_status(400)
                 return
-            #logging.debug(str(self.request))
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
