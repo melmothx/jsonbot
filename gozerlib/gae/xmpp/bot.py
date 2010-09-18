@@ -33,7 +33,7 @@ class XMPPBot(BotBase):
         from google.appengine.api import xmpp
         if not message_type: message_type = xmpp.MESSAGE_TYPE_CHAT
         if type(jids) == types.StringType: jids = [jids, ]
-        xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml, *args, **kwargs)
+        xmpp.send_message(jids, body, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
         for jid in jids:
             self.outmonitor(self.nick, jid, body)
 
