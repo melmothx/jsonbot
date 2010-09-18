@@ -11,6 +11,7 @@ from datadir import datadir
 ## basic imports
 
 import os
+import logging
 
 ## functions
 
@@ -31,12 +32,13 @@ def clear(target):
 
 def add(target, txtlist):
     """ add list of txt to target entry. """
+    logging.warn("outputcache - adding %s lines" % len(txtlist))
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     d = cache.data
     if not d.has_key('msg'):
         d['msg'] = []
     d['msg'].extend(txtlist)
-    while len(d['msg']) > 10:
+    while len(d['msg']) > 20:
         d['msg'].pop(0)
     cache.save()
 

@@ -32,22 +32,11 @@ class WebBot(BotBase):
             logging.warn(u'web - OUT - %s' % unicode(txt))
             response.out.write(toenc(txt + end))
 
-    def send(self, printto, txt, response=None, end=u""):
-        if response:
-            self._raw(txt, response)
-            self.outmonitor(self.nick or self.me, printto, txt)
-
-    def sendnocb(self, printto, txt, response=None, end=u""):
-        if response:
-            self._raw(txt, response)
+    def outnocb(self, channel, txt, response=None, *args, **kwargs):
+        if not response: return
+        if "http://" in txt:
+            for item in re_url_match.findall(txt):
+                 logging.debug("web - raw - found url - %s" % item)
+                 txt = re.sub(item, '<a href="%s" onclick="window.open(\'%s\'); return false;">%s</a>' % (item, item, item), txt)
+        self._raw(txt, response)
      
-    def out(self, channel, txt, *args, **kwargs):
-        self.outnocb(channel, [txt, ])
-        self.outmonitor(self.nick or self.me, channel, txt)
-
-    write = out
-
-    def outnocb(self, channel, txt, *args, **kwargs):
-        add(channel, [txt, ])
-     
-    writenocb = outnocb

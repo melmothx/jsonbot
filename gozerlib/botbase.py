@@ -266,7 +266,7 @@ class BotBase(LazyDict):
         self.stopped = True
         self.save()
 
-    def _raw(self, txt):
+    def _raw(self, txt, *args, **kwargs):
         """ override this. """ 
         print txt
 
@@ -474,3 +474,9 @@ class BotBase(LazyDict):
                     handle_exception()
 
         return plugloaded
+
+    def send(self, *args, **kwargs):
+        pass
+
+    def sendnocb(self, *args, **kwargs):
+        pass

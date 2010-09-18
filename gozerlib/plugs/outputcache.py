@@ -11,14 +11,20 @@ from gozerlib.outputcache import get, set
 from gozerlib.callbacks import callbacks
 from gozerlib.examples import examples
 
+## basic imports
+
+import logging
+
 ## commands
 
 def handle_outputcache(bot, event):
     """ forward the output cache to the user. """
     res = get(event.channel)
+    logging.warn("outputcache - %s - %s" % (bot.type, len(res)))
     if res:
         for result in res:
-            bot.writenocb(event.channel, result)
+            if result:
+                bot.outnocb(event.channel, result, event.response)
 
 cmnds.add('outputcache', handle_outputcache, ['OPER', 'USER', 'GUEST'])
 examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache')
