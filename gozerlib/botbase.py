@@ -220,7 +220,7 @@ class BotBase(LazyDict):
         event.prepare(self)
         self.status = "callback"
         starttime = time.time()
-        msg = "botbase - handling %s - %s" % (event.cbtype, event.auth)
+        msg = "botbase - handling %s - %s - %s" % (event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
         logging.warn("botbase - event dump - %s" % event.dump())
         if self.gatekeeper.isblocked(event.origin): return

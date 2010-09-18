@@ -35,6 +35,10 @@ class WebBot(BotBase):
         if response:
             self._raw(txt, response)
             self.outmonitor(self.me, printto, txt)
+
+    def sendnocb(self, printto, txt, response=None, end=u""):
+        if response:
+            self._raw(txt, response)
      
     def outnocb(self, channel, txt, *args, **kwargs):
         add(channel, [txt, ])
