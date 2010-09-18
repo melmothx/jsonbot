@@ -217,7 +217,7 @@ class BotBase(LazyDict):
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
-        event.prepare()
+        event.prepare(self)
         self.status = "callback"
         starttime = time.time()
         msg = "botbase - handling %s - %s" % (event.cbtype, event.auth)

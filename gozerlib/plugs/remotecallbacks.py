@@ -47,11 +47,11 @@ def remotecb(bot, event):
         handle_exception()
         logging.error("forward - can't load payload - %s" % container.payload)
         return
-    if container.digest == digest: e = EventBase().load(container.payload)
+    if container.digest == digest: e = EventBase().load(XMLunescape(container.payload))
     else: raise NoProperDigest()
     e.nodispatch = True
     e.forwarded = True
-    bot.doevent|(e)
+    bot.doevent(e)
     event.status = "done"  
     return
 
