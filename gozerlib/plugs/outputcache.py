@@ -16,7 +16,7 @@ from gozerlib.examples import examples
 def handle_outputcache(bot, event):
     """ forward the output cache to the user. """
     res = get(event.channel)
-    if res and res[0]:
+    if res:
         for result in res:
             if result:
                 bot.writenocb(event.channel, result)

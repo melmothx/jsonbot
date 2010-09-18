@@ -280,7 +280,7 @@ class BotBase(LazyDict):
 
     def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
         self.outnocb(printto, txt, how)
-        self.outmonitor(origin or printto	, printto, txt)
+        self.outmonitor(origin or printto, printto, txt)
 
     write = out
 
