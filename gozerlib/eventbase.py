@@ -129,6 +129,7 @@ class EventBase(LazyDict):
 
     def makeargs(self):
         """ make arguments and rest attributes from self.txt. """
+        if not self.txt: return
         args = self.txt.split()
         if len(args) > 1:
             self.args = args[1:]
