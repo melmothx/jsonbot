@@ -373,7 +373,12 @@ class Irc(BotBase):
             }}
 
     def outnocb(self, printto, what, how='msg', *args, **kwargs):
-        if how == 'notice': self.notice(printto, what)
+        if printto in self.nicks401:
+             logging.warn("%s - blocking %s" % (self.name, printto))
+             return
+        what = fix_format(what)
+        if not printto: self._raw(what)
+        elif how == 'notice': self.notice(printto, what)
         elif how == 'ctcp': self.ctcp(printto, what)
         else: self.privmsg(printto, what)
 
@@ -384,7 +389,6 @@ class Irc(BotBase):
 
     def normalize(self, what):
         txt = strippedtxt(what)
-        #txt = re.sub("\s+", " ", what)
         txt = txt.replace("<b>", "\002")
         txt = txt.replace("</b>", "\002")
         txt = txt.replace("<i>", "")
@@ -520,17 +524,17 @@ class Irc(BotBase):
     def who(self, who):
         """ send who query. """
         if not who: return
-        self.putonqueue(4, 'WHO %s' % who.strip())
+        self.putonqueue(4, None, 'WHO %s' % who.strip())
 
     def names(self, channel):
         """ send names query. """
         if not channel: return
-        self.putonqueue(4, 'NAMES %s' % channel)
+        self.putonqueue(4, None, 'NAMES %s' % channel)
 
     def whois(self, who):
         """ send whois query. """
         if not who: return
-        self.putonqueue(4, 'WHOIS %s' % who)
+        self.putonqueue(4, None, 'WHOIS %s' % who)
 
     def privmsg(self, printto, what):
         """ send privmsg to irc server. """
@@ -569,7 +573,7 @@ class Irc(BotBase):
     def voice(self, channel, who):
         """ give voice. """
         if not channel or not who: return
-        self.putonqueue(9, 'MODE %s +v %s' % (channel, who))
+        self.putonqueue(9, None, 'MODE %s +v %s' % (channel, who))
  
     def doop(self, channel, who):
         """ give ops. """
@@ -586,7 +590,6 @@ class Irc(BotBase):
         logging.warn('%s - sending quit - %s' % (self.name, reason))
         try:
             self._raw('QUIT :%s' % reason)
-            time.sleep(1)
         except IOError:
             pass
 
@@ -603,12 +606,12 @@ class Irc(BotBase):
     def ctcpreply(self, printto, what):
         """ send ctcp notice. """
         if not printto or not what: return
-        self.putonqueue(2, "NOTICE %s :\001%s\001" % (printto, what))
+        self.putonqueue(2, None, "NOTICE %s :\001%s\001" % (printto, what))
 
     def action(self, printto, what):
         """ do action. """
         if not printto or not what: return
-        self.putonqueue(9, "PRIVMSG %s :\001ACTION %s\001" % (printto, what))
+        self.putonqueue(9, None, "PRIVMSG %s :\001ACTION %s\001" % (printto, what))
 
     def handle_ievent(self, ievent):
         """ handle ircevent .. dispatch to 'handle_command' method. """ 

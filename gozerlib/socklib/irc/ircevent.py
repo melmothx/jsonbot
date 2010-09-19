@@ -34,29 +34,6 @@ try:
 except KeyError:
     dotchars = ' .. '
 
-## functions
-
-def makeargrest(ievent):
-
-    """ create ievent.args and ievent.rest .. this is needed because \
-         ircevents might be created outside the parse() function.
-    """ 
-
-    if not ievent.txt:
-        return
-
-    try:
-        ievent.args = ievent.txt.split()[1:]
-    except ValueError:
-        ievent.args = []
-
-    try:
-        cmnd, ievent.rest = ievent.txt.split(' ', 1)
-    except ValueError:
-        ievent.rest = ""   
-
-    ievent.command = ievent.txt.split(' ')[0]
-
 ## classes
 
 class Ircevent(EventBase):
@@ -163,8 +140,6 @@ class Ircevent(EventBase):
         if self.channel:
             self.channel = self.channel.strip()
             self.origchannel = self.channel
-            self.chan = ChannelBase(self.channel)
-
         # show error
         try:
             nr = int(self.cmnd)
@@ -173,27 +148,19 @@ class Ircevent(EventBase):
         except ValueError:
             pass
         self.printto = self.channel 
-        makeargrest(self)
+        self.makeargs()
         return self
 
-    def reply(self, txt, result=[], to="", dot=", ", extend=15, raw=False):
+    def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         if self.checkqueues(result):
             return
         if result:
             txt = u"<b>" + txt + u"</b>"
-        restxt = self.makeresponse(txt, result, dot)
-        if not raw:
-            restxt = strippedtxt(restxt)
-        restxt = self.bot.normalize(restxt)
         if self.isdcc:
-            self.sock.send(restxt)
+            self.sock.send(txt)
             self.sock.send("\n")
             return
-        #res1, nritems = self.less(restxt, 365+extend)
-        res1 = restxt
-        target = to or self.printto
-        self.bot.outnocb(target, res1, 'msg')
-        self.bot.outmonitor(self.userhost, target, res1, self)
+        EventBase.reply(self, txt, result, event, origin, dot, nr, extend, *args, **kwargs)
 
 ## postfix count aka how many arguments
 

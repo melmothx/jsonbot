@@ -152,13 +152,14 @@ class BotBase(LazyDict):
                     continue
                 if not res: continue
                 if not self.stopped and not self.stopoutloop:
+                    logging.debug("%s - OUT - %s - %s" % (self.name, self.type, str(res))) 
                     self.out(*res)
             time.sleep(0.1)
         logging.debug('%s - stopping output loop' % self.name)
 
     def putonqueue(self, nr, *args):
         """ put output onto one of the output queues. """
-        self.outqueues[10-nr].put_nowait(*args)
+        self.outqueues[10-nr].put_nowait(args)
         self.tickqueue.put_nowait('go')
 
     def outputsizes(self):
@@ -296,8 +297,7 @@ class BotBase(LazyDict):
         
     def saynocb(self, channel, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        self.outnocb(channel, txt, *args, **kwargs)
-
+        if txt: self.outnocb(channel, txt, *args, **kwargs)
 
     def less(self, printto, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """

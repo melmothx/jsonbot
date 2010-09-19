@@ -264,7 +264,6 @@ class SXMPPBot(XMLStream, BotBase):
 
     def outnocb(self, printto, txt, how=None, *args, **kwargs):
         """ output txt to bot. """
-        logging.warn("sxmpp - OUT - %s - %s" % (printto, txt))
         if printto and printto in self.state['joinedchannels']: outtype = 'groupchat'
         else: outtype = "chat"
         target = printto
