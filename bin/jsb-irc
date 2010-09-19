@@ -52,44 +52,35 @@ setloglevel(cfg.loglevel)
 makedirs()
 boot()
 
-#from gozerlib.plugins import plugs
-#plugs.loadall()
+## resume or start the bot
 
 if opts.doresume and os.path.isfile(opts.doresume):
     logging.warn("irc - resuming from %s" % opts.doresume)
     if True:
         fleet.resume(opts.doresume)
         fleet.startok.wait()
-
     partyline.resume(opts.doresume)
-    os.unlink(opts.doresume) # bye
-    #fleet.startall()
-    
+    os.unlink(opts.doresume)
 else:
-
-    ## start bot
     try:
         bot = IRCBot(cfg)
         bot.nick = cfg.nick or 'jsonbot'
     except NoOwnerSet, ex:
         print "owner is not set in %s - use the -o option" % str(ex)
         os._exit(1)
-
     if opts.channel and not opts.channel in bot.state['joinedchannels']:
         bot.state['joinedchannels'].append(opts.channel)
         bot.state.save()
-
     if opts.all:
         print "available fleet bots: %s" % fleet.avail()
-
     fleet.addbot(bot)
-
     if opts.forward:
         print "starting forward bot (%s)" % str(cfg)
         forwardcfg = makeconfig('sxmpp', opts, 'forwardbot') # sxmpp for the forward bo
         forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
         start_new_thread(forwardbot.start, ())
-
     bot.start()
+
+## run the mainloop
 
 mainloop()

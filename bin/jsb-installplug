@@ -2,7 +2,6 @@
 #
 #
 
-
 """ install remote plugins. """
 
 ## boot
@@ -14,8 +13,6 @@ sys.path.insert(0, os.getcwd())
 
 """ signature of downloaded plugins is verified by signature files """
 
-
-
 # wrapper for the GNU Privacy Guard
 # (c) Wijnand 'tehmaze' Modderman - http://tehmaze.com
 # BSD License
@@ -26,7 +23,7 @@ from gozerlib.config import cfg as config
 from gozerlib.datadir import datadir
 from gozerlib.utils.popen import gozerpopen
 
-## basic import s
+## basic imports
 
 import os
 import re
@@ -35,18 +32,20 @@ import logging
 import sys
 import shutil
 
-## classes
+## exceptions
 
-class PgpNoPubkeyException(Exception):
+class PGPNoPubkeyException(Exception):
     pass
 
-class PgpNoFingerprintException(Exception):
+class PGPNoFingerprintException(Exception):
     pass
 
 class NoGPGException(Exception):
     pass
 
-class Pgp(object):
+## PGP class
+
+class PGP(object):
     ''' Wrapper for the GNU Privacy Guard. '''   
  
     re_verify = re.compile('^\[GNUPG:\] VALIDSIG ([0-9A-F]+)', re.I | re.M)
@@ -58,11 +57,8 @@ class Pgp(object):
         if not os.path.exists(self.homedir):
             logging.debug('creating directory %s' % self.homedir)
             os.mkdir(self.homedir)
-        if hasattr(config, 'pgpkeyserver'):
-            self.keyserver = config.pgpkeyserver
-        else:
-            self.keyserver = 'pgp.mit.edu'
-        # make sure the pgp dir is safe
+        if hasattr(config, 'pgpkeyserver'): self.keyserver = config.pgpkeyserver
+        else: self.keyserver = 'pgp.mit.edu'
         os.chmod(self.homedir, 0700)
         logging.debug('will be using public key server %s' % self.keyserver)
 
@@ -81,34 +77,26 @@ class Pgp(object):
         return None
 
     def imports_keyserver(self, fingerprint):
-        (data, returncode) = self._gpg('--keyserver ', self.keyserver, \
-'--recv-keys', fingerprint)
-        if returncode == 256:
-            raise NoGPGException()
+        (data, returncode) = self._gpg('--keyserver ', self.keyserver, '--recv-keys', fingerprint)
+        if returncode == 256: raise NoGPGException()
         return returncode == 0
 
     def remove(self, data):
-        if len(data) < 8:
-            return False
+        if len(data) < 8: return False
         (_, returncode) = self._gpg('--yes', '--delete-keys',  data)
-        if returncode == 256:
-            raise NoGPGException()
+        if returncode == 256: raise NoGPGException()
         return returncode == 0
 
     def verify(self, data):
         tmp = self._tmp(data)
         (data, returncode) = self._gpg('--verify', tmp)
         os.unlink(tmp)
-        if returncode == 256:
-            raise NoGPGException()
-        if returncode not in (None, 0, 512):
-            return False
+        if returncode == 256: raise NoGPGException()
+        if returncode not in (None, 0, 512): return False
         test_pubkey = self.re_pubkey.search(data)
-        if test_pubkey:
-            raise PgpNoPubkeyException(test_pubkey.group(1))
+        if test_pubkey: raise PGPNoPubkeyException(test_pubkey.group(1))
         test_verify = self.re_verify.search(data)
-        if test_verify:
-            return test_verify.group(1)
+        if test_verify: return test_verify.group(1)
 
     def verify_signature(self, data, signature):
         tmp1 = self._tmp(data)
@@ -116,26 +104,20 @@ class Pgp(object):
         (data, returncode) = self._gpg('--verify', tmp2, tmp1)
         os.unlink(tmp2)
         os.unlink(tmp1)
-        if returncode == 256:
-            raise NoGPGException()
-        if returncode not in (None, 0, 512):
-            return False
+        if returncode == 256: raise NoGPGException()
+        if returncode not in (None, 0, 512): return False
         test_pubkey = self.re_pubkey.search(data)
-        if test_pubkey:
-            raise PgpNoPubkeyException(test_pubkey.group(1))
+        if test_pubkey: raise PGPNoPubkeyException(test_pubkey.group(1))
         test_verify = self.re_verify.search(data)
-        if test_verify:
-            return test_verify.group(1)
+        if test_verify: return test_verify.group(1)
         return None
         
     def _gpg(self, *extra):
         cmnd = ['gpg', '--homedir', self.homedir, '--batch', '--status-fd', '1']
         cmnd += list(extra)
         logging.debug('executing: %s' % ' '.join(cmnd))
-        try:
-            proces = gozerpopen(cmnd, [])
-        except OSError, ex:
-            raise NoGPGException
+        try: proces = gozerpopen(cmnd, [])
+        except OSError, ex: raise NoGPGException
         except Exception, ex:
             logging.debug('error running "%s": %s' % (cmnd, str(ex)))
             raise
@@ -151,9 +133,9 @@ class Pgp(object):
         fd.close()
         return tmp
 
-# these are the gozerbot.org plugin repositories
+## keys
+
 gozerbot_pgp_keys = {
-    # gozerbot.org/plugs install key
     '5290D844CF600B6CA6AFF8952D6D437CC5C9C2B2': '''
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -268,12 +250,11 @@ bqSE/brg8NBAjUB2Bly/GE15KOUAniH5CnF11sfqL3aUUVkW58X+OQLM
 """
 }
 
-# initiate a Pgp instance and import the distkeys, if needed
-pgp = Pgp()
+# initiate a PGP instance and import the distkeys, if needed
+pgp = PGP()
 for keyid, keydata in gozerbot_pgp_keys.iteritems():
     try:
-        if not pgp.exists(keyid):
-            pgp.imports(keydata)
+        if not pgp.exists(keyid): pgp.imports(keydata)
     except NoGPGException:
         logging.debug('no pgp installed')
         break
@@ -303,7 +284,7 @@ import os
 import thread
 import shutil
 
-## classes
+## Cfg class
 
 class Cfg(object):
 
@@ -320,15 +301,22 @@ class Cfg(object):
         """ list plugin versions """
         return self.data
 
+## defines
+
 cfg = Cfg()
+installsites = ['http://gozerbot.org/jsonplugs', 'http://gozerbot.org/jsoncatchall']
+
+## locks
+
 installlock = thread.allocate_lock()
 locked = lockdec(installlock)
 
-installsites = ['http://gozerbot.org/jsonplugs', 
-'http://gozerbot.org/jsoncatchall']
+## exceptions
 
 class InstallerException(Exception):
     pass
+
+## Installer class
 
 class Installer(object):
     '''
@@ -340,16 +328,13 @@ class Installer(object):
 
     def install(self, plugname, site=''):
         '''
-        Install `plugname` from `site`. If no `site` is specified, we scan the list of
-        pre-configured `installsites`.
+            Install `plugname` from `site`. If no `site` is specified, we scan the list of
+            pre-configured `installsites`. 
+
         '''
-        # check if logs dir exists if not create it
-        if not os.path.isdir('gozerdata' + os.sep + 'myplugs'):
-            os.mkdir('gozerdata' + os.sep + 'myplugs')
-            
+        if not os.path.isdir('gozerdata' + os.sep + 'myplugs'): os.mkdir('gozerdata' + os.sep + 'myplugs')
         errors = [] 
-        if plugname.endswith('.py'):
-            plugname = plugname[:3]
+        if plugname.endswith('.py'): plugname = plugname[:3]
         plugname = plugname.split(os.sep)[-1]
         plugdata = ""
         if not site:
@@ -357,69 +342,54 @@ class Installer(object):
                 try:
                     plugdata, plugsig, plugtype = self.fetchplug(site, plugname)
                     break # no exception? found it!
-                except InstallerException, e:
-                    errors.append(exceptionmsg())
+                except InstallerException, e: errors.append(exceptionmsg())
         else:
-                try:
-                    plugdata, plugsig, plugtype = self.fetchplug(site, plugname)
-                except InstallerException, e:
-                    errors.append(exceptionmsg())
+            try:
+                plugdata, plugsig, plugtype = self.fetchplug(site, plugname)
+            except InstallerException, e: errors.append(exceptionmsg())
         if not plugdata:
-            if errors:
-                raise InstallerException(', '.join(str(e) for e in errors))
-            else:
-                raise InstallerException('nothing to do')
-        # still there? good
+            if errors: raise InstallerException(', '.join(str(e) for e in errors))
+            else: raise InstallerException('nothing to do')
         if self.validate(plugdata, plugsig):
-            if plugtype == 'py':
-                self.save_py(plugname, plugdata)
-            elif plugtype == 'tar':
-                self.save_tar(plugname, plugdata)
+            if plugtype == 'py': self.save_py(plugname, plugdata)
+            elif plugtype == 'tar': self.save_tar(plugname, plugdata)
             if hasattr(plugdata, 'info') and plugdata.info.has_key('last-modified'):
                 cfg.add(plugname, ['%s/%s.%s' % (site, plugname, plugtype), plugdata.info['last-modified']])
             return '%s/%s.%s' % (site, plugname, plugtype)
-        else:
-            raise InstallerException('%s.%s signature validation failed' % (plugname, plugtype))
+        else: raise InstallerException('%s.%s signature validation failed' % (plugname, plugtype))
 
     def fetchplug(self, site, plugname):
         '''
-        Fetch the plugin with `plugname` from `site`, we try any extension available in
-        `Installer.SUPPORTED_EXT`. We also fetch the signature file.
+            Fetch the plugin with `plugname` from `site`, we try any extension available in
+            `Installer.SUPPORTED_EXT`. We also fetch the signature file.
+
         '''
         errors = []
-        if not site.startswith('http://'):
-            site = 'http://%s' % site
+        if not site.startswith('http://'): site = 'http://%s' % site
         base = '%s/%s' % (site, plugname)
         for ext in self.SUPPORTED_EXT:
             try:
                 plugdata, plugsig = self.fetchplugdata(base, ext)
                 return plugdata, plugsig, ext
-            except InstallerException, e:
-                errors.append(exceptionmsg())
+            except InstallerException, e: errors.append(exceptionmsg())
         raise InstallerException(errors)
 
     def fetchplugdata(self, base, ext='py'):
-        '''
-        Here the actual HTTP request is being made.
-        '''
+        ''' Here the actual HTTP request is being made. '''
         url = '%s.%s' % (base, ext)
         plug = base.split('/')[-1]
-        try:
-            plugdata = geturl2(url)
-        except urllib2.HTTPError:
-            raise InstallerException("no %s" % os.path.basename(url))
+        try: plugdata = geturl2(url)
+        except urllib2.HTTPError: raise InstallerException("no %s" % os.path.basename(url))
         if plugdata:
-            try:
-                plugsig = geturl2('%s.asc' % url)
-            except urllib2.HTTPError:
-                raise InstallerException('%s plugin has no signature' % plug)
-            else:
-                return plugdata, plugsig
+            try: plugsig = geturl2('%s.asc' % url)
+            except urllib2.HTTPError: raise InstallerException('%s plugin has no signature' % plug)
+            else: return plugdata, plugsig
 
     def backup(self, plugname):
         '''
-        Backup a plugin with name `plugname` and return if we backed up a file or
-        directory, and what its original name was.
+            Backup a plugin with name `plugname` and return if we backed up a file or
+            directory, and what its original name was.
+
         '''
         oldtype = None
         oldname = os.path.join('gozerdata', 'myplugs', plugname)
@@ -433,35 +403,28 @@ class Installer(object):
             os.rename(oldname, newname)
         elif os.path.isdir(oldname):
             oldtype = 'dir'
-            if os.path.isdir(newname):
-                shutil.rmtree(newname)
+            if os.path.isdir(newname): shutil.rmtree(newname)
             os.rename(oldname, newname)
         return oldtype, newname
 
     def restore(self, plugname, oldtype, oldname):
-        '''
-        Restore a plugin with `plugname` from `oldname` with type `oldtype`.
-        '''
+        ''' Restore a plugin with `plugname` from `oldname` with type `oldtype`. '''
         newname = os.path.join('gozerdata', 'myplugs', plugname)
         if oldtype == 'dir':
-            # remove partial 'new' data
-            if os.path.isdir(newname):
-                shutils.rmtree(newname)
+            if os.path.isdir(newname): shutils.rmtree(newname)
             os.rename(oldname, newname)
         elif oldtype == 'file':
             newname = '%s.py' % newname
-            if os.path.isfile(newname):
-                os.unlink(newname)
+            if os.path.isfile(newname): os.unlink(newname)
             os.rename(oldname, newname)
 
     @locked
     def save_tar(self, plugname, plugdata):
         oldtype, oldname = self.backup(plugname)
         try:
-            if not tarextract(plugname, str(plugdata), 'gozerdata' + os.sep + 'myplugs'): # because it is an istr
+            if not tarextract(plugname, str(plugdata), 'gozerdata' + os.sep + 'myplugs'):
                 raise InstallerException('%s.tar had no (valid) files to extract' % (plugname))
-        except InstallerException:
-            raise
+        except InstallerException: raise
         except Exception, e:
             self.restore(plugname, oldtype, oldname)
             raise InstallerException('restored backup, error while extracting %s: %s' % (plugname, str(e))) 
@@ -472,38 +435,36 @@ class Installer(object):
             plugfile = open(os.path.join('gozerdata', 'myplugs', '%s.py' % plugname), 'w')
             plugfile.write(plugdata)
             plugfile.close()
-        except InstallerException:
-            raise
+        except InstallerException: raise
         except Exception, e:
             self.restore(plugname, oldtype, oldname)
             raise InstallerException('restored backup, error while writing %s: %s' % (plugfile, str(e))) 
 
     def validate(self, plugdata, plugsig):
         fingerprint = pgp.verify_signature(plugdata, plugsig)
-        if not fingerprint:
-            return False
+        if not fingerprint: return False
         return True
+
+## dolist function
 
 def dolist():
     result = []
     errors = []
     for i in installsites:
-        try:
-            pluglist = geturl2(i)
+        try: pluglist = geturl2(i)
         except Exception, ex:
             errors.append(exceptionmsg()) 
             continue
         result += re.findall('<a href="(.*?)\.py">', pluglist)
-        try:
-            result.remove('__init__')
-        except ValueError:
-            pass
+        try: result.remove('__init__')
+        except ValueError: pass
     if result:  
         result.sort()
         print 'available plugins: %s' % ' .. '.join(uniqlist(result))
-    if errors:
-        print "couldn't extract plugin list from: %s " % ' .. '.join(errors)
-        
+    if errors: print "couldn't extract plugin list from: %s " % ' .. '.join(errors)
+
+## installplug function
+ 
 def installplug(plugs):
     """ install a remote plugin """
     notinstalled = []
@@ -527,11 +488,9 @@ def installplug(plugs):
                     errors = {}
                     break # stop iterating sites
             except NoGPGException, ex:
-                print "couldn't run gpg .. please install gnupg if you \
-want to install remote plugins"
+                print "couldn't run gpg .. please install gnupg if you want to install remote plugins"
                 return
-            except Exception, ex:
-                errors[site] = exceptionmsg()
+            except Exception, ex: errors[site] = exceptionmsg()
     if errors:
         errordict = Dol()
         errorlist = []
@@ -541,37 +500,34 @@ want to install remote plugins"
             errorlist.append("%s => %s" % (' , '.join(sites), error)) 
         print "errors: %s" % ' .. '.join(errorlist)
 
+## handle commandline options
+
 from optparse import OptionParser
 parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion('INSTALLPLUG'))
 parser.add_option('-d', '--directory', type='string', default=".", dest='botdir',
-                  metavar='PATH',
-                  help="bot directory to install plugins in")
-parser.add_option('-l', action='store_true', dest='showlist',
-                  help="show list of available plugins")
+                  metavar='PATH', help="bot directory to install plugins in")
+parser.add_option('-l', action='store_true', dest='showlist', help="show list of available plugins")
 opts, args = parser.parse_args()
 opts.args = args
 
-try:
-    showlist = opts.showlist
-except AttributeError:
-    showlist = False
+try: showlist = opts.showlist
+except AttributeError: showlist = False
 
 if showlist:
     dolist()
     os._exit(0)
 
-try:
-    botdir = opts.botdir
-except AttributeError:
-    botdir = '.'
+try: botdir = opts.botdir
+except AttributeError: botdir = '.'
 
 if not opts.args:
     print "usage: jsb-installplug -l | [-d <botdir>] plug1 plug2"
     os._exit(1)
+
+## install the plugin
 
 print getversion('INSTALLPLUG')
 setloglevel('warning')
 os.chdir(botdir)
 installplug(opts.args)
 shutil.copyfile("commonplugs" + os.sep + "__init__.py", os.path.join("gozerdata", "myplugs", "__init__.py"))
-#boot(force=True)

@@ -2,7 +2,15 @@
 # -*- coding: utf-8 -*-
 #
 
-import sys, os, shutil
+""" rename the bot into another one. copy one dir above the bot dir. """
+
+## basic imports
+
+import sys
+import os
+import shutil
+
+## arguments
 
 try:
     source = sys.argv[1]
@@ -11,26 +19,32 @@ except IndexError:
     print "bootstrap <old botdir> <new botdir>"
     os._exit(1)
 
+print "STARTING"
+
+## defines
+
 orig = 'jsonbot'
 new = target
 
+## gethighest function
+
 def gethighest(ddir, ffile):
+    """ determine new file extension. """
     highest = 0
     for i in os.listdir(ddir):
         if os.path.isdir(ddir + os.sep + i) and ffile in i:
+            try: seqnr = i.split('.')[2]
+            except IndexError: continue
             try:
-                seqnr = i.split('.')[2]
-            except IndexError:
-                continue
-            try:
-                if int(seqnr) > highest:
-                    highest = int(seqnr)  
-            except ValueError:
-                pass
+                if int(seqnr) > highest: highest = int(seqnr)  
+            except ValueError: pass
     ffile += '.' + str(highest + 1)
     return ffile   
 
+## dosed function
+
 def dosed(filename, sedstring):
+    """ replace oldbot strings with the new one. """
     f = open(filename, 'r')
     tmp = filename + '.tmp'
     fout = open(tmp, 'w')
@@ -44,52 +58,46 @@ def dosed(filename, sedstring):
     finally:
         fout.flush()
         fout.close()
-    try:
-        os.rename(tmp, filename)
+    try: os.rename(tmp, filename)
     except WindowsError:
-        # no atomic operation supported on windows! error is thrown when destination exists
         os.remove(filename)
         os.rename(tmp, filename)
 
-print "STARTING"
+
+## bootstrap function
 
 def bootstrap(source, target):
-
+    """ loop over the directories copying and sedding the files. """
     print "source: %s target: %s" % (source, target)
-
-
     for f in os.listdir(target):
-        if f.startswith('.'):
-            continue
+        if f.startswith('.'): continue
         try:
             print "sedding %s" % f
             dosed(target + os.sep + f, 's/%s/%s/' % (orig, new))
             dosed(target + os.sep + f, 's/%s/%s/' % (orig.upper(), new.upper()))
         except IOError, ex:
-            if 'Is a dir' in str(ex):
-                bootstrap(source + os.sep + f, target + os.sep + f)
-            else:
-                raise
+            if 'Is a dir' in str(ex): bootstrap(source + os.sep + f, target + os.sep + f)
+            else: raise
+
+## backup the old dir
 
 print "making backup"
-
-if os.path.isdir(target + '.old'):
-    backup = gethighest(os.getcwd(), target + '.old')
-else:
-    backup = target + '.old'
-
+if os.path.isdir(target + '.old'): backup = gethighest(os.getcwd(), target + '.old')
+else: backup = target + '.old'
 if os.path.isdir(target): 
     print "MOVING %s TO %s" % (target, backup)
     os.rename(target, backup)
 
+## copy the result to the target
+
 print "COPYING RESULTS TO %s" % target
 
-try:
-    shutil.copytree(source, target)
+try: shutil.copytree(source, target)
 except OSError:
     print "can't copy %s to %s" % (source, target)
     os._exit(1)
 
+## start the thing
+
 bootstrap(source, target)
-    
 print "DONE"

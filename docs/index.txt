@@ -19,11 +19,11 @@ JSONBOT is all of the following:
 
 note: JSONBOT is in ALPHA stage right now and still subject to change of protocols and API.
 
-see http://jsonbot.googlecode.com
+see http://jsonbot.googlecode.com.
 
-this bot needs google_appengine installed in your home dir
+if you want to upload this bot to the GAE ypu need "google_appengine" installed in your home dir.
 
-Documentation
+documentation
 ~~~~~~~~~~~~~~
 
     .. toctree::
@@ -31,7 +31,7 @@ Documentation
         
         handbook/index
 
-Programs
+programs
 ~~~~~~~~
 
 jsonbot provides the following programs:
@@ -55,14 +55,14 @@ License
 
 JSONBOT is free code (MIT) and can be cloned where needed. 
 
-Urls
+urls
 ~~~~
 
     * Source code: http://jsonbot.googlecode.com
     * Web: http://jsonbot.appspot.com (web)
     * Wave/Jabber: jsonbot@appspot.com
 
-Running a development version of the bot
+running a development version of the bot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 first checkout the main bot from the mercurial repository
@@ -73,14 +73,14 @@ now you can run the programs in the bin directory with the
 ``./bin/<program>``  command. try ./bin/jsb for the console app
 
 
-Contact the developer
+contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
     * email: bthate@gmail.com
     * jabber/xmpp: bthate@gmail.com
     * IRC: #dunkbots on Freenode
     
-Plugins documentation
+plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
 
     .. toctree::        
@@ -89,7 +89,7 @@ Plugins documentation
 
         plugins/index
 
-Gozerlib code
+gozerlib code
 ~~~~~~~~~~~~~
 
     .. toctree::
@@ -98,7 +98,7 @@ Gozerlib code
         gozerlib/index
 
 
-Commonplugs code
+commonplugs code
 ~~~~~~~~~~~~~~~~
 
     .. toctree::
@@ -106,7 +106,7 @@ Commonplugs code
 
         commonplugs/index
 
-Waveplugs code
+waveplugs code
 ~~~~~~~~~~~~~~
 
     .. toctree::
@@ -114,7 +114,7 @@ Waveplugs code
 
         waveplugs/index
 
-Socketplugs code
+socketplugs code
 ~~~~~~~~~~~~~~~~
 
 
@@ -122,4 +122,13 @@ Socketplugs code
         :maxdepth: 2
 
         socketplugs/index
+        
+gaeplugs code
+~~~~~~~~~~~~~~~~
+
+
+    .. toctree::
+        :maxdepth: 2
+
+        gaeplugs/index
         

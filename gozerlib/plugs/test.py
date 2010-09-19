@@ -157,7 +157,7 @@ examples.add('test-unicode', 'test if unicode output path is clear', 'test-unico
 def handle_testdocmnd(bot, ievent):
     """ call bot.docmnd(). """
     if ievent.rest:
-        bot.docmnd(ievent.origin, ievent.channel, ievent.rest)
+        bot.docmnd(ievent.origin or ievent.userhost, ievent.channel, ievent.rest)
     else:
         ievent.missing("<cmnd>")
 

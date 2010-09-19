@@ -1,3 +1,7 @@
+# do the documentation generation cycle
+#
+#
+
 cd docs
 rm -fR gozerlib plugins commonplugs/ waveplugs/ socketplugs/ gaeplugs/
 cd ..

@@ -2,6 +2,8 @@
 #
 #
 
+""" Console Bot. """
+
 ## bootstrap
 
 import warnings
@@ -13,7 +15,7 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.utils.generic import getversion, waitforqueue
 print getversion('SOCKET CONSOLE')
 
-## make config from opts
+## make config from cmndline options
 
 from gozerlib.utils.opts import makeopts, makeconfig
 opts = makeopts()
@@ -57,23 +59,19 @@ makedirs()
 boot()
 userid = getpass.getuser() + '@' + cfg.uuid
 
-if userid not in cfg.owner:
-    cfg.owner.append(userid)
+if userid not in cfg.owner: cfg.owner.append(userid)
 
-try:
-    bot = ConsoleBot(cfg)
+try: bot = ConsoleBot(cfg)
 except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
-
 
 if opts.command:
     result = bot.docmnd(userid, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
     if result:
         waitforqueue(result.inqueue, 60)
         print "command done. ltrs"
-    else:
-        print "can't execute %s" % opts.command    
+    else: print "can't execute %s" % opts.command    
     os._exit(0)
 elif opts.forward:
     fleet.addbot(bot)

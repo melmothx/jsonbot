@@ -4,7 +4,6 @@
 
 """ edit jsonbot config files. """
 
-
 ## basic imports
 
 from simplejson import loads
@@ -35,32 +34,29 @@ if len(opts.args) < 1:
     print "jsb-edit <filename> [<attribute> <json evaluated string>]"
     os._exit(1)
 
+## edit the config file
+
 filename = opts.args[0]
 configfile = "gozerdata" + os.sep + "config" + os.sep + filename
 if os.path.isdir(configfile):
     print "available - %s" % os.listdir(configfile)
     os._exit(1)
-
 try:
     from gozerlib.config import Config
     cfg = Config(filename)
 except Exception, ex:
     print "can't make config from file %s - %s" % (filename, str(ex))
     os._exit(1)
-
 try:
     attr = opts.args[1]
     value = opts.args[2]
     cfg[attr] = loads(value)
-except IndexError, ex:
-    print "no values to set"
-except TypeError, ex:
-    print u"can't parse %s - %s" % (unicode(value), unicode(ex))
+except IndexError, ex: print "no values to set"
+except TypeError, ex: print u"can't parse %s - %s" % (unicode(value), unicode(ex))
     os._exit(1)
 else:
     cfg.save()
     print "%s of %s set to %s" % (attr, filename, value)
-
 if opts.fleet:
     print "enabling fleet on %s" % configfile
     from gozerlib.fleet import fleet

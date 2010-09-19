@@ -2,6 +2,8 @@
 #
 #
 
+""" run multiple bot instances in 1 program. """
+
 ## bootstrap
 
 import warnings
@@ -41,6 +43,8 @@ if opts.all:
     print "available fleet bots: %s" % fleet.avail()
     os._exit(0)
 
+## start the fleet
+
 makedirs()
 boot()
 
@@ -48,8 +52,7 @@ fleet.loadall(opts.args)
 
 if opts.doresume:
     fleet.resume(opts.doresume)
-    os.unlink(opts.doresume) # bye
-else:
-    fleet.startall()
+    os.unlink(opts.doresume)
+else: fleet.startall()
 
 mainloop()
