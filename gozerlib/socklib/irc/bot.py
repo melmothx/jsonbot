@@ -348,6 +348,7 @@ class IRCBot(Irc):
             chan = ievent.channel
             self.getchannelmode(chan)
             ievent.chan.mode = ievent.arguments[1]
+            ievent.chan.save()
 
     def handle_311(self, ievent):
         """ handle 311 response .. sync with userhosts cache. """
@@ -380,6 +381,7 @@ class IRCBot(Irc):
     def handle_324(self, ievent):
         """ handle mode request responses. """
         ievent.chan.mode = ievent.arguments[2]
+        ievent.chan.save()
 
     def handle_invite(self, ievent):
         """ join channel if invited by OPER. """

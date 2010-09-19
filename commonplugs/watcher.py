@@ -127,6 +127,7 @@ def writeout(botname, type, channel, txt):
 
 def prewatchcallback(bot, event):
     """ watch callback precondition. """
+    if not event.channel: return False
     logging.warn("watcher - checking %s - %s" % (event.channel, event.userhost))
     return watched.check(event.channel) and event.txt and event.how != "background" and event.forwarded
 
