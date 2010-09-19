@@ -222,7 +222,7 @@ class BotBase(LazyDict):
         starttime = time.time()
         msg = "botbase - handling %s - %s - %s" % (event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
-        logging.warn("botbase - event dump - %s" % event.dump())
+        if event.cbtype != "PRESENCE": logging.warn("botbase - event dump - %s" % event.dump())
         if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
             logging.debug("%s - event is done .. ignoring" % self.name)
@@ -279,7 +279,7 @@ class BotBase(LazyDict):
         return res1
 
     def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
-        self.outnocb(printto, txt, how=how, *args, **kwargs)
+        self.outnocb(printto, txt, how, *args, **kwargs)
         self.outmonitor(origin or printto, printto, txt)
 
     write = out
