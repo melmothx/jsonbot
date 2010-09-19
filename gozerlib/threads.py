@@ -18,21 +18,21 @@ import logging
 
 ## defines
 
-# regular expression to determine thread name
+# RE to determine thread name
+
 methodre = re.compile('method\s+(\S+)', re.I)
 funcre = re.compile('function\s+(\S+)', re.I)
 
-## functions
+## defer to task (GAE)
 
 def task(func):
     try:
         from google.appengine.ext.deferred import defer
         task.defer = lambda *args, **kwargs: defer(func, *args, **kwargs)
-    except ImportError:
-        pass
+    except ImportError: pass
     return task
 
-## classes
+## Botcommand class
 
 class Botcommand(threading.Thread):
 
@@ -48,18 +48,17 @@ class Botcommand(threading.Thread):
         """ run the bot command. """
         try:
             result = threading.Thread.run(self)
-
             if self.ievent.closequeue:
                 logging.debug('threads- closing queue for %s' % self.ievent.userhost)
                 if self.ievent.queues:
-                    for i in self.ievent.queues:
-                        i.put_nowait(None)
+                    for i in self.ievent.queues: i.put_nowait(None)
                 self.ievent.outqueue.put_nowait(None)
-            if self.ievent.inqueue:
-                self.ievent.inqueue.put_nowait(None)
+            if self.ievent.inqueue: self.ievent.inqueue.put_nowait(None)
         except Exception, ex:
             handle_exception(self.ievent)
             time.sleep(1)
+
+## Thr class
 
 class Thr(threading.Thread):
 
@@ -79,38 +78,28 @@ class Thr(threading.Thread):
             handle_exception()
             time.sleep(1)
 
-## functions
+## getname function
 
 def getname(func):
     """ get name of function/method. """
     name = ""
     method = re.search(methodre, str(func))
-
-    if method:
-        name = method.group(1)
+    if method: name = method.group(1)
     else: 
         function = re.search(funcre, str(func))
-        if function:
-            name = function.group(1)
-        else:
-            name = str(func)
-
+        if function: name = function.group(1)
+        else: name = str(func)
     return name
+
+## start_new_thread function
 
 def start_new_thread(func, arglist, kwargs={}):
     """ start a new thread .. set name to function/method name."""
-    if not kwargs:
-        kwargs = {}
-
+    if not kwargs: kwargs = {}
     if not 'name' in kwargs:
         name = getname(func)
-        if not name:
-            name = str(func)
-    else:
-        name = kwargs['name']
-
-    #logging.debug("threads - %s - %s" % (name, str(func)))
-
+        if not name: name = str(func)
+    else: name = kwargs['name']
     try:
         thread = Thr(None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()
@@ -119,29 +108,23 @@ def start_new_thread(func, arglist, kwargs={}):
         handle_exception()
         time.sleep(1)
 
+## start_bot_cpmmand function
+
 def start_bot_command(func, arglist, kwargs={}):
     """ start a new thread .. set name to function/method name. """
-    if not kwargs:
-        kwargs = {}
-
+    if not kwargs: kwargs = {}
     try:
         name = getname(func)
-        if not name:
-            name = 'noname'
-
+        if not name: name = 'noname'
         thread = Botcommand(group=None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()
         return thread
-
     except:
         handle_exception()
         time.sleep(1)
 
 def threaded(func):
-
     """ threading decorator. """
-
     def threadedfunc(*args, **kwargs):
         start_new_thread(func, args, kwargs)
-
     return threadedfunc

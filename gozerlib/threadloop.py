@@ -14,7 +14,7 @@ import Queue
 import time
 import logging
 
-## classes
+## ThreadLoop class
 
 class ThreadLoop(object):
 
@@ -29,86 +29,63 @@ class ThreadLoop(object):
         self.nowrunning = "none"
 
     def _loop(self):
+        """ the threadloops loop. """
         logging.debug('%s - starting threadloop' % self.name)
         self.running = True
         nrempty = 0
         while not self.stopped:
-
-            try:
-                data = self.queue.get()
+            try: data = self.queue.get()
             except Queue.Empty:
                 time.sleep(0.1)
                 continue
-
-            if self.stopped:
-                break
-
-            if not data:
-                break
-            #logging.debug('%s - running %s' % (self.name, str(data)))
+            if self.stopped: break
+            if not data: break
             self.handle(*data)
-
         self.running = False
         logging.debug('%s - stopping threadloop' % self.name)
 
     def put(self, *data):
-
         """ put data on task queue. """
-
         self.queue.put_nowait(data)
 
     def start(self):
-
         """ start the thread. """
-
-        if not self.running and not self.stopped:
-            start_new_thread(self._loop, ())
+        if not self.running and not self.stopped: start_new_thread(self._loop, ())
 
     def stop(self):
-
         """ stop the thread. """
-
         self.stopped = True
         self.running = False
         self.queue.put_nowait(None)
 
     def handle(self, *args, **kwargs):
-
         """ overload this. """
-
         pass
+
+## RunnerLoop class
 
 class RunnerLoop(ThreadLoop):
 
     """ dedicated threadloop for bot commands/callbacks. """
 
     def put(self, *data):
-
         """ put data on task queue. """
-
         self.queue.put_nowait(data)
 
     def _loop(self):
+        """ runner loop. """
         logging.debug('%s - starting threadloop' % self.name)
         self.running = True
         while not self.stopped:
-
-            try:
-                data = self.queue.get()
+            try: data = self.queue.get()
             except Queue.Empty:
                 time.sleep(0.1)
                 continue
-
-            if self.stopped:
-                break
-
-            if not data:
-                break
-
+            if self.stopped: break
+            if not data: break
             self.nowrunning = getname(data[1])
             logging.debug('%s - now running %s' % (self.name, self.nowrunning))
             self.handle(*data)
-
         self.running = False
         logging.debug('%s - stopping threadloop' % self.name)
 
@@ -121,22 +98,17 @@ class TimedLoop(ThreadLoop):
         self.sleepsec = sleepsec
 
     def _loop(self):
+        """ timed loop. sleep a while. """
         logging.debug('%s - starting timedloop (%s seconds)' % (self.name, self.sleepsec))
         self.stopped = False
         self.running = True
-
         while not self.stopped:
             time.sleep(self.sleepsec)
-
             if self.stopped:
                 logging.debug("%s - loop is stopped" % self.name)
                 break
-
             logging.debug('%s - now running timedloop' % self.name)
-            try:
-                self.handle()
-            except Exception, ex:
-                handle_exception()
-
+            try: self.handle()
+            except Exception, ex: handle_exception()
         self.running = False
         logging.debug('%s - stopping timedloop' % self.name)

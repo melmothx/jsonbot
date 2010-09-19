@@ -12,6 +12,8 @@ from gozerlib.plugins import plugs
 import logging
 import sys
 
+## TaskManager class
+
 class TaskManager(object):
 
     def __init__(self):
@@ -19,38 +21,36 @@ class TaskManager(object):
         self.plugins = {}
 
     def add(self, taskname, func):
+        """ add a task. """
         logging.debug("tasks - added task %s - %s" % (taskname, func))
         self.handlers[taskname] = func
         self.plugins[taskname] = calledfrom(sys._getframe())
         return True
 
     def unload(self, taskname):
+        """ unload a task. """
         logging.debug("tasks - unloading task %s" % taskname)
         try:
             del self.handlers[taskname]
             del self.plugins[taskname]
             return True
-        except KeyError: 
-            return False
+        except KeyError: return False
 
     def dispatch(self, taskname, *args, **kwargs):
-	
-        try:
-            plugin = self.plugins[taskname]
+	""" dispatch a task. """
+        try: plugin = self.plugins[taskname]
         except KeyError:
             logging.debug('tasks - no plugin for %s found' % taskname)
             return
-
         logging.debug('loading %s for taskmanager' % plugin)
         plugs.load(plugin)
-
-        try:
-            handler = self.handlers[taskname]
+        try: handler = self.handlers[taskname]
         except KeyError:
             logging.debug('tasks - no handler for %s found' % taskname)
             return
-
         logging.warn("dispatching task %s - %s" % (taskname, str(handler)))
         return handler(*args, **kwargs)
+
+## global task manager
 
 taskmanager = TaskManager()
