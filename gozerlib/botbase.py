@@ -279,7 +279,7 @@ class BotBase(LazyDict):
         return res1
 
     def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
-        self.outnocb(printto, txt, how)
+        self.outnocb(printto, txt, how=how, *args, **kwargs)
         self.outmonitor(origin or printto, printto, txt)
 
     write = out
@@ -291,11 +291,11 @@ class BotBase(LazyDict):
 
     def say(self, channel, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        if txt: self.out(channel, txt)
+        if txt: self.out(channel, txt, *args, **kwargs)
         
     def saynocb(self, channel, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        self.outnocb(channel, txt)
+        self.outnocb(channel, txt, *args, **kwargs)
 
     def dostart(self, botname, bottype, *args, **kwargs):
         """ create an START event and send it to callbacks. """

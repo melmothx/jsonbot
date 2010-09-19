@@ -87,8 +87,9 @@ class WebEvent(EventBase):
         """ reply to this event """#
         if self.checkqueues(result): return
         txt = self.bot.makeoutput(self.channel, txt, result, origin=origin, extend=extend, *args, **kwargs)
-        if self.how == "background": self.bot.outnocb(self.channel, txt, self.response)
-        else: self.bot.out(self.channel, txt, self.response)
+        if not txt: return
+        if self.how == "background": self.bot.outnocb(self.channel, txt, response=self.response)
+        else: self.bot.out(self.channel, txt, response=self.response)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self
