@@ -30,7 +30,7 @@ class XMPPBot(BotBase):
 
     def out(self, jids, txt, how="msg", event=None, origin=None, groupchat=None, *args, **kwargs):
         """ output xmpp message. """
-        self.outnocb(printto, txt)
+        self.outnocb(jids, txt)
         for jid in jids:
             self.outmonitor(self.nick, jid, txt)
 
