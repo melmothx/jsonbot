@@ -8,6 +8,7 @@
 
 from gozerlib.botbase import BotBase
 from gozerlib.socklib.xmpp.presence import Presence
+from gozerlib.utils.generic import strippedtxt
 
 ## basic imports
 
@@ -30,6 +31,8 @@ class XMPPBot(BotBase):
 
     def out(self, jids, txt, how="msg", event=None, origin=None, groupchat=None, *args, **kwargs):
         """ output xmpp message. """
+        if type(jids) != types.ListType: jids = [jids, ]
+        logging.warn("%s - OUT - %s" % (self.name, jids))
         self.outnocb(jids, txt)
         for jid in jids:
             self.outmonitor(self.nick, jid, txt)
@@ -38,7 +41,8 @@ class XMPPBot(BotBase):
         """ output xmpp message. """
         from google.appengine.api import xmpp
         if not message_type: message_type = xmpp.MESSAGE_TYPE_CHAT
-        if type(jids) == types.StringType: jids = [jids, ]
+        if type(jids) != types.ListType: jids = [jids, ]
+        txt = self.normalize(txt)
         xmpp.send_message(jids, txt, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
     def invite(self, jid):
@@ -46,7 +50,6 @@ class XMPPBot(BotBase):
         xmpp.send_invite(jid)
 
     def normalize(self, what):
-        #what = re.sub("\s+", " ", unicode(what))
         what = strippedtxt(unicode(what))
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
