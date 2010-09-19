@@ -208,12 +208,11 @@ class BotBase(LazyDict):
     def start(self, connect=True):
         """ start the mainloop of the bot. """
         if not self.isgae: 
-            if connect:
-                self.connect()
-                start_new_thread(self._outloop, ())
-                start_new_thread(self._eventloop, ())
-                start_new_thread(self._readloop, ())
-                start_new_thread(self.joinchannels, ())
+            if connect: self.connect()
+            start_new_thread(self._outloop, ())
+            start_new_thread(self._eventloop, ())
+            start_new_thread(self._readloop, ())
+            if connect: start_new_thread(self.joinchannels, ())
         self.status == "running"
         self.dostart(self.botname, self.type)
 

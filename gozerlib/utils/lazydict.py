@@ -6,6 +6,7 @@
 
 ## gozerlib imports
 
+from gozerlib.utils.locking import lockdec
 from gozerlib.utils.exception import handle_exception
 from gozerlib.errors import PropertyIgnored
 
@@ -20,13 +21,17 @@ import copy
 import logging
 import uuid
 import types
+import thread
+
+## locks
+
+lock = thread.allocate_lock()
+locked = lockdec(lock)
 
 ## defines
 
 jsontypes = [types.StringType, types.UnicodeType, types.DictType, types.ListType, types.IntType]
-
 defaultignore = ['isremote', 'iscmnd', 'orig', 'bot', 'origtxt', 'body', 'subelements', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
-
 cpy = copy.deepcopy
 
 ## functions
@@ -56,6 +61,7 @@ def dumpelement(element, withtypes=False):
                 if withtypes:
                     new[name] = unicode(type(element))
             else:
+                logging.warn("lazydict - dumpelement - %s" % element[name])
                 new[name] = dumpelement(element[name])
     return new
 
@@ -89,9 +95,11 @@ class LazyDict(dict):
 
         return res
 
+    @locked
     def tojson(self):
         return dumps(dumpelement(self))
 
+    @locked
     def dump(self, attribs=[]):
         logging.debug("lazydict - dumping - %s" %  type(self))
         return dumpelement(self)

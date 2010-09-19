@@ -351,6 +351,7 @@ class Irc(BotBase):
         self.connected = True
         self.reconnectcount = 0
         if reto: self.say(reto, 'rebooting done')
+        logging.warn("%s - rebooting done" % self.name)
         return True
 
     def _resumedata(self):

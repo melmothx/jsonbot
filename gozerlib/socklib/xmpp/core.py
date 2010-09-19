@@ -153,6 +153,7 @@ class XMLStream(NodeBuilder):
 
     def _raw(self, stanza):
         """ output a xml stanza to the socket. """
+        if not self.connection: return
         try:
             stanza = stanza.strip()
             if not stanza:
