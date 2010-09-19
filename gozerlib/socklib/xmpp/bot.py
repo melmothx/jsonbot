@@ -264,11 +264,12 @@ class SXMPPBot(XMLStream, BotBase):
 
     def outnocb(self, printto, txt, how=None, *args, **kwargs):
         """ output txt to bot. """
+        logging.warn("sxmpp - OUT - %s - %s" % (printto, txt))
         if printto and printto in self.state['joinedchannels']: outtype = 'groupchat'
-        else: outtype = how or "normal"
+        else: outtype = "chat"
         target = printto
         repl = Message({'from': self.me, 'to': target, 'type': outtype, 'txt': txt})
-        if not repl.type: repl.type = 'chat'
+        if not repl.type: repl.type = 'normal'
         self.send(repl)
 
     def broadcast(self, txt):
