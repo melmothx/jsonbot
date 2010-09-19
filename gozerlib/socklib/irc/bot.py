@@ -32,7 +32,7 @@ from gozerlib.socklib.partyline import partyline
 
 from channels import Channels
 from irc import Irc
-from ircevent import Ircevent
+from ircevent import IrcEvent
 from gozerlib.socklib.wait import Privwait
 from gozerlib.socklib.utils.generic import getlistensocket, checkchan, makeargrest
 
@@ -142,7 +142,7 @@ class IRCBot(Irc):
                 return
             try:
                 res = strippedtxt(res.strip())
-                ievent = Ircevent()
+                ievent = IrcEvent()
                 ievent.printto = sock
                 ievent.bottype = "irc"
                 ievent.nick = nick
@@ -222,12 +222,10 @@ class IRCBot(Irc):
         if result != 1:
             return result
         chan = ChannelBase(channel)
-        # if password is provided set it
         got = False
         if password:
             chan.setkey('IRC',password)
             got = True
-        # check for control char .. if its not there init to !
         if not chan.data.cc:
             chan.data.cc = self.cfg.defaultcc or '!'
             got = True
@@ -326,7 +324,7 @@ class IRCBot(Irc):
             if ievent.cmnd == 'JOIN' or ievent.msg:
                 if ievent.nick in self.nicks401: self.nicks401.remove(ievent.nick)
             if ievent.cmnd != "PRIVMSG":
-                i = Ircevent()
+                i = IrcEvent()
                 i.copyin(ievent)
                 i.bot = self
                 i.sock = self.sock

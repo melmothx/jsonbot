@@ -127,14 +127,15 @@ def writeout(botname, type, channel, txt):
 
 def prewatchcallback(bot, event):
     """ watch callback precondition. """
-    if not event.channel: return False
+    if event.isdcc: return False
     logging.debug("watcher - checking %s - %s" % (event.channel, event.userhost))
-    return watched.check(event.channel) and event.txt and event.how != "background" and event.forwarded
+    if not event.channel: return False
+    if not event.txt: return
+    return watched.check(unicode(event.channel)) and event.how != "background" and event.forwarded
 
 @locked
 def watchcallback(bot, event):
     """ the watcher callback, see if channels are followed and if so send data. """
-    if not event.txt: return
     subscribers = watched.subscribers(event.channel)
     watched.data.descriptions[event.channel.lower()] = event.title
     logging.warn("watcher - %s - %s" % (event.channel, str(subscribers)))

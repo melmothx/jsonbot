@@ -22,7 +22,7 @@ locked = lockdec(handlerlock)
 
 ## classes
 
-class Eventhandler(object):
+class EventHandler(object):
 
     """
         events are handled in 11 queues with different priorities:
@@ -101,4 +101,4 @@ class Eventhandler(object):
 
 ## handler to use in main prog
 
-mainhandler = Eventhandler()
+mainhandler = EventHandler()

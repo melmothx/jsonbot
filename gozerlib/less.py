@@ -21,31 +21,31 @@ class Less(object):
 
     def clear(self, channel):
         """ clear outcache of channel. """
-        channel = channel.lower()
+        channel = unicode(channel).lower()
         try: del self.data[channel]
         except KeyError: pass
 
     def add(self, channel, listoftxt):
         """ add listoftxt to channel's output. """
-        channel = channel.lower()
+        channel = unicode(channel).lower()
         if not self.data.has_key(channel): self.data[channel] = []
         self.data[channel].extend(listoftxt)
 
     def set(self, channel, listoftxt):
         """ set listoftxt to channel's output. """
-        channel = channel.lower()
+        channel = unicode(channel).lower()
         self.data[channel] = listoftxt
 
     def get(self, channel):
         """ return 1 item popped from outcache. """
-        channel = channel.lower()
+        channel = unicode(channel).lower()
         try: txt = self.data[channel].pop(0)
         except (KeyError, IndexError): txt = None
         return txt
 
     def more(self, channel):
         """ return more entry and remaining size. """
-        channel = channel.lower()
+        channel = unicode(channel).lower()
         txt = self.get(channel)
         try: size = len(self.data[channel])
         except (KeyError, IndexError):
@@ -55,7 +55,7 @@ class Less(object):
 
     def size(self, channel):
         """ return sizes of cached output. """
-        channel = channel.lower()
+        channel = unicode(channel).lower()
         sizes = []
         if not self.data.has_key(channel): return sizes
         if self.data[channel]: return len(self.data[channel])

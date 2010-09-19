@@ -5,9 +5,7 @@
 
 """ an ircevent is extracted from the IRC string received from the server. """
 
-__copyright__ = 'this file is in the public domain'
-
-## gozerbot imports
+## gozerlib imports
 
 from gozerlib.utils.generic import toenc, fromenc, strippedtxt
 from gozerlib.socklib.utils.generic import fix_format, stripident, makeargrest
@@ -29,137 +27,78 @@ cpy = copy.deepcopy
 
 try:
     dotchars = config['dotchars']
-    if not dotchars:
-        dotchars = ' .. '
+    if not dotchars: dotchars = ','
 except KeyError:
-    dotchars = ' .. '
+    dotchars = ', '
 
-## classes
+## Ircevent class
 
-class Ircevent(EventBase):
+class IrcEvent(EventBase):
 
     """ represents an IRC event. """
 
     def __deepcopy__(self, bla):
-        e = Ircevent()
+        e = IrcEvent()
         e.copyin(self)
         return e
 
-    def toirc(self):
-        pass
-
     def parse(self, bot, rawstr):
-
         """ parse raw string into ircevent. """
-
         self.bottype = "irc"
         self.bot = bot
         self.ttl = 2
         rawstr = rawstr.rstrip()
         splitted = re.split('\s+', rawstr)
-
-        # check if there is a prefix (: in front)
         if not rawstr[0] == ':':
-            # no prefix .. 1st word is command
             splitted.insert(0, ":none!none@none")
             rawstr = ":none!none@none " + rawstr
-
         self.prefix = splitted[0][1:]
-
-        # get nick/userhost
         nickuser = self.prefix.split('!')
         if len(nickuser) == 2:
             self.nick = nickuser[0]
-            if self.bot.cfg['stripident'] or config['stripident']:
-                self.userhost = stripident(nickuser[1])
-            else:
-                self.userhost = nickuser[1]
-
-        # set command
+            if self.bot.cfg['stripident'] or config['stripident']: self.userhost = stripident(nickuser[1])
+            else: self.userhost = nickuser[1]
         self.cmnd = splitted[1]
         self.cbtype = self.cmnd
-
-        # split string based of postfix count .. nr of items ater the command
         if pfc.has_key(self.cmnd):
             self.arguments = splitted[2:pfc[self.cmnd]+2]
             txtsplit = re.split('\s+', rawstr, pfc[self.cmnd]+2)
             self.txt = txtsplit[-1]
         else:
             self.arguments = splitted[2:]
-
-        # 1st argument is target
-        if self.arguments:
-            self.target = self.arguments[0]
+        if self.arguments: self.target = self.arguments[0]
         self.postfix = ' '.join(self.arguments)
-
-        # check if target is text
-        if self.target and self.target.startswith(':'):
-            self.txt = ' '.join(self.arguments)
-
-        # strip strarting ':' from txt
+        if self.target and self.target.startswith(':'): self.txt = ' '.join(self.arguments)
         if self.txt:
-            if self.txt[0] == ":":
-                self.txt = self.txt[1:]
-            if self.txt:
-                self.usercmnd = self.txt.split()[0]
-
-        #logging.debug("irc - event - %s %s %s" % (self.cmnd, self.arguments, self.txt))
-
-        # set ircevent attributes
-        if self.cmnd == 'PING':
-            self.speed = 9
+            if self.txt[0] == ":": self.txt = self.txt[1:]
+            if self.txt: self.usercmnd = self.txt.split()[0]
+        if self.cmnd == 'PING': self.speed = 9
         if self.cmnd == 'PRIVMSG':
             self.channel = self.arguments[0]
-            if '\001' in self.txt:
-                self.isctcp = True
+            if '\001' in self.txt: self.isctcp = True
         elif self.cmnd == 'JOIN' or self.cmnd == 'PART':
-            if self.arguments:
-                self.channel = self.arguments[0]
-            else:
-                self.channel = self.txt
-        elif self.cmnd == 'MODE':
-            self.channel = self.arguments[0]
-        elif self.cmnd == 'TOPIC':
-            self.channel = self.arguments[0]
-        elif self.cmnd == 'KICK':
-            self.channel = self.arguments[0]
-        elif self.cmnd == '353':
-            self.channel = self.arguments[2]
-        elif self.cmnd == '324':
-            self.channel = self.arguments[1]
+            if self.arguments: self.channel = self.arguments[0]
+            else: self.channel = self.txt
+        elif self.cmnd == 'MODE': self.channel = self.arguments[0]
+        elif self.cmnd == 'TOPIC': self.channel = self.arguments[0]
+        elif self.cmnd == 'KICK': self.channel = self.arguments[0]
+        elif self.cmnd == '353': self.channel = self.arguments[2]
+        elif self.cmnd == '324': self.channel = self.arguments[1]
         if self.userhost:
-            # userhost before possible stripident
             self.ruserhost = self.userhost
-            # jabber compat .. this is userhost on irc
             self.stripped = self.userhost
-            # determine user
-            #self.user = stripident(self.userhost).split('@')[0]
             self.auth = self.userhost
-
         self.origtxt = self.txt
         if self.channel:
             self.channel = self.channel.strip()
             self.origchannel = self.channel
-        # show error
         try:
             nr = int(self.cmnd)
-            if nr > 399 and not nr == 422:
-                logging.error('irc - %s - %s - %s' % (self.cmnd, self.arguments, self.txt))
-        except ValueError:
-            pass
-        self.printto = self.channel
+            if nr > 399 and not nr == 422: logging.error('irc - %s - %s - %s' % (self.cmnd, self.arguments, self.txt))
+        except ValueError: pass
         return self
 
-    def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
-        if self.checkqueues(result):
-            return
-        if self.isdcc:
-            self.sock.send(txt)
-            self.sock.send("\n")
-            return
-        EventBase.reply(self, txt, result, event, origin, dot, nr, extend, *args, **kwargs)
-
-## postfix count aka how many arguments
+## postfix count - how many arguments
 
 pfc = {}
 pfc['NICK'] = 0
@@ -298,7 +237,3 @@ pfc['491'] = 1
 pfc['501'] = 1
 pfc['502'] = 1
 pfc['700'] = 2
-
-                
-# default event used to initialise events
-defaultevent = EventBase()

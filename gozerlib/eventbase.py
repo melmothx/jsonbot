@@ -44,7 +44,6 @@ class EventBase(LazyDict):
         self.outqueue = Queue.Queue()
         self.bottype = "botbase"
         self.closequeue = True
-        self.printto = self.channel
         self.ttl = 1
         self.how = "normal"
 
@@ -106,7 +105,10 @@ class EventBase(LazyDict):
         if self.checkqueues(result): return
         if result:
             txt = u"<b>" + txt + u"</b>"
-        self.bot.say(self.printto or self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        if self.isdcc:
+            self.bot.say(self.printto, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        else:
+            self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self

@@ -16,7 +16,6 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.persist import Persist
 from gozerlib.errors import NoSuchCommand
 from gozerlib.utils.log import setloglevel
-from gozerlib.commands import public
 
 ## gaelib import
 

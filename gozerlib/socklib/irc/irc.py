@@ -27,7 +27,7 @@ from gozerlib.fleet import fleet
 
 ## gozerlib.irc imports
 
-from ircevent import Ircevent
+from ircevent import IrcEvent
 from gozerlib.socklib.wait import Wait
 
 ## basic imports
@@ -212,7 +212,7 @@ class Irc(BotBase):
                     res = rr
                     logging.debug(u"%s - %s" % (self.name, res))
                     try:
-                        ievent = Ircevent().parse(self, res)
+                        ievent = IrcEvent().parse(self, res)
                     except Exception, ex:
                         handle_exception()
                         continue
@@ -374,11 +374,11 @@ class Irc(BotBase):
             }}
 
     def outnocb(self, printto, what, how='msg', *args, **kwargs):
-        #if printto in self.nicks401:
-        #     logging.warn("%s - blocking %s" % (self.name, printto))
-        #     return
+        if printto in self.nicks401:
+             logging.warn("%s - blocking %s" % (self.name, printto))
+             return
         if 'socket' in repr(printto) and self.sock:
-            self.sock.send(unicode(what) + u"\n")
+            printto.send(unicode(what) + u"\n")
             return True
         what = fix_format(what)
         what = self.normalize(what)
@@ -477,7 +477,7 @@ class Irc(BotBase):
         """ do a fake ircevent. """
         if not txt: return
         logging.warn('%s - fakein - %s' % (self.name, txt))
-        self.handle_ievent(Ircevent().parse(self, txt))
+        self.handle_ievent(IrcEvent().parse(self, txt))
 
     def donick(self, nick, setorig=0, save=0, whois=0):
         """ change nick .. optionally set original nick and/or save to config.  """

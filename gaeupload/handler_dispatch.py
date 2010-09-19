@@ -16,7 +16,6 @@ from gozerlib.boot import boot
 from gozerlib.fleet import fleet
 from gozerlib.config import cfg as maincfg
 from gozerlib.errors import NoSuchCommand
-from gozerlib.commands import public
 from gozerlib.gae.utils.web import loginurl
 
 ## gaelib imports
