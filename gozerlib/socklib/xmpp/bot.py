@@ -267,6 +267,7 @@ class SXMPPBot(XMLStream, BotBase):
         if printto and printto in self.state['joinedchannels']: outtype = 'groupchat'
         else: outtype = "chat"
         target = printto
+        txt = self.normalize(txt)
         repl = Message({'from': self.me, 'to': target, 'type': outtype, 'txt': txt})
         if not repl.type: repl.type = 'normal'
         self.send(repl)
@@ -541,6 +542,7 @@ class SXMPPBot(XMLStream, BotBase):
         self.doevent(msg)
 
     def normalize(self, what):
+        what = what.replace("\002", "")
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
         what = what.replace("&lt;b&gt;", "")

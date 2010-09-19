@@ -78,7 +78,8 @@ def forwardoutcb(bot, event):
         if not outbot and bot.isgae: outbot = fleet.makebot('xmpp', 'forwardbot')
         if outbot:
             e.source = outbot.jid
-            container = Container(outbot.jid, e.tojson())
+            txt = outbot.normalize(e.tojson())
+            container = Container(outbot.jid, txt)
             outbot.outnocb(jid, container.tojson()) 
         else: logging.error("forward - no xmpp bot found in fleet".upper())
 

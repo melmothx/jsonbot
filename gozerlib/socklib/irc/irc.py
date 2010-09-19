@@ -380,6 +380,7 @@ class Irc(BotBase):
             self.sock.send(unicode(what) + u"\n")
             return True
         what = fix_format(what)
+        what = self.normalize(what)
         if not printto: self._raw(what)
         elif how == 'notice': self.notice(printto, what)
         elif how == 'ctcp': self.ctcp(printto, what)
