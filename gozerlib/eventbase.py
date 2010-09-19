@@ -105,16 +105,6 @@ class EventBase(LazyDict):
         if eventin.has_key("outqueue"): self.inqueue = eventin['outqueue']
         return self
 
-    #def writenocb(self, txt, result=[], event=None, origin="", dot=u", ", extend=0, *args, **kwargs):
-    #    if self.checkqueues(result): return
-    #    self.bot.writenocb(self.channel, txt, result)
-    #    self.result.append(txt)
-    #    self.outqueue.put_nowait(txt)
-
-    #def write(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
-    #    self.writenocb(txt, result, event, origin, dot, nr, extend, *args, **kwargs)
-    #    self.outqueue.put_nowait(txt)
-
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result): return
@@ -143,7 +133,10 @@ class EventBase(LazyDict):
         if len(args) > 1:
             self.args = args[1:]
             self.rest = ' '.join(self.args)
-          
+        else:
+            self.args = []
+            self.rest = ""
+
     def checkqueues(self, resultlist):
         """ check if resultlist is to be sent to the queues. if so do it. """
         if self.queues:
