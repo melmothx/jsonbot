@@ -213,7 +213,7 @@ class IRCBot(Irc):
         """ send MODE request for channel. """
         if not channel:
             return
-        self.putonqueue(9, 'MODE %s' % channel)
+        self.putonqueue(9, None, 'MODE %s' % channel)
 
     def join(self, channel, password=None):
         """ join a channel .. use optional password. """
@@ -387,7 +387,7 @@ class IRCBot(Irc):
     def settopic(self, channel, txt):
         """ set topic of channel to txt. """
         if not channel or not txt: return
-        self.putonqueue(7, 'TOPIC %s :%s' % (channel, txt))
+        self.putonqueue(7, None, 'TOPIC %s :%s' % (channel, txt))
 
     def gettopic(self, channel):
         """ get topic data. """
@@ -396,7 +396,7 @@ class IRCBot(Irc):
         queue333 = Queue.Queue()
         self.wait.register('332', channel, queue332)
         self.wait.register('333', channel, queue333)
-        self.putonqueue(7, 'TOPIC %s' % channel)
+        self.putonqueue(7, None, 'TOPIC %s' % channel)
         try:
             res = queue332.get(1, 5)
         except Queue.Empty: return None
