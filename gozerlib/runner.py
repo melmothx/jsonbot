@@ -29,9 +29,6 @@ class Runner(RunnerLoop):
         jobs scheduled should not take too long since only one job can 
         be executed in a Runner at the same time.
 
-        :param name: name of the runner
-        :type name: string
-
     """
 
     def __init__(self, name="runner"):
@@ -42,20 +39,9 @@ class Runner(RunnerLoop):
         self.finished = time.time()
 
     def handle(self, descr, func, *args, **kwargs):
-
-        """
-            schedule a job.
-
-            :param descr: description of the job
-            :type descr: string
-            :param func: function to call 
-            :type func: function 
-
-        """
-
+        """ schedule a job. """
         self.working = True
         name = getname(str(func))
-
         try:
             rlockmanager.acquire(getname(str(func)))
             name = getname(str(func))
@@ -64,15 +50,10 @@ class Runner(RunnerLoop):
             func(*args, **kwargs)
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
-
             if self.elapsed > 3:
                 logging.debug('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
-
-        except Exception, ex:
-            handle_exception()
-        finally:
-            rlockmanager.release()
-
+        except Exception, ex: handle_exception()
+        finally: rlockmanager.release()
         self.working = False
 
 ## BotEventRunner class
@@ -80,50 +61,26 @@ class Runner(RunnerLoop):
 class BotEventRunner(Runner):
 
     def handle(self, descr, func, bot, ievent, *args, **kwargs):
-
-        """
-            schedule a bot command.
-
-            :param descr: description of the job
-            :type descr: string
-            :param func: function to call 
-            :type func: function 
-            :param bot: bot on which the command is called
-            :type bot: gozerbot.botbase.BotBase
-            :param ievent: event that triggered this command
-            :type ievent: gozerbot.eventbase.EventBase
-
-        """
-
-
+        """ schedule a bot command. """
         try:
-            #logging.debug('runner - %s (%s) running %s: %s at speed %s' % (ievent.nick, ievent.userhost, descr, str(func), ievent.speed))
             self.starttime = time.time()
             lockmanager.acquire(getname(str(func)))
             name = getname(str(func))
             self.working = True
             logging.debug("runner - now running %s" % name)
             func(bot, ievent, *args, **kwargs)
-            
             if ievent.closequeue and ievent.queues:
                 logging.debug("closing %s queues" % len(ievent.queues))
-                for queue in ievent.queues:
-                    queue.put_nowait(None)
+                for queue in ievent.queues: queue.put_nowait(None)
                 ievent.outqueue.put_nowait(None)
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
-
             if self.elapsed > 3:
                 logging.debug('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
-
         except Exception, ex:
-            if ievent.showexception:
-                handle_exception(ievent)
-            else:
-                handle_exception()
-        finally:
-            lockmanager.release(getname(str(func)))
-
+            if ievent.showexception: handle_exception(ievent)
+            else: handle_exception()
+        finally: lockmanager.release(getname(str(func)))
         self.working = False
 
 ## Runners class
@@ -140,15 +97,12 @@ class Runners(object):
     def runnersizes(self):
         """ return sizes of runner objects. """
         result = []
-        for runner in self.runners:
-            result.append(runner.queue.qsize())
-
+        for runner in self.runners: result.append(runner.queue.qsize())
         return result
 
     def stop(self):
         """ stop runners. """
-        for runner in self.runners:
-            runner.stop()
+        for runner in self.runners: runner.stop()
 
     def start(self):
         """ overload this if needed. """
@@ -161,7 +115,6 @@ class Runners(object):
             if not runner.queue.qsize():
                 runner.put(*data)
                 return
-
         self.cleanup()
         runner = self.makenew()
         runner.put(*data)
@@ -170,24 +123,19 @@ class Runners(object):
         """ return list of running jobs. """
         result = []
         for runner in self.runners:
-            if runner.queue.qsize():
-                result.append(runner.nowrunning)
-
+            if runner.queue.qsize(): result.append(runner.nowrunning)
         return result
 
     def makenew(self):
         """ create a new runner. """
         runner = None
         for i in self.runners:
-            if not i.queue.qsize():
-                return i
+            if not i.queue.qsize(): return i
         if len(self.runners) < self.max:
             runner = self.runnertype()
             runner.start()
             self.runners.append(runner)
-        else:
-            runner = random.choice(self.runners)
-
+        else: runner = random.choice(self.runners)
         return runner
 
     def cleanup(self):
@@ -195,11 +143,9 @@ class Runners(object):
         nr = len(self.runners)
         if nr > 1:
             for runner in self.runners:
-                if not runner.queue.qsize():
-                    runner.stop() 
+                if not runner.queue.qsize(): runner.stop() 
 
-
-## defines
+## global runners
 
 defaultrunner = Runners(10, BotEventRunner)
 cmndrunner = Runners(10, BotEventRunner)

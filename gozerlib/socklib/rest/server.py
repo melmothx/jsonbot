@@ -34,6 +34,7 @@ class RestServerBase(HTTPServer):
     daemon_thread = True
 
     def start(self):
+        """ start the REST server. """
         self.name = calledfrom(sys._getframe(0))
         self.stop = False
         self.running = False
@@ -49,34 +50,30 @@ class RestServerBase(HTTPServer):
         start_new_thread(self.serve, ())
 
     def shutdown(self):
+        """ shutdown the REST server. """
         try:
             self.stop = True
-            #self.socket.shutdown(2)
-            #self.socket.close()
             time.sleep(0.2)
             self.server_close()
-        except Exception, ex:
-            handle_exception()
+        except Exception, ex: handle_exception()
 
     def serve(self):
+        """ serving loop. """
         logging.warn('rest.server - starting')
         time.sleep(1)
         while not self.stop:
             self.running = True
-            try:
-                got = self.poll.poll(100)
-            except Exception, ex:
-                handle_exception()
+            try: got = self.poll.poll(100)
+            except Exception, ex: handle_exception()
             if got and not self.stop:
-                try:
-                    self.handle_request()
-                except Exception, ex:
-                    handle_exception()
+                try: self.handle_request()
+                except Exception, ex: handle_exception()
             time.sleep(0.01)
         self.running = False
         logging.warn('rest.server - stopping')
 
     def entrypoint(self, request):
+        """ check lists whether request should be allowed. """
         ip = request.ip
         if not self.whitelistenable() and ip in self.blacklist():
             logging.warn('rest.server - denied %s' % ip)
@@ -89,12 +86,15 @@ class RestServerBase(HTTPServer):
         return True
 
     def whitelistenable(self): 
+        """ enable whitelist? """
         return self.state['whitelistenable']
 
-    def whitelist(self): 
+    def whitelist(self):
+        """ return the whitelist. """
         return self.state['whitelist']
 
     def blacklist(self): 
+        """ return the black list. """
         return self.state['blacklist']
 
     def addhandler(self, path, type, handler):
@@ -102,22 +102,21 @@ class RestServerBase(HTTPServer):
         path = unquote_plus(path)
         splitted = []
         for i in path.split('/'):
-            if i:
-                splitted.append(i)
+            if i: splitted.append(i)
         splitted = tuple(splitted)
-        if not self.handlers.has_key(splitted):
-            self.handlers[splitted[0]] = {}
+        if not self.handlers.has_key(splitted): self.handlers[splitted[0]] = {}
         self.handlers[splitted[0]][type] = handler
         logging.info('rest.server - %s %s handler added' % (splitted[0], type))
 
     def enable(self, what):
+        """ enable an path. """
         try:
             self.state['disable'].remove(what)
             logging.info('rest.server - enabled %s' % str(what))
-        except ValueError:
-            pass
+        except ValueError: pass
 
     def disable(self, what):
+        """ disable an path. """
         self.state['disable'].append(what)
         logging.info('rest.server - disabled %s' % str(what))
 
@@ -125,12 +124,10 @@ class RestServerBase(HTTPServer):
         """ do a request """
         path = unquote_plus(request.path.strip())
         path = path.split('?')[0]
-        if path.endswith('/'):
-            path = path[:-1]
+        if path.endswith('/'): path = path[:-1]
         splitted = []
         for i in path.split('/'):
-            if i:
-                splitted.append(i)
+            if i: splitted.append(i)
         splitted = tuple(splitted)
         logging.warn("rest.server - incoming - %s" % str(splitted))
         for i in self.state['disable']:
@@ -141,8 +138,7 @@ class RestServerBase(HTTPServer):
         request.splitted = splitted
         request.value = None
         type = request.command
-        try:
-            func = self.handlers[splitted[0]][type]
+        try: func = self.handlers[splitted[0]][type]
         except (KeyError, ValueError):
             try:
                 func = self.handlers[splitted[0]][type]
@@ -186,22 +182,24 @@ class RestRequestHandler(BaseHTTPRequestHandler):
     """ timeserver request handler class """
 
     def setup(self):
+        """ called on each incoming request. """
         BaseHTTPRequestHandler.setup(self)
         self.ip = self.client_address[0]
         self.name = self.ip
         self.size = 0
 
     def writeheader(self, type='text/plain'):
+        """ write headers to the client. """
         self.send_response(200)
         self.send_header('Content-type', '%s; charset=%s ' % (type,sys.getdefaultencoding()))
         self.send_header('Server', config['version'])
         self.end_headers()
 
     def sendresult(self):
+        """ dispatch a call. """
         try:
             result = self.server.do(self)
-            if not result:
-                return
+            if not result: return
             self.size = len(result)
         except Exception, ex:
             handle_exception()
@@ -212,23 +210,18 @@ class RestRequestHandler(BaseHTTPRequestHandler):
         self.wfile.close()
 
     def handle_request(self):
-        if not self.server.entrypoint(self):
-            return
+        """ handle a REST request. """
+        if not self.server.entrypoint(self): return
         self.sendresult()
 
     do_DELETE = do_PUT = do_GET = do_POST = handle_request
 
     def log_request(self, code):
         """ log the request """
-        try:
-            ua = self.headers['user-agent']
-        except:
-            ua = "-"
-        try:
-            rf = self.headers['referer']
-        except:
-            rf = "-"
-
+        try: ua = self.headers['user-agent']
+        except: ua = "-"
+        try: rf = self.headers['referer']
+        except: rf = "-"
         if hasattr(self, 'path'):
             logging.debug('rest.server - %s "%s %s %s" %s %s "%s" "%s"' % (self.address_string(), self.command, self.path, self.request_version, code, self.size, rf, ua))
         else:

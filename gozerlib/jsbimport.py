@@ -13,7 +13,7 @@ import os
 import thread
 import logging
 
-## functions
+## _import function
 
 def _import(name):
     """ do a import (full). """
@@ -23,19 +23,15 @@ def _import(name):
         mm += m
         mods.append(mm)
         mm += "."
-
-    for mod in mods:
-        #logging.debug("jsbimport - trying %s" % mod)
-        imp = __import__(mod)
-
+    for mod in mods: imp = __import__(mod)
     logging.debug("jsbimport - got module %s" % sys.modules[name])
     return sys.modules[name]
 
+## force_import function
+
 def force_import(name):
     """ force import of module <name> by replacing it in sys.modules. """
-    try:
-        del sys.modules[name]
-    except KeyError:
-        pass
+    try: del sys.modules[name]
+    except KeyError: pass
     plug = _import(name)
     return plug

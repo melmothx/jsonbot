@@ -17,7 +17,7 @@ import logging
 import re
 import cgi
 
-## classes
+## WebBot class
 
 class WebBot(BotBase):
 
@@ -37,17 +37,14 @@ class WebBot(BotBase):
 
     def outnocb(self, channel, txt, how="msg", event=None, origin=None, response=None, *args, **kwargs):
         txt = self.normalize(txt)
-        if not response or how == 'cache':
-            add(channel, [txt, ])
+        if not response or how == 'cache': add(channel, [txt, ])
         else:
             if "http://" in txt:
                  for item in re_url_match.findall(txt):
                      logging.debug("web - raw - found url - %s" % item)
                      url = u'<a href="%s" onclick="window.open(\'%s\'); return false;"><b>%s</b></a>' % (item, item, item)
-                     try:
-                         txt = re.sub(item, url, txt)
-                     except ValueError: 
-                         logging.error("web - invalid url - %s" % url)
+                     try: txt = re.sub(item, url, txt)
+                     except ValueError:  logging.error("web - invalid url - %s" % url)
             self._raw(txt, response)
 
     def normalize(self, txt):

@@ -15,7 +15,7 @@ from gozerlib.utils.generic import strippedtxt
 import types
 import logging
 
-## classes
+## XMPPBot class
 
 class XMPPBot(BotBase):
 
@@ -24,8 +24,7 @@ class XMPPBot(BotBase):
     def __init__(self, cfg=None, users=None, plugs=None, botname="gae-xmpp", *args, **kwargs):
         BotBase.__init__(self, cfg, users, plugs, botname, *args, **kwargs)
         self.jid = "jsonbot@appspot.com"
-        if self.cfg:
-            self.cfg['type'] = 'xmpp'
+        if self.cfg: self.cfg['type'] = 'xmpp'
         self.isgae = True
         self.type = "xmpp"
 
@@ -46,10 +45,12 @@ class XMPPBot(BotBase):
         xmpp.send_message(jids, txt, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
     def invite(self, jid):
+        """ send an invite to another jabber user. """
         from google.appengine.api import xmpp
         xmpp.send_invite(jid)
 
     def normalize(self, what):
+        """ remove markup code as its not yet supported by our GAE XMPP bot. """
         what = strippedtxt(unicode(what))
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")

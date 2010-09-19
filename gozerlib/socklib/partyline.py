@@ -29,10 +29,7 @@ import logging
 
 class PartyLine(object):
 
-    """
-        partyline can be used to talk through dcc chat connections.
-
-    """
+    """ partyline can be used to talk through dcc chat connections. """
 
     def __init__(self):
         self.socks = [] # partyline sockets list
@@ -40,17 +37,7 @@ class PartyLine(object):
         self.lock = thread.allocate_lock()
 
     def _doresume(self, data, reto=None):
-
-        """
-            resume a party line connection after reboot.
-
-            :param data: resume data
-            :type data: dict .. see PartyLine._resumedata
-            :param reto: nick of user to reply to
-            :type reto: string
-
-        """
-
+        """ resume a party line connection after reboot. """
         for i in data['partyline']:
             bot = fleet.byname(i['botname'])
             sock = socket.fromfd(i['fileno'], socket.AF_INET, socket.SOCK_STREAM)
@@ -58,78 +45,38 @@ class PartyLine(object):
             nick = i['nick']
             userhost = i['userhost']
             channel = i['channel']
-
             if not bot:
                 logging.error("partyline - can't find %s bot in fleet" % i['botname'])
                 continue
-
             self.socks.append({'bot': bot, 'sock': sock, 'nick': nick, 'userhost': userhost, 'channel': channel, 'silent': i['silent']})
             bot._dccresume(sock, nick, userhost, channel)        
-
-            if reto:
-                self.say_nick(nick, 'rebooting done')
+            if reto: self.say_nick(nick, 'rebooting done')
 
     def _resumedata(self):
-
-        """
-             return data used for resume.
-
-             :rtype: list .. list of resumedata (dicts)
-
-        """
-
+        """ return data used for resume. """
         result = []
-
-        for i in self.socks:
-            result.append({'botname': i['bot'].name, 'fileno': i['sock'].fileno(), 'nick': i['nick'], 'userhost': i['userhost'], 'channel': i['channel'], 'silent': i['silent']})
-
+        for i in self.socks: result.append({'botname': i['bot'].name, 'fileno': i['sock'].fileno(), 'nick': i['nick'], 'userhost': i['userhost'], 'channel': i['channel'], 'silent': i['silent']})
         return result
 
     def resume(self, sessionfile):
-
-        """
-             resume from session file.
-
-             :param sessionfile: path to resume file
-             :type sessionfile: string
-
-        """
-
+        """ resume from session file. """
         session = load(open(sessionfile, 'r'))
-
         try:
             reto = session['channel']
             self._doresume(session, reto)
-
-        except Exception, ex:
-            handle_exception()
+        except Exception, ex: handle_exception()
 
     def stop(self, bot):
-
-        """
-            stop all users on bot.
-
-            :param bot: bot to stop users on
-            :type bot: gozerbot.eventbase.EventBase
-            
-        """
-
+        """ stop all users on bot. """
         for i in self.socks:
-
             if i['bot'] == bot:
                 try:
                     i['sock'].shutdown(2)
                     i['sock'].close()
-                except:
-                    pass
+                except: pass
                  
     def stop_all(self):
-
-        """
-             stop every user on partyline.
-
-        """
-
+        """ stop every user on partyline. """
         for i in self.socks:
             try:
                 i['sock'].shutdown(2)
@@ -138,186 +85,66 @@ class PartyLine(object):
                 pass
 
     def loud(self, nick): 
-
-        """
-            enable broadcasting of txt for nick.
-
-            :param nick: nick to put into loud mode
-            :type nick: string
-
-        """
-
+        """ enable broadcasting of txt for nick. """
         for i in self.socks:
-
-            if i['nick'] == nick:
-                i['silent'] = False
+            if i['nick'] == nick: i['silent'] = False
 
     def silent(self, nick):
-
-        """
-            disable broadcasting txt from/to nick.
-
-            :param nick: nick to put into silent mode
-            :type nick: string
-
-        """
-
+        """ disable broadcasting txt from/to nick. """
         for i in self.socks:
-
-            if i['nick'] == nick:
-                i['silent'] = True
+            if i['nick'] == nick: i['silent'] = True
 
     def add_party(self, bot, sock, nick, userhost, channel):
-
-        '''
-            add a socket with nick to the list.
-
-            :param bot: bot to add party on
-            :type bot: gozerbot.botbase.BotBase
-            :param sock: socket of party to add
-            :type sock: socket.socket
-            :param nick: nick of party to add
-            :type nick: string
-            :param userhost: userhost of party to add
-            :type userhost: string
-            :param channel: channel of party to add
-            :type channel: string
-
-        '''
-
+        ''' add a socket with nick to the list. '''
         for i in self.socks:
-
-            if i['sock'] == sock:
-                return            
-
-        self.socks.append({'bot': bot, 'sock': sock, 'nick': nick, \
-'userhost': userhost, 'channel': channel, 'silent': False})
-
+            if i['sock'] == sock: return            
+        self.socks.append({'bot': bot, 'sock': sock, 'nick': nick, 'userhost': userhost, 'channel': channel, 'silent': False})
         logging.debug("partyline - added user %s" % nick)
 
     def del_party(self, nick):
-
-        '''
-            remove a socket with nick from the list.
-
-            :param nick: nick to remove
-            :type nick: string
-
-        '''
-
+        ''' remove a socket with nick from the list. '''
         nick = nick.lower()
         self.lock.acquire()
-
         try:
-
             for socknr in range(len(self.socks)-1, -1, -1):	
-
-                if self.socks[socknr]['nick'].lower() == nick:
-                    del self.socks[socknr]
-
+                if self.socks[socknr]['nick'].lower() == nick: del self.socks[socknr]
             logging.debug('partyline - removed user %s' % nick)
-
-        finally:
-            self.lock.release()
+        finally: self.lock.release()
 
     def list_nicks(self):
-
-        '''
-            list all connected nicks.
-
-            :rtype: list
-
-        '''
-
+        ''' list all connected nicks. '''
         result = []
-
-        for item in self.socks:
-            result.append(item['nick'])
-
+        for item in self.socks: result.append(item['nick'])
         return result
 
     def say_broadcast(self, txt):
-
-        '''
-            broadcast a message to all ppl on partyline.
-
-            :param txt: txt to broadcast
-            :type txt: string
-
-        '''
-
+        ''' broadcast a message to all ppl on partyline. '''
         for item in self.socks:
-
-            if not item['silent']:
-                item['sock'].send("%s\n" % txt)
+            if not item['silent']: item['sock'].send("%s\n" % txt)
 
     def say_broadcast_notself(self, nick, txt):
-
-        '''
-             broadcast a message to all ppl on partyline, except the sender.
-
-            :param nick: nick to ignore
-            :type nick: string
-            :param txt: text to broadcast
-            :type txt: string
-
-        '''
-
+        ''' broadcast a message to all ppl on partyline, except the sender. '''
         nick = nick.lower()
-
         for item in self.socks:
-
-            if item['nick'] == nick:
-                continue
-
-            if not item['silent']:
-                item['sock'].send("%s\n" % txt)
+            if item['nick'] == nick: continue
+            if not item['silent']: item['sock'].send("%s\n" % txt)
 
     def say_nick(self, nickto, msg):
-
-        '''
-            say a message on the partyline to an user.
-
-            :param nickto: nick to send txt to
-            :type nickto: string
-            :param msg: msg to send
-            :type msg: string
-
-        '''
-
+        ''' say a message on the partyline to an user. '''
         nickto = nickto.lower()
-
         for item in self.socks:
-
             if item['nick'].lower() == nickto:
-
-                if not '\n' in msg:
-                    msg += "\n"
-
+                if not '\n' in msg: msg += "\n"
                 item['sock'].send("%s" % msg)
                 return
 
     def is_on(self, nick):
-
-        '''
-            checks if user an is on the partyline.
-
-            :param nick: nick to check
-            :type nick: string
-            :rtype: boolean
-
-        '''
-
+        ''' checks if user an is on the partyline. '''
         nick = nick.lower()
-
         for item in self.socks:
-
-            if item['nick'].lower() == nick:
-                return True
-
+            if item['nick'].lower() == nick: return True
         return False
 
-## the partyline
+## global partyline object
 
 partyline = PartyLine()
-

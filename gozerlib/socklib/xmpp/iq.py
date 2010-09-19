@@ -14,6 +14,8 @@ from gozerlib.gozerevent import GozerEvent
 
 import logging
 import time
+
+## Iq class
  
 class Iq(GozerEvent):
 
@@ -25,17 +27,13 @@ class Iq(GozerEvent):
         self.cbtype = "IQ"
         self.bottype = "xmpp"
  
-    def toirc(self):
+    def parse(self):
         """ set ircevent compatible attributes """
         self.cmnd = 'Iq'
         self.conn = None
         self.arguments = []
-
-        try:
-            self.nick = self.fromm.split('/')[1]
-        except (AttributeError, IndexError):
-            pass
-
+        try: self.nick = self.fromm.split('/')[1]
+        except (AttributeError, IndexError): pass
         self.jid = self.jid or self.fromm
         self.ruserhost = self.jid
         self.userhost = str(self.jid)
@@ -49,11 +47,8 @@ class Iq(GozerEvent):
         self.rest = ' '.join(self.args)
         self.sock = None
         self.speed = 5
-        if self.type == 'groupchat':
-            self.groupchat = True
-        else:
-            self.groupchat = False
-        if self.txt:
-            makeargrest(self)
+        if self.type == 'groupchat': self.groupchat = True
+        else: self.groupchat = False
+        if self.txt:makeargrest(self)
         self.joined = False
         self.denied = False

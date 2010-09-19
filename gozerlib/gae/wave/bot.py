@@ -30,9 +30,6 @@ from waveapi import ops
 from waveapi import blip
 from waveapi import appengine_robot_runner
 
-import simplejson
-
-import gozerdata.config.credentials as credentials
 import waveapi
 
 ## generic imports
@@ -42,42 +39,33 @@ import cgi
 import os
 import time
 import thread
+import simplejson
+
+## credentials
+
+import gozerdata.config.credentials as credentials
 
 ## defines
 
 saylock = thread.allocate_lock()
 saylocked = lockdec(saylock)
 
-## classes
+## WaveBot claass
 
 class WaveBot(BotBase, robot.Robot):
 
-    """ 
-        bot to implement google wave stuff. 
-
-        :param name: bot's name
-        :type param: string
-        :param image_url: url pointing to the bots image
-        :type image_url: string
-        :param version: the bots version 
-        :type version: string
-        :param profile_url: url pointing to the bots profile
-        :type profile_url: string
-
-    """
+    """ bot to implement google wave stuff. """
 
     def __init__(self, cfg=None, users=None, plugs=None, name="gae-wave", domain=None,
                  image_url='http://jsonbot.appspot.com/assets/favicon.png',
                  profile_url='http://jsonbot.appspot.com/', *args, **kwargs):
         sname = 'jsonbot'
         BotBase.__init__(self, cfg, users, plugs, name, *args, **kwargs)
-        if cfg:
-            self.domain = cfg['domain'] or 'googlewave.com'
-        else:
-            self.domain = domain or 'googlewave.com'
+        if cfg: self.domain = cfg['domain'] or 'googlewave.com'
+        else: self.domain = domain or 'googlewave.com'
         if self.cfg and self.cfg['domain'] != self.domain:
-                self.cfg['domain'] = self.domain
-                self.cfg.save()
+            self.cfg['domain'] = self.domain
+            self.cfg.save()
         self.type = 'wave'
         self.nick = name or sname
         robot.Robot.__init__(self, name=sname, image_url=image_url, profile_url=profile_url)
@@ -94,19 +82,15 @@ class WaveBot(BotBase, robot.Robot):
         """ invoked when any participants have been added/removed. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-
         whitelist = wevent.chan.data.whitelist
-        if not whitelist:
-            whitelist = wevent.chan.data.whitelist = []
+        if not whitelist: whitelist = wevent.chan.data.whitelist = []
         participants = event.participants_added
         logging.warning("wave - %s - %s joined" % (wevent.chan.data.title, participants))
-
         if wevent.chan.data.protected:
             for target in participants:
                 if target not in whitelist and target != 'jsonbot@appspot.com' and target != wevent.chan.data.owner:
                     logging.warn("wave - %s - setting %s to read-only" % (wevent.chan.data.title, target))
                     wevent.root.participants.set_role(target, waveapi.wavelet.Participants.ROLE_READ_ONLY)
-
         callbacks.check(self, wevent)
 
     def OnSelfAdded(self, event, wavelet):
@@ -131,50 +115,26 @@ class WaveBot(BotBase, robot.Robot):
 
     @saylocked
     def say(self, waveid, txt, result=[], event=None, origin="", dot=", ", *args, **kwargs):
-        """
-            output to the root id. 
-
-            :param waveid: id of the wave 
-            :type waveid: string
-            :param txt: text to output
-            :type txt: string
-
-        """
+        """ output to the root id. """
         if not self.domain in self._server_rpc_base:
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
             logging.debug("waves - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
-
         resp = self.makeresponse(txt, result, dot)
-
         wave = Wave(waveid)
-        if wave and wave.data.waveid:
-            wave.say(self, resp)
-        else:
-            logging.warn("we are not joined into %s" % waveid)
+        if wave and wave.data.waveid: wave.say(self, resp)
+        else: logging.warn("we are not joined into %s" % waveid)
 
     saynocb = say
 
     def toppost(self, waveid, txt):
-        """
-            output to the root id. 
-
-            :param waveid: id of the wave 
-            :type waveid: string
-            :param txt: text to output
-            :type txt: string
-
-        """
-
+        """ output to the root id. """
         if not self.domain in waveid:
             logging.warn("wave - not connected - %s" % waveid)
             return
-            
         wave = Wave(waveid)
-        if wave and wave.data.waveid:
-            wave.toppost(self, txt)
-        else:
-            logging.warn("we are not joined to %s" % waveid)
+        if wave and wave.data.waveid: wave.toppost(self, txt)
+        else: logging.warn("we are not joined to %s" % waveid)
 
     def newwave(self, domain=None, participants=None, submit=False):
         """ create a new wave. """

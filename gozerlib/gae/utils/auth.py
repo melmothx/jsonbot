@@ -8,7 +8,7 @@
 
 from gozerlib.utils.trace import whichmodule
 
-## functions
+## finduser
 
 def finduser():
     """ try to find the email of the current logged in user. """
@@ -17,14 +17,12 @@ def finduser():
     if user: return user.email()
     return "" 
 
+## checkuser
+
 def checkuser(response, request, event=None):
     """
         check for user based on web response. first try google 
         otherwise return 'notath@IP' 
-
-        :param response: response object
-        :param request: request object
-        :rtype: tuple of (userhost, gmail user, bot user , nick)
 
     """
     from google.appengine.api import users as gusers
@@ -43,7 +41,6 @@ def checkuser(response, request, event=None):
             if not who:who = email
             if auth_domain: userhost = nick = "%s@%s" % (who, auth_domain)
             else: userhost = nick = "%s@%s" % (who, hostid)
-
         except KeyError: userhost = nick = "notauth@%s" % hostid
     else:
         userhost = user.email() or user.nickname() 

@@ -24,8 +24,7 @@ import cgi
 import logging
 import re
 
-## classes
-
+## WebEvent class
 
 class WebEvent(EventBase):
 
@@ -61,8 +60,7 @@ class WebEvent(EventBase):
                 input = ""
                 handle_exception()
             if not input:
-                try:
-                    input = request.GET['content'] or request.GET['cmnd']
+                try: input = request.GET['content'] or request.GET['cmnd']
                 except KeyError: pass
         self.isweb = True
         self.origtxt = fromenc(input.strip(), self.bot.encoding)

@@ -27,56 +27,31 @@ from gozerlib.socklib.xmpp.namespace import attributes, subelements
 
 import logging
 
-## classes
+## GozerEvent class
 
 class GozerEvent(EventBase):
 
-
-    """
-        dictionairy to store xml stanza attributes.
-
-        :params input: optional dict to init with
-        :type input: dict
-
-    """
+    """ dictionairy to store xml stanza attributes. """
 
     def __init__(self, input={}):
-        if input == None:
-            EventBase.__init__(self)
-        else:
-            EventBase.__init__(self, input)
-        try:
-            self['fromm'] = self['from']
-        except (KeyError, TypeError):
-            self['fromm'] = ''
+        if input == None: EventBase.__init__(self)
+        else: EventBase.__init__(self, input)
+        try: self['fromm'] = self['from']
+        except (KeyError, TypeError): self['fromm'] = ''
 
     def __getattr__(self, name):
-
-        """
-            override getattribute so nodes in payload can be accessed.
-
-        """
-
+        """ override getattribute so nodes in payload can be accessed. """
         if not self.has_key(name) and self.has_key('subelements'):
-
             for i in self['subelements']:
-
-                if name in i:
-                    return i[name]
-
+                if name in i: return i[name]
         return EventBase.__getattr__(self, name, default="")
 
     def get(self, name):
-
         """ get a attribute by name. """
         if self.has_key('subelements'): 
             for i in self['subelements']:
-                if name in i:
-                    return i[name]
-
-        if self.has_key(name):
-            return self[name] 
-
+                if name in i: return i[name]
+        if self.has_key(name): return self[name] 
         return EventBase()
 
     def toxml(self):
@@ -84,38 +59,29 @@ class GozerEvent(EventBase):
         res = dict(self)
         if not res:
             raise Exception("%s .. toxml() can't convert empty dict" % self.name)
-
         elem = self['element']
         main = "<%s" % self['element']
-
         for attribute in attributes[elem]:
             if attribute in res:
-                if res[attribute]:
-                    main += u" %s='%s'" % (attribute, XMLescape(res[attribute]))
+                if res[attribute]: main += u" %s='%s'" % (attribute, XMLescape(res[attribute]))
                 continue
-
         main += ">"
         gotsub = False
         if res.has_key('txt'):
             if res['txt']:
                 main += u"<body>%s</body>" % XMLescape(res['txt'])
                 gotsub = True
-
         for subelement in subelements[elem]:
             try:
                 data = res[subelement]
                 if data:
                     main += "<%s>%s</%s>" % (subelement, XMLescape(data), subelement)
                     gotsub = True
-            except KeyError:
-                pass
-
-        if gotsub:
-            main += "</%s>" % elem
+            except KeyError: pass
+        if gotsub: main += "</%s>" % elem
         else:
             main = main[:-1]
             main += "/>"
-
         return main
 
     def str(self):
@@ -123,6 +89,5 @@ class GozerEvent(EventBase):
         result = ""
         elem = self['element']
         for item, value in dict(self).iteritems():
-            if item in attributes[elem] or item in subelements[elem] or item == 'txt':
-                result += "%s='%s' " % (item, value)
+            if item in attributes[elem] or item in subelements[elem] or item == 'txt': result += "%s='%s' " % (item, value)
         return result

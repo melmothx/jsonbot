@@ -18,7 +18,7 @@ import os
 import sys
 import logging
 
-## classes
+## PersistState classes
 
 class PersistState(Persist):
 
@@ -39,10 +39,8 @@ class PersistState(Persist):
     def define(self, key, value):
         """ define a state item. """
         if not self.data.has_key(key) or type(value) != self.types[key]:
-            if type(value) == types.StringType:
-                value = unicode(value)
-            if type(value) == types.IntType:
-                value = long(value)
+            if type(value) == types.StringType: value = unicode(value)
+            if type(value) == types.IntType: value = long(value)
             self.data[key] = value
 
 class PlugState(PersistState):

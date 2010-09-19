@@ -19,36 +19,25 @@ import pickle
 import tempfile
 import logging
 
+## reboot function
+
 def reboot():
     """ reboot the bot. """
     logging.warn("reboot - rebooting")
     os.execl(sys.argv[0], *sys.argv)
 
+## reboot_stateful function
+
 def reboot_stateful(bot, ievent, fleet, partyline):
-    """
-        reboot the bot, but keep the connections.
-
-        :param bot: bot on which the reboot command is given
-        :type bot: gozerbot.botbase.BotBase	
-        :param ievent: event that triggered the reboot
-        :type ievent: gozerbot.eventbase. EventBase
-        :param fleet: the fleet of the bot
-        :type fleet: gozerbot.fleet.Fleet
-        :param partyline: partyline of the bot
-        :type partyline: gozerbot.partyline.PartyLine
-
-    """
+    """ reboot the bot, but keep the connections (IRC only). """
     logging.warn("reboot - doing statefull reboot")
     session = {'bots': {}, 'name': bot.name, 'channel': ievent.channel, 'partyline': []}
-
     for i in fleet.bots:
         logging.warn("reboot - updating %s" % i.name)
         session['bots'].update(i._resumedata())
-        if i.bottype == "sxmpp":
-            i.exit()
+        if i.bottype == "sxmpp": i.exit()
     session['partyline'] = partyline._resumedata()
     sessionfile = tempfile.mkstemp('-session', 'gozerbot-')[1]
     dump(session, open(sessionfile, 'w'))
     fleet.save()
-    #fleet.exit()
     os.execl(sys.argv[0], sys.argv[0], '-r', sessionfile)

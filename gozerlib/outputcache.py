@@ -13,7 +13,7 @@ from datadir import datadir
 import os
 import logging
 
-## functions
+## clear function
 
 def clear(target):
     """ clear target's outputcache. """
@@ -24,41 +24,37 @@ def clear(target):
             cache.data['msg'] = []
             cache.save()
             return result
-
-    except KeyError:
-        return []
-
+    except KeyError: pass
     return []
+
+## add function
 
 def add(target, txtlist):
     """ add list of txt to target entry. """
     logging.warn("outputcache - adding %s lines" % len(txtlist))
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     d = cache.data
-    if not d.has_key('msg'):
-        d['msg'] = []
+    if not d.has_key('msg'): d['msg'] = []
     d['msg'].extend(txtlist)
-    while len(d['msg']) > 10:
-        d['msg'].pop(0)
+    while len(d['msg']) > 10: d['msg'].pop(0)
     cache.save()
+
+## set function
 
 def set(target, txtlist):
     """ set target entry to list. """
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
-    if not cache.data.has_key('msg'):
-        cache.data['msg'] = []
+    if not cache.data.has_key('msg'): cache.data['msg'] = []
     cache.data['msg'] = txtlist
     cache.save()
+
+## get function
 
 def get(target):
     """ get output for target. """
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     try:
         result = cache.data['msg']
-        if result:
-            return result
-
-    except KeyError:
-        return []
-
+        if result: return result
+    except KeyError: pass
     return []

@@ -33,25 +33,21 @@ import sys
 ## try google first
 
 try:
-
-    ## google imports
-
     from google.appengine.ext import db
     from google.appengine.api.memcache import get, set
     from google.appengine.api.datastore_errors import Timeout
-
     logging.debug("persist - using BigTable based Persist")
 
-    ## classes
+    ## JSONindb class
 
     class JSONindb(db.Model):
-
         """ model to store json files in. """
-
         modtime = db.DateTimeProperty(auto_now=True, indexed=False)
         createtime = db.DateTimeProperty(auto_now_add=True, indexed=False)
         filename = db.StringProperty()
         content = db.TextProperty(indexed=False)
+
+    ## Persist class
 
     class Persist(object):
 
@@ -59,98 +55,66 @@ try:
 
         def __init__(self, filename, default={}):
             self.plugname = calledfrom(sys._getframe())
-
-            if 'lib' in self.plugname:
-                self.plugname = calledfrom(sys._getframe(1))
-
+            if 'lib' in self.plugname: self.plugname = calledfrom(sys._getframe(1))
             self.fn = unicode(filename.strip()) # filename to save to
             self.key = None
             self.obj = None
             jsontxt = get(self.fn)
-
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
-            else:
-                default2 = copy.deepcopy(default)
-
+            else: default2 = copy.deepcopy(default)
             if jsontxt is None:
                 logging.debug("persist - %s - loading from db" % self.fn) 
                 try:
-                    try:
-                        self.obj = JSONindb.get_by_key_name(self.fn)
-                    except Timeout:
-                        self.obj = JSONindb.get_by_key_name(self.fn)
-
+                    try: self.obj = JSONindb.get_by_key_name(self.fn)
+                    except Timeout: self.obj = JSONindb.get_by_key_name(self.fn)
                 except Exception, ex:
                     handle_exception()
                     self.data = default2
                     return
-
                 if self.obj == None:
                     logging.debug("persist - %s - no entry found" % self.fn)
                     self.obj = JSONindb(key_name=self.fn)
                     self.obj.content = unicode(default)
                     self.data = default2
                     return
-
                 jsontxt = self.obj.content
-
-                if jsontxt:
-                    set(self.fn, jsontxt)
-
+                if jsontxt: set(self.fn, jsontxt)
                 logging.debug('persist - jsontxt is %s' % jsontxt)
                 gotcache = False
-
-            else:
-                gotcache = True
-
-
+            else: gotcache = True
             self.data = loads(jsontxt)
-
             if type(self.data) == types.DictType:
                 d = LazyDict()
                 d.update(self.data)
                 self.data = d
-
             cfrom = whichmodule()
-
-            if 'gozerlib' in cfrom:
+            if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
-                if 'gozerlib' in cfrom:
-                    cfrom = whichmodule(3)
-
-            if gotcache:
-                logging.debug('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
-            else:
-                logging.debug('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
+                if 'gozerlib' in cfrom: cfrom = whichmodule(3)
+            if gotcache: logging.debug('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
+            else: logging.debug('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
 
         def save(self):
             """ save json data to database. """
             bla = dumps(self.data)
-
             if self.obj == None:
                 self.obj = JSONindb(key_name=self.fn)
                 self.obj.content = bla
-            else:
-                self.obj.content = bla
-
+            else: self.obj.content = bla
             self.obj.filename = self.fn
             key = self.obj.put()  
-
             cfrom = whichmodule(0)
-
-            if 'gozerlib' in cfrom:
+            if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
-                if 'gozerlib' in cfrom:
-                    cfrom = whichmodule(3)
-
+                if 'gozerlib' in cfrom: cfrom = whichmodule(3)
             logging.info('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
             set(self.fn, bla)
 
 except ImportError:
 
-    # no google so use file based persist
+    ## file based persist
 
     logging.debug("using file based Persist")
 
@@ -172,15 +136,13 @@ except ImportError:
             self.lock = thread.allocate_lock() # lock used when saving)
             self.data = LazyDict() # attribute to hold the data
             if init:
-                if default == None:
-                    default = LazyDict()
+                if default == None: default = LazyDict()
                 self.init(default)
 
         @persistlocked
         def init(self, default={}):
             """ initialize the data. """
             logging.debug('persist - reading %s' % self.fn)
-            # see if file exists .. if not initialize data to default
             try:
                 data = get(self.fn)
                 if not data:
@@ -189,17 +151,14 @@ except ImportError:
                    datafile.close()
                    set(self.fn, data)
                    logging.info("persist - read %s (%s) *file*" % (self.fn, len(data)))
-                else:
-                   logging.info("persist - read %s (%s) *cache*" % (self.fn, len(data)))
+                else: logging.info("persist - read %s (%s) *cache*" % (self.fn, len(data)))
             except IOError, ex:
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
-                    #self.data = copy.deepcopy(default)
                     raise
                 else:
                     return
 
-            # load the JSON data into attribute
             try:
                 self.data = loads(data)
                 if type(self.data) == types.DictType:
@@ -223,39 +182,26 @@ except ImportError:
                     if not os.path.isdir(pp):
                         logging.info("persist - creating %s dir" % pp)
                         os.mkdir(pp)
-
                 tmp = self.fn + '.tmp' # tmp file to save to
-                # first save to temp file and when done rename
-                try:
-                    datafile = open(tmp, 'w')
+                try: datafile = open(tmp, 'w')
                 except IOError, ex:
                     logging.error("persist - can't save %s: %s" % (self.fn, str(ex)))
                     return
-
-                # dump JSON to file
-                #cp = copy.copy(self.data)
                 dump(self.data, datafile)
                 datafile.close()
-                try:
-                    os.rename(tmp, self.fn)
+                try: os.rename(tmp, self.fn)
                 except OSError:
                     handle_exception()
-                    # no atomic operation supported on windows! error is thrown when destination exists
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
-
                 set(self.fn, data)
                 logging.warn('persist - %s saved (%s)' % (self.fn, len(data)))
-
-            finally:
-                pass
+            finally: pass
 
 class PlugPersist(Persist):
 
     """ persist plug related data. data is stored in jsondata/plugs/{plugname}/{filename}. """
 
     def __init__(self, filename, default=None):
-        # retrieve plugname where object is constructed
         plugname = calledfrom(sys._getframe())
-        # call base constructor with appropiate filename
         Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + stripname(filename))

@@ -32,7 +32,7 @@ cpy = copy.deepcopy
 saylock = thread.allocate_lock()
 saylocked = lockdec(saylock)
 
-## classes
+## Wave class (channel)
 
 class Wave(ChannelBase):
 
@@ -64,68 +64,47 @@ class Wave(ChannelBase):
 
     def clone(self, bot, event, title=None, report=False, participants=[]):
         """ clone the wave into a new one. """
-        if participants:
-            parts = participants
-        else:
-            parts = list(event.root.participants)
+        if participants: parts = participants
+        else: parts = list(event.root.participants)
         newwave = bot.newwave(event.domain, parts)
         logging.info("wave - clone - populating wave with %s" % str(parts))
-        for id in parts:
-            newwave.participants.add(id)
+        for id in parts: newwave.participants.add(id)
         if title:
             if '#' in title:
                 title = "#".join(title.split("#")[:-1])
                 title += "#%s" % str(self.data.nrcloned + 1)
-            else:
-                title += " - #%s" % str(self.data.nrcloned + 1)
+            else: title += " - #%s" % str(self.data.nrcloned + 1)
             newwave._set_title(title)
-
         if report:
-            try:
-                txt = '\n'.join(event.rootblip.text.split('\n')[2:])
-            except IndexError:
-                txt = event.rootblip.text
-
+            try: txt = '\n'.join(event.rootblip.text.split('\n')[2:])
+            except IndexError: txt = event.rootblip.text
             newwave._root_blip.append(u'%s\n' % txt)
-
             for element in event.rootblip.elements:
-                if element.type == 'GADGET':
-                    newwave._root_blip.append(element)
-
+                if element.type == 'GADGET': newwave._root_blip.append(element)
             blip = newwave.reply()
             blip.append("\nthis wave is cloned from %s\n" % event.url)
-        else:
-            newwave._root_blip.append("PROTECTED WAVE")
-
+        else: newwave._root_blip.append("PROTECTED WAVE")
         wavelist = bot.submit(newwave)
         logging.info("wave - clone - %s - submit returned %s" % (list(newwave.participants), str(wavelist)))
-
         if not wavelist:
             logging.warn("submit of new wave failed")
             return
-
         try:
             waveid = None
             for item in wavelist:
-                try:
-                    waveid = item['data']['waveId']
-                except (KeyError, ValueError):
-                    continue
-        
+                try: waveid = item['data']['waveId']
+                except (KeyError, ValueError): continue
             logging.info("wave - newwave id is %s" % waveid)
             if not waveid:
                 logging.error("can't extract waveid from submit data")
                 return
-
             if waveid and 'sandbox' in waveid:
                 url = "https://wave.google.com/a/wavesandbox.com/#restored:wave:%s" % waveid.replace('w+','w%252B')
             else:
                 url = "https://wave.google.com/wave/#restored:wave:%s" % waveid.replace('w+','w%252B')
-
             oldwave = Wave(event.waveid)
             oldwave.data.threshold = -1
             oldwave.save()
-
             wave = Wave(waveid)
             wave.parse(event, newwave)
             wave.data.json_data = newwave.serialize()
@@ -133,20 +112,15 @@ class Wave(ChannelBase):
             wave.data.nrcloned = self.data.nrcloned + 1
             wave.data.url = url
             wave.save()
-
-
         except Exception, ex:
             handle_exception()
             return
-
         return wave
 
     @saylocked
     def say(self, bot, txt):
         """ output some txt to the wave. """
-        if self.data.json_data:
-            #logging.debug("wave - say - using BLIND - %s" % self.data.json_data) 
-            wavelet = bot.blind_wavelet(self.data.json_data)
+        if self.data.json_data: wavelet = bot.blind_wavelet(self.data.json_data)
         else:
             logging.info("did not join channel %s" % self.id)
             return
@@ -162,31 +136,21 @@ class Wave(ChannelBase):
                 if got != -1:
                     logging.debug("wave - found url - %s" % str(url))
                     start = txt.find(url.strip())
-                    if url.endswith(">"):
-                        annotations.append((start+2, start+len(url)-1, "link/manual", url[1:-1]))
-                    else:
-                        annotations.append((start, start+len(url), "link/manual", url))
-
-        except Exception, ex:
-            handle_exception()
-
+                    if url.endswith(">"): annotations.append((start+2, start+len(url)-1, "link/manual", url[1:-1]))
+                    else: annotations.append((start, start+len(url), "link/manual", url))
+        except Exception, ex: handle_exception()
         logging.debug("annotations used: %s", annotations)
         reply = wavelet.reply(txt)
         if annotations:
             for ann in annotations:
                 if ann[0]:
-                    try:
-                        reply.range(ann[0], ann[1]).annotate(ann[2], ann[3])
-                    except Exception, ex:
-                        handle_exception()
-
+                    try: reply.range(ann[0], ann[1]).annotate(ann[2], ann[3])
+                    except Exception, ex: handle_exception()
         logging.info("submitting to server: %s" % wavelet.serialize())
         try:
             import google
             bot.submit(wavelet)
-        except google.appengine.api.urlfetch_errors.DownloadError:
-            handle_exception()
-
+        except google.appengine.api.urlfetch_errors.DownloadError: handle_exception()
         self.data.seenblips += 1
         self.data.lastedited = time.time()
         self.save()
@@ -204,16 +168,13 @@ class Wave(ChannelBase):
         if not wavelet:
             logging.error("cant get wavelet")
             return
-
         logging.debug('wave - out - %s - %s' % (self.data.title, txt))
         try:
             import google
             blip = wavelet._root_blip.reply()
             blip.append(txt)
             bot.submit(wavelet)
-        except google.appengine.api.urlfetch_errors.DownloadError:
-            handle_exception()
-
+        except google.appengine.api.urlfetch_errors.DownloadError: handle_exception()
         self.data.seenblips += 1
         self.data.lastedited = time.time()
         self.save()

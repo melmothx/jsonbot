@@ -19,7 +19,7 @@ import cgi
 import logging
 import re
 
-## classes
+## XMPPEvent class
 
 class XMPPEvent(EventBase):
 

@@ -36,9 +36,11 @@ import types
 import time
 import logging
 
-## classes
+## PersistConfigError exception
 
 class PersistConfigError(Exception): pass
+
+## PersistConfig class
 
 class PersistConfig(Config):
 
@@ -57,23 +59,17 @@ class PersistConfig(Config):
         cmnds[cmndnamesave] = Command(self.modname, cmndname, self.cmnd_cfgsave, ['OPER',])
         examples.add(cmndnamesave, "save %s configuration" % self.plugname, cmndnamesave)
 
-    ### cmnds
+    ## cmnds
 
     def show_cfg(self, bot, ievent):
-
         """ show config options. """
-
         s = []
-
         for key, optionvalue in sorted(self.iteritems()):
-            if key in self.hide:
-                continue
+            if key in self.hide: continue
             v = optionvalue
-            if type(v) in [str, unicode]:
-                v = '"'+v+'"'
+            if type(v) in [str, unicode]: v = '"'+v+'"'
             v = str(v)
             s.append("%s=%s" % (key, v))
-
         ievent.reply("options: " + ' .. '.join(s))
 
     def cmnd_cfgsave(self, bot, ievent):
@@ -86,43 +82,30 @@ class PersistConfig(Config):
         if not self.has_key(key):
             ievent.reply('option %s is not defined' % key)
             return
-        if key in self.hide:
-            return
+        if key in self.hide: return
         if type(optionvalue) == types.ListType:
 	    if args[0].startswith("[") and args[-1].endswith("]"):
 		values = []
-
 		for v in ' '.join(args)[1:-1].replace(", ", ",").split(","):
-		    if v[0]=='"' and v[-1]=='"':
-			# string
-			v = v.replace('"', '')
-		    elif v[0]=="'" and v[-1]=="'":
-			# string
-			v = v.replace("'", "")
+		    if v[0]=='"' and v[-1]=='"': v = v.replace('"', '')
+		    elif v[0]=="'" and v[-1]=="'": v = v.replace("'", "")
 		    elif '.' in v:
-			# float
-			try:
-			    v = float(v)
+			try: v = float(v)
 			except ValueError:
 			    ievent.reply("invalid long literal: %s" % v)
 			    return
 		    else:
-			# int
-			try:
-			    v = int(v)
+			try: v = int(v)
 			except ValueError:
 			    ievent.reply("invalid int literal: %s" % v)
 			    return
 		    values.append(v)
-
                 self.set(key, values)
                 self.save()
                 ievent.reply("%s set %s" % (key, values))
 		return
-
             command = args[0]
             value = ' '.join(args[1:])
-
             if command == "clear":
                 self.clear(key)
                 self.save()
@@ -136,26 +119,19 @@ class PersistConfig(Config):
                     self.remove(key, value)
                     self.save()
                     ievent.reply("%s removed" % str(value))
-                except ValueError:
-                    ievent.reply("%s is not in list" % str(value))
-            else:
-                ievent.reply("invalid command")
+                except ValueError: ievent.reply("%s is not in list" % str(value))
+            else: ievent.reply("invalid command")
             return
 
         else:
             value = ' '.join(args)
-
-            try:
-                value = type(optionvalue)(value)
-            except:
-                pass
-
+            try: value = type(optionvalue)(value)
+            except: pass
             if type(value) == type(optionvalue):
                 self.set(key, value)
                 self.save()
                 ievent.reply("%s set" % key)
             elif type(value) == types.LongType and type(option.value) == types.IntType:
-                # allow upscaling from int to long
                 self.set(key, value)
                 self.save()
                 ievent.reply("%s set" % key)
@@ -167,58 +143,44 @@ class PersistConfig(Config):
         if not ievent.args:
             self.show_cfg(bot, ievent)
             return
-
         argc = len(ievent.args)
         key = ievent.args[0]
-        try:
-            optionvalue = self[key]
+        try: optionvalue = self[key]
         except KeyError:
             ievent.reply("%s option %s not found" % (self.plugname, key))
             return
-
-        if key in self.hide:
-            return
+        if key in self.hide: return
         if argc == 1:
             ievent.reply(str(optionvalue))
             return
-
         self.cmnd_cfg_edit(bot, ievent, ievent.args[1:], key, optionvalue)
 
     def generic_cmnd(self, key):
         """ command for editing config values. """
         def func(bot, ievent):
-            try:
-                optionvalue = self[key]
+            try: optionvalue = self[key]
             except KeyError:
                 ievent.reply("%s not found" % key)
-                # need return ?
-
+                return
             if not isinstance(option, Option):
                 logging.warn('persistconfig - option %s is not a valid option' % key)
                 return
             if ievent.args:
                 value = ' '.join(ievent.args)
-                try:
-                    value = type(optionvalue)(value)
-                except:
-                    pass
+                try: value = type(optionvalue)(value)
+                except: pass
                 self.cmnd_cfg_edit(bot, ievent, ievent.args, key, optionvalue)
-            else:
-                ievent.reply(str(optionvalue))
-
+            else: ievent.reply(str(optionvalue))
         return func
 
     ### plugin api
 
     def define(self, key, value=None, desc="plugin option", perm='OPER', example="", name=None, exposed=True):
         """ define initial value. """
-        if name:
-            name = name.lower()
-        if not exposed and not key in self.hide:
-            self.hide.append(key)
+        if name: name = name.lower()
+        if not exposed and not key in self.hide: self.hide.append(key)
         if not self.has_key(key):
-            if name == None:
-                name = "%s-cfg-%s" % (self.plugname, str(key))
+            if name == None: name = "%s-cfg-%s" % (self.plugname, str(key))
             self[key] = value
 	
     def undefine(self, key, throw=False):
@@ -227,9 +189,7 @@ class PersistConfig(Config):
             del self[key]
             return True
         except KeyError, e:
-            if throw:
-                raise
-
+            if throw: raise
         self.save()
         return False
 
@@ -251,7 +211,5 @@ class PersistConfig(Config):
 
     def get(self, key, default=None):
         """ get value of key. """
-        try:
-            return self[key]
-        except KeyError:
-            return default
+        try: return self[key]
+        except KeyError: return default
