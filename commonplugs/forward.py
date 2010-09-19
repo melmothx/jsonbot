@@ -54,7 +54,7 @@ cpy = copy.deepcopy
 
 def forwardoutpre(bot, event):
     logging.debug("forward - pre - %s" % event.channel)
-    if event.channel.lower() in forward.data.channels and not event.isremote():
+    if event.channel.lower() in forward.data.channels and not event.isremote() and not event.forwarded:
         if event.how != u"background":
             return True
     return False
