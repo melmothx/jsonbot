@@ -62,7 +62,7 @@ def forwardoutpre(bot, event):
 
 def forwardoutcb(bot, event):
     e = cpy(event)
-    logging.warn("forward - cbtype is %s - %s" % (event.cbtype, event.how))
+    logging.debug("forward - cbtype is %s - %s" % (event.cbtype, event.how))
     e.forwarded = True
     e.source = bot.jid
     e.botname = bot.server or bot.name

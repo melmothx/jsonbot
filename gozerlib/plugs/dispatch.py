@@ -22,14 +22,14 @@ def predispatch(bot, event):
         logging.debug("dispatch - event is done .. ignoring")
         return
     if event.isremote():
-        logging.warn("dispatch - event is remote .. not dispatching")
+        logging.done("dispatch - event is remote .. not dispatching")
         return
     return True
 
 def dispatch(bot, event):
     """ dispatch an event. """
     if event.nodispatch:
-        logging.warn("dispatch - nodispatch option is set - ignoring %s" % event.userhost)
+        logging.debug("dispatch - nodispatch option is set - ignoring %s" % event.userhost)
         return
     bot.status = "dispatch"
     bot.curevent = event

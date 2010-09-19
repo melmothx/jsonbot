@@ -157,7 +157,7 @@ class EventBase(LazyDict):
         return self.bot.less(what, nr)
 
     def isremote(self):
-        if self.txt: return self.txt.startswith('{"')
+        if self.txt: return self.txt.startswith('{')
 
     def iscmnd(self):
         """ check if event is a command. """
@@ -172,7 +172,7 @@ class EventBase(LazyDict):
         if self.type == "DISPATCH": cc += "!"
         logging.debug("dispatch - cc for %s is %s (%s)" % (self.title or self.channel or event.userhost, cc, self.bot.nick))
         matchnick = unicode(self.bot.nick + u":")
-        logging.warn("dispatch - trying to match %s" % self.txt)
+        logging.debug("dispatch - trying to match %s" % self.txt)
         if self.txt and self.txt[0] in cc: return self.txt[1:]
         elif self.txt.startswith(matchnick): return self.txt[len(matchnick):]
         return False

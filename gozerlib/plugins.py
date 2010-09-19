@@ -223,7 +223,7 @@ class Plugins(LazyDict):
             reload the plugin.
 
         """
-        logging.warn("plugins - checking for reload of %s (%s)" % (event.usercmnd, event.userhost))
+        logging.debug("plugins - checking for reload of %s (%s)" % (event.usercmnd, event.userhost))
         plugloaded = None
 
         try:
@@ -236,10 +236,10 @@ class Plugins(LazyDict):
         #logging.warn('cmnd: %s plugin: %s' % (event.usercmnd, plugin))
 
         if plugin in self:
-            logging.warn("plugins - %s already loaded" % plugin)
+            logging.debug("plugins - %s already loaded" % plugin)
             return False
 
-        logging.debug("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
+        logging.warn("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
         plugloaded = self.reload(plugin)
         return plugloaded
 
