@@ -191,7 +191,8 @@ class BotBase(LazyDict):
 
     def joinchannels(self):
         """ join channels. """
-        time.sleep(3)
+        from config import cfg as mainconfig
+        time.sleep(mainconfig.waitforjoin or 5)
         for i in self.state['joinedchannels']:
             try:
                 logging.warn("%s - joining %s" % (self.name, i))
