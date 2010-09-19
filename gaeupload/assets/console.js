@@ -107,14 +107,6 @@
            return false;
       } 
 
-      function dologin() {
-           cmnd = "!login-urls";
-           status("sending command ");
-           doCmnd(cmnd, response);
-           setTimeout("update();", 1000);
-           return false;
-      } 
-
       // function to launch on enter in the command box
 
       function doenter(form, e) {

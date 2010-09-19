@@ -416,7 +416,7 @@ examples.add('loaded', 'show list of loaded plugins', 'loaded')
 def handle_statusline(bot, event):
     """ show a status line. """
     event.reply("<b>controlchars:</b> %s - <b>perms:</b> %s" % (event.chan.data.cc, ", ".join(event.user.data.perms)))
-
+	
 cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')
 
