@@ -16,10 +16,8 @@ cache = {}
 
 def get(name, namespace=""):
     """ get data from the cache. """
-    try:
-        return cache[name]
-    except KeyError:
-        return None
+    try: return cache[name]
+    except KeyError: pass
 
 def set(name, item, namespace=""):
     """ set data in the cache. """
@@ -31,5 +29,4 @@ def delete(name, namespace=""):
     try:
         del cache[name]
         return True
-    except KeyError:
-        return False
+    except KeyError: return False

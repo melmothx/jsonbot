@@ -8,38 +8,24 @@
 
 import re
 
+## Example class
+
 class Example(object):
 
-    """
-        an example.
-
-        :param descr: description of the example
-        :type descr: string
-        :param ex: the example
-        :type ex: string
-
-    """
+    """ an example. """
 
     def __init__(self, descr, ex):
         self.descr = descr
         self.example = ex
+
+## Collection of exanples
 
 class Examples(dict):
 
     """ examples holds all the examples. """
 
     def add(self, name, descr, ex):
-        """
-            add description and example.
-
-            :param name: name of the example
-            :type name: string
-            :param descr: description of the example
-            :type descr: string
-            :param ex: the example
-            :type ex: string
-
-        """
+        """ add description and example. """
         self[name.lower()] = Example(descr, ex)
 
     def size(self):
@@ -52,12 +38,10 @@ class Examples(dict):
         for i in self.values():
             ex = i.example.lower()
             exampleslist = re.split('\d\)', ex)
-
             for example in exampleslist:
-                if example:
-                    result.append(example.strip())
-
+                if example: result.append(example.strip())
         return result
 
-# main examples object
+## global examples object
+
 examples = Examples()

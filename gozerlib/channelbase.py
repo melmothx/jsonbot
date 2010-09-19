@@ -2,7 +2,7 @@
 #
 #
 
-""" provide a base class for channels (waves, xmpp, web). """
+""" provide a base class for channels. """
 
 ## gozerlib imports
 
@@ -33,8 +33,7 @@ class ChannelBase(Persist):
     """
 
     def __init__(self, id, type="notset"):
-        if not id:
-            raise NoChannelSet()
+        if not id: raise NoChannelSet()
         Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + stripname(id))
         self.id = id
         self.type = type
@@ -59,8 +58,7 @@ class ChannelBase(Persist):
         """ get password based of type. """
         try:
             return self.data.passwords[type]
-        except KeyError:
-            return
+        except KeyError: return
 
     def delpass(self, type='IRC'):
         """ delete password. """
@@ -68,20 +66,12 @@ class ChannelBase(Persist):
             del self.data.passwords[type]
             self.save()
             return True
-        except KeyError:
-            return
+        except KeyError: return
 
     def parse(self, event, wavelet=None):
-
         """
             parse an event for channel related data and constuct the 
             channel with it. Overload this.
-
-            :param event: event to parse
-            :type event: gozerlib.eventbase.EventBase
-            :param wavelet: wavelet to parse with
-            :type wavelet: waveap.wavelet.Wavelet
-            :rtype: self
 
         """
         pass

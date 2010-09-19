@@ -16,7 +16,7 @@ import getpass
 import logging
 import re
 
-## classes
+## ConsoleEvent class
 
 class ConsoleEvent(EventBase):
 
@@ -28,8 +28,7 @@ class ConsoleEvent(EventBase):
 
     def parse(self, bot, input, console, *args, **kwargs):
         """ overload this. """
-        if not input:
-            raise NoInput()
+        if not input: raise NoInput()
         self.bot = bot
         self.console = console
         self.nick = getpass.getuser()

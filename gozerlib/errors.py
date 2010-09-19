@@ -4,8 +4,15 @@
 
 """ gozerlib exceptions. """
 
+## gozerlib imports
+
 from gozerlib.utils.trace import calledfrom
+
+## basic imports
+
 import sys
+
+## exceptions
 
 class JsonBotError(Exception):
     pass

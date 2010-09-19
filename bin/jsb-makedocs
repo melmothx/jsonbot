@@ -265,6 +265,10 @@ def domods(dir):
         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'commonplugs')
     except:
         pass
+    try:
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'gaeplugs')
+    except:
+        pass
     d = dir 
     d.replace(os.sep, '.')
     domodfile(d, dir)
@@ -303,6 +307,10 @@ if __name__ == '__main__':
         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs')
     except:
         pass
+    try:
+        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'gaeplugs')
+    except:
+        pass
   
     if True:
         for file in os.listdir('gozerlib' + os.sep + 'plugs'):
@@ -325,6 +333,11 @@ if __name__ == '__main__':
                 continue
             f = open('docs' + os.sep + 'plugins' + os.sep + 'socketplugs' + os.sep + file[:-3] + '.txt', 'w')
             threads.append(start_new_thread(gendoc, ('socketplugs', file, f)))
+        for file in os.listdir('gaeplugs'):
+            if not file.endswith('.py') or '__init__' in file:
+                continue
+            f = open('docs' + os.sep + 'plugins' + os.sep + 'gaeplugs' + os.sep + file[:-3] + '.txt', 'w')
+            threads.append(start_new_thread(gendoc, ('gaeplugs', file, f)))
 
         for thread in threads:
             thread.join()
@@ -334,6 +347,7 @@ if __name__ == '__main__':
     domods('commonplugs')
     domods('waveplugs')
     domods('socketplugs')
+    domods('gaeplugs')
 
     shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'mindex.txt', 'docs' + os.sep + 'gozerlib' + os.sep + 'index.txt')
     #shutil.copyfile('pindex.txt', 'plugdoc' + os.sep + 'index.txt')

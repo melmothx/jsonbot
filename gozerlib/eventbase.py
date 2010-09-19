@@ -36,7 +36,6 @@ class EventBase(LazyDict):
     """ basic event class. """
 
     def __init__(self, input=None, bot=None):
-        """ EventBase constructor """
         LazyDict.__init__(self)
         if bot: self.bot = bot
         if input: self.copyin(input)
@@ -56,6 +55,7 @@ class EventBase(LazyDict):
         return e
 
     def prepare(self, bot=None):
+        """ prepare the event for dispatch. """
         self.result = []
         if bot: self.bot = bot
         assert(self.bot)
@@ -104,6 +104,8 @@ class EventBase(LazyDict):
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result): return
+        if result:
+            txt = u"<b>" + txt + u"</b>"
         self.bot.say(self.printto or self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
@@ -157,11 +159,11 @@ class EventBase(LazyDict):
         return self.bot.less(what, nr)
 
     def isremote(self):
-        if self.txt: return self.txt.startswith('{')
+        if self.txt: return self.txt.startswith('{"') or self.txt.startswith("{&")
 
     def iscmnd(self):
         """ check if event is a command. """
-        if self.txt and self.txt.startswith('{"'): return # isremote
+        if self.isremote(): return
         cc = "!"
         if self.chan: 
             cc = self.chan.data.cc
@@ -176,19 +178,3 @@ class EventBase(LazyDict):
         if self.txt and self.txt[0] in cc: return self.txt[1:]
         elif self.txt.startswith(matchnick): return self.txt[len(matchnick):]
         return False
-
-    def normalize(self, txt):
-        """ allow certain html markup. """
-        txt = txt.replace("&lt;br&gt;", "<br>")
-        txt = txt.replace("&lt;i&gt;", "<i>")
-        txt = txt.replace("&lt;/i&gt;", "</i>")
-        txt = txt.replace("&lt;b&gt;", "<b>")
-        txt = txt.replace("&lt;/b&gt;", "</b>")
-        txt = txt.replace("&lt;h2&gt;", "<h2>")
-        txt = txt.replace("&lt;/h2&gt;", "</h2>")
-        txt = txt.replace("&lt;h3&gt;", "<h3>")
-        txt = txt.replace("&lt;/h3&gt;", "</h3>")
-        txt = txt.replace("&lt;li&gt;", "<li>")
-        txt = txt.replace("&lt;/li&gt;", "</li>")
-        txt = txt.replace("\n", "<br>")
-        return txt

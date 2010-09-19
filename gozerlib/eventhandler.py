@@ -33,11 +33,9 @@ class Eventhandler(object):
     def __init__(self):
         self.sortedlist = []
         self.queues = {}
-
         for i in range(11):
             self.queues[i] = Queue.Queue()
             self.sortedlist.append(i)
-
         self.sortedlist.sort()
         self.go = Queue.Queue()
         self.stopped = False
@@ -46,9 +44,7 @@ class Eventhandler(object):
 
     def start(self):
         """ start the eventhandler thread. """
-
         self.stopped = False
-
         if not self.running:
             start_new_thread(self.handleloop, ())
             self.running = True
@@ -71,14 +67,12 @@ class Eventhandler(object):
             if self.queues[i].qsize():
                 ready.append(i)
                 break
-
         return ready
 
     def handle_one(self):
         """ do 1 loop over ready queues. """
         ready = self.getready()
-        for i in ready:
-            self.dispatch(self.queues[i])
+        for i in ready: self.dispatch(self.queues[i])
 
     def handleloop(self):
         """ thread that polls the queues for items to dispatch. """
@@ -86,16 +80,12 @@ class Eventhandler(object):
         while not self.stopped:
             self.go.get()
             self.handle_one()
-
         logging.debug('eventhandler - stopping %s' % str(self))
 
     def dispatch(self, queue):
         """ dispatch functions from provided queue. """
-        try:
-            todo = queue.get_nowait()
-        except Queue.Empty:
-            return
-
+        try: todo = queue.get_nowait()
+        except Queue.Empty: return
         try:
             (func, args, kwargs) = todo
             func(*args, **kwargs)
@@ -106,11 +96,9 @@ class Eventhandler(object):
             except ValueError:
                 (func, ) = todo
                 func()
+        except: handle_exception()
 
-        except:
-            handle_exception()
 
-## defines
+## handler to use in main prog
 
-# handler to use in main prog
 mainhandler = Eventhandler()

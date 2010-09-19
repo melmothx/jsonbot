@@ -8,6 +8,7 @@
 
 from gozerlib.gozerevent import GozerEvent
 from simplejson import dumps
+
 ## basic imports
 
 import hmac
@@ -24,15 +25,15 @@ idattributes = ['createtime', 'origin', 'type', 'idtime', 'payload']
 def getid(container):
     name = ""
     for attr in idattributes:
-        try:
-            name += str(container[attr])
-        except KeyError:
-            pass
+        try: name += str(container[attr])
+        except KeyError: pass
     return uuid.uuid3(uuid.NAMESPACE_URL, name).hex
 
 ## classes
 
 class Container(GozerEvent):
+
+    """ Container for bot to bot communication. Provides a hmac id that can be checked. """
 
     def __init__(self, origin=None, payload=None, type="event", key=None):
         GozerEvent.__init__(self)
@@ -41,10 +42,8 @@ class Container(GozerEvent):
         self.type = str(type) 
         self.payload = payload
         self.makeid()
-        if key:
-            self.makehmac(key)
-        else:
-            self.makehmac(self.id)
+        if key: self.makehmac(key)
+        else: self.makehmac(self.id)
 
     def makeid(self):
         self.idtime = time.time()

@@ -153,8 +153,6 @@ class Ircevent(EventBase):
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         if self.checkqueues(result):
             return
-        if result:
-            txt = u"<b>" + txt + u"</b>"
         if self.isdcc:
             self.sock.send(txt)
             self.sock.send("\n")

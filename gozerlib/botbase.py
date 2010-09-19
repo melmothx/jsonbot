@@ -23,7 +23,7 @@ from less import Less
 from boot import boot
 from utils.locking import lockdec
 from exit import globalshutdown
-from utils.generic import splittxt, toenc, fromenc, waitforqueue
+from utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt
 from utils.trace import whichmodule
 from fleet import fleet
 from utils.name import stripname
@@ -45,9 +45,11 @@ import threading
 import Queue
 import re
 
-## define
+## defines
 
 cpy = copy.deepcopy
+
+## locks
 
 reconnectlock = threading.RLock()
 reconnectlocked = lockdec(reconnectlock)
@@ -55,6 +57,8 @@ reconnectlocked = lockdec(reconnectlock)
 ## classes
 
 class BotBase(LazyDict):
+
+    """ base class for all bots. """
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
         if not botname and cfg: botname = cfg.botname
@@ -104,8 +108,7 @@ class BotBase(LazyDict):
         if not self.nick: self.nick = u'jsonbot'
         try:
             if not os.isdir(self.datadir): os.mkdir(self.datadir)
-        except:
-            pass
+        except: pass
         self.setstate()
         self.stopreadloop = False
         self.stopoutloop = False
@@ -113,8 +116,7 @@ class BotBase(LazyDict):
         self.outqueues = [Queue.Queue() for i in range(10)]
         self.tickqueue = Queue.Queue()
         self.encoding = self.cfg.encoding or "utf-8"
-        if not fleet.byname(self.name):
-            fleet.bots.append(self)
+        if not fleet.byname(self.name): fleet.bots.append(self)
         if not self.isgae:
             defaultrunner.start()
             cmndrunner.start()
@@ -128,8 +130,7 @@ class BotBase(LazyDict):
         logging.warn("%s - eventloop started" % self.name)
         while not self.stopped:
             event = self.inqueue.get()
-            if not event:
-                break
+            if not event: break
             self.doevent(event)
         logging.warn("%s - eventloop stopped" % self.name)
 
@@ -148,8 +149,7 @@ class BotBase(LazyDict):
             if queue:
                 try:
                     res = queue.get() 
-                except Queue.Empty:
-                    continue
+                except Queue.Empty: continue
                 if not res: continue
                 if not self.stopped and not self.stopoutloop:
                     logging.debug("%s - OUT - %s - %s" % (self.name, self.type, str(res))) 
@@ -172,8 +172,7 @@ class BotBase(LazyDict):
     def setstate(self, state=None):
         """ set state on the bot. """
         self.state = state or Pdod(self.datadir + os.sep + 'state')
-        if self.state and not 'joinedchannels' in self.state.data:
-            self.state.data.joinedchannels = []
+        if self.state and not 'joinedchannels' in self.state.data: self.state.data.joinedchannels = []
 
     def setusers(self, users=None):
         """ set users on the bot. """
@@ -311,7 +310,7 @@ class BotBase(LazyDict):
         if length > 1:
             logging.debug("addding %s lines to %s outputcache" % (len(txtlist), printto))
             self.outcache.set(printto, txtlist[1:])
-            res += "<b> - %s more<b>" % (length - 1) 
+            res += "<b> - %s more</b>" % (length - 1) 
         return [res, length]
 
     def join(self, channel, password, *args, **kwargs):
@@ -376,10 +375,8 @@ class BotBase(LazyDict):
                 if type(i) == types.ListType or type(i) == types.TupleType:
                     try:
                         res.append(dot.join(i))
-                    except TypeError:
-                        res.extend(i)
-                else:   
-                    res.append(i)
+                    except TypeError: res.extend(i)
+                else: res.append(i)
         if txt: return unicode(txt) + dot.join(res)   
         elif res: return dot.join(res)
         return ""
@@ -389,16 +386,13 @@ class BotBase(LazyDict):
         plugloaded = []
         target = event.cbtype or event.cmnd
         logging.debug("callbacks - checking for reload of %s (%s)" % (target, event.userhost))
-
         try:
             from boot import getcallbacktable   
             plugins = getcallbacktable()[target]
         except KeyError:
             logging.debug("callbacks - can't find plugin to reload for %s" % event.cmnd)
             return
-
         from plugins import plugs
-
         for name in plugins: 
             if name in plugs:
                 logging.debug("callbacks - %s already loaded" % name)
@@ -407,9 +401,7 @@ class BotBase(LazyDict):
                 logging.warn("on demand reloading of %s" % name)
                 try:
                     plugloaded.append(plugs.reload(name, True))
-                except Exception, ex: 
-                    handle_exception()
-
+                except Exception, ex: handle_exception()
         return plugloaded
 
     def send(self, *args, **kwargs):
@@ -419,6 +411,7 @@ class BotBase(LazyDict):
         pass
 
     def normalize(self, what):
+        """ convert markup to IRC bold. """
         txt = strippedtxt(what)
         txt = re.sub("\s+", " ", what)
         txt = txt.replace("<b>", "\002")
@@ -496,5 +489,4 @@ class BotBase(LazyDict):
         try:
             event = self.plugs.dispatch(self, e, wait=wait)
             return event
-        except NoSuchCommand:
-            e.reply("no such command: %s" % e.usercmnd)
+        except NoSuchCommand: e.reply("no such command: %s" % e.usercmnd)

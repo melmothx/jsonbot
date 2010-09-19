@@ -43,3 +43,12 @@ socket plugins
     :glob:
 
     socketplugs/*
+
+gae plugins
+-----------
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    gaeplugs/*

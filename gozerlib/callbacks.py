@@ -3,7 +3,7 @@
 #
 
 """ 
-    bot callbacks .. callbacks occure on registered events. a precondition 
+    bot callbacks .. callbacks take place on registered events. a precondition 
     function can optionaly be provided to see if the callback should fire. 
 
 """
@@ -23,21 +23,11 @@ import copy
 import thread
 import logging
 
-## classes
+## Callback class
 
 class Callback(object):
 
-    """ 
-        class representing a callback.
-
-        :param func: function to execute
-        :param prereq: prerequisite function 
-        :param plugname: plugin to register this callback with 
-        :param kwargs: dict to pass on to the callback 
-        :param threaded: whether the callback should be executed in its own thread
-        :param speed: determines which runnerspool to run this callback on
-
-    """
+    """ class representing a callback. """
 
     def __init__(self, modname, func, prereq, kwargs, threaded=False, speed=5):
         self.modname = modname
@@ -48,6 +38,8 @@ class Callback(object):
         self.threaded = copy.deepcopy(threaded) # run callback in thread
         self.speed = copy.deepcopy(speed) # speed to execute callback with
         self.activate = False
+
+## Callbacks class (holds multiple callbacks)
 
 class Callbacks(object):
 
@@ -85,7 +77,6 @@ class Callbacks(object):
         for callback in unload[::-1]:
             self.cbs.delete(callback[0], callback[1])
             logging.debug('callbacks - unloaded %s (%s)' % (callback[0], modname))
-        return self
 
     def disable(self, plugname):
         """ disable all callbacks registered in a plugin. """
@@ -93,9 +84,7 @@ class Callbacks(object):
         for name, cblist in self.cbs.iteritems():
             index = 0
             for item in cblist:
-                if item.plugname == plugname:
-                    item.activate = False
-        return self
+                if item.plugname == plugname: item.activate = False
 
     def activate(self, plugname):
         """ activate all callbacks registered in a plugin. """
@@ -103,9 +92,7 @@ class Callbacks(object):
         for name, cblist in self.cbs.iteritems():
             index = 0
             for item in cblist:
-                if item.plugname == plugname:
-                    item.activate = True
-        return self
+                if item.plugname == plugname: item.activate = True
 
     def whereis(self, cmnd):
         """ show where ircevent.CMND callbacks are registered """
@@ -114,9 +101,7 @@ class Callbacks(object):
         for c, callback in self.cbs.iteritems():
             if c == cmnd:
                 for item in callback:
-                    if not item.plugname in result:
-                        result.append(item.plugname)
-
+                    if not item.plugname in result: result.append(item.plugname)
         return result
 
     def list(self):
@@ -134,12 +119,10 @@ class Callbacks(object):
         type = event.cbtype or event.cmnd
         logging.debug("callbacks - %s - %s" % (event.userhost, type))
         if self.cbs.has_key('ALL'):
-            for cb in self.cbs['ALL']:
-                self.callback(cb, bot, event)
+            for cb in self.cbs['ALL']: self.callback(cb, bot, event)
         if self.cbs.has_key(type):
             target = self.cbs[type]
-            for cb in target:
-                self.callback(cb, bot, event)
+            for cb in target: self.callback(cb, bot, event)
 
     def callback(self, cb, bot, event):
         """  do the actual callback with provided bot and event as arguments. """
@@ -150,10 +133,8 @@ class Callbacks(object):
                 return
             if cb.prereq:
                 logging.debug('callbacks - excecuting in loop %s' % str(cb.prereq))
-                if not cb.prereq(bot, event):
-                    return
-            if not cb.func:
-                return
+                if not cb.prereq(bot, event): return
+            if not cb.func: return
             if event.isremote(): logging.warn('REMOTE - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             elif event.cbtype != "TICK": logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             else: logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
@@ -161,12 +142,12 @@ class Callbacks(object):
             if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
             else:
                 if bot.isgae: cb.func(bot, event)
-                else:defaultrunner.put(cb.modname, cb.func, bot, event)
+                else: defaultrunner.put(cb.modname, cb.func, bot, event)
             return True
         except Exception, ex:
             handle_exception()
 
-## defines
+## global callbacks
 
 first_callbacks = Callbacks()
 callbacks = Callbacks()

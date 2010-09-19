@@ -26,15 +26,12 @@ sys.path.insert(0, os.getcwd() + os.sep + '..')
 ## defines
 
 ongae = False
-
 try:
     import waveapi
-    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs']
+    plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs']
     ongae = True
-except ImportError:
-    plugin_packages = ['gozerlib.plugs', 'gozerlib.gae.plugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs', 'socketplugs']
+except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs', 'socketplugs']
 
-#default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.remotecallbacks', 'commonplugs.watcher', 'commonplugs.forward', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.outputcache', 'commonplugs.learn', 'socketplugs.udp']
 default_plugins = ['gozerlib.plugs.admin', ]
 
 # these are set in gozerlib/boot.py
@@ -51,93 +48,66 @@ rundir = datadir + os.sep + "run"
 def boot(force=False, encoding="utf-8", umask=None):
     """ initialize the bot. """
     logging.info("booting ..")
-
     try:
         if os.getuid() == 0:
             print "don't run the bot as root"
             os._exit(1)
-    except AttributeError:
-        pass
-
+    except AttributeError: pass
     try:
-        # write pid to pidfile  
         k = open(rundir + os.sep + 'jsonbot.pid','w')
         k.write(str(os.getpid()))
         k.close()
-    except IOError:
-        pass
-
+    except IOError: pass
     try:
-        # set default settings
         if not ongae:
             reload(sys)
             sys.setdefaultencoding(encoding)
-    except (AttributeError, IOError):
-        pass
-
+    except (AttributeError, IOError): pass
     try:
-        # set umask of gozerdata dir
-        if not umask:
-            checkpermissions('gozerdata', 0700) 
-        else:
-            checkpermissions('gozerdata', umask)  
-    except:
-        handle_exception()
-
+        if not umask: checkpermissions('gozerdata', 0700) 
+        else: checkpermissions('gozerdata', umask)  
+    except: handle_exception()
     global loaded
     global cmndtable
-    if not cmndtable:
-        cmndtable = Persist(rundir + os.sep + 'cmndtable')
     global pluginlist
-    if not pluginlist:
-         pluginlist = Persist(rundir + os.sep + 'pluginlist')
     global callbacktable
-    if not callbacktable:
-         callbacktable = Persist(rundir + os.sep + 'callbacktable')
-    
+    if not cmndtable: cmndtable = Persist(rundir + os.sep + 'cmndtable')
+    if not pluginlist: pluginlist = Persist(rundir + os.sep + 'pluginlist')
+    if not callbacktable: callbacktable = Persist(rundir + os.sep + 'callbacktable')
     from gozerlib.plugins import plugs
     if not cmndtable.data or force:
         plugs.loadall(plugin_packages, force=True)
         loaded = True
         savecmndtable()
-
     if not pluginlist.data or force:
         if not loaded:
             plugs.loadall(plugin_packages, force=True)
             loaded = True
         savepluginlist()
-
     if not callbacktable.data or force:
         if not loaded:
             plugs.loadall(plugin_packages, force=True)
             loaded = True
         savecallbacktable()
-
     if not loaded:
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
             plugs.reload(plug)
-
     logging.info("boot - done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """
     global cmndtable
     cmndtable.data = {}
-
     from gozerlib.commands import cmnds
     assert cmnds
-
     if cmnds.subs:
         for name, clist in cmnds.subs.iteritems():
             if name:
-                if clist and len(clist) == 1:
-                    cmndtable.data[name] = clist[0].modname   
-
+                if clist and len(clist) == 1: cmndtable.data[name] = clist[0].modname   
     for cmndname, c in cmnds.iteritems():
         if cmndname and c:
             cmndtable.data[cmndname] = c.modname   
-
     logging.warn("saving command table")
     assert cmndtable
     cmndtable.save()
@@ -145,28 +115,21 @@ def savecmndtable():
 def getcmndtable():
     """ save command -> plugin list to db backend. """
     global cmndtable
-    if not cmndtable:
-        boot()
-
+    if not cmndtable: boot()
     return cmndtable.data
 
 def savecallbacktable():
     """ save command -> plugin list to db backend. """
     global callbacktable
     assert callbacktable
- 
     callbacktable.data = {}
-  
     from gozerlib.callbacks import first_callbacks, callbacks, last_callbacks, remote_callbacks
     assert callbacks
-
     for cb in [first_callbacks, callbacks, last_callbacks, remote_callbacks]:
         for type, cbs in cb.cbs.iteritems():
             for c in cbs:
-                if not callbacktable.data.has_key(type):
-                    callbacktable.data[type] = []
+                if not callbacktable.data.has_key(type): callbacktable.data[type] = []
                 callbacktable.data[type].append(c.modname)
-
     logging.warn("saving callback table")
     assert callbacktable
     callbacktable.save()
@@ -174,25 +137,20 @@ def savecallbacktable():
 def getcallbacktable():
     """ save command -> plugin list to db backend. """
     global callbacktable
-    if not callbacktable:
-        boot()
-
+    if not callbacktable: boot()
     return callbacktable.data
 
 def savepluginlist():
     """ save a list of available plugins to db backend. """
     global pluginlist
     pluginlist.data = []
-
     from gozerlib.commands import cmnds
     assert cmnds
-
     for cmndname, c in cmnds.iteritems():
         if c and not c.plugname:
             logging.info("boot - not adding %s to pluginlist" % cmndname)
             continue
-        if c and c.plugname not in pluginlist.data:
-            pluginlist.data.append(c.plugname)
+        if c and c.plugname not in pluginlist.data: pluginlist.data.append(c.plugname)
     pluginlist.data.sort()
     logging.warn("saving plugin list")
     assert pluginlist
@@ -201,6 +159,5 @@ def savepluginlist():
 def getpluginlist():
     """ get the plugin list. """
     global pluginlist
-    if not pluginlist:
-         boot()
+    if not pluginlist: boot()
     return pluginlist.data

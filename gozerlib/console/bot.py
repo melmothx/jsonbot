@@ -33,11 +33,10 @@ import re
 
 histfilepath = os.path.expanduser(datadir + os.sep + "run" + os.sep + "console-history")
 
-## classes
+## HistoryConsole class
 
 class HistoryConsole(code.InteractiveConsole):
-    def __init__(self, locals=None, filename="<console>",
-                 histfile=histfilepath):
+    def __init__(self, locals=None, filename="<console>", histfile=histfilepath):
         self.fname = histfile
         code.InteractiveConsole.__init__(self, locals, filename)
         self.init_history(histfile)
@@ -45,16 +44,17 @@ class HistoryConsole(code.InteractiveConsole):
     def init_history(self, histfile):
         readline.parse_and_bind("tab: complete")
         if hasattr(readline, "read_history_file"):
-            try:
-                readline.read_history_file(histfile)
-            except IOError:
-                pass
-            #atexit.register(self.save_history, histfile)
+            try: readline.read_history_file(histfile)
+            except IOError: pass
 
     def save_history(self, histfile=None):
         readline.write_history_file(histfile or self.fname)
 
+## the console
+
 console = HistoryConsole()
+
+## ConsoleBot
 
 class ConsoleBot(BotBase):
 
@@ -72,6 +72,7 @@ class ConsoleBot(BotBase):
         self.nick = botname or "console"
 
     def start(self):
+        """ start the console bot. """
         time.sleep(0.1)
         while not self.stopped: 
             try: 
@@ -91,35 +92,32 @@ class ConsoleBot(BotBase):
                         continue
                 try:
                     result = self.doevent(event)
-                    if not result:
-                        continue
+                    if not result: continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
-                except NoSuchCommand:
-                    print "no such command: %s" % event.usercmnd
-
-            except NoInput:
-                continue
-            except (KeyboardInterrupt, EOFError):
-                break
-            except Exception, ex:
-                handle_exception()
-
+                except NoSuchCommand: print "no such command: %s" % event.usercmnd
+            except NoInput: continue
+            except (KeyboardInterrupt, EOFError): break
+            except Exception, ex: handle_exception()
         console.save_history()
 
+
+    def outnocb(self, printto, txt, *args, **kwargs):
+        txt = self.normalize(txt)
+        self._raw(txt)         
     def _raw(self, txt):
+        """ do raw output to the console. """
         sys.stdout.write("\n")
         sys.stdout.write(txt)
         sys.stdout.write('\n')
 
+    def exit(self):
+        """ called on exit. """
+        console.save_history()
+
     def normalize(self, what):
-        #what = re.sub("\s+", " ", what)
         what = strippedtxt(what)
         what = what.replace("<b>", self.BOLD)
         what = what.replace("</b>", self.ENDC)
         what = what.replace("&lt;b&gt;", self.BOLD)
         what = what.replace("&lt;/b&gt;", self.ENDC)
         return what
-
-    def exit(self):
-        console.save_history()
-        

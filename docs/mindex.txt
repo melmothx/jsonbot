@@ -10,7 +10,6 @@ gozerlib
     gae/wave/index
     gae/web/index
     gae/xmpp/index
-    gae/plugs/index
     gae/utils/index
     plugs/index
     remote/index
