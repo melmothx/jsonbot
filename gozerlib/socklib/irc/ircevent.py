@@ -148,7 +148,7 @@ class Ircevent(EventBase):
         except ValueError:
             pass
         self.printto = self.channel 
-        self.makeargs()
+        #self.makeargs()
         return self
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):

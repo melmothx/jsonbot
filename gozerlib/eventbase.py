@@ -129,14 +129,17 @@ class EventBase(LazyDict):
 
     def makeargs(self):
         """ make arguments and rest attributes from self.txt. """
-        if not self.txt: return
-        args = self.txt.split()
-        if len(args) > 1:
-            self.args = args[1:]
-            self.rest = ' '.join(self.args)
-        else:
+        if not self.txt:
             self.args = []
             self.rest = ""
+        else:
+            args = self.txt.split()
+            if len(args) > 1:
+                self.args = args[1:]
+                self.rest = ' '.join(self.args)
+            else:
+                self.args = []
+                self.rest = ""
 
     def checkqueues(self, resultlist):
         """ check if resultlist is to be sent to the queues. if so do it. """

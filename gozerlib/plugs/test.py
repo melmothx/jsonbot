@@ -24,7 +24,7 @@ import logging
 
 cpy = copy.deepcopy
 
-donot = ['admin', 'quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
+donot = ['stop', 'admin', 'quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
 'install', 'reconnect', 'wiki', 'weather', 'sc', 'jump', 'disable', 'dict', \
 'snarf', 'validate', 'popcon', 'twitter', 'tinyurl', 'whois', 'rblcheck', \
 'wowwiki', 'wikipedia', 'tr', 'translate', 'serie', 'sc', 'shoutcast', 'mash', \
