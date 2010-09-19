@@ -149,15 +149,16 @@ class IRCBot(Irc):
                 ievent.userhost = userhost
                 ievent.auth = userhost
                 ievent.channel = channel or ievent.userhost
-                ievent.chan = ChannelBase(ievent.channel)
                 ievent.origtxt = res
                 ievent.txt = res
                 ievent.cmnd = 'DCC'
+                ievent.cbtype = 'DCC'
                 ievent.bot = self
                 ievent.sock = sock
                 ievent.speed = 1
                 ievent.isdcc = True
                 ievent.msg = True
+                ievent.finish()
                 logging.debug("%s - dcc - constructed event" % self.name)
                 if ievent.txt[0] == "!":
                     self.doevent(ievent)

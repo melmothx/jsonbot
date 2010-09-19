@@ -78,10 +78,6 @@ class EventBase(LazyDict):
         if self.txt: self.usercmnd = self.txt.split()[0]
         logging.debug("%s - finish - %s" % (self.auth, self.dump()))
 
-    def _raw(self, txt):
-        """ put rawstring to the server .. overload this """
-        pass
-
     def parse(self, event, *args, **kwargs):
         """ overload this. """
         self.bot = event.bot
@@ -108,7 +104,7 @@ class EventBase(LazyDict):
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result): return
-        self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+        self.bot.say(self.printto or self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self

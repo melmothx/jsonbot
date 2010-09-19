@@ -373,9 +373,12 @@ class Irc(BotBase):
             }}
 
     def outnocb(self, printto, what, how='msg', *args, **kwargs):
-        if printto in self.nicks401:
-             logging.warn("%s - blocking %s" % (self.name, printto))
-             return
+        #if printto in self.nicks401:
+        #     logging.warn("%s - blocking %s" % (self.name, printto))
+        #     return
+        if 'socket' in repr(printto) and self.sock:
+            self.sock.send(unicode(what) + u"\n")
+            return True
         what = fix_format(what)
         if not printto: self._raw(what)
         elif how == 'notice': self.notice(printto, what)

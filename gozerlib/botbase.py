@@ -273,9 +273,6 @@ class BotBase(LazyDict):
         print txt
 
     def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
-        if self.isdcc and self.sock:
-            self.sock.send(unicode(txt) + u"\n")
-            return True
         txt = self.makeresponse(txt, result, dot)
         res1, nritems = self.less(printto, txt, nr+extend)
         return res1
@@ -495,7 +492,7 @@ class BotBase(LazyDict):
         e.usercmnd = e.txt.split()[0]
         e.closequeue = True
         if wait: e.direct = True
-        e.prepare()
+        e.finish()
         try:
             event = self.plugs.dispatch(self, e, wait=wait)
             return event

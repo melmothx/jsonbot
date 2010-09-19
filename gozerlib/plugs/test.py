@@ -47,6 +47,7 @@ def dotest(bot, event):
     if True:
         examplez = examples.getexamples()
         random.shuffle(examplez)
+        logging.warn("test - running examples: %s" % ", ".join(examplez))
         for example in examplez:
             if match and match not in example:
                 continue
@@ -76,6 +77,7 @@ def dotest(bot, event):
 
 def handle_testplugs(bot, event):
     """ test the plugins by executing all the available examples. """
+    bot.plugs.loadall()
     global teller
     try:
         loop = int(event.args[0])
@@ -174,7 +176,7 @@ def handle_testsay(bot, ievent):
     if not ievent.rest:
         ievent.missing("<txt>")
         return
-    bot.say(ievent.channel, ievent.rest)
+    bot.say(ievent.printto, ievent.rest)
 
 cmnds.add('test-say', handle_testsay, 'OPER')
 examples.add('test-say', 'use bot.say()', 'test-say')
