@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.utils.lazydict import LazyDict
-from gozerlib.utils.generic import strippedtxt, fromenc
+from gozerlib.utils.generic import fromenc
 from gozerlib.utils.exception import handle_exception
 from gozerlib.callbacks import callbacks, remote_callbacks, first_callbacks
 from gozerlib.container import Container

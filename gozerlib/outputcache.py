@@ -38,7 +38,7 @@ def add(target, txtlist):
     if not d.has_key('msg'):
         d['msg'] = []
     d['msg'].extend(txtlist)
-    while len(d['msg']) > 20:
+    while len(d['msg']) > 10:
         d['msg'].pop(0)
     cache.save()
 

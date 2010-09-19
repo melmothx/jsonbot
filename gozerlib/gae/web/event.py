@@ -10,7 +10,7 @@ from gozerlib.eventbase import EventBase
 from gozerlib.utils.generic import splittxt, fromenc, toenc
 from gozerlib.utils.xmpp import stripped
 from gozerlib.outputcache import add
-from gozerlib.utils.url import getpostdata, re_url_match
+from gozerlib.utils.url import getpostdata
 from gozerlib.utils.exception import handle_exception
 from gozerlib.channelbase import ChannelBase
 

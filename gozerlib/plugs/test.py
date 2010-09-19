@@ -169,3 +169,12 @@ def handle_testbork(bot, ievent):
 
 cmnds.add('test-bork', handle_testbork, 'OPER')
 examples.add('test-bork', 'send all possible ascii chars', 'test-bork')
+
+def handle_testsay(bot, ievent):
+    if not ievent.rest:
+        ievent.missing("<txt>")
+        return
+    bot.say(ievent.channel, ievent.rest)
+
+cmnds.add('test-say', handle_testsay, 'OPER')
+examples.add('test-say', 'use bot.say()', 'test-say')

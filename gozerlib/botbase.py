@@ -43,6 +43,7 @@ import thread
 import types
 import threading
 import Queue
+import re
 
 ## define
 
@@ -271,10 +272,10 @@ class BotBase(LazyDict):
         print txt
 
     def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
-        txt = self.makeresponse(txt, result, dot)
         if self.isdcc and self.sock:
             self.sock.send(unicode(txt) + u"\n")
             return True
+        txt = self.makeresponse(txt, result, dot)
         res1, nritems = self.less(printto, txt, nr+extend)
         return res1
 
@@ -297,67 +298,6 @@ class BotBase(LazyDict):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
         self.outnocb(channel, txt, *args, **kwargs)
 
-    def dostart(self, botname, bottype, *args, **kwargs):
-        """ create an START event and send it to callbacks. """
-        e = EventBase()
-        e.bot = self
-        e.botname = botname
-        e.bottype = bottype
-        e.origin = botname
-        e.ruserhost = self.botname +'@' + self.uuid
-        e.userhost = e.ruserhost
-        e.channel = botname
-        e.origtxt = time.time()
-        e.txt = e.origtxt
-        e.cbtype = 'START'
-        e.botoutput = False
-        e.ttl = 1
-        e.nick = self.nick or self.botname
-        callbacks.check(self, e)
-        logging.debug("botbase - START event (%s) send to callbacks" % botname)
-
-    def outmonitor(self, origin, channel, txt, event=None):
-        """ create an OUTPUT event with provided txt and send it to callbacks. """
-        e = EventBase()
-        if event: e.copyin(event)
-        if e.status == "done":
-            logging.debug("%s - outmonitor - event is done .. ignoring" % self.name)
-            return
-        e.bot = self
-        e.origin = origin
-        e.ruserhost = self.botname +'@' + self.uuid
-        e.userhost = e.ruserhost
-        e.channel = channel
-        e.origtxt = txt
-        e.txt = txt
-        e.cbtype = 'OUTPUT'
-        e.botoutput = True
-        e.ttl = 1
-        e.nick = self.nick or self.botname
-        e.prepare()
-        first_callbacks.check(self, e)
-
-    def docmnd(self, origin, channel, txt, event=None, wait=0):
-        """ do a command. """
-        e = EventBase()
-        if event: e.copyin(event)
-        e.bot = self
-        e.origin = origin
-        e.ruserhost = origin
-        e.auth = origin
-        e.userhost = origin
-        e.channel = channel
-        e.txt = txt
-        e.nick = e.userhost.split('@')[0]
-        e.usercmnd = e.txt.split()[0]
-        e.closequeue = True
-        if wait: e.direct = True
-        e.prepare()
-        try:
-            event = self.plugs.dispatch(self, e, wait=wait)
-            return event
-        except NoSuchCommand:
-            e.reply("no such command: %s" % e.usercmnd)
 
     def less(self, printto, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
@@ -480,3 +420,84 @@ class BotBase(LazyDict):
 
     def sendnocb(self, *args, **kwargs):
         pass
+
+    def normalize(self, what):
+        txt = strippedtxt(what)
+        txt = re.sub("\s+", " ", what)
+        txt = txt.replace("<b>", "\002")
+        txt = txt.replace("</b>", "\002")
+        txt = txt.replace("<i>", "")
+        txt = txt.replace("</i>", "")
+        txt = txt.replace("&lt;b&gt;", "\002")
+        txt = txt.replace("&lt;/b&gt;", "\002")
+        txt = txt.replace("&lt;i&gt;", "")
+        txt = txt.replace("&lt;/i&gt;", "")
+        txt = txt.replace("&lt;h2&gt;", "\002")
+        txt = txt.replace("&lt;/h2&gt;", "\002")
+        txt = txt.replace("&lt;h3&gt;", "\002")
+        txt = txt.replace("&lt;/h3&gt;", "\002")
+        txt = txt.replace("&lt;li&gt;", "\002")
+        txt = txt.replace("&lt;/li&gt;", "\002")
+        return txt
+
+    def dostart(self, botname, bottype, *args, **kwargs):
+        """ create an START event and send it to callbacks. """
+        e = EventBase()
+        e.bot = self
+        e.botname = botname
+        e.bottype = bottype
+        e.origin = botname
+        e.ruserhost = self.botname +'@' + self.uuid
+        e.userhost = e.ruserhost
+        e.channel = botname
+        e.origtxt = time.time()
+        e.txt = e.origtxt
+        e.cbtype = 'START'
+        e.botoutput = False
+        e.ttl = 1
+        e.nick = self.nick or self.botname
+        callbacks.check(self, e)
+        logging.debug("botbase - START event (%s) send to callbacks" % botname)
+
+    def outmonitor(self, origin, channel, txt, event=None):
+        """ create an OUTPUT event with provided txt and send it to callbacks. """
+        e = EventBase()
+        if event: e.copyin(event)
+        if e.status == "done":
+            logging.debug("%s - outmonitor - event is done .. ignoring" % self.name)
+            return
+        e.bot = self
+        e.origin = origin
+        e.ruserhost = self.botname +'@' + self.uuid
+        e.userhost = e.ruserhost
+        e.channel = channel
+        e.origtxt = txt
+        e.txt = txt
+        e.cbtype = 'OUTPUT'
+        e.botoutput = True
+        e.ttl = 1
+        e.nick = self.nick or self.botname
+        e.prepare()
+        first_callbacks.check(self, e)
+
+    def docmnd(self, origin, channel, txt, event=None, wait=0):
+        """ do a command. """
+        e = EventBase()
+        if event: e.copyin(event)
+        e.bot = self
+        e.origin = origin
+        e.ruserhost = origin
+        e.auth = origin
+        e.userhost = origin
+        e.channel = channel
+        e.txt = txt
+        e.nick = e.userhost.split('@')[0]
+        e.usercmnd = e.txt.split()[0]
+        e.closequeue = True
+        if wait: e.direct = True
+        e.prepare()
+        try:
+            event = self.plugs.dispatch(self, e, wait=wait)
+            return event
+        except NoSuchCommand:
+            e.reply("no such command: %s" % e.usercmnd)
