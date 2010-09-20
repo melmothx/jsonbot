@@ -75,7 +75,7 @@ class NSAuth(Pdod):
     def sendstring(self, bot, txt):
         """ send string to nickserver. """
         nickservnick = self.get(bot.name, 'nickserv')
-        bot.outnocb(nickservnick, txt, how="notice")
+        bot.outnocb(nickservnick, txt, how="msg")
 
     def handle_001(self, bot, ievent):
         self.identify(bot)
