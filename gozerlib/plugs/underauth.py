@@ -2,7 +2,7 @@
 #
 #
 
-""" Handle non-ident connection on undernet. """
+""" handle non-ident connection on undernet. """
 
 ## copyright
 
@@ -17,7 +17,7 @@ from gozerlib.callbacks import callbacks
 
 import logging
 
-## callbacks
+##  pre_underauth_cb precondition
 
 def pre_underauth_cb(bot, ievent):
     """ 
@@ -27,17 +27,13 @@ def pre_underauth_cb(bot, ievent):
 
     """
     args = ievent.arguments
+    try: return (args[0] == u'AUTH' and args[-3] == u'/QUOTE' and args[-2] == u'PASS')
+    except Exception, ex: return False
 
-    try:
-        return (args[0] == u'AUTH' and
-                args[-3] == u'/QUOTE' and
-                args[-2] == u'PASS')
-    except Exception, ex:
-        return 0
+## underayth_cb callback
 
 def underauth_cb(bot, ievent):
     """ Send the raw command to the server. """
-    # last two elements of the arguments list are PASS <id>
     logging.debug("underauth - sending response")
     bot._raw(' '.join(ievent.arguments[-2:]))
 
