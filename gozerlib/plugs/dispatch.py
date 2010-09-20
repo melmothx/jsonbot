@@ -13,11 +13,9 @@ from gozerlib.errors import NoSuchCommand
 
 import logging
 
-## dispatch callback
-
+## dispatch precondition
 
 def predispatch(bot, event):
-    #logging.debug(u"predispatch: %s" % unicode(event.dump()))
     if event.status == "done":
         logging.debug("dispatch - event is done .. ignoring")
         return
@@ -25,6 +23,8 @@ def predispatch(bot, event):
         logging.done("dispatch - event is remote .. not dispatching")
         return
     return True
+
+## dispatch callback
 
 def dispatch(bot, event):
     """ dispatch an event. """
@@ -50,6 +50,8 @@ def dispatch(bot, event):
         logging.info("no such command: %s" % event.usercmnd)
         result = []
     return result
+
+## register callback
 
 last_callbacks.add('PRIVMSG', dispatch, predispatch)
 last_callbacks.add('MESSAGE', dispatch, predispatch)

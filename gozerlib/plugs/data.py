@@ -9,21 +9,28 @@
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
-## commands
+## data-event command
 
 def handle_dataevent(bot, event):
+    """ dump event to json. """
     event.reply(event.tojson())
 
 cmnds.add("data-event", handle_dataevent, "OPER")
 examples.add('data-event', 'dump event data', 'data-event')
 
+## data-chan command
+
 def handle_datachan(bot, event):
+    """ dump channel data to json. """
     event.reply(event.chan.data.tojson())
 
 cmnds.add("data-chan", handle_datachan, "OPER")
 examples.add('data-chan', 'dump channel data', 'data-chan')
 
+## data-bot command
+
 def handle_databot(bot, event):
+    """ dump bot as json dict. """
     event.reply(bot.tojson())
 
 cmnds.add("data-bot", handle_databot, "OPER")

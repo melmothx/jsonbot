@@ -9,7 +9,7 @@
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 
-## commands
+## gatekeeper-allow command
 
 def handle_gatekeeperallow(bot, event):
     """ allow user on bot. """
@@ -21,6 +21,8 @@ def handle_gatekeeperallow(bot, event):
 
 cmnds.add('gatekeeper-allow', handle_gatekeeperallow, 'OPER')
 examples.add('gatekeeper-allow', 'add JID of remote bot that we allow to receice events from', 'gatekeeper-allow jsonbot@appspot.com')
+
+## gatekeeper-deny command
 
 def handle_gatekeeperdeny(bot, event):
     """ deny user on bot. """
