@@ -55,8 +55,9 @@ def whichmodule(depth=1):
         plugfile = frame.f_back.f_code.co_filename[:-3].split('/')
         lineno = frame.f_back.f_lineno
         mod = []
-        for i in plugfile[::-1]: mod.append(i)
-             if i in stopmarkers: break
+        for i in plugfile[::-1]:
+            mod.append(i)
+            if i in stopmarkers: break
         modstr = '.'.join(mod[::-1]) + ':' + str(lineno)
         if 'handler_' in modstr: modstr = modstr.split('.')[-1]
     except AttributeError: modstr = None
@@ -72,8 +73,9 @@ def whichplugin(depth=1):
         plugfile = frame.f_back.f_code.co_filename[:-3].split('/')
         lineno = frame.f_back.f_lineno
         mod = []
-        for i in plugfile[::-1]: mod.append(i)
-             if i in stopmarkers: break
+        for i in plugfile[::-1]: 
+            mod.append(i)
+            if i in stopmarkers: break
         modstr = '.'.join(mod[::-1])
         if 'handler_' in modstr: modstr = modstr.split('.')[-1]
     except AttributeError: modstr = None
