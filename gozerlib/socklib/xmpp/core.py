@@ -107,11 +107,12 @@ class XMLStream(NodeBuilder):
         """ handle one xml stanza. """
         NodeBuilder.__init__(self)
         self._dispatch_depth = 2
-        try:
-            self._parser.Parse(data.strip())
+        try: self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
-                logging.error("%s - data is not well formed: %s" % (self.name, data))
+                logging.error("%s - data is not well formed" % self.name)
+                logging.debug(data)
+                handle_exception()
                 return {}
             logging.debug("%s - ALERT: %s - %s" % (self.name, str(ex), data))
         except Exception, ex:
