@@ -166,15 +166,6 @@ class WaveEvent(EventBase):
             self.chan.data.lastedited = time.time()
         return self.rootblip
 
-    def reply(self, txt, resultlist=[], event=None, origin="", dot=", ", *args, **kwargs):
-        """ reply txt. """
-        if self.checkqueues(resultlist): return
-        outtxt = self.makeresponse(txt, resultlist, dot, *args, **kwargs)
-        if not outtxt: return
-        self.result.append(outtxt)
-        (res1, res2) = self.less(outtxt)
-        self.write(res1)
-
     def replyroot(self, txt, resultlist=[], event=None, origin="", dot=", ", *args, **kwargs):
         """ reply to wave root. """
         if self.checkqueues(resultlist): return
@@ -184,22 +175,7 @@ class WaveEvent(EventBase):
         (res1, res2) = self.less(outtxt)
         self.write_root(res1)
 
-    def write(self, outtxt, end="\n"):
-        """ write outtxt to the server. """
-        try:
-            annotations = []
-            for url in re.findall(findurl, outtxt):
-                start = outtxt.find(url.strip())
-                if start: annotations.append((start+1, start+len(url), "link/manual", url.strip()))
-        except Exception, ex: handle_exception()
-        if self.gadgetnr:
-            if self.cmndhow == 'output': self.blip.at(self.gadgetnr).update_element({'text': outtxt, 'target': self.userhost})
-            elif self.cmndhow == 'status': self.blip.at(self.gadgetnr).update_element({'status': outtxt, 'target': self.userhost})
-        else: self.append(outtxt + end , annotations)
-        self.replied = True
-        self.bot.outmonitor(self.origin, self.channel, outtxt, self)
-
-    def writenocb(self, outtxt, end="\n"):
+    def outnocb(self, outtxt, end="\n"):
         """ write outtxt to the server. """
         try:
             annotations = []
