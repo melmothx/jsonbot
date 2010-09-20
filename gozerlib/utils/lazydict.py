@@ -41,7 +41,7 @@ def checkignore(name, ignore):
         return True
     for item in ignore:
         if item == name:
-            logging.debug("lazydict - ignoring on %s" % name)
+            #logging.debug("lazydict - ignoring on %s" % name)
             return True
     return False
 
