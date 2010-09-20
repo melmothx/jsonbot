@@ -63,7 +63,7 @@ class NSAuth(Pdod):
     def identify(self, bot):
         """ identify a bot to nickserv. """
         if self.has_key(bot.name) and self.has_key2(bot.name, 'nickserv'):
-            bot.outnocb(self.get(bot.name, 'nickserv', ), '%s %s' % (self.get(bot.name, 'identify'), self.get(bot.name, 'password')), how="notice")
+            bot.outnocb(self.get(bot.name, 'nickserv', ), '%s %s' % (self.get(bot.name, 'identify'), self.get(bot.name, 'password')), how="msg")
             logging.warn('nickserv - identify sent on %s' % bot.server)
 
     def listbots(self):
