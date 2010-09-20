@@ -10,7 +10,5 @@ def stripped(userhost):
 
 def resource(userhost):
     """ return resource of userhost. """
-    try:
-        return userhost.split('/')[1]
-    except ValueError:
-        return ""
+    try: return userhost.split('/')[1]
+    except ValueError: return ""

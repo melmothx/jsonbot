@@ -4,7 +4,7 @@
 
 """ create a list of rss data """
 
-## lib imports
+## gozerlib imports
 
 from exception import handle_exception
 
@@ -12,18 +12,15 @@ from exception import handle_exception
 
 import xml.dom.minidom
 
-## functions
+## gettext function
 
 def gettext(nodelist):
     """ get text data from nodelist """
     result = ""
-
     for node in nodelist:
         if node.nodeType == node.TEXT_NODE or node.nodeType == node.CDATA_SECTION_NODE:
             stripped = node.data.strip()
-            if stripped:
-                result += stripped
-
+            if stripped: result += stripped
     return result
 
 def makersslist(xlist, nodes , d={}):
@@ -32,13 +29,9 @@ def makersslist(xlist, nodes , d={}):
         if i.nodeType == i.ELEMENT_NODE:
             dd = d[i.nodeName] = {}
             makersslist(xlist, i.childNodes, dd)
-            if dd:
-                xlist.append(dd)
-
+            if dd: xlist.append(dd)
         txt = gettext(i.childNodes)
-
-        if txt:
-            d[i.nodeName] = txt
+        if txt: d[i.nodeName] = txt
         
 def rsslist(txt):
     """ create list of dictionaries with rss data """

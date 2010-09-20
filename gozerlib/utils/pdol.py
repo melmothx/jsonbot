@@ -4,25 +4,25 @@
 
 """ pickled dict of lists """
 
-__copyright__ = 'this file is in the public domain'
+## gozerlib imports
 
 from gozerlib.persist import Persist
- 
+
+## Pdol class
+
 class Pdol(Persist):
 
     """ pickled dict of lists """
 
     def __init__(self, fname):
         Persist.__init__(self, fname)
-        if not self.data:
-            self.data = {}
+        if not self.data: self.data = {}
 
     def __iter__(self, name):
         return self.data[name].__iter__()
  
     def __getitem__(self, item):
-        if self.data.has_key(item):
-            return self.data[item]
+        if self.data.has_key(item): return self.data[item]
 
     def __delitem__(self, item):
         if self.data.has_key(item):
@@ -39,10 +39,8 @@ class Pdol(Persist):
 
     def adduniq(self, item, what):
         """ add what to items list if item not yet added """
-        if not self.data.has_key(item):
-            self.new(item)
-        if what not in self.data[item]:
-            return self.__setitem__(item, what)
+        if not self.data.has_key(item): self.new(item)
+        if what not in self.data[item]: return self.__setitem__(item, what)
 
     def get(self, item):
         """ get items list """
@@ -57,13 +55,13 @@ class Pdol(Persist):
         del self.data[item][what]
 
     def extend(self, item, what):
-        if not self.data.has_key(item):
-            self.new(item)
+        """ extend the list. """
+        if not self.data.has_key(item): self.new(item)
         self.data[item].extend(what)
 
     def remove(self, item, what):
+        """ remove from list. """
         try:
             self.data[item].remove(what)
-            return 1
-        except (ValueError, KeyError):
-            return 0
+            return True
+        except (ValueError, KeyError): return False

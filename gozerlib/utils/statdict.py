@@ -2,7 +2,7 @@
 #
 #
 
-""" stats dict """
+""" dictionairy to keep stats. """
 
 ## classes
 
@@ -19,35 +19,22 @@ class StatDict(dict):
         if not self.has_key(item):
             self[item] = value
             return
-
         self[item] += value
 
     def top(self, start=1, limit=None):
         """ return highest items """
         result = []
-
         for item, value in self.iteritems():
-            if value >= start:
-                result.append((item, value))
-
+            if value >= start: result.append((item, value))
         result.sort(lambda b, a: cmp(a[1], b[1]))
-
-        if limit:
-            result =  result[:limit]
-
+        if limit: result =  result[:limit]
         return result
 
     def down(self, end=100, limit=None):
         """ return lowest items """
         result = []
-
         for item, value in self.iteritems():
-            if value <= end:
-                result.append((item, value))
-
+            if value <= end: result.append((item, value))
         result.sort(lambda a, b: cmp(a[1], b[1]))
-
-        if limit:
-            return result[:limit]
-        else:
-            return result
+        if limit: return result[:limit]
+        else: return result

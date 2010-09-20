@@ -34,11 +34,11 @@ jsontypes = [types.StringType, types.UnicodeType, types.DictType, types.ListType
 defaultignore = ['isremote', 'iscmnd', 'orig', 'bot', 'origtxt', 'body', 'subelements', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
 cpy = copy.deepcopy
 
-## functions
+## checkignore function
 
 def checkignore(name, ignore):
-    if name.startswith('_'):
-        return True
+    """ see whether a element attribute (name) should be ignored. """
+    if name.startswith('_'): return True
     for item in ignore:
         if item == name:
             logging.debug("lazydict - ignoring on %s" % name)
@@ -49,23 +49,20 @@ def dumpelement(element, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
     new = {}
     for name in element:
-        if checkignore(name, defaultignore):
-            continue
-        if not element[name]:
-            continue
+        if checkignore(name, defaultignore): continue
+        if not element[name]: continue
         try:
             dumps(element[name])
             new[name] = element[name]
         except TypeError:
             if type(element) not in jsontypes:
-                if withtypes:
-                    new[name] = unicode(type(element))
+                if withtypes: new[name] = unicode(type(element))
             else:
                 logging.warn("lazydict - dumpelement - %s" % element[name])
                 new[name] = dumpelement(element[name])
     return new
 
-## classes
+## LazyDict class
 
 class LazyDict(dict):
 
@@ -76,10 +73,7 @@ class LazyDict(dict):
 
     def __getattr__(self, attr, default=None):
         """ get attribute. """
-        if not self.has_key(attr):
-            self[attr] = default
-            #logging.warning("setting default of %s to %s" % (attr, default))
-
+        if not self.has_key(attr): self[attr] = default
         return self[attr]
 
     def __setattr__(self, attr, value):
@@ -90,24 +84,23 @@ class LazyDict(dict):
         """ return a string representation of the dict """
         res = ""
         cp = dict(self)
-        for item, value in cp.iteritems():
-            res += "%r=%r " % (item, value)
-
+        for item, value in cp.iteritems(): res += "%r=%r " % (item, value)
         return res
 
     @locked
-    def tojson(self):
-        return dumps(dumpelement(self))
+    def tojson(self, withtypes=False):
+        """ dump the lazydict object to json. """
+        return dumps(dumpelement(self, withtypes))
 
     @locked
-    def dump(self, attribs=[]):
+    def dump(self, withtypes=False):
+        """ just dunp the lazydict object. DON'T convert to json. """
         logging.debug("lazydict - dumping - %s" %  type(self))
-        return dumpelement(self)
+        return dumpelement(self, withtypes)
 
     def load(self, input):
         """ load from json string. """  
-        try:   
-            temp = loads(input)
+        try: temp = loads(input)
         except ValueError:
             handle_exception()
             logging.error("lazydict - can't decode %s" % input)
