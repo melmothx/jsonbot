@@ -6,6 +6,6 @@
 
 __version__ = "0.4"
 
-import warnings
-warnings.simplefilter('ignore')
+#import warnings
+#warnings.simplefilter('ignore')
 
