@@ -58,7 +58,7 @@ class XMPPEvent(EventBase):
         logging.debug(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 
-    def outnocb(self, txt, raw=False):
+    def outnocb(self, txt, raw=True):
         """ output txt to the user .. output IS escaped. """
         if txt:
             from google.appengine.api import xmpp

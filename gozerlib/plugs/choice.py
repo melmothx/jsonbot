@@ -14,21 +14,18 @@ from gozerlib.examples import examples
 
 import random
 
+## choice command
+
 def handle_choice(bot, ievent):
     """ make a random choice out of different words or list elements. """ 
     result = []
-    if ievent.inqueue:
-        result = waitforqueue(ievent.inqueue, 5)
+    if ievent.inqueue: result = waitforqueue(ievent.inqueue, 5)
     elif not ievent.args:
         ievent.missing('<space seperated list>')
         return
-    else:
-        result = ievent.args 
-
-    if result:
-        ievent.reply(random.choice(result))
-    else:
-        ievent.reply('nothing to choose from: %s' % ievent.txt)
+    else: result = ievent.args 
+    if result: ievent.reply(random.choice(result))
+    else: ievent.reply('nothing to choose from: %s' % ievent.txt)
 
 cmnds.add('choice', handle_choice, ['USER', 'GUEST', 'CLOUD'])
 examples.add('choice', 'make a random choice', '1) choice a b c 2) list | choice')

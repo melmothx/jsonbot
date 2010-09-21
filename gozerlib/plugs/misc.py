@@ -20,7 +20,11 @@ import threading
 import thread
 import copy
 
+## defines
+
 cpy = copy.deepcopy
+
+## test command
 
 def handle_test(bot, ievent):
     """ give test response. """
@@ -29,12 +33,7 @@ def handle_test(bot, ievent):
 cmnds.add('test', handle_test, ['USER', 'GUEST', ])
 examples.add('test', 'give test response',' test')
 
-def handle_testevent(bot, ievent):
-    """ give dump of event. """
-    ievent.reply(ievent.dump())
-    
-cmnds.add('test-event', handle_testevent, ['USER', 'GUEST', ])
-examples.add('test-event', 'dump the event',' test-event')
+## source command
 
 def handle_source(bot, ievent):
     """ show where to fetch the bot source. """ 
@@ -42,6 +41,8 @@ def handle_source(bot, ievent):
 
 cmnds.add('source', handle_source, ['USER', 'GUEST'])
 examples.add('source', 'show source url', 'source')
+
+## time command
 
 def handle_time(bot, ievent):
     """ show current time """

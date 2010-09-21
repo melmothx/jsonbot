@@ -80,7 +80,7 @@ class XMLStream(NodeBuilder):
 
     def handle_stream(self, data):
         """ default stream handler. """
-        logging.warn("%s - stream - %s" % (self.name, data.text))
+        logging.warn("%s - stream - %s" % (self.name, data.tojson()))
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
@@ -107,11 +107,12 @@ class XMLStream(NodeBuilder):
         """ handle one xml stanza. """
         NodeBuilder.__init__(self)
         self._dispatch_depth = 2
-        try:
-            self._parser.Parse(data.strip())
+        try: self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
-                logging.error("%s - data is not well formed: %s" % (self.name, data))
+                logging.error("%s - data is not well formed" % self.name)
+                logging.debug(data)
+                handle_exception()
                 return {}
             logging.debug("%s - ALERT: %s - %s" % (self.name, str(ex), data))
         except Exception, ex:
@@ -133,11 +134,14 @@ class XMLStream(NodeBuilder):
                     self.disconnectHandler(Exception('remote %s disconnected' %  self.host))
                     break
                 if data:
-                    if not data.endswith(">"):
-                        self.buffer += data
-                        continue
-                    else: self.buffer += data
-                    self.loop_one(self.buffer)
+                    self.buffer += data
+                    splitted = data.split("<")
+                    lastitem = splitted[-1]
+                    for handler in self.handlers.keys():
+                        if (handler in lastitem and '/' in lastitem) or lastitem.endswith("/>"):
+                            self.loop_one(self.buffer)
+                            self.buffer = ""
+                            break
             except xml.parsers.expat.ExpatError, ex:
                 logging.error("%s - %s - %s" % (self.name, str(ex), data))
                 self.buffer = ""

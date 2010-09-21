@@ -17,7 +17,7 @@ from gozerlib.examples import examples
 
 import logging
 
-## commands
+## whoami command
 
 def handle_whoami(bot, ievent):
     """ get your username. """

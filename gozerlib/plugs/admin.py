@@ -20,7 +20,7 @@ from gozerlib.exit import globalshutdown
 
 from simplejson import dump
 
-## commands
+## admin-boot command
 
 def handle_adminboot(bot, ievent):
     """ boot the bot .. do some initialisation. """
@@ -31,6 +31,8 @@ cmnds.add('admin-boot', handle_adminboot, 'OPER')
 cmnds.add('admin-init', handle_adminboot, 'OPER')
 examples.add('admin-boot', 'initialize the bot .. cmndtable and pluginlist', 'admin-boot')
 
+## admin-loadall command
+
 def handle_loadall(bot, ievent):
     """ load all available plugins. """
     plugs.loadall(plugin_packages)
@@ -39,10 +41,11 @@ def handle_loadall(bot, ievent):
 cmnds.add('admin-loadall', handle_loadall, 'OPER')
 examples.add('admin-loadall', 'load all plugins', 'admin-loadall')
 
+## admin-makebot command
+
 def handle_adminmakebot(bot, ievent):
-    """ <name> <type> .. create a bot of given type. """
-    try:
-        botname, bottype = ievent.args
+    """ create a bot of given type. """
+    try: botname, bottype = ievent.args
     except ValueError:
         ievent.missing("<name> <type>")
         return
@@ -56,6 +59,8 @@ def handle_adminmakebot(bot, ievent):
 
 cmnds.add('admin-makebot', handle_adminmakebot, 'OPER')
 examples.add('admin-makebot', 'create a bot', 'admin-makebot cmndxmpp xmpp')
+
+## admin-stop command
 
 def handle_adminstop(bot, ievent):
     if bot.isgae:
