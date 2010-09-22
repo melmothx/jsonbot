@@ -10,7 +10,7 @@ from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.fleet import fleet
 
-## commands
+## xmpp-invite command
 
 def handle_xmppinvite(bot, event):
     """ invite (subscribe to) a different user. """
@@ -19,11 +19,9 @@ def handle_xmppinvite(bot, event):
         return
     bot = fleet.getfirstjabber()
     if bot:
-        for jid in event.args:
-            bot.invite(jid)
+        for jid in event.args: bot.invite(jid)
         event.done()
-    else:
-        event.reply("can't find jabber bot in fleet")
+    else: event.reply("can't find jabber bot in fleet")
 
 cmnds.add("xmpp-invite", handle_xmppinvite, 'OPER')
 examples.add("xmpp-invite", "invite a user.", "xmpp-invite jsoncloud@appspot.com")

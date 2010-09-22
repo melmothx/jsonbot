@@ -2,7 +2,7 @@
 #
 #
 
-""" echo typed in sentences. """
+""" echo typed sentences. """
 
 ## gozerlib imports
 
@@ -16,11 +16,12 @@ import logging
 
 ## commands
 
+## echo callback
+
 def handle_echo(bot, event):
     """ echo txt to user. """
     if event.how != "background" and not event.iscmnd() and not event.isremote:
-        if not event.isdcc:
-            bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
+        if not event.isdcc: bot.saynocb(event.userhost, u"[%s] %s" % (event.nick, event.txt))
             
 cmnds.add("echo", handle_echo, ['USER', 'OPER', 'GUEST'], threaded=True)
 examples.add("echo", "echo input", "echo yoooo dudes")

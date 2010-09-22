@@ -50,9 +50,10 @@ if not forward.data.whitelist:
 
 cpy = copy.deepcopy
 
-## outgoing callbacks
+## forward precondition
 
 def forwardoutpre(bot, event):
+    """ preconditon to check if forward callbacks is to be fired. """
     chan = unicode(event.channel).lower()
     if not chan: return
     logging.debug("forward - pre - %s" % event.channel)
@@ -60,7 +61,10 @@ def forwardoutpre(bot, event):
         if event.how != u"background": return True
     return False
 
-def forwardoutcb(bot, event):
+## forward callbacks
+
+def forwardoutcb(bot, event): 
+    """ forward callback. """
     e = cpy(event)
     logging.debug("forward - cbtype is %s - %s" % (event.cbtype, event.how))
     e.forwarded = True
@@ -69,10 +73,8 @@ def forwardoutcb(bot, event):
     for jid in forward.data.channels[event.channel.lower()]:
         logging.warn("forward - sending to %s" % jid)
         if jid == "twitter":
-            try:
-                postmsg(forward.data.outs[jid], e.txt)
-            except Exception, ex:
-                handle_exception()
+            try: postmsg(forward.data.outs[jid], e.txt)
+            except Exception, ex: handle_exception()
             continue
         outbot = fleet.getfirstjabber(bot.isgae)
         if not outbot and bot.isgae: outbot = fleet.makebot('xmpp', 'forwardbot')
@@ -96,18 +98,17 @@ first_callbacks.add('WEB', forwardoutcb, forwardoutpre)
 first_callbacks.add('DISPATCH', forwardoutcb, forwardoutpre)
 first_callbacks.add('OUTPUT', forwardoutcb, forwardoutpre)
 
-## commands
+## forward-add command
 
 def handle_forwardadd(bot, event):
+    """ add a new forward. """
     if not event.rest:
         event.missing('<JID>')
         return
     if "@" in event.rest:
         forward.data.outs[event.rest] = event.user.data.name
         forward.save()
-        if not event.rest in event.chan.forwards:
-            event.chan.forwards.append(event.rest)
-
+        if not event.rest in event.chan.forwards: event.chan.forwards.append(event.rest)
     if event.rest:
         event.chan.save()
         event.done()
@@ -115,7 +116,10 @@ def handle_forwardadd(bot, event):
 cmnds.add("forward-add", handle_forwardadd, 'OPER')
 examples.add("forward-add" , "add an JID to forward to", "forward-add jsoncloud@appspot.com")
 
+## forward-del command
+
 def handle_forwarddel(bot, event):
+    """ delete a forward. """
     if not event.rest:
         event.missing('<JID>')
         return
@@ -126,7 +130,10 @@ def handle_forwarddel(bot, event):
 cmnds.add("forward-del", handle_forwarddel, 'OPER')
 examples.add("forward-del" , "delete an JID to forward to", "forward-del jsoncloud@appspot.com")
 
+## forward-allow command
+
 def handle_forwardallow(bot, event):
+    """ allow a remote bot to forward to us. """
     if not event.rest:
         event.missing("<JID>")
         return
@@ -138,36 +145,38 @@ def handle_forwardallow(bot, event):
 cmnds.add("forward-allow", handle_forwardallow, 'OPER')
 examples.add("forward-allow" , "allow an JID to forward to us", "forward-allow jsoncloud@appspot.com")
 
+## forward-list command
+
 def handle_forwardlist(bot, event):
-    try:
-        event.reply("forwards for %s: " % event.channel, forward.data.channels[event.channel])
-    except KeyError:
-        event.reply("no forwards for %s" % event.channel)
+    """ list forwards. """
+    try: event.reply("forwards for %s: " % event.channel, forward.data.channels[event.channel])
+    except KeyError: event.reply("no forwards for %s" % event.channel)
 
 cmnds.add("forward-list", handle_forwardlist, 'OPER')
 examples.add("forward-list" , "list all forwards of a channel", "forward-list")
 
+## forward command
+
 def handle_forward(bot, event):
+    """ forward the channel tot another bot. """
     if not event.args:
         event.missing("<JID>")
         return
-
     forward.data.channels[event.channel.lower()] =  event.args
     for jid in event.args:
         forward.data.outs[jid] = event.user.data.name
-        if not jid in event.chan.data.forwards:
-            event.chan.data.forwards = event.args
-
-    if event.args:
-        event.chan.save()
-
+        if not jid in event.chan.data.forwards: event.chan.data.forwards = event.args
+    if event.args: event.chan.save()
     forward.save()
     event.done()
 
 cmnds.add("forward", handle_forward, 'OPER')
 examples.add("forward" , "forward a channel to provided JIDS", "forward jsoncloud@appspot.com")
 
+## forward-stop command
+
 def handle_forwardstop(bot, event):
+    """ stop forwarding the channel to another bot. """
     if not event.args:
         event.missing("<JID>")
         return
@@ -177,15 +186,11 @@ def handle_forwardstop(bot, event):
             try:
                 forward.data.channels[event.channel].remove(jid)
                 del forward.data.outs[jid]
-                if jid in event.chan.data.forwards:
-                    event.chan.data.forwards.remove(jid)
-            except ValueError:
-                pass
-
+                if jid in event.chan.data.forwards: event.chan.data.forwards.remove(jid)
+            except ValueError: pass
         forward.save()
         event.done()
-    except KeyError, ex:
-         event.reply("we are not forwarding %s" %  str(ex))
+    except KeyError, ex: event.reply("we are not forwarding %s" %  str(ex))
 
 cmnds.add("forward-stop", handle_forwardstop, 'OPER')
 examples.add("forward-stop" , "stop forwarding a channel to provided JIDS", "forward-stop jsoncloud@appspot.com")
