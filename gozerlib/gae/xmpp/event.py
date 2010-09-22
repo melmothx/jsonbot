@@ -58,10 +58,3 @@ class XMPPEvent(EventBase):
         logging.debug(u'xmpp - in - %s - %s' % (self.userhost, self.txt))
         return self
 
-    def outnocb(self, txt, raw=True):
-        """ output txt to the user .. output IS escaped. """
-        if txt:
-            from google.appengine.api import xmpp
-            txt = self.normalize(txt)
-            logging.debug(u"xmpp - out - %s - %s" % (self.channel, txt))
-            xmpp.send_message([self.channel, ], txt, raw_xml=raw)
