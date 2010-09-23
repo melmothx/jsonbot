@@ -155,6 +155,12 @@ class WaveBot(BotBase, robot.Robot):
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
             logging.warn("%s - %s - server_rpc_base is %s" % (self.name, waveid, self._server_rpc_base))
+        if not event:
+            event = WaveEvent()
+            event.channel = event.printto = waveid
+            event.txt = event.origtxt = txt
+            event.auth = event.userhost = origin or self.me
+            event.finish(self)
         self._raw(txt, event)
 
     def toppost(self, waveid, txt):
