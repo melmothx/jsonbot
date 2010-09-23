@@ -83,7 +83,7 @@ class WaveBot(BotBase, robot.Robot):
         """ invoked when any participants have been added/removed. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-        wevent.finish()
+        wevent.bind(self)
         whitelist = wevent.chan.data.whitelist
         if not whitelist: whitelist = wevent.chan.data.whitelist = []
         participants = event.participants_added
@@ -100,8 +100,9 @@ class WaveBot(BotBase, robot.Robot):
         logging.warn('wave - joined "%s" (%s) wave' % (wavelet._wave_id, wavelet._title))
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-        wevent.finish()
+        wevent.bind(self)
         logging.debug("wave - owner is %s" % wevent.chan.data.owner)
+        wevent.chan.data.json_data = wavelet.serialize()
         wevent.chan.save()
         wevent.reply("Welcome to %s (see !help) or http://jsonbot.appspot.com/docs/html/index.html" % getversion())
         callbacks.check(self, wevent)
@@ -110,7 +111,7 @@ class WaveBot(BotBase, robot.Robot):
         """ new blip added. here is where the command dispatching takes place. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-        wevent.finish()
+        wevent.bind(self)
         wevent.auth = wevent.userhost
         wave = wevent.chan
         wave.data.seenblips += 1
@@ -160,7 +161,7 @@ class WaveBot(BotBase, robot.Robot):
             event.channel = event.printto = waveid
             event.txt = event.origtxt = txt
             event.auth = event.userhost = origin or self.me
-            event.finish(self)
+            event.bind(self)
         self._raw(txt, event)
 
     def toppost(self, waveid, txt):

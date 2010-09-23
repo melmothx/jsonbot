@@ -58,7 +58,7 @@ def dotest(bot, event):
             event.reply('command: ' + example)
             try:
                 msg.txt = "!" + example
-                msg.finish()
+                msg.bind(bot)
                 bot.docmnd(event.auth or event.userhost, event.channel, example, msg)
             except Exception, ex: errors[example] = exceptionmsg()
     if errors:

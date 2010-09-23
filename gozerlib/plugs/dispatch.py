@@ -35,13 +35,13 @@ def dispatch(bot, event):
     bot.curevent = event
     go = False
     try:
-        event.finish()
-        event.makeargs()
         execstr = event.iscmnd()
         if execstr:
             event.usercmnd = execstr.split()[0]
             event.txt = execstr
             event.showexception = True
+            event.bind(bot)
+            event.makeargs()
             result = bot.plugs.dispatch(bot, event)
         else:
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))

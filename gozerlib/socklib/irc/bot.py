@@ -158,7 +158,7 @@ class IRCBot(Irc):
                 ievent.speed = 1
                 ievent.isdcc = True
                 ievent.msg = True
-                ievent.finish()
+                ievent.bind(bot)
                 logging.debug("%s - dcc - constructed event" % self.name)
                 if ievent.txt[0] == "!":
                     self.doevent(ievent)

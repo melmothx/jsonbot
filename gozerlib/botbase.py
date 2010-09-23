@@ -76,6 +76,7 @@ class BotBase(LazyDict):
         self.plugs = plugs or coreplugs
         self.gatekeeper = GateKeeper(self.botname)
         self.gatekeeper.allow(self.user or self.jid or self.server or self.botname)
+        self.closed = False
         try:
             import waveapi
             self.isgae = True
@@ -219,13 +220,13 @@ class BotBase(LazyDict):
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
-        event.prepare(self)
         self.status = "callback"
         starttime = time.time()
         msg = "botbase - handling %s - %s - %s" % (event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
-        if event.cbtype != "PRESENCE": logging.warn("botbase - event dump - %s" % event.dump())
-        if self.gatekeeper.isblocked(event.origin): return
+        if event.cbtype != "PRESENCE": logging.warn("botbase - incoming - %s" % event.dump())
+        if self.closed:
+            if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
             logging.debug("%s - event is done .. ignoring" % self.name)
             return
@@ -278,6 +279,7 @@ class BotBase(LazyDict):
         return res1
 
     def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
+        logging.warn("%s - out - %s - %s (%s)" % (self.name, printto, txt, how))
         self.outnocb(printto, txt, how, event, *args, **kwargs)
         self.outmonitor(origin or printto, printto, txt)
 
@@ -386,20 +388,20 @@ class BotBase(LazyDict):
         """ check if plugin need to be reloaded for callback, """
         plugloaded = []
         target = event.cbtype or event.cmnd
-        logging.debug("callbacks - checking for reload of %s (%s)" % (target, event.userhost))
+        logging.debug("botbase - checking for reload of %s (%s)" % (target, event.userhost))
         try:
             from boot import getcallbacktable   
             plugins = getcallbacktable()[target]
         except KeyError:
-            logging.debug("callbacks - can't find plugin to reload for %s" % event.cmnd)
+            logging.debug("botbase - can't find plugin to reload for %s" % event.cmnd)
             return
         from plugins import plugs
         for name in plugins: 
             if name in plugs:
-                logging.debug("callbacks - %s already loaded" % name)
+                logging.debug("botbase - %s already loaded" % name)
                 continue
             else:
-                logging.warn("on demand reloading of %s" % name)
+                logging.warn("botbase - on demand reloading of %s" % name)
                 try:
                     plugloaded.append(plugs.reload(name, True))
                 except Exception, ex: handle_exception()
@@ -486,7 +488,7 @@ class BotBase(LazyDict):
         e.usercmnd = e.txt.split()[0]
         e.closequeue = True
         if wait: e.direct = True
-        e.finish()
+        e.bind(bot)
         try:
             event = self.plugs.dispatch(self, e, wait=wait)
             return event
