@@ -494,3 +494,4 @@ def users_boot():
     """ initialize global users object. """
     global users
     users = Users()
+    return users

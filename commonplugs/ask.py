@@ -74,7 +74,7 @@ def handle_ask(bot, event):
         users that have registered themselves for that particular subject. 
 
     """
-    try: subject, question) = event.rest.split(' ', 1)
+    try: subject, question = event.rest.split(' ', 1)
     except ValueError:
         event.missing('<subject> <question>')
         return

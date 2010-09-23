@@ -84,7 +84,7 @@ class XMLStream(NodeBuilder):
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        logging.error("%s - STREAMERROR - %s" % (self.name, data))
+        logging.error("%s - STREAMERROR - %s" % (self.name, data.tojson()))
  
     def handle_streamfeatures(self, data):
         """ default stream features handler. """

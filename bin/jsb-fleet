@@ -23,6 +23,7 @@ from gozerlib.utils.log import setloglevel
 from gozerlib.fleet import fleet
 from gozerlib.utils.mainloop import mainloop
 from gozerlib.utils.opts import makeopts, makeconfig
+from gozerlib.users import users_boot
 import gozerlib
 
 ## basic imports
@@ -47,6 +48,10 @@ if opts.all:
 
 makedirs()
 boot()
+
+if opts.owner:
+    users = users_boot()
+    users.make_owner(opts.owner)
 
 fleet.loadall(opts.args)
 
