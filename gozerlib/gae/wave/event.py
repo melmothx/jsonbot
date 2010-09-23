@@ -175,20 +175,6 @@ class WaveEvent(EventBase):
         (res1, res2) = self.less(outtxt)
         self.write_root(res1)
 
-    def outnocb(self, outtxt, end="\n"):
-        """ write outtxt to the server. """
-        try:
-            annotations = []
-            for url in re.findall(findurl, outtxt):
-                start = outtxt.find(url.strip())
-                if start: annotations.append((start+1, start+len(url), "link/manual", url.strip()))
-        except Exception, ex: handle_exception()
-        if self.gadgetnr:
-            if self.cmndhow == 'output': self.blip.at(self.gadgetnr).update_element({'text': outtxt, 'target': self.userhost})
-            elif self.cmndhow == 'status': self.blip.at(self.gadgetnr).update_element({'status': outtxt, 'target': self.userhost})
-        else: self.append(outtxt + end , annotations)
-        self.replied = True
-
     def write_root(self, outtxt, end="\n", root=None):
         """ write to the root of a wave. """
         self.append_root(outtxt + end)

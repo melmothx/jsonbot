@@ -9,7 +9,7 @@
 from gozerlib.persist import Persist
 from gozerlib.botbase import BotBase
 from gozerlib.plugins import plugs
-from gozerlib.utils.generic import getversion
+from gozerlib.utils.generic import getversion, strippedtxt
 from gozerlib.callbacks import callbacks
 from gozerlib.outputcache import add
 from gozerlib.config import Config
@@ -82,6 +82,7 @@ class WaveBot(BotBase, robot.Robot):
         """ invoked when any participants have been added/removed. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
+        wevent.finish()
         whitelist = wevent.chan.data.whitelist
         if not whitelist: whitelist = wevent.chan.data.whitelist = []
         participants = event.participants_added
@@ -98,6 +99,7 @@ class WaveBot(BotBase, robot.Robot):
         logging.warn('wave - joined "%s" (%s) wave' % (wavelet._wave_id, wavelet._title))
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
+        wevent.finish()
         logging.debug("wave - owner is %s" % wevent.chan.data.owner)
         wevent.chan.save()
         wevent.reply("Welcome to %s (see !help) or http://jsonbot.appspot.com/docs/html/index.html" % getversion())
@@ -107,34 +109,61 @@ class WaveBot(BotBase, robot.Robot):
         """ new blip added. here is where the command dispatching takes place. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
+        wevent.finish()
         wevent.auth = wevent.userhost
         wave = wevent.chan
         wave.data.seenblips += 1
         wave.data.lastedited = time.time()
         self.doevent(wevent)
 
-    @saylocked
-    def say(self, waveid, txt, result=[], event=None, origin="", dot=", ", *args, **kwargs):
+    def _raw(self, txt, event=None, *args, **kwargs):
+        """ output some txt to the wave. """
+        assert event.chan
+        if not event.chan: logging.error("%s - event.chan is not set" % self.name) ; return
+        if event.chan.data.json_data: wavelet = self.blind_wavelet(event.chan.data.json_data)
+        else: logging.info("did not join channel %s" % event.id) ; return
+        if not wavelet: logging.error("cant get wavelet") ; return
+        txt = unicode(strippedtxt(txt.strip()))
+        logging.debug(u'wave - out - %s - %s' % (event.chan.data.title, txt))
+        try:
+            annotations = []
+            for url in txt.split():
+                got = url.find("http://")
+                if got != -1:
+                    logging.debug("wave - found url - %s" % str(url))
+                    start = txt.find(url.strip())
+                    if url.endswith(">"): annotations.append((start+2, start+len(url)-1, "link/manual", url[1:-1]))
+                    else: annotations.append((start, start+len(url), "link/manual", url))
+        except Exception, ex: handle_exception()
+        logging.debug("annotations used: %s", annotations)
+        reply = wavelet.reply(txt)
+        if annotations:
+            for ann in annotations:
+                if ann[0]:
+                    try: reply.range(ann[0], ann[1]).annotate(ann[2], ann[3])
+                    except Exception, ex: handle_exception()
+        logging.info("submitting to server: %s" % wavelet.serialize())
+        try:
+            import google
+            self.submit(wavelet)
+        except google.appengine.api.urlfetch_errors.DownloadError: handle_exception()
+
+    def outnocb(self, waveid, txt, result=[], event=None, origin="", dot=", ", *args, **kwargs):
         """ output to the root id. """
         if not self.domain in self._server_rpc_base:
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
-            logging.debug("waves - %s - server_rpc_base is %s" % (waveid, self._server_rpc_base))
-        resp = self.makeresponse(txt, result, dot)
-        wave = Wave(waveid)
-        if wave and wave.data.waveid: wave.say(self, resp)
-        else: logging.warn("we are not joined into %s" % waveid)
-
-    saynocb = say
+            logging.warn("%s - %s - server_rpc_base is %s" % (self.name, waveid, self._server_rpc_base))
+        self._raw(txt, event)
 
     def toppost(self, waveid, txt):
         """ output to the root id. """
         if not self.domain in waveid:
-            logging.warn("wave - not connected - %s" % waveid)
+            logging.warn("%s - not connected - %s" % (self.name, waveid))
             return
         wave = Wave(waveid)
         if wave and wave.data.waveid: wave.toppost(self, txt)
-        else: logging.warn("we are not joined to %s" % waveid)
+        else: logging.warn("%s - we are not joined to %s" % (self.name, waveid))
 
     def newwave(self, domain=None, participants=None, submit=False):
         """ create a new wave. """

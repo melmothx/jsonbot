@@ -61,21 +61,23 @@ class EventBase(LazyDict):
         self.origin = self.bot.user or self.bot.server
         self.origtxt = self.txt
         self.makeargs()
-        logging.debug("%s - prepared event - %s" % (self.auth, self.dump()))
+        logging.warn("%s - prepared event - %s" % (self.auth, self.dump()))
 
     def finish(self, bot=None):
         """ finish a event to execute a command on it. """
         target = self.auth
+        bot = bot or self.bot
+        assert bot
         if not self.user and target:
-            if mainconfig.auto_register: self.bot.users.addguest(target)
-            self.user = self.bot.users.getuser(target)
+            if mainconfig.auto_register: bot.users.addguest(target)
+            self.user = bot.users.getuser(target)
         if not self.chan:
             if self.channel: self.chan = ChannelBase(self.channel)
             elif self.userhost: self.chan = ChannelBase(self.userhost)
         if not self.user: self.nodispatch = True
-        self.prepare()
+        self.prepare(bot)
         if self.txt: self.usercmnd = self.txt.split()[0]
-        logging.debug("%s - finish - %s" % (self.auth, self.dump()))
+        logging.debug("%s - finish - %s - %s" % (self.auth, self.chan.data.name, self.cbtype, ))
 
     def parse(self, event, *args, **kwargs):
         """ overload this. """
@@ -106,9 +108,9 @@ class EventBase(LazyDict):
         if result:
             txt = u"<b>" + txt + u"</b>"
         if self.isdcc:
-            self.bot.say(self.printto, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+            self.bot.say(self.printto, txt, result, origin=origin or self.userhost, extend=extend, event=self, *args, **kwargs)
         else:
-            self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, *args, **kwargs)
+            self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, event=self, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self
