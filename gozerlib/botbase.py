@@ -248,6 +248,7 @@ class BotBase(LazyDict):
             e3 = cpy(event)
             last_callbacks.check(self, e3)
         event.callbackdone = True
+        return event
 
     def ownercheck(self, userhost):
         """ check if provided userhost belongs to an owner. """

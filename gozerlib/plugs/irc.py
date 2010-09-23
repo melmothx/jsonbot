@@ -36,64 +36,6 @@ def handle_broadcast(bot, ievent):
 cmnds.add('broadcast', handle_broadcast, 'OPER')
 examples.add('broadcast', 'send a message to all channels and dcc users', 'broadcast good morning')
 
-## join command
-
-def dojoin(bot, ievent):
-    """ join a channel/wave"""
-    try: channel = ievent.args[0]
-    except IndexError:
-        ievent.missing("<channel> [password]")
-        return
-    try: password = ievent.args[1]
-    except IndexError: password = None
-    bot.join(channel, password=password)
-
-cmnds.add('join', dojoin, ['OPER', 'JOIN'])
-examples.add('join', 'join <channel> [password]', '1) join #test 2) join #test mekker')
-
-## delchan command
-
-def delchan(bot, ievent):
-    """ remove channel from bot.state['joinedchannels']. """
-    try: chan = ievent.args[0].lower()
-    except IndexError:
-        ievent.missing("<channel>")
-        return
-    try:
-        if bot.state:
-            bot.state.data['joinedchannels'].remove(chan)
-            bot.state.save()
-    except ValueError: pass
-    ievent.done()
-
-cmnds.add('delchan', delchan, 'OPER')
-examples.add('delchan', 'delchan <channel> .. remove channel from bot.channels', 'delchan #mekker')
-
-## part command
-
-def dopart(bot, ievent):
-    """ leave a channel. """
-    if not ievent.rest: chan = ievent.channel
-    else: chan = ievent.rest
-    ievent.reply('leaving %s chan' % chan)
-    bot.part(chan)
-    ievent.done()
-
-cmnds.add('part', dopart, 'OPER')
-examples.add('part', 'part [<channel>]', '1) part 2) part #test')
-
-## channels command
-
-def handle_channels(bot, ievent):
-    """ channels .. show joined channels. """
-    if bot.state: chans = bot.state['joinedchannels']
-    else: chans = []
-    if chans: ievent.reply("joined channels: ", chans)
-    else: ievent.reply('no channels joined')
-
-cmnds.add('channels', handle_channels, ['USER', 'WEB'])
-examples.add('channels', 'show what channels the bot is on', 'channels')
-
 ## chat command
 
 def handle_chat(bot, ievent):
@@ -107,20 +49,6 @@ def handle_chat(bot, ievent):
 
 cmnds.add('chat', handle_chat, 'USER')
 examples.add('chat', 'start a dcc chat session', 'chat')
-
-## cycle command
-
-def handle_cycle(bot, ievent):
-    """ cycle .. recycle channel. """
-    ievent.reply('cycling %s' % ievent.channel)
-    bot.part(ievent.channel)
-    try: key = ievent.chan.data.password
-    except (KeyError, TypeError): key = None
-    bot.join(ievent.channel, password=key)
-    ievent.done()
-
-cmnds.add('cycle', handle_cycle, 'OPER')
-examples.add('cycle', 'part/join channel', 'cycle')
 
 ## jump command
 
@@ -142,17 +70,6 @@ def handle_jump(bot, ievent):
 
 cmnds.add('jump', handle_jump, 'OPER')
 examples.add('jump', 'jump <server> <port> .. switch server', 'jump localhost 6667')
-
-## mode callback
-
-def modecb(bot, ievent):
-    """ callback to detect change of channel key. """
-    if ievent.postfix.find('+k') != -1:
-        key = ievent.postfix.split('+k')[1]
-        ievent.chan.data.password = key
-        ievent.chan.save()
-
-callbacks.add('MODE', modecb)
 
 ## nick command
 
@@ -222,72 +139,6 @@ def handle_nicks(bot, ievent):
 cmnds.add('nicks', handle_nicks, ['OPER', 'WEB'], threaded=True)
 examples.add('nicks', 'show nicks on channel the command was given in', 'nicks')
 
-## silent command
-
-def handle_silent(bot, ievent):
-    """ set silent mode of channel. """
-    if ievent.rest: channel = ievent.rest.split()[0].lower()
-    else:
-        if ievent.cmnd == 'DCC': return
-        channel = ievent.channel
-    ievent.reply('putting %s to silent mode' % channel)
-    ievent.chan.data.silent = True
-    ievent.chan.data.save()
-    ievent.done()
-
-cmnds.add('silent', handle_silent, 'OPER')
-examples.add('silent', 'set silent mode on channel the command was given in', 'silent')
-
-## loud command
-
-def handle_loud(bot, ievent):
-    """ loud .. enable output to the channel. """
-    if ievent.rest: channel = ievent.rest.split()[0].lower()
-    else:
-        if ievent.cmnd == 'DCC': return
-        channel = ievent.channel
-    ievent.reply('putting %s into loud mode' % ievent.channel)
-    ievent.chan.data.silent= False
-    ievent.chan.save()
-    ievent.done()
-
-cmnds.add('loud', handle_loud, 'OPER')
-examples.add('loud', 'disable silent mode of channel command was given in', 'loud')
-
-## withnotice comamnd
-
-def handle_withnotice(bot, ievent):
-    """ withnotice .. make bot use notice in channel. """
-    if ievent.rest: channel = ievent.rest.split()[0].lower()
-    else:
-        if ievent.cmnd == 'DCC': return
-        channel = ievent.channel
-    ievent.reply('setting notice in %s' % channel)
-    ievent.chan.data.how  = "notice"
-    ievent.chan.save()
-    ievent.done()
-    
-cmnds.add('withnotice', handle_withnotice, 'OPER')
-examples.add('withnotice', 'make bot use notice on channel the command was given in', 'withnotice')
-
-## withrpivmsg
-
-def handle_withprivmsg(bot, ievent):
-    """ withprivmsg .. make bot use privmsg in channel. """
-    if ievent.rest: channel = ievent.rest.split()[0].lower()
-    else:
-        if ievent.cmnd == 'DCC': return
-        channel = ievent.channel
-    ievent.reply('setting privmsg in %s' % ievent.channel)
-    try: bot.channels[channel]['notice'] = 0
-    except (KeyError, TypeError):
-        ievent.reply("no %s channel in database" % channel)
-        return 
-    ievent.done()
-
-cmnds.add('withprivmsg', handle_withprivmsg, 'OPER')
-examples.add('withprivmsg', 'make bot use privmsg on channel command was given in', 'withprivmsg')
-
 ## reconnect command
 
 def handle_reconnect(bot, ievent):
@@ -298,23 +149,6 @@ def handle_reconnect(bot, ievent):
 
 cmnds.add('reconnect', handle_reconnect, 'OPER', threaded=True)
 examples.add('reconnect', 'reconnect to server', 'reconnect')
-
-## channelmode command
-
-def handle_channelmode(bot, ievent):
-    """ show channel mode. """
-    if bot.type != 'irc':
-        ievent.reply('channelmode only works on irc bots')
-        return
-    try: chan = ievent.args[0].lower()
-    except IndexError: chan = ievent.channel.lower()
-    if not chan in bot.state['joinedchannels']:
-        ievent.reply("i'm not on channel %s" % chan)
-        return
-    ievent.reply('channel mode of %s is %s' % (chan, bot.channels.get(chan, 'mode')))
-
-cmnds.add('channelmode', handle_channelmode, 'OPER')
-examples.add('channelmode', 'show mode of channel', '1) channelmode 2) channelmode #test')
 
 ## action command
 
