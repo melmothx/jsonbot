@@ -58,7 +58,7 @@ class NSAuth(Pdod):
         """ register a bot to nickserv. """
         if self.has_key(bot.name) and self.has_key2(bot.name, 'nickserv'):
             bot.sendraw('PRIVMSG %s :%s %s' % (self.get(bot.name, 'nickserv'),  'REGISTER', passwd))
-            logging.debug('nickserv - register sent on %s' % bot.server)
+            logging.warn('nickserv - register sent on %s' % bot.server)
 
     def identify(self, bot):
         """ identify a bot to nickserv. """
@@ -75,6 +75,7 @@ class NSAuth(Pdod):
     def sendstring(self, bot, txt):
         """ send string to nickserver. """
         nickservnick = self.get(bot.name, 'nickserv')
+        logging.warn('nickserv - sent %s to %s' % (txt, nickservnick))
         bot.outnocb(nickservnick, txt, how="msg")
 
     def handle_001(self, bot, ievent):
