@@ -37,36 +37,32 @@ outlocked = lockdec(outlock)
 
 cfg = PersistConfig()
 cfg.define('channels', [])
-# format for logs. simple or supy are currently supported.
 cfg.define('format', 'simple')
-# basepath: the root of all logs.  None is $gozerbot-root/logs
 cfg.define('basepath', '')
-# msgs that should be logged start with this
 cfg.define('nologprefix', '[nolog]')
-# and are replaced with
 cfg.define('nologmsg', '-= THIS MESSAGE NOT LOGGED =-')
-# where do we write the logs too?
 cfg.define('backend', 'file')
-# db settings for db backend
+
 logfiles = {}
 backends = {}
 stopped = False
 db = None
 
- # Formats are defined here. simple also provides default values if values
- # are not supplied by the format, as well as format 'simple'. 
- # Parameters that should be supplied:
- #   * timestamp_format: format of timestamp in log files
- #     * all strftime vars supported.
- #   * filename: file name for log
- #     * var channel : full channel ie. #dunkbot
- #     * var channel_name : channel without '#' ie. dunkbot
- #   * event_filename: 
- #        if event_filename exists, then it will be used for
- #        logging events (seperate from chat)
- #     * var channel : full channel ie. #dunkbot
- #     * var channel_name : channel without '#' ie. dunkbot
- #   * separator: the separator between the timestamp and message
+# Formats are defined here. simple also provides default values if values
+# are not supplied by the format, as well as format 'simple'. 
+# Parameters that should be supplied:
+#   * timestamp_format: format of timestamp in log files
+#     * all strftime vars supported.
+#   * filename: file name for log
+#     * var channel : full channel ie. #dunkbot
+#     * var channel_name : channel without '#' ie. dunkbot
+#   * event_filename: 
+#        if event_filename exists, then it will be used for
+#        logging events (seperate from chat)
+#     * var channel : full channel ie. #dunkbot
+#     * var channel_name : channel without '#' ie. dunkbot
+#   * separator: the separator between the timestamp and message
+
 formats = {
     'simple': {
         'timestamp_format': '%Y-%m-%d %H:%M:%S',
@@ -87,7 +83,6 @@ formats = {
 
 ## functions
 
-# Get a format opt in the currently cfg'd format
 def format_opt(name):
     simple_format = formats['simple']
     format = formats.get(cfg.get('format'), 'simple')
@@ -113,7 +108,8 @@ def timestr(dt):
 
 @outlocked
 def write(m): 
-    """m is a dict with the following properties:
+    """
+      m is a dict with the following properties:
       datetime
       type : (comment, nick, topic etc..)
       target : (#channel, bot etc..)
@@ -122,50 +118,32 @@ def write(m):
     """
     backend_name = cfg.get('backend', 'file')
     backend = backends.get(backend_name, file_write)
-    if m['txt'].startswith(cfg.get('nologprefix')):
-        m['txt'] = cfg.get('nologmsg')
+    if m['txt'].startswith(cfg.get('nologprefix')): m['txt'] = cfg.get('nologmsg')
     backend(m)
 
 def file_write(m):
-    if stopped:
-        return
+    if stopped: return
     args = {
         'target': m.get('target'), 
         'network': m.get('network') 
     }
-    if args['target'].startswith('#'):
-        args['channel_name'] = args['target'][1:]
+    if args['target'].startswith('#'): args['channel_name'] = args['target'][1:]
     f = time.strftime(format_opt('filename')) % args
-    # if this is an event, and there is an event_filename, use that
-    # instead of filename
     if m['type'] != 'comment':
         event_filename = format_opt('event_filename')
-        if event_filename:
-            f = time.strftime(event_filename) % args
+        if event_filename: f = time.strftime(event_filename) % args
         m['txt'] = '%s%s'%(m['event_prefix'], m['txt'])
-    else:
-        m['txt'] = '<%s> %s'%(m['nick'], m['txt'])
-
-    # if there is a basepath specified, append it,
-    # else it should go to a dir relative to the 
-    # gozerbot dir.
+    else: m['txt'] = '<%s> %s'%(m['nick'], m['txt'])
     basepath = cfg.get('basepath')
-    if basepath:
-        f = path.join(basepath, f)
-
-    # create dir if it doesn't exist
+    if basepath: f = path.join(basepath, f)
     dir = path.dirname(f)
-    if not path.exists(dir):
-        os.makedirs(dir)
-
+    if not path.exists(dir): os.makedirs(dir)
     timestamp = timestr(m['datetime'])
-
     line = '%(timestamp)s%(separator)s%(txt)s\n'%({
         'timestamp': timestamp, 
         'separator': format_opt('separator'),
         'txt': m['txt'],
     })
-
     try:
         if logfiles.has_key(f):
             logfiles[f].write(line)
@@ -175,12 +153,11 @@ def file_write(m):
             logfiles[f] = open(f, 'a')
             logfiles[f].write(line)
             logfiles[f].flush()
-    except Exception, ex:
-        handle_exception()
+    except Exception, ex: handle_exception()
 
 backends['file'] = file_write
 
-## callbacks
+## log function
 
 def log(bot, ievent):
     m = {
@@ -291,6 +268,8 @@ def log(bot, ievent):
     if m.get('txt'):
         write(m)
 
+## chatlog precondition
+
 def prechatlogcb(bot, ievent):
     """Check if event should be logged.  QUIT and NICK are not channel
     specific, so we will check each channel in log()."""
@@ -304,35 +283,37 @@ def prechatlogcb(bot, ievent):
         if [bot.name, ievent.arguments[0]] in cfg.get('channels'):
             return 1
 
+## chatlog callbacks
+
 def chatlogcb(bot, ievent):
     log(bot, ievent)
 
-## commands
+## chatlog-on command
 
 def handle_chatlogon(bot, ievent):
+    """ enable chatlog. """
     chan = ievent.channel
     if [bot.name, chan] not in cfg.get('channels'):
         cfg['channels'].append([bot.name, chan])
         cfg.save()
         ievent.reply('chatlog enabled on (%s,%s)' % (bot.name, chan))
-    else:
-        ievent.reply('chatlog already enabled on (%s,%s)' % (bot.name, chan))
+    else: ievent.reply('chatlog already enabled on (%s,%s)' % (bot.name, chan))
 
 cmnds.add('chatlog-on', handle_chatlogon, 'OPER')
 examples.add('chatlog-on', 'enable chatlog on <channel> or the channel \
 the commands is given in', '1) chatlog-on 2) chatlog-on #dunkbots')
 
+## chatlog-off command
+
 def handle_chatlogoff(bot, ievent):
+    """ disable chatlog. """
     try:
         cfg['channels'].remove([bot.name, ievent.channel])
         cfg.save()
     except ValueError:
-        ievent.reply('chatlog is not enabled in (%s,%s)' % (bot.name, \
-ievent.channel))
+        ievent.reply('chatlog is not enabled in (%s,%s)' % (bot.name, ievent.channel))
         return
     ievent.reply('chatlog disabled on (%s,%s)' % (bot.name, ievent.channel))
 
 cmnds.add('chatlog-off', handle_chatlogoff, 'OPER')
-examples.add('chatlog-off', 'disable chatlog on <channel> or the channel \
-the commands is given in', '1) chatlog-off 2) chatlog-off #dunkbots')
-
+examples.add('chatlog-off', 'disable chatlog on <channel> or the channel the commands is given in', '1) chatlog-off 2) chatlog-off #dunkbots')

@@ -9,6 +9,7 @@
 from gozerlib.gae.utils.web import loginurl
 from gozerlib.config import cfg
 from gozerlib.utils.generic import getversion
+from gozerlib.utils.exception import handle_exception
 
 ## google imports
 
@@ -50,7 +51,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
 
         except Exception, ex:
             handle_exception()
-            self.send_error(500)
+            #self.send_error(500)
 
     def post(self):
         try:
@@ -67,7 +68,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
                 self.send_error(400)
         except Exception, ex:
             handle_exception()
-            self.send_error(500)
+            #self.send_error(500)
 
 ## the application 
 

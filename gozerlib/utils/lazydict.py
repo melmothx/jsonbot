@@ -31,7 +31,7 @@ locked = lockdec(lock)
 ## defines
 
 jsontypes = [types.StringType, types.UnicodeType, types.DictType, types.ListType, types.IntType]
-defaultignore = ['isremote', 'iscmnd', 'orig', 'bot', 'origtxt', 'body', 'subelements', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
+defaultignore = ['stanza', 'isremote', 'iscmnd', 'orig', 'bot', 'origtxt', 'body', 'subelements', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
 cpy = copy.deepcopy
 
 ## checkignore function

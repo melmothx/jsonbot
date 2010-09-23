@@ -40,7 +40,7 @@ balltxt=[
     "Don't count on it."
     ]
 
-## commands
+## 8b command
 
 def handle_8b(bot, ievent):
     """ throw the eight ball. """

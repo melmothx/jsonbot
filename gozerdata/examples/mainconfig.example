@@ -21,4 +21,4 @@ debug = 0
 
 # auto register new users 
 
-auto_register = 1
+auto_register = 0

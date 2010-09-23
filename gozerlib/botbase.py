@@ -121,7 +121,8 @@ class BotBase(LazyDict):
             defaultrunner.start()
             cmndrunner.start()
             longrunner.start()
-            
+            tickloop.start(self)
+
     def put(self, event):
         self.inqueue.put_nowait(event)
 
