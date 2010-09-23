@@ -325,10 +325,11 @@ class XMLStream(NodeBuilder):
     def doreconnect(self):
         """ reconnect to the server. """
         botjid = self.jid
-        newbot = fleet.makebot('sxmpp', self.name, self.cfg)
+        newbot = fleet.makebot('sxmpp', self.name, self)
         newbot.reconnectcount = self.reconnectcount
-        if newbot.connect():
+        self.exit()
+        if newbot.start():
             self.jid += '.old'
-            newbot.joinchannels()
+            #newbot.joinchannels()
             if fleet.replace(botjid, newbot): return True
         return False
