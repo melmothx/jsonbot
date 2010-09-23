@@ -326,6 +326,7 @@ class XMLStream(NodeBuilder):
         """ reconnect to the server. """
         botjid = self.jid
         newbot = fleet.makebot('sxmpp', self.name, self.cfg)
+        newbot.reconnectcount = self.reconnectcount
         if newbot.connect():
             self.jid += '.old'
             newbot.joinchannels()
