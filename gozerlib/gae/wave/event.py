@@ -100,10 +100,6 @@ class WaveEvent(EventBase):
         e.copyin(self)
         return e
 
-    def _raw(self, outtxt, root=None):
-        """ send raw text to the server .. creates a blip on the root. """
-        self.append(outtxt)
-
     def toppost(self, txt):
         """ append to rootblip. """
         reply = self.rootblip.reply()

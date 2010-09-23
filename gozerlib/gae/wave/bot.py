@@ -14,6 +14,7 @@ from gozerlib.callbacks import callbacks
 from gozerlib.outputcache import add
 from gozerlib.config import Config
 from gozerlib.utils.locking import lockdec
+from gozerlib.utils.exception import handle_exception
 
 ## gaelib imports
 
