@@ -127,6 +127,10 @@ class BotBase(LazyDict):
     def put(self, event):
         self.inqueue.put_nowait(event)
 
+    def broadcast(self, txt):
+        for chan in self.state['joinedchannels']:
+            self.say(chan, txt)
+
     def _eventloop(self):
         """ fetch events from the inqueue and handle them. """
         logging.warn("%s - eventloop started" % self.name)
@@ -489,7 +493,7 @@ class BotBase(LazyDict):
         e.usercmnd = e.txt.split()[0]
         e.closequeue = True
         if wait: e.direct = True
-        e.bind(bot)
+        e.bind(self)
         try:
             event = self.plugs.dispatch(self, e, wait=wait)
             return event

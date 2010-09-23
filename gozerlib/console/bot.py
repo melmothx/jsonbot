@@ -94,7 +94,7 @@ class ConsoleBot(BotBase):
                     result = self.doevent(event)
                     if not result: continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
-                    waitforqueue(event.outqueue, 5)
+                    waitforqueue(event.inqueue, 5)
                 except NoSuchCommand: print "no such command: %s" % event.usercmnd
             except NoInput: continue
             except (KeyboardInterrupt, EOFError): break

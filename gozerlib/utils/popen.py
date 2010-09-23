@@ -85,5 +85,5 @@ if go:
         if type(userargs) != types.ListType: raise PopenListError(args)
         for i in userargs:
             if i.startswith('-'): raise PopenWhitelistError(i)
-        proces = Gozerpopen4(args + userargs)
+        proces = GozerPopen4(args + userargs)
         return proces
