@@ -296,8 +296,6 @@ class BotBase(LazyDict):
     writenocb = outnocb
 
     def say(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
-        if event:
-            if event.silent: return
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
         if txt: self.out(channel, txt, event=event, *args, **kwargs)
         
