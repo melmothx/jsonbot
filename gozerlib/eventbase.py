@@ -109,7 +109,11 @@ class EventBase(LazyDict):
         if self.checkqueues(result): return
         if result:
             txt = u"<b>" + txt + u"</b>"
-        self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, event=self, *args, **kwargs)
+        if self.silent:
+            self.msg = True
+            self.bot.say(self.nick, txt, result, origin=origin or self.userhost, extend=extend, event=self, *args, **kwargs)
+        else:
+            self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, event=self, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self

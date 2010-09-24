@@ -17,6 +17,7 @@ def handle_chanjoin(bot, ievent):
     try: password = ievent.args[1] 
     except IndexError: password = None
     bot.join(channel, password=password)
+    ievent.done()
 
 cmnds.add('chan-join', handle_chanjoin, ['OPER', 'JOIN'])
 examples.add('cha-join', 'join <channel> [password]', '1) chan-join #test 2) chan-join #test mekker')

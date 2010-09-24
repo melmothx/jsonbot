@@ -109,7 +109,7 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            logging.info('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
+            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
             set(self.fn, bla)
 
 except ImportError:
