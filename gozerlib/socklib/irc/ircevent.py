@@ -98,6 +98,17 @@ class IrcEvent(EventBase):
         except ValueError: pass
         return self
 
+    def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
+        """ reply to this event """
+        if self.checkqueues(result): return
+        if result: txt = u"<b>" + txt + u"</b>"
+        if self.isdcc: self.bot.say(self.printto, txt, result, 'msg', event, nr, extend, dot, *args, **kwargs)
+        elif self.msg: self.bot.say(self.nick, txt, result, 'msg', event, nr, extend, dot, *args, **kwargs)
+        else: self.bot.say(self.channel, txt, result, 'msg', event, nr, extend, dot, *args, **kwargs)
+        self.result.append(txt)
+        self.outqueue.put_nowait(txt)
+        return self
+
 ## postfix count - how many arguments
 
 pfc = {}
