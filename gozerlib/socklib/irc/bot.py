@@ -367,7 +367,7 @@ class IRCBot(Irc):
         userhost = "%s@%s" % (user, host)
         logging.debug('%s - adding %s to userhosts: %s' % (self.name, nick, userhost))
         self.userhosts[nick] = userhost
-
+        
     def handle_353(self, ievent):
         """ handle 353 .. check if we are op. """
         userlist = ievent.txt.split()

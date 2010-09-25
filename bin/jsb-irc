@@ -63,7 +63,7 @@ if opts.doresume and os.path.isfile(opts.doresume):
     os.unlink(opts.doresume)
 else:
     try:
-        bot = IRCBot(cfg)
+        bot = IRCBot(cfg, nick=opts.nick)
         bot.nick = cfg.nick or 'jsonbot'
     except NoOwnerSet, ex:
         print "owner is not set in %s - use the -o option" % str(ex)

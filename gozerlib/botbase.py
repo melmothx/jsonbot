@@ -63,7 +63,7 @@ class BotBase(LazyDict):
 
     """ base class for all bots. """
 
-    def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, *args, **kwargs):
+    def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, nick=None, *args, **kwargs):
         if not botname and cfg: botname = cfg.botname
         if botname: self.botname = botname
         else: self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
@@ -109,7 +109,7 @@ class BotBase(LazyDict):
         self.outcache = Less(3)
         self.userhosts = {}
         self.connectok = threading.Event()
-        if not self.nick: self.nick = u'jsonbot'
+        if not self.nick: self.nick = nick or self.cfg.nick or u'jsonbot'
         try:
             if not os.isdir(self.datadir): os.mkdir(self.datadir)
         except: pass
@@ -476,7 +476,7 @@ class BotBase(LazyDict):
         e.cbtype = 'OUTPUT'
         e.botoutput = True
         e.ttl = 1
-        #e.nick = self.nick or self.botname
+        e.nick = self.nick or self.botname
         e.prepare()
         first_callbacks.check(self, e)
 

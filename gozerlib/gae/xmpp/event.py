@@ -49,6 +49,7 @@ class XMPPEvent(EventBase):
         self.to = stripped(self['to'])
         self.channel = stripped(self.userhost)
         self.stripped = stripped(self.userhost)
+        self.nick = self.stripped.split("@")[0]
         self.origin = self.channel
         input = self.body or self.stanza
         input = input.strip()
