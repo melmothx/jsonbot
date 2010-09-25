@@ -169,7 +169,7 @@ except ImportError:
                     if 'gozerlib' in cfrom: 
                         cfrom = whichmodule(3)
                         if 'gozerlib' in cfrom: cfrom = whichmodule(4)
-                    logging.warn("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
+                    if not 'run' in self.fn: logging.warn("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
             except Exception, ex:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
