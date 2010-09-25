@@ -17,6 +17,7 @@ allowednamechars = string.ascii_letters + string.digits + '!.@-+#'
 
 def stripname(name, allowed=""):
     """ strip all not allowed chars from name. """
+    name = name.lower()
     res = ""
     for c in name:
         if ord(c) < 31: res += "-"
