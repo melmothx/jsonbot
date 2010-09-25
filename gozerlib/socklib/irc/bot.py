@@ -258,7 +258,7 @@ class IRCBot(Irc):
         ievent.sock = self.sock
         chan = ievent.channel
         if chan == self.nick:
-            ievent.msg = 1
+            ievent.msg = True
             ievent.speed =  4
             ievent.printto = ievent.nick
             ccs = ['!', '@', self.cfg['defaultcc']]
@@ -305,6 +305,7 @@ class IRCBot(Irc):
         nick = ievent.txt
         self.userhosts[nick] = ievent.userhost
         if ievent.nick == self.nick or ievent.nick == self.orignick:
+            self.nick = nick
             self.cfg['nick'] = nick
             self.cfg.save()
 

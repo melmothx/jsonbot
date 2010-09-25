@@ -92,6 +92,10 @@ class IrcEvent(EventBase):
         if self.channel:
             self.channel = self.channel.strip()
             self.origchannel = self.channel
+            if self.channel == self.bot.nick:
+                logging.warn("irc - msg detected - setting channel to %s" % self.userhost)
+                self.msg = True
+                self.channel = self.userhost
         try:
             nr = int(self.cmnd)
             if nr > 399 and not nr == 422: logging.error('irc - %s - %s - %s' % (self.cmnd, self.arguments, self.txt))
@@ -104,7 +108,7 @@ class IrcEvent(EventBase):
         if result: txt = u"<b>" + txt + u"</b>"
         if self.isdcc: self.bot.say(self.printto, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
         elif self.msg: self.bot.say(self.nick, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
-        elif self.chan and self.chan.data and self.chan.data.silent: self.bot.say(self.nick, txt, result, 'notice', self, nr, extend, dot, *args, **kwargs)
+        elif self.chan and self.chan.data and self.chan.data.silent: self.bot.say(self.nick, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
         else: self.bot.say(self.channel, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)

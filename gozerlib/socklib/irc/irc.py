@@ -295,8 +295,8 @@ class Irc(BotBase):
         if self.password:
             logging.debug('%s - sending password' % self.name)
             self._raw("PASS %s" % self.password)
-        logging.debug('%s - registering with %s using nick %s' % (self.name, self.server, self.nick))
-        logging.debug('%s - this may take a while' % self.name)
+        logging.warn('%s - registering with %s using nick %s' % (self.name, self.server, self.nick))
+        logging.warn('%s - this may take a while' % self.name)
         username = self.nick or 'jsonbot'
         realname = self.cfg['realname'] or username
         time.sleep(1)
@@ -479,29 +479,13 @@ class Irc(BotBase):
         logging.warn('%s - fakein - %s' % (self.name, txt))
         self.handle_ievent(IrcEvent().parse(self, txt))
 
-    def donick(self, nick, setorig=0, save=0, whois=0):
+    def donick(self, nick, setorig=False, save=False, whois=False):
         """ change nick .. optionally set original nick and/or save to config.  """
         if not nick: return
-        self.noauto433 = 1
-        queue = Queue.Queue()
+        self.noauto433 = True
         nick = nick[:16]
-        self.wait.register('NICK', self.nick[:16], queue, 12)
         self._raw('NICK %s\n' % nick)
-        result = waitforqueue(queue, 5)
         self.noauto433 = False
-        if not result:
-            return False
-        self.nick = nick
-        if whois: self.whois(nick)
-        if setorig:
-            self.orignick = nick
-            self.cfg.orignick = nick
-        if save:
-            self.state['nick'] = nick
-            self.state.save()
-            self.cfg.set('nick', nick)
-            self.cfg.save()
-        return True
 
     def join(self, channel, password=None):
         """ join channel with optional password. """
@@ -593,25 +577,22 @@ class Irc(BotBase):
     def quit(self, reason='http://jsonbot.googlecode.com'):
         """ send quit message. """
         logging.warn('%s - sending quit - %s' % (self.name, reason))
-        try:
-            self._raw('QUIT :%s' % reason)
-        except IOError:
-            pass
+        self._raw('QUIT :%s' % reason)
 
     def notice(self, printto, what):
         """ send notice. """
         if not printto or not what: return
-        self.send('NOTICE %s :%s' % (printto, what))
+        self.putonqueue(3, None, 'NOTICE %s :%s' % (printto, what))
  
     def ctcp(self, printto, what):
         """ send ctcp privmsg. """
         if not printto or not what: return
-        self.send("PRIVMSG %s :\001%s\001" % (printto, what))
+        self.putonqueue(3, None, "PRIVMSG %s :\001%s\001" % (printto, what))
 
     def ctcpreply(self, printto, what):
         """ send ctcp notice. """
         if not printto or not what: return
-        self.putonqueue(2, None, "NOTICE %s :\001%s\001" % (printto, what))
+        self.putonqueue(3, None, "NOTICE %s :\001%s\001" % (printto, what))
 
     def action(self, printto, what):
         """ do action. """

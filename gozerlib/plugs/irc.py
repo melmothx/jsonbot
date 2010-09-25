@@ -83,7 +83,7 @@ def handle_nick(bot, ievent):
         ievent.missing('<nickname>')
         return
     ievent.reply('changing nick to %s' % nick)
-    bot.donick(nick, setorig=1, save=1)
+    bot.donick(nick, setorig=True, save=True)
     ievent.done()
 
 cmnds.add('nick', handle_nick, 'OPER', threaded=True)

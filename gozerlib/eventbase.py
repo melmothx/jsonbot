@@ -78,7 +78,7 @@ class EventBase(LazyDict):
             elif self.userhost: self.chan = ChannelBase(self.userhost)
         if not self.user: self.nodispatch = True
         self.prepare(bot)
-        if self.txt: self.usercmnd = self.txt.split()[0]
+        #if self.txt: self.usercmnd = self.txt.split()[0]
         logging.warn("%s - bind - %s - %s" % (self.auth, self.chan.data.name, self.cbtype, ))
 
     def parse(self, event, *args, **kwargs):
@@ -111,9 +111,9 @@ class EventBase(LazyDict):
             txt = u"<b>" + txt + u"</b>"
         if self.silent:
             self.msg = True
-            self.bot.say(self.nick, txt, result, origin=origin or self.userhost, extend=extend, event=self, *args, **kwargs)
+            self.bot.say(self.nick, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         else:
-            self.bot.say(self.channel, txt, result, origin=origin or self.userhost, extend=extend, event=self, *args, **kwargs)
+            self.bot.say(self.channel, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self

@@ -12,6 +12,12 @@ from gozerlib.errors import NoSuchCommand
 ## basic logging
 
 import logging
+import copy
+
+## defines
+
+cpy = copy.deepcopy
+
 
 ## dispatch precondition
 
@@ -37,12 +43,13 @@ def dispatch(bot, event):
     try:
         execstr = event.iscmnd()
         if execstr:
-            event.usercmnd = execstr.split()[0]
-            event.txt = execstr
-            event.showexception = True
-            event.bind(bot)
-            event.makeargs()
-            result = bot.plugs.dispatch(bot, event)
+            e = cpy(event)
+            e.usercmnd = execstr.split()[0]
+            e.txt = execstr
+            e.showexception = True
+            e.bind(bot)
+            #event.makeargs()
+            result = bot.plugs.dispatch(bot, e)
         else:
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))
             result =  []

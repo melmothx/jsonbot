@@ -54,6 +54,9 @@ cpy = copy.deepcopy
 reconnectlock = threading.RLock()
 reconnectlocked = lockdec(reconnectlock)
 
+lock = thread.allocate_lock()
+locked = lockdec(lock)
+
 ## classes
 
 class BotBase(LazyDict):
@@ -221,6 +224,7 @@ class BotBase(LazyDict):
         self.status == "running"
         self.dostart(self.botname, self.type)
 
+    @locked
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
@@ -263,15 +267,13 @@ class BotBase(LazyDict):
     def exit(self):
         """ exit the bot. """ 
         logging.warn("%s - exit" % self.name)
+        self.quit()
         self.stopped = True   
         self.stopreadloop = True  
         self.connected = False
         self.put(None)
         self.tickqueue.put_nowait('go')
-        self.quit()
-        time.sleep(1)
         self.shutdown()
-        self.stopped = True
         self.save()
 
     def _raw(self, txt, *args, **kwargs):
@@ -286,7 +288,7 @@ class BotBase(LazyDict):
     def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
         logging.warn("%s - out - %s - %s (%s)" % (self.name, printto, txt, how))
         self.outnocb(printto, txt, how, event, *args, **kwargs)
-        self.outmonitor(origin or printto, printto, txt)
+        self.outmonitor(self.me, printto, txt)
 
     write = out
 
@@ -297,7 +299,7 @@ class BotBase(LazyDict):
 
     def say(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        if txt: self.out(channel, txt, event=event, *args, **kwargs)
+        if txt: self.out(channel, txt, how, event, *args, **kwargs)
         
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
@@ -474,7 +476,7 @@ class BotBase(LazyDict):
         e.cbtype = 'OUTPUT'
         e.botoutput = True
         e.ttl = 1
-        e.nick = self.nick or self.botname
+        #e.nick = self.nick or self.botname
         e.prepare()
         first_callbacks.check(self, e)
 
