@@ -76,7 +76,6 @@ class EventBase(LazyDict):
             if chan: self.chan = chan
             elif self.channel: self.chan = ChannelBase(self.channel)
             elif self.userhost: self.chan = ChannelBase(self.userhost)
-        logging.warn("%s - channel dump of %s - %s" % (self.name, self.chan.data.id, self.chan.data.tojson()))
         if not self.user: self.nodispatch = True
         self.prepare(bot)
         #if self.txt: self.usercmnd = self.txt.split()[0]
