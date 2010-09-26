@@ -312,7 +312,7 @@ class Users(Persist):
     def adduserhost(self, name, userhost):
         """ add userhost. """
         user = self.byname(name)
-        if not user: user = self.users[name] = User(name=name)
+        if not user: user = self.users[name] = JsonUser(name=name)
         user.data.userhosts.append(userhost)
         user.save()
         return 1

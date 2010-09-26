@@ -22,6 +22,7 @@ import os
 import logging
 import urlparse
 import urllib
+import warnings
 
 ## classes
 

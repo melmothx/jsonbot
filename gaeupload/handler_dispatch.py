@@ -75,9 +75,9 @@ class Dispatch_Handler(RequestHandler):
             event = WebEvent(bot=bot).parse(self.response, self.request)
             event.cbtype = "DISPATCH"
             event.type = "DISPATCH"
-            #event.finish()
             (userhost, user, u, nick) = checkuser(self.response, self.request, event)
             bot.gatekeeper.allow(userhost)
+            event.bind(bot)
             bot.doevent(event)
 
         except NoSuchCommand:

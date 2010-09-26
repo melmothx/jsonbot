@@ -79,9 +79,10 @@ class Commands(LazyDict):
         if mainconfig.auto_register: bot.users.addguest(id)
         #if event.usercmnd:
         #    logging.debug("setting user to %s" % id)
-        #    event.user = bot.users.getuser(id)
-        #    if event.user: event.userstate = UserState(event.user.data.name)
-        #    else: logging.debug("failed to set user %s" % id)
+        if not event.user:
+            event.user = bot.users.getuser(id)
+            if event.user: event.userstate = UserState(event.user.data.name)
+            else: logging.debug("failed to set user %s" % id)
         cmnd = event.usercmnd.lower()
         try:
             cmnd = event.chan.data.aliases[cmnd]

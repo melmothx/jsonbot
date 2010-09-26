@@ -41,7 +41,7 @@ class DocsHandler(webapp2.RequestHandler):
             self.redirect(goto)
         except Exception, ex:
             handle_exception()
-            self.send_error(500)
+            #self.send_error(500)
 
 application = webapp2.WSGIApplication([webapp2.Route(r'<url:.*>', DocsHandler)], 
                                       debug=True)

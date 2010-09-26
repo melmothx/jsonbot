@@ -72,14 +72,17 @@ class EventBase(LazyDict):
             if mainconfig.auto_register: 
                 bot.users.addguest(target)
             self.user = user or bot.users.getuser(target)
+        logging.warn("eventbase - binding user - %s" % str(self.user))
         if not self.chan:
             if chan: self.chan = chan
             elif self.channel: self.chan = ChannelBase(self.channel)
             elif self.userhost: self.chan = ChannelBase(self.userhost)
+        logging.warn("eventbase - binding channel - %s" % str(self.chan))
         if not self.user: self.nodispatch = True
         self.prepare(bot)
         #if self.txt: self.usercmnd = self.txt.split()[0]
         logging.warn("%s - bind - %s - %s" % (self.auth, self.chan.data.name, self.cbtype, ))
+        return self
 
     def parse(self, event, *args, **kwargs):
         """ overload this. """
