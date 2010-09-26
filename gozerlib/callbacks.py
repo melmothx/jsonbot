@@ -132,12 +132,12 @@ class Callbacks(object):
                 logging.debug("callback - event is done .. ignoring")
                 return
             if cb.prereq:
-                logging.debug('callbacks - excecuting in loop %s' % str(cb.prereq))
+                logging.debug('callbacks - executing in loop %s' % str(cb.prereq))
                 if not cb.prereq(bot, event): return
             if not cb.func: return
-            if event.isremote(): logging.warn('REMOTE - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
-            elif event.cbtype != "TICK": logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
-            else: logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
+            if event.isremote(): logging.info('REMOTE - executing %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
+            elif event.cbtype != "TICK": logging.info('callbacks - executing %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
+            else: logging.info('callbacks - executing %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             event.iscallback = True
             logging.debug("callback - trail - %s" % callstack(sys._getframe()))
             if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))

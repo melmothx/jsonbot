@@ -9,7 +9,7 @@
 import warnings
 warnings.simplefilter("ignore")
 
-import os, sys
+import os, sys, logging
 sys.path.insert(0, os.getcwd())
 
 from gozerlib.utils.generic import getversion

@@ -91,6 +91,7 @@ class Irc(BotBase):
         try:
             self.lastoutput = time.time()
             itxt = toenc(outputmorphs.do(txt), self.encoding)
+            logging.warn(u"%s - out - %s" % (self.name, itxt))             
             if self.cfg.has_key('ssl') and self.cfg['ssl']: self.sock.write(itxt + '\n')
             else: self.sock.send(itxt[:500] + '\n')
         except UnicodeEncodeError, ex:
@@ -317,7 +318,7 @@ class Irc(BotBase):
         except KeyError:
             pass
         try:
-            logging.warn("%s - resume - file descriptor is %s" % (self.name, data['fd']))
+            logging.info("%s - resume - file descriptor is %s" % (self.name, data['fd']))
             fd = int(data['fd'])
         except (TypeError, ValueError):
             fd = None
@@ -476,7 +477,7 @@ class Irc(BotBase):
     def fakein(self, txt):
         """ do a fake ircevent. """
         if not txt: return
-        logging.warn('%s - fakein - %s' % (self.name, txt))
+        logging.debug('%s - fakein - %s' % (self.name, txt))
         self.handle_ievent(IrcEvent().parse(self, txt))
 
     def donick(self, nick, setorig=False, save=False, whois=False):

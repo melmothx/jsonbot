@@ -50,8 +50,8 @@ class Plugins(LazyDict):
         for module in paths:
             try: imp = _import(module)
             except ImportError:
-                handle_exception()
-                logging.warn("plugins - no %s plugin package found" % module)
+                #handle_exception()
+                logging.info("plugins - no %s plugin package found" % module)
                 continue
             except Exception, ex: handle_exception()
             logging.debug("plugins - got plugin package %s" % module)
@@ -60,7 +60,7 @@ class Plugins(LazyDict):
                     try: self.reload("%s.%s" % (module,plug))
                     except KeyError: logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex: handle_exception()
-            except AttributeError: logging.warn("no plugins in %s .. define __plugs__ in __init__.py" % module)
+            except AttributeError: logging.error("no plugins in %s .. define __plugs__ in __init__.py" % module)
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
@@ -103,7 +103,7 @@ class Plugins(LazyDict):
         logging.debug("plugins - trying %s" % modname)
         try: mod = _import(modname)
         except ImportError, ex:
-            logging.warn("plugins - import error on %s - %s" % (modname, str(ex)))
+            logging.error("plugins - import error on %s - %s" % (modname, str(ex)))
             raise NoSuchPlugin(modname)
         try: self[modname] = mod
         except KeyError:
@@ -124,7 +124,7 @@ class Plugins(LazyDict):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname): self.unload(modname)
         try: return self.load(modname, force=force)
-        except ImportError, ex: logging.warn("plugiins - %s not found - %s" % (modname, str(ex)))
+        except ImportError, ex: logging.info("plugins - %s not found - %s" % (modname, str(ex)))
 
     def dispatch(self, bot, event, wait=0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
@@ -182,7 +182,7 @@ class Plugins(LazyDict):
         if plugin in self:
             logging.debug("plugins - %s already loaded" % plugin)
             return False
-        logging.warn("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
+        logging.info("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
         plugloaded = self.reload(plugin)
         return plugloaded
 

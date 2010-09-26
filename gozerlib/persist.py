@@ -99,7 +99,7 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
-            if not 'run' in self.fn: logging.warn("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
+            if not 'run' in self.fn: logging.debug("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
 
         def save(self):
             """ save json data to database. """
@@ -155,8 +155,8 @@ except ImportError:
                    data = datafile.read()
                    datafile.close()
                    set(self.fn, data)
-                   logging.info("persist - read %s (%s) *file*" % (self.fn, len(data)))
-                else: logging.info("persist - read %s (%s) *cache*" % (self.fn, len(data)))
+                   logging.debug("persist - read %s (%s) *file*" % (self.fn, len(data)))
+                else: logging.debug("persist - read %s (%s) *cache*" % (self.fn, len(data)))
             except IOError, ex:
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
@@ -174,7 +174,7 @@ except ImportError:
                     if 'gozerlib' in cfrom: 
                         cfrom = whichmodule(3)
                         if 'gozerlib' in cfrom: cfrom = whichmodule(4)
-                    if not 'run' in self.fn: logging.warn("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
+                    if not 'run' in self.fn: logging.info("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
             except Exception, ex:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
@@ -190,7 +190,7 @@ except ImportError:
                     dirr.append(p)
                     pp = os.sep.join(dirr)
                     if not os.path.isdir(pp):
-                        logging.info("persist - creating %s dir" % pp)
+                        logging.warn("persist - creating %s dir" % pp)
                         os.mkdir(pp)
                 tmp = self.fn + '.tmp' # tmp file to save to
                 try: datafile = open(tmp, 'w')

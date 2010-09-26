@@ -126,7 +126,7 @@ class WaveBot(BotBase, robot.Robot):
         else: logging.info("did not join channel %s" % event.id) ; return
         if not wavelet: logging.error("cant get wavelet") ; return
         txt = unicode(strippedtxt(txt.strip()))
-        logging.debug(u'wave - out - %s - %s' % (event.chan.data.title, txt))
+        logging.warn("%s - out - %s" % (self.name, txt))             
         try:
             annotations = []
             for url in txt.split():

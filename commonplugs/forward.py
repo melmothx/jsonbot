@@ -71,7 +71,7 @@ def forwardoutcb(bot, event):
     e.source = bot.jid
     e.botname = bot.server or bot.name
     for jid in forward.data.channels[event.channel.lower()]:
-        logging.warn("forward - sending to %s" % jid)
+        logging.info("forward - sending to %s" % jid)
         if jid == "twitter":
             try: postmsg(forward.data.outs[jid], e.txt)
             except Exception, ex: handle_exception()

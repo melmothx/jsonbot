@@ -42,6 +42,7 @@ class XMPPBot(BotBase):
         if not message_type: message_type = xmpp.MESSAGE_TYPE_CHAT
         if type(jids) != types.ListType: jids = [jids, ]
         txt = self.normalize(txt)
+        logging.warn(u"%s - out - %s" % (self.name, txt))             
         xmpp.send_message(jids, txt, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
     def invite(self, jid):

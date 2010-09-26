@@ -67,7 +67,7 @@ class BotBase(LazyDict):
         if not botname and cfg: botname = cfg.botname
         if botname: self.botname = botname
         else: self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
-        logging.warn("botbase - name is %s" % self.botname)
+        logging.debug("botbase - name is %s" % self.botname)
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
         if cfg: self.update(cfg)
         self.cfg = cfg or Config(self.fleetdir + os.sep + u'config')
@@ -83,10 +83,10 @@ class BotBase(LazyDict):
         try:
             import waveapi
             self.isgae = True
-            logging.info("botbase - bot is a GAE bot (%s)" % self.botname)
+            logging.debug("botbase - bot is a GAE bot (%s)" % self.botname)
         except ImportError:
             self.isgae = False
-            logging.info("botbase - bot is a shell bot (%s)" % self.botname)
+            logging.debug("botbase - bot is a shell bot (%s)" % self.botname)
         self.starttime = time.time()
         self.type = "base"
         self.status = "init"
@@ -100,7 +100,7 @@ class BotBase(LazyDict):
         self.name = self.botname
         self.owner = self.cfg.owner
         if not self.owner:
-            logging.info(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
+            logging.debug(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
             from config import cfg as mainconfig
             self.owner = mainconfig.owner
         self.setusers(usersin)
@@ -136,12 +136,12 @@ class BotBase(LazyDict):
 
     def _eventloop(self):
         """ fetch events from the inqueue and handle them. """
-        logging.warn("%s - eventloop started" % self.name)
+        logging.debug("%s - eventloop started" % self.name)
         while not self.stopped:
             event = self.inqueue.get()
             if not event: break
             self.doevent(event)
-        logging.warn("%s - eventloop stopped" % self.name)
+        logging.debug("%s - eventloop stopped" % self.name)
 
     def _getqueue(self):
         """ get one of the outqueues. """
@@ -203,7 +203,7 @@ class BotBase(LazyDict):
         time.sleep(mainconfig.waitforjoin or 5)
         for i in self.state['joinedchannels']:
             try:
-                logging.warn("%s - joining %s" % (self.name, i))
+                logging.debug("%s - joining %s" % (self.name, i))
                 channel = ChannelBase(i)
                 if channel: key = channel.getpass()
                 else: key=None
@@ -230,10 +230,9 @@ class BotBase(LazyDict):
         if not event: raise NoEventProvided()
         self.status = "callback"
         starttime = time.time()
-        msg = "botbase - handling %s - %s - %s" % (event.cbtype, event.auth, event.how)
+        msg = "%s - handling %s - %s - %s" % (self.nick, event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
-        logging.warn("=" * len(msg))
-        if event.cbtype != "PRESENCE": logging.warn("botbase - local - %s" % event.dump())
+        if event.cbtype != "PRESENCE": logging.warn("botbase - local - %s" % event.tojson())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
@@ -241,13 +240,11 @@ class BotBase(LazyDict):
             return
         self.reloadcheck(event)
         if event.isremote():
-            if event.cbtype != "PRESENCE": logging.warn("botbase - remote - %s" % event.dump())
-            logging.warn("botbase - event is REMOTE")
+            if event.cbtype != "PRESENCE": logging.warn("botbase - remote - %s" % event.tojson())
             e0 = cpy(event)
             e0.speed = 1
             remote_callbacks.check(self, e0)
             return
-        if event.cbtype != "PRESENCE": logging.warn("botbase - local - %s" % event.dump())
         if event.msg or event.isdcc: event.speed = 2
         e1 = cpy(event)
         e2 = cpy(event)
@@ -281,6 +278,7 @@ class BotBase(LazyDict):
 
     def _raw(self, txt, *args, **kwargs):
         """ override this. """ 
+        logging.warn(u"%s - out - %s" % (self.name, txt))
         print txt
 
     def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
@@ -289,7 +287,6 @@ class BotBase(LazyDict):
         return res1
 
     def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
-        logging.warn("%s - out - %s - %s (%s)" % (self.name, printto, txt, how))
         self.outnocb(printto, txt, how, event, *args, **kwargs)
         self.outmonitor(self.me, printto, txt)
 

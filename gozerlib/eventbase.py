@@ -61,7 +61,7 @@ class EventBase(LazyDict):
         self.origin = self.bot.user or self.bot.server
         self.origtxt = self.txt
         self.makeargs()
-        logging.warn("%s - prepared event - %s" % (self.cbtype, self.dump()))
+        logging.info("%s - prepared event - %s" % (self.cbtype, self.dump()))
 
     def bind(self, bot=None, user=None, chan=None):
         """ bind event.bot event.user and event.chan to execute a command on it. """
@@ -72,12 +72,12 @@ class EventBase(LazyDict):
             if mainconfig.auto_register: 
                 bot.users.addguest(target)
             self.user = user or bot.users.getuser(target)
-        logging.warn("eventbase - binding user - %s" % str(self.user))
+        logging.debug("eventbase - binding user - %s" % str(self.user))
         if not self.chan:
             if chan: self.chan = chan
             elif self.channel: self.chan = ChannelBase(self.channel)
             elif self.userhost: self.chan = ChannelBase(self.userhost)
-        logging.warn("eventbase - binding channel - %s" % str(self.chan))
+        logging.debug("eventbase - binding channel - %s" % str(self.chan))
         if not self.user: self.nodispatch = True
         self.prepare(bot)
         return self

@@ -80,7 +80,7 @@ class XMLStream(NodeBuilder):
 
     def handle_stream(self, data):
         """ default stream handler. """
-        logging.warn("%s - stream - %s" % (self.name, data.tojson()))
+        logging.info("%s - stream - %s" % (self.name, data.tojson()))
 
     def handle_streamerror(self, data):
         """ default stream error handler. """
@@ -165,7 +165,7 @@ class XMLStream(NodeBuilder):
                 return
             what = jabberstrip(stanza)
             what = toenc(stanza)
-            logging.debug("%s - incoming - %s" % (self.name, what))
+            logging.debug("%s - out - %s" % (self.name, what))             
             if not what.endswith('>') or not what.startswith('<'):
                 logging.error('%s - invalid stanza: %s' % (self.name, what))
                 return
