@@ -70,7 +70,6 @@ class WebEvent(EventBase):
         self.response = response
         self.request = request
         (userhost, user, u, nick) = checkuser(response, request, self)
-        #self.user = user
         self.userhost = fromenc(userhost)
         self.nick = fromenc(nick)
         self.auth = fromenc(userhost)

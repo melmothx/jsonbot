@@ -95,6 +95,11 @@ try:
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
             if gotcache: logging.debug('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
             else: logging.debug('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
+            cfrom = whichmodule(2)
+            if 'gozerlib' in cfrom: 
+                cfrom = whichmodule(3)
+                if 'gozerlib' in cfrom: cfrom = whichmodule(4)
+            if not 'run' in self.fn: logging.warn("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
 
         def save(self):
             """ save json data to database. """
