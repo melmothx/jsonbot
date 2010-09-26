@@ -232,6 +232,7 @@ class BotBase(LazyDict):
         starttime = time.time()
         msg = "botbase - handling %s - %s - %s" % (event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
+        logging.warn("=" * len(msg))
         if event.cbtype != "PRESENCE": logging.warn("botbase - local - %s" % event.dump())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return

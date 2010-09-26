@@ -80,8 +80,6 @@ class EventBase(LazyDict):
         logging.warn("eventbase - binding channel - %s" % str(self.chan))
         if not self.user: self.nodispatch = True
         self.prepare(bot)
-        #if self.txt: self.usercmnd = self.txt.split()[0]
-        logging.warn("%s - bind - %s - %s" % (self.auth, self.chan.data.name, self.cbtype, ))
         return self
 
     def parse(self, event, *args, **kwargs):
