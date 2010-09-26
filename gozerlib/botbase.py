@@ -232,7 +232,7 @@ class BotBase(LazyDict):
         starttime = time.time()
         msg = "botbase - handling %s - %s - %s" % (event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
-        if event.cbtype != "PRESENCE": logging.warn("botbase - incoming - %s" % event.dump())
+        if event.cbtype != "PRESENCE": logging.warn("botbase - local - %s" % event.dump())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
@@ -240,11 +240,13 @@ class BotBase(LazyDict):
             return
         self.reloadcheck(event)
         if event.isremote():
+            if event.cbtype != "PRESENCE": logging.warn("botbase - remote - %s" % event.dump())
             logging.warn("botbase - event is REMOTE")
             e0 = cpy(event)
             e0.speed = 1
             remote_callbacks.check(self, e0)
             return
+        if event.cbtype != "PRESENCE": logging.warn("botbase - local - %s" % event.dump())
         if event.msg or event.isdcc: event.speed = 2
         e1 = cpy(event)
         e2 = cpy(event)

@@ -93,7 +93,7 @@ def boot(force=False, encoding="utf-8", umask=None):
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
             plugs.reload(plug)
-    logging.info("boot - done")
+    logging.warn("boot - done")
 
 def savecmndtable():
     """ save command -> plugin list to db backend. """

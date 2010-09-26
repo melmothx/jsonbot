@@ -12,7 +12,7 @@
 
 from threads import getname, start_new_thread
 from utils.exception import handle_exception
-from utils.trace import calledfrom, whichplugin
+from utils.trace import calledfrom, whichplugin, callstack
 from utils.dol import Dol
 from runner import defaultrunner
 
@@ -139,6 +139,7 @@ class Callbacks(object):
             elif event.cbtype != "TICK": logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             else: logging.warn('callbacks - excecuting %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             event.iscallback = True
+            logging.debug("callback - trail - %s" % callstack(sys._getframe()))
             if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
             else:
                 if bot.isgae: cb.func(bot, event)

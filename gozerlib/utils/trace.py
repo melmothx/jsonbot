@@ -11,7 +11,7 @@ import os
 
 ## defines
 
-stopmarkers = ['gozerlib', 'commonplugs', 'waveplugs', 'socketplugs', 'waveapi', 'jsonbot', 'gozerdata']
+stopmarkers = ['gozerlib', 'commonplugs', 'waveplugs', 'socketplugs', 'waveapi', 'jsonbot', 'gozerdata', 'python2.5', 'python2.6']
 
 ## calledfrom function
 
@@ -40,7 +40,15 @@ def callstack(frame):
     while 1:
         try:
             filename = loopframe.f_back.f_code.co_filename
-            result.append("%s:%s" % '.'.join((filename[:-3].split(os.sep)), loopframe.f_back.f_lineno))
+            plugfile = filename.split(os.sep)
+            if plugfile:
+                mod = []
+                for i in plugfile[::-1]:
+                    mod.append(i)
+                    if i in stopmarkers: break
+                modstr = '.'.join(mod[::-1])[:-3]
+                if 'handler_' in modstr: modstr = modstr.split('.')[-1]
+            result.append("%s:%s" % (modstr, loopframe.f_back.f_lineno))
             loopframe = loopframe.f_back
         except: break
     del frame
