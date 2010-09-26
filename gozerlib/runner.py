@@ -10,6 +10,7 @@ from gozerlib.threads import getname, start_new_thread, start_bot_command
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import locked, lockdec
 from gozerlib.utils.lockmanager import rlockmanager, lockmanager
+from gozerlib.utils.trace import callstack
 from gozerlib.threadloop import RunnerLoop
 
 ## basic imports
@@ -19,6 +20,7 @@ import time
 import thread
 import random
 import logging
+import sys
 
 ## Runner class
 
