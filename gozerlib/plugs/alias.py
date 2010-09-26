@@ -23,7 +23,7 @@ import os
 
 def handle_aliassearch(bot, ievent):
     """ alias-search <what> .. search aliases. """
-    try: what = ievent.args[0]
+    try: what = ievent.rest
     except IndexError:
         ievent.missing('<what>')
         return

@@ -77,20 +77,22 @@ class Commands(LazyDict):
         if event.groupchat: id = event.auth = event.userhost
         else: id = event.auth
         if mainconfig.auto_register: bot.users.addguest(id)
-        if event.usercmnd:
-            logging.debug("setting user to %s" % id)
-            event.user = bot.users.getuser(id)
-            if event.user: event.userstate = UserState(event.user.data.name)
-            else: logging.debug("failed to set user %s" % id)
+        #if event.usercmnd:
+        #    logging.debug("setting user to %s" % id)
+        #    event.user = bot.users.getuser(id)
+        #    if event.user: event.userstate = UserState(event.user.data.name)
+        #    else: logging.debug("failed to set user %s" % id)
         cmnd = event.usercmnd.lower()
         try:
             cmnd = event.chan.data.aliases[cmnd]
-            event.usercmnd = cmnd
+            event.txt = event.chan.data.cc + cmnd +  ' ' + ' '.join(event.txt.split()[1:])
+            event.usercmnd = cmnd.split()[0]
+            event.prepare()
         except (TypeError, KeyError, AttributeError): pass
         target = bot.plugs
         if target: target.reloadcheck(bot, event)
         try:
-            c = self[cmnd]
+            c = self[event.usercmnd]
         except KeyError:
             if self.subs and self.subs.has_key(cmnd):
                 if len(self.subs[cmnd]) == 1: c = self.subs[cmnd][0]

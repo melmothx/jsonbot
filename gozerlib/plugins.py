@@ -73,15 +73,15 @@ class Plugins(LazyDict):
             return False
         except AttributeError: pass
         try: cmnds.unload(modname)
-        except KeyError: return False
+        except KeyError: pass
         try: first_callbacks.unload(modname)
-        except KeyError: return False
+        except KeyError: pass
         try: callbacks.unload(modname)
-        except KeyError: return False
-        try:last_callbacks.unload(modname)
-        except KeyError: return False
+        except KeyError: pass
+        try: last_callbacks.unload(modname)
+        except KeyError: pass
         try: remote_callbacks.unload(modname)
-        except KeyError: return False
+        except KeyError: pass
         return True
 
     def load(self, modname, force=False):
