@@ -4,6 +4,8 @@
 
 """ container for bot to bot communication. """
 
+__version__ = "1"
+
 ## gozerlib imports
 
 from gozerlib.gozerevent import GozerEvent
