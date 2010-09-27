@@ -99,7 +99,7 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
-            if not 'run' in self.fn: logging.debug("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
+            if not 'run' in self.fn: logging.warn("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
 
         def save(self):
             """ save json data to database. """
@@ -162,6 +162,7 @@ except ImportError:
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
                     raise
                 else:
+                    logging.debug("persist - %s doesn't exist yet" % self.fn)
                     return
 
             try:
@@ -170,11 +171,11 @@ except ImportError:
                     d = LazyDict()
                     d.update(self.data)
                     self.data = d
-                    cfrom = whichmodule(2)
-                    if 'gozerlib' in cfrom: 
-                        cfrom = whichmodule(3)
-                        if 'gozerlib' in cfrom: cfrom = whichmodule(4)
-                    if not 'run' in self.fn: logging.info("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
+                cfrom = whichmodule(2)
+                if 'gozerlib' in cfrom: 
+                    cfrom = whichmodule(3)
+                    if 'gozerlib' in cfrom: cfrom = whichmodule(4)
+                if not 'run' in self.fn: logging.info("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
             except Exception, ex:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise

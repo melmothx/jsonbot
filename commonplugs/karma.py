@@ -60,6 +60,7 @@ def karmacb(bot, event):
         if reason and reason not in i.data.whyup: i.data.whydown.append(reason)
         i.save()
     got = item or item2
+    event.bind(bot)
     event.reply("karma of %s is now %s" % (got, i.data.count))
 
 callbacks.add('PRIVMSG', karmacb, prekarma)

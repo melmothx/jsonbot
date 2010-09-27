@@ -17,20 +17,13 @@ from gozerlib.errors import NoChannelProvided, NoChannelSet
 
 import time
 import os
+import logging
 
 ## classes
 
 class ChannelBase(Persist):
 
-    """
-        Base class for all channel objects. 
-
-        :param id: id of the channel
-        :type id: string
-        :param type: type of channel
-        :type type: string
-
-    """
+    """ Base class for all channel objects. """
 
     def __init__(self, id, type="notset"):
         if not id: raise NoChannelSet()
@@ -48,6 +41,7 @@ class ChannelBase(Persist):
         self.data.key = self.data.key or ""
         self.data.createdfrom = whichmodule()
         self.data.cacheindex = 0
+        logging.warn("channelbase - created channel %s" % id)
 
     def setpass(self, type, key):
         """ set channel password based on type. """
