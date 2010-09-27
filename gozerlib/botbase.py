@@ -224,13 +224,32 @@ class BotBase(LazyDict):
         self.status == "running"
         self.dostart(self.botname, self.type)
 
-    @locked
-    def doevent(self, event):
+    def doremote(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         self.status = "callback"
         starttime = time.time()
-        msg = "%s - handling %s - %s - %s" % (self.nick, event.cbtype, event.auth, event.how)
+        msg = "REMOTE - %s - handling %s - %s - %s" % (self.nick, event.cbtype, event.auth, event.how)
+        logging.warn(msg.upper())
+        logging.warn("botbase - remote - %s" % event.tojson())
+        if self.closed:
+            if self.gatekeeper.isblocked(event.origin): return
+        if event.status == "done":
+            logging.debug("%s - event is done .. ignoring" % self.name)
+            return
+        self.reloadcheck(event)
+        e0 = cpy(event)
+        e0.speed = 1
+        remote_callbacks.check(self, e0)
+        return
+
+    def doevent(self, event):
+        """ dispatch an event. """
+        if not event: raise NoEventProvided()
+        if event.isremote(): self.doremote(event) ; return
+        self.status = "callback"
+        starttime = time.time()
+        msg = "LOCAL - %s - handling %s - %s - %s" % (self.nick, event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
         if event.cbtype == "PRIVMSG": logging.warn("botbase - local - %s" % event.tojson())
         else: logging.info("botbase - local - %s" % event.tojson())
@@ -240,12 +259,6 @@ class BotBase(LazyDict):
             logging.debug("%s - event is done .. ignoring" % self.name)
             return
         self.reloadcheck(event)
-        if event.isremote():
-            if event.cbtype != "PRESENCE": logging.warn("botbase - remote - %s" % event.tojson())
-            e0 = cpy(event)
-            e0.speed = 1
-            remote_callbacks.check(self, e0)
-            return
         if event.msg or event.isdcc: event.speed = 2
         e1 = cpy(event)
         e2 = cpy(event)
