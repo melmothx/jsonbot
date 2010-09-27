@@ -39,6 +39,7 @@ class ChannelBase(Persist):
         self.data.cc = self.data.cc or "!"
         self.data.nick = self.data.nick or "jsonbot"
         self.data.key = self.data.key or ""
+        self.data.denyplug = self.data.denyplug or []
         self.data.createdfrom = whichmodule()
         self.data.cacheindex = 0
         logging.warn("channelbase - created channel %s" % id)

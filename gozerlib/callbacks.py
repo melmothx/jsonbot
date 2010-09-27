@@ -131,6 +131,9 @@ class Callbacks(object):
             if event.status == "done":
                 logging.debug("callback - event is done .. ignoring")
                 return
+            if event.chan and cb.plugname in event.chan.data.denyplug:
+                logging.warn("%s denied in %s - %s" % (cb.modname, event.channel, event.auth))
+                return
             if cb.prereq:
                 logging.debug('callbacks - executing in loop %s' % str(cb.prereq))
                 if not cb.prereq(bot, event): return

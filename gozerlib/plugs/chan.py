@@ -178,3 +178,28 @@ def modecb(bot, ievent):
 
 callbacks.add('MODE', modecb)
 
+## chan-denyplug command
+
+def handle_chandenyplug(bot, event):
+    if not event.rest: event.missing("<module name>") ; return
+    if not event.rest in event.chan.data.denyplug:
+        event.chan.data.denyplug.append(event.rest)
+        event.chan.save()
+        event.done()
+    else: event.reply("%s is already being denied in channel %s" % (event.rest, event.channel))
+
+cmnds.add("chan-denyplug", handle_chandenyplug, 'OPER')
+examples.add("chan-denyplug", "deny a plugin command or callbacks to be executed in a channel", "chan-denyplug idle")
+
+## chan-allowplug command
+
+def handle_chanallowplug(bot, event):
+    if not event.rest: event.missing("<module name>") ; return
+    if event.rest in event.chan.data.denyplug:
+        event.chan.data.denyplug.remove(event.rest)
+        event.chan.save()
+        event.done()
+    else: event.reply("%s is already being allowed in channel %s" % (event.rest, event.channel))
+
+cmnds.add("chan-allowplug", handle_chanallowplug, 'OPER')
+examples.add("chan-allowplug", "allow a plugin command or callbacks to be executed in a channel", "chan-denyplug idle")

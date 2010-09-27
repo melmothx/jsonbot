@@ -90,6 +90,7 @@ class Commands(LazyDict):
             event.usercmnd = cmnd.split()[0]
             event.prepare()
         except (TypeError, KeyError, AttributeError): pass
+        
         target = bot.plugs
         if target: target.reloadcheck(bot, event)
         try:
@@ -112,6 +113,9 @@ class Commands(LazyDict):
 
     def doit(self, bot, event, target, wait=0):
         """ do the dispatching. """
+        if target.plugname in event.chan.data.denyplug:
+             logging.warn("commands - %s is denied in channel %s - %s" % (target.plugname, event.channel, event.userhost))
+             return
         id = event.auth or event.userhost
         event.iscmnd = True
         logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))
