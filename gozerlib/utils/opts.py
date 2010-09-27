@@ -63,7 +63,6 @@ def makeconfig(type, opts, botname=None):
         try: cfg.host = cfg.user.split('@')[1]
         except ValueError: print "user is not in the nick@server format"
     if opts.password: cfg.password = opts.password
-    else: cfg.password = cfg.password or str(uuid.uuid4())
     if opts.ssl: cfg.ssl = True
     if opts.nossl: cfg.ssl = False
     if opts.port: cfg.port = opts.port
