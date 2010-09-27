@@ -330,7 +330,7 @@ class IRCBot(Irc):
                 i.bot = self
                 i.sock = self.sock
                 ievent.nocb = True
-                callbacks.check(self, i)
+                self.doevent(i)
         except:
             handle_exception()
  
@@ -346,6 +346,7 @@ class IRCBot(Irc):
         except IndexError:
             chan = ievent.channel
             self.getchannelmode(chan)
+            if not ievent.chan: ievent.bind(self)
             ievent.chan.mode = ievent.arguments[1]
             ievent.chan.save()
 
@@ -379,6 +380,7 @@ class IRCBot(Irc):
 
     def handle_324(self, ievent):
         """ handle mode request responses. """
+        if not ievent.chan: ievent.bind(self)
         ievent.chan.mode = ievent.arguments[2]
         ievent.chan.save()
 
