@@ -69,6 +69,7 @@ def prelearn(bot, event):
     return False
 
 def learncb(bot, event):
+    event.bind(bot)
     items = PlugPersist(event.channel)
     target = event.usercmnd[1:].lower()
     if target in items.data: event.reply("%s is " % target, items.data[target], dot=", ")

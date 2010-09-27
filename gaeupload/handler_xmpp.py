@@ -76,7 +76,7 @@ class XMPPHandler(webapp.RequestHandler):
 
         except Exception, ex:
             handle_exception()
-            self.send_error(500)
+            #self.send_error(500)
 
 application = webapp.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler), ],
                                       debug=True)
