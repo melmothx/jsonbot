@@ -30,7 +30,6 @@ def uploadlist(dir):
             continue
         d = dir + os.sep + file
         if os.path.isdir(d):
-            #upload.append(dir + os.sep + file)
             upl.extend(uploadlist(d))
         else:
             if file.endswith(".pyc"):
@@ -43,7 +42,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.4b1',
+    version='0.4',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
@@ -83,10 +82,10 @@ setup(
               'socketplugs', 
               'gaeplugs'],
     package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs']},
-    long_description = """ JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. """,
+    long_description = """ JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. IRC/Console/XMPP (shell) Wave/Web/XMPP (GAE) implementations provided. """,
     install_requires = ['simplejson>1.0'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Environment :: Other Environment',
         'Intended Audience :: Developers',
