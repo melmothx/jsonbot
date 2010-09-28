@@ -231,7 +231,7 @@ class BotBase(LazyDict):
         starttime = time.time()
         msg = "REMOTE - %s - handling %s - %s - %s" % (self.nick, event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
-        logging.warn("botbase - remote - %s" % event.tojson())
+        logging.warn("botbase - remote - %s" % event.dump())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
@@ -251,7 +251,7 @@ class BotBase(LazyDict):
         starttime = time.time()
         msg = "LOCAL - %s - handling %s - %s - %s" % (self.nick, event.cbtype, event.auth, event.how)
         logging.warn(msg.upper())
-        if event.cbtype == "PRIVMSG": logging.warn("botbase - local - %s" % event.tojson())
+        if event.cbtype == "PRIVMSG": logging.warn("botbase - local - %s" % event.dump())
         else: logging.info("botbase - local - %s" % event.tojson())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
