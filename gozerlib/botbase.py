@@ -464,14 +464,14 @@ class BotBase(LazyDict):
         e.ruserhost = self.botname +'@' + self.uuid
         e.userhost = e.ruserhost
         e.channel = botname
-        e.origtxt = time.time()
+        e.origtxt = str(time.time())
         e.txt = e.origtxt
         e.cbtype = 'START'
         e.botoutput = False
         e.ttl = 1
         e.nick = self.nick or self.botname
-        callbacks.check(self, e)
-        logging.debug("botbase - START event (%s) send to callbacks" % botname)
+        self.doevent(e)
+        logging.warn("%s - START event send to callbacks" % botname)
 
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """

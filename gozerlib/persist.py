@@ -202,7 +202,7 @@ except ImportError:
                 datafile.close()
                 try: os.rename(tmp, self.fn)
                 except OSError:
-                    handle_exception()
+                    #handle_exception()
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
                 set(self.fn, data)

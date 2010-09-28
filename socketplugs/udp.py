@@ -39,6 +39,7 @@ from gozerlib.socklib.partyline import partyline
 from gozerlib.threads import start_new_thread
 from gozerlib.contrib.rijndael import rijndael
 from gozerlib.persistconfig import PersistConfig
+from gozerlib.callbacks import first_callbacks
 
 ## basic imports
 
@@ -273,3 +274,7 @@ def shutdown():
         udplistener.queue.put_nowait((None, None))
     return 1
 
+def onSTART(bot, event):
+    pass
+
+first_callbacks.add("START", onSTART)
