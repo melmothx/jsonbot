@@ -235,7 +235,10 @@ sleeptime=15*60, running=0):
 
     def shouldpoll(self, curtime):
         """ check whether a new poll is needed. """
-        if curtime - lastpoll.data[self.data.name] > self.data.sleeptime: return True
+        try: lp = lastpoll.data[self.data.name]
+        except: lp = lastpoll.data[self.data.name] = time.time()
+        logging.warn("rss - pollcheck - %s - %s" % (self.data.name, time.ctime(lp)))
+        if curtime - lp > self.data.sleeptime: return True
 
 class Rssdict(PlugPersist):
 
@@ -675,7 +678,7 @@ def dosync(feedname):
 def doperiodical(*args, **kwargs):
     """ rss periodical function. """
     curtime = time.time()
-    for feed in lastpoll.data:
+    for feed in watcher.data.names:
         if not watcher.shouldpoll(feed, curtime): continue
         lastpoll.data[feed] = curtime
         lastpoll.save()
