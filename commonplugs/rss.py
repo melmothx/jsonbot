@@ -115,6 +115,11 @@ class RssBozoException(RssException):
 class RssNoSuchItem(RssException):
     pass
 
+## defines
+
+lastpoll = PlugPersist('lastpoll')
+if not lastpoll.data: lastpoll.data = LazyDict() ; lastpoll.save()
+
 ## Rssitem class
 
 class Rssitem(Persist):
@@ -135,7 +140,6 @@ sleeptime=15*60, running=0):
             self.data['watchchannels'] = self.data.watchchannels or list(watchchannels)
             self.data['sleeptime'] = self.data.sleeptime or int(sleeptime)
             self.data['running'] = self.data.running or running
-            self.data['lastpoll'] = self.data.lastpoll or 0
             self.itemslists = Pdol(filebase + '-itemslists')
             self.markup = Pdod(filebase + '-markup')
             self.lastpeek = Persist(filebase + '-lastpeek')
@@ -231,10 +235,7 @@ sleeptime=15*60, running=0):
 
     def shouldpoll(self, curtime):
         """ check whether a new poll is needed. """
-        if curtime - self.data.lastpoll > self.data.sleeptime:
-            self.data.lastpoll = curtime
-            self.save(True)
-            return True
+        if curtime - lastpoll.data[self.data.name] > self.data.sleeptime: return True
 
 class Rssdict(PlugPersist):
 
@@ -673,10 +674,11 @@ def dosync(feedname):
 
 def doperiodical(*args, **kwargs):
     """ rss periodical function. """
-    names = watcher.data['names']
     curtime = time.time()
-    for feed in names:
+    for feed in lastpoll.data:
         if not watcher.shouldpoll(feed, curtime): continue
+        lastpoll.data[feed] = curtime
+        lastpoll.save()
         logging.debug("rss - periodical - launching %s" % feed)
         try:
             from google.appengine.ext.deferred import defer

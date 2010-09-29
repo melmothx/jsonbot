@@ -18,6 +18,7 @@ from gozerlib.utils.timeutils import hourmin
 from gozerlib.examples import examples
 from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
+from gozerlib.utils.lazydict import LazyDict
 
 ## basic imports
 
@@ -159,7 +160,7 @@ backends['file'] = file_write
 
 ## log function
 
-def log(bot, ievent):
+def formatevent(bot, ievent):
     m = {
         'datetime': datetime.now(),
         'separator': format_opt('separator'),
@@ -168,8 +169,9 @@ def log(bot, ievent):
         'nick': ievent.nick,
         'target': ievent.channel,
     }
+    m = LazyDict(m)
 
-    if ievent.type == "OUTPUT":
+    if ievent.cbtype == "OUTPUT":
         m.update({
             'type': 'output',
             'txt': ievent.txt
@@ -183,7 +185,7 @@ def log(bot, ievent):
         else:
             m.update({
                 'type': 'comment',
-                'txt': '%s'%(ievent.origtxt),
+                'txt': '%s'%(ievent.txt),
             })
     elif ievent.cmnd == 'NOTICE':
         m.update({
@@ -260,11 +262,16 @@ def log(bot, ievent):
                     'type': 'join',
                     'txt': "%s joined"%ievent.nick
                 })
-    elif ievent.cmnd == 'BLIP_SUBMITTED':
+    elif ievent.cbtype == 'BLIP_SUBMITTED':
             m.update({
                 'type': 'blip',
                 'txt': ievent.txt.strip(),
             })
+
+    return m
+
+def log(bot, event):
+    m = formatevent(bot, event)
     if m.get('txt'):
         write(m)
 

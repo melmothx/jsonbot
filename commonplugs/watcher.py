@@ -15,6 +15,10 @@ from gozerlib.examples import examples
 from gozerlib.gae.wave.waves import Wave
 from gozerlib.utils.locking import locked
 
+## plugin imports
+
+from commonplugs.chatlog import formatevent
+
 ## basic imports
 
 import copy
@@ -143,20 +147,14 @@ def watchcallback(bot, event):
         try:
             (botname, type, channel) = item
         except ValueError: continue
-        if not event.nick: orig = event.stripped or event.userhost
-        else: orig = event.nick
-        if orig == bot.nick: txt = u"[!] %s" % event.txt
-        else: txt = u"[%s] %s" % (orig, event.txt)
-        if txt.count('] [') > 2:
-            logging.debug("watcher - %s - skipping %s" % (type, txt))
-            continue
-
+        m = formatevent(bot, event)
+        if m.nick == bot.nick or event.cbtype != 'PRIVMSG': txt = u"[!] %s" % m.txt
+        else: txt = u"[%s] %s" % (m.nick, m.txt)
+        if txt.count('] [') > 2: logging.debug("watcher - %s - skipping %s" % (type, txt)) ; continue
         if bot.isgae:
             from google.appengine.ext.deferred import defer
             defer(writeout, botname, type, channel, txt)
-        else:
-            writeout(botname, type, channel, txt)
-
+        else: writeout(botname, type, channel, txt)
 
 first_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
 first_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
