@@ -98,8 +98,7 @@ class Plugins(LazyDict):
                 logging.debug('plugins - %s init called' % modname)
                 logging.info("%s reloaded - with init" % modname)
                 return self[modname]
-            except Exception, ex:
-                handle_exception()
+            except Exception, ex: raise
         logging.debug("plugins - trying %s" % modname)
         try: mod = _import(modname)
         except ImportError, ex:
@@ -116,7 +115,7 @@ class Plugins(LazyDict):
         try:
             init()
             logging.debug('plugins - %s init called' % modname)
-        except Exception, ex: handle_exception()
+        except Exception, ex: raise
         logging.info("%s loaded - with init" % modname)
         return self[modname]
 

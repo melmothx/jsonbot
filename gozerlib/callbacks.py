@@ -140,7 +140,7 @@ class Callbacks(object):
             if not cb.func: return
             if event.isremote(): logging.info('REMOTE - executing %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             elif event.cbtype != "TICK": logging.info('callbacks - executing %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
-            else: logging.info('callbacks - executing %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
+            else: logging.info('LOCAL - executing %s - %s' % (getname(cb.func), event.auth or event.userhost or event.cbtype))
             event.iscallback = True
             logging.debug("callback - trail - %s" % callstack(sys._getframe()))
             if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
