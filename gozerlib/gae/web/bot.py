@@ -32,11 +32,11 @@ class WebBot(BotBase):
     def _raw(self, txt, response=None, end=u"<br>"):
         """  put txt to the client. """
         if not txt or not response: return 
-        logging.warn("%s - out - %s" % (self.name, txt))             
         response.out.write(toenc(txt + end))
 
     def outnocb(self, channel, txt, how="msg", event=None, origin=None, response=None, *args, **kwargs):
         txt = self.normalize(txt)
+        if event and not event.how == "background": logging.warn("%s - out - %s" % (self.name, txt))             
         if not response or how == 'cache': add(channel, [txt, ])
         else:
             if "http://" in txt:

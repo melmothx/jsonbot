@@ -87,12 +87,10 @@ class LazyDict(dict):
         for item, value in cp.iteritems(): res += "%r=%r " % (item, value)
         return res
 
-    @locked
     def tojson(self, withtypes=False):
         """ dump the lazydict object to json. """
         return dumps(dumpelement(self, withtypes))
 
-    @locked
     def dump(self, withtypes=False):
         """ just dunp the lazydict object. DON'T convert to json. """
         logging.debug("lazydict - dumping - %s" %  type(self))

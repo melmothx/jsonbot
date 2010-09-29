@@ -63,7 +63,7 @@ class CBURLopener(urllib.FancyURLopener):
 def geturl(url, version=None):
     """ fetch an url. """
     urllib._urlopener = CBURLopener(version)
-    logging.info('fetching %s' % url)
+    logging.warn('fetching %s' % url)
     result = urllib.urlopen(url)
     tmp = result.read()
     result.close()
@@ -73,7 +73,7 @@ def geturl(url, version=None):
 
 def geturl2(url, decode=False):
     """ use urllib2 to fetch an url. """
-    logging.info('fetching %s' % url)
+    logging.warn('fetching %s' % url)
     request = urllib2.Request(url)
     request.add_header('User-Agent', useragent())
     opener = urllib2.build_opener()
@@ -104,7 +104,7 @@ def geturl4(url, myheaders={}, postdata={}, keyfile="", certfile="", port=80):
     elif 'https' in urlparts[0]: connection = httplib.HTTPSConnection(host, port)
     else: connection = httplib.HTTPConnection(host, port)
     if type(postdata) == types.DictType: postdata = urllib.urlencode(postdata)
-    logging.info('fetching %s' % url)
+    logging.warn('fetching %s' % url)
     connection.request('GET', urlparts[2])
     return connection.getresponse()
 
@@ -119,7 +119,7 @@ def posturl(url, myheaders, postdata, keyfile=None, certfile="",port=80):
     if keyfile: connection = httplib.HTTPSConnection(urlparts[1], port, keyfile, certfile)
     else: connection = httplib.HTTPConnection(urlparts[1])
     if type(postdata) == types.DictType: postdata = urllib.urlencode(postdata)
-    logging.info('fetching %s' % url)
+    logging.warn('fetching %s' % url)
     connection.request('POST', urlparts[2], postdata, headers)
     return connection.getresponse()
 
@@ -133,7 +133,7 @@ def deleteurl(url, myheaders={}, postdata={}, keyfile="", certfile="", port=80):
     if keyfile and certfile: connection = httplib.HTTPSConnection(urlparts[1], port, keyfile, certfile)
     else: connection = httplib.HTTPConnection(urlparts[1])
     if type(postdata) == types.DictType: postdata = urllib.urlencode(postdata)
-    logging.info('fetching %s' % url)
+    logging.warn('fetching %s' % url)
     connection.request('DELETE', urlparts[2], postdata, headers)
     return connection.getresponse()
 
@@ -147,7 +147,7 @@ def puturl(url, myheaders={}, postdata={}, keyfile="", certfile="", port=80):
     if keyfile: connection = httplib.HTTPSConnection(urlparts[1], port, keyfile, certfile)
     else: connection = httplib.HTTPConnection(urlparts[1])
     if type(postdata) == types.DictType: postdata = urllib.urlencode(postdata)
-    logging.info('fetching %s' % url)
+    logging.warn('fetching %s' % url)
     connection.request('PUT', urlparts[2], postdata, headers)
     return connection.getresponse()
 

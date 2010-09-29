@@ -141,7 +141,6 @@ sleeptime=15*60, running=0):
             self.data['owner'] = self.data.owner or str(owner)
             self.data['result'] = []
             self.data['watchchannels'] = self.data.watchchannels or list(watchchannels)
-            self.data['sleeptime'] = self.data.sleeptime or int(sleeptime)
             self.data['running'] = self.data.running or running
             self.itemslists = Pdol(filebase + '-itemslists')
             self.markup = Pdod(filebase + '-markup')
@@ -180,7 +179,7 @@ sleeptime=15*60, running=0):
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
         try:
             status = result.status
-            logging.debug("rss - status is %s" % status)
+            logging.warn("rss - status is %s" % status)
         except AttributeError: status = 200
         if status != 200 and status != 301 and status != 302: raise RssStatus(status)
         return result.entries
@@ -188,9 +187,9 @@ sleeptime=15*60, running=0):
     def sync(self):
         """ refresh cached data of a feed. """
         if not self.data.running:
-            logging.debug("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
+            logging.warn("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
             return False
-        logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
+        logging.warn("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
         set(self.data.url, result, namespace='rss')
         return True
@@ -243,13 +242,14 @@ class Rssdict(PlugPersist):
 
     def __init__(self, filename, feedname=None):
         self.sleepsec = 900
-        self.feeds = {}
+        self.feeds = LazyDict()
         PlugPersist.__init__(self, filename)
         if not self.data:
-            self.data = {}
+            self.data = Lazydict()
             self.data['names'] = []
             self.data['urls'] = {}
         else:
+            self.data = LazyDict(self.data)
             if not self.data.has_key('names'): self.data['names'] = []
             if not self.data.has_key('urls'): self.data['urls'] = {}
             if not feedname: pass
@@ -322,6 +322,10 @@ class Rssdict(PlugPersist):
             rssitem.data.running = 1
             rssitem.data.stoprunning = 0
             rssitem.save()
+        lastpoll.data[name] = time.time()
+        lastpoll.save()
+        sleeptime.data[name] = 900
+        sleeptime.save()
         logging.warn('rss - started %s rss watch' % name)
 
 class Rsswatcher(Rssdict):
@@ -413,7 +417,8 @@ class Rsswatcher(Rssdict):
 
     def changeinterval(self, name, interval):
         """ not implemented yet. """
-        pass
+        sleeptime.data[name] = interval
+        sleeptime.save()
 
     def stopwatchers(self):
         """ stop all watcher threads. """
@@ -662,13 +667,18 @@ watcher = Rsswatcher('rss')
 assert(watcher)
 
 ## dosync function
+def dummycb(bot, event): pass
+
+callbacks.add('START', dummycb)
+
 
 def dosync(feedname):
     """ main level function to be deferred by periodical. """
     try:
+       logging.warn("rss - doing sync of %s" % feedname)
        localwatcher = Rsswatcher('rss', feedname)
        if localwatcher.sync(feedname): localwatcher.peek(feedname)
-    except RssException, ex: logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
+    except RssException, ex: logging.error("rss - %s - error: %s" % (feedname, str(ex)))
 
 
 ## shouldpoll function
@@ -676,10 +686,10 @@ def dosync(feedname):
 def shouldpoll(name, curtime):
     """ check whether a new poll is needed. """
     try: lp = lastpoll.data[name]
-    except KeyError: lp = lastpoll.data[name] = time.time()
+    except KeyError: lp = lastpoll.data[name] = time.time() ; lastpoll.save()
     try: st = sleeptime.data[name]
-    except KeyError: st = sleeptime.data[name] = 900
-    logging.warn("rss - pollcheck - %s - %s" % (name, time.ctime(lp)))
+    except KeyError: st = sleeptime.data[name] = 900 ; sleeptime.save()
+    logging.warn("rss - pollcheck - %s - %s - remaining %s" % (name, time.ctime(lp), (lp + st) - curtime))
     if curtime - lp > st: return True
 
 
@@ -826,7 +836,7 @@ def handle_rsswatch(bot, ievent):
     if rssitem == None: ievent.reply("we don't have a %s rss object" % name) ; return
     got = None
     if not rssitem.data.running or rssitem.data.stoprunning:
-        if not rssitem.data.sleeptime: rssitem.data.sleeptime = sleepsec
+        if not sleeptime.data.has_key(name): sleeptime.data[name] = sleepsec ; sleeptime.save()
         rssitem.data.running = 1
         rssitem.data.stoprunning = 0
         got = True
@@ -1098,11 +1108,8 @@ def handle_rsssleeptime(bot, ievent):
     """ get sleeptime of rss item. """
     try: name = ievent.args[0]
     except IndexError: ievent.missing('<name>') ; return
-    if not watcher.ownercheck(name, ievent.userhost): ievent.reply("you are not the owner of the %s feed" % name) ; return
-    rssitem = watcher.byname(name)
-    if rssitem == None: ievent.reply("we don't have a %s rss item" % name) ; return
-    try: ievent.reply('sleeptime for %s is %s seconds' % (name, str(rssitem.data.sleeptime)))
-    except AttributeError: ievent.reply("can't get sleeptime for %s" % name)
+    try: ievent.reply('sleeptime for %s is %s seconds' % (name, str(sleeptime.data[name])))
+    except KeyError: ievent.reply("can't get sleeptime for %s" % name)
 
 cmnds.add('rss-sleeptime', handle_rsssleeptime, 'USER')
 examples.add('rss-sleeptime', 'rss-sleeptime <name> .. get sleeping time \
@@ -1122,7 +1129,6 @@ def handle_rsssetsleeptime(bot, ievent):
     if rssitem.data.running:
         try: watcher.changeinterval(name, sec)
         except KeyError, ex: ievent.reply("failed to set interval: %s" % str(ex)) ; return
-    watcher.save(name)
     ievent.reply('sleeptime set')
 
 cmnds.add('rss-setsleeptime', handle_rsssetsleeptime, ['USER', ])
