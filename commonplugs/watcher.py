@@ -149,7 +149,7 @@ def watchcallback(bot, event):
         except ValueError: continue
         m = formatevent(bot, event)
         if m.nick == bot.nick or event.cbtype != 'PRIVMSG': txt = u"[!] %s" % m.txt
-        else: txt = u"[%s] %s" % (m.nick, m.txt)
+        else: txt = u"[%s] %s" % (m.nick or event.nick, m.txt)
         if txt.count('] [') > 2: logging.debug("watcher - %s - skipping %s" % (type, txt)) ; continue
         if bot.isgae:
             from google.appengine.ext.deferred import defer

@@ -120,6 +120,9 @@ class RssNoSuchItem(RssException):
 lastpoll = PlugPersist('lastpoll')
 if not lastpoll.data: lastpoll.data = LazyDict() ; lastpoll.save()
 
+sleeptime = PlugPersist('sleeptime')
+if not sleeptime.data: sleeptime.data = LazyDict() ; sleeptime.save()
+
 ## Rssitem class
 
 class Rssitem(Persist):
@@ -233,12 +236,6 @@ sleeptime=15*60, running=0):
             if i and search in i: res.append(i)
         return res
 
-    def shouldpoll(self, curtime):
-        """ check whether a new poll is needed. """
-        try: lp = lastpoll.data[self.data.name]
-        except: lp = lastpoll.data[self.data.name] = time.time()
-        logging.warn("rss - pollcheck - %s - %s" % (self.data.name, time.ctime(lp)))
-        if curtime - lp > self.data.sleeptime: return True
 
 class Rssdict(PlugPersist):
 
@@ -673,13 +670,27 @@ def dosync(feedname):
        if localwatcher.sync(feedname): localwatcher.peek(feedname)
     except RssException, ex: logging.warn("rss - %s - error: %s" % (feedname, str(ex)))
 
+
+## shouldpoll function
+
+def shouldpoll(name, curtime):
+    """ check whether a new poll is needed. """
+    try: lp = lastpoll.data[name]
+    except KeyError: lp = lastpoll.data[name] = time.time()
+    try: st = sleeptime.data[name]
+    except KeyError: st = sleeptime.data[name] = 900
+    logging.warn("rss - pollcheck - %s - %s" % (name, time.ctime(lp)))
+    if curtime - lp > st: return True
+
+
+
 ## doperiodical function
 
 def doperiodical(*args, **kwargs):
     """ rss periodical function. """
     curtime = time.time()
     for feed in watcher.data.names:
-        if not watcher.shouldpoll(feed, curtime): continue
+        if not shouldpoll(feed, curtime): continue
         lastpoll.data[feed] = curtime
         lastpoll.save()
         logging.debug("rss - periodical - launching %s" % feed)
