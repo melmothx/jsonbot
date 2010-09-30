@@ -246,12 +246,12 @@ def formatevent(bot, ievent):
                     })
                     write(m)
         return
-    elif ievent.cmnd == 'MESSAGE':
+    elif ievent.cbtype == 'MESSAGE':
             m.update({
                 'type': 'comment',
                 'txt': ievent.txt.strip(),
             })
-    elif ievent.cmnd == 'PRESENCE':
+    elif ievent.cbtype == 'PRESENCE':
             if ievent.type == 'unavailable':
                 m.update({
                     'type': 'part',

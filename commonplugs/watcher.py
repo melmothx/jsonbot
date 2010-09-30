@@ -148,7 +148,7 @@ def watchcallback(bot, event):
             (botname, type, channel) = item
         except ValueError: continue
         m = formatevent(bot, event)
-        if m.nick == bot.nick or event.cbtype not in ['PRIVMSG', 'DISPATCH']: txt = u"[!] %s" % m.txt
+        if m.nick == bot.nick or event.cbtype not in ['PRIVMSG', 'DISPATCH', 'MESSAGE']: txt = u"[!] %s" % m.txt
         else: txt = u"[%s] %s" % (event.auth or m.nick or event.nick, m.txt)
         if txt.count('] [') > 2: logging.debug("watcher - %s - skipping %s" % (type, txt)) ; continue
         if bot.isgae:
