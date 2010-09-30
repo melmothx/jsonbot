@@ -93,14 +93,14 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            if gotcache: logging.debug('persist - %s - loaded %s (%s) *cache*' % (cfrom, self.fn, len(jsontxt)))
-            else: logging.debug('persist - %s - loaded %s (%s)' % (cfrom, self.fn, len(jsontxt)))
             cfrom = whichmodule(2)
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
-            if not 'run' in self.fn: logging.warn("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
-
+            if not 'run' in self.fn: 
+                if gotcache: logging.warn("persist - cache - loaded %s (%s) - %s - %s" % (self.fn, len(jsontxt), self.data.tojson(), cfrom))
+                else: logging.warn("persist - db - loaded %s (%s) - %s - %s" % (self.fn, len(jsontxt), self.data.tojson(), cfrom))
+     
         def save(self):
             """ save json data to database. """
             bla = dumps(self.data)
@@ -148,6 +148,7 @@ except ImportError:
         def init(self, default={}):
             """ initialize the data. """
             logging.debug('persist - reading %s' % self.fn)
+            gotcache = False
             try:
                 data = get(self.fn)
                 if not data:
@@ -155,8 +156,7 @@ except ImportError:
                    data = datafile.read()
                    datafile.close()
                    set(self.fn, data)
-                   logging.debug("persist - read %s (%s) *file*" % (self.fn, len(data)))
-                else: logging.debug("persist - read %s (%s) *cache*" % (self.fn, len(data)))
+                else: gotcache = True
             except IOError, ex:
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
@@ -175,10 +175,23 @@ except ImportError:
                 if 'gozerlib' in cfrom: 
                     cfrom = whichmodule(3)
                     if 'gozerlib' in cfrom: cfrom = whichmodule(4)
-                if not 'run' in self.fn: logging.info("persist - loaded %s - %s - %s" % (self.fn, self.data.tojson(), cfrom))
+                if not 'run' in self.fn: 
+                    size = len(data)
+                    if gotcache: logging.warn("persist - cache - loaded %s (%s) - %s - %s" % (self.fn, size, self.data.tojson(), cfrom))
+                    else: logging.warn("persist - file - loaded %s (%s) - %s - %s" % (self.fn, size, self.data.tojson(), cfrom))
             except Exception, ex:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
+
+        def get(self):
+           return loads(get(self.fn)) 
+
+        @persistlocked
+        def sync(self):
+           logging.warn("persist - syncing %s" % self.fn)
+           data = dumps(self.data)
+           set(self.fn, data)
+           return data
 
         @persistlocked
         def save(self):
