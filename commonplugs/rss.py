@@ -832,19 +832,24 @@ def handle_rsswatch(bot, ievent):
         except IndexError: ievent.missing('<name> [secondstosleep]') ; return
     try: sleepsec = int(sleepsec)
     except ValueError: ievent.reply("time to sleep needs to be in seconds") ; return
-    rssitem = watcher.byname(name)
-    if rssitem == None: ievent.reply("we don't have a %s rss object" % name) ; return
-    got = None
-    if not rssitem.data.running or rssitem.data.stoprunning:
-        if not sleeptime.data.has_key(name): sleeptime.data[name] = sleepsec ; sleeptime.save()
-        rssitem.data.running = 1
-        rssitem.data.stoprunning = 0
-        got = True
-        watcher.save(name)
-        try: watcher.watch(name)
-        except Exception, ex: ievent.reply(str(ex)) ; return
-    if got: ievent.reply('watcher started')
-    else: ievent.reply('already watching %s' % name)
+    if name == "all": target = watcher.data.names
+    else: target = [name, ]
+    got = []
+    for feed in target:
+        rssitem = watcher.byname(feed)
+        if rssitem == None: continue
+        if not rssitem.data.running or rssitem.data.stoprunning:
+            if not sleeptime.data.has_key(name): sleeptime.data[feed] = sleepsec ; sleeptime.save()
+            rssitem.data.running = 1
+            rssitem.data.stoprunning = 0
+            got = True
+            watcher.save(feed)
+            try: watcher.watch(feed)
+            except Exception, ex: ievent.reply('rss - %s - %s' % (feed, str(ex))) ; return
+            got.append(feed)
+    if got: ievent.reply('watcher started ', got)
+    else: ievent.reply('already watching ', target)
+
 
 cmnds.add('rss-watch', handle_rsswatch, 'USER')
 examples.add('rss-watch', 'rss-watch <name> [seconds to sleep] .. go watching <name>', '1) rss-watch jsonbot 2) rss-watch jsonbot 600')
