@@ -245,7 +245,7 @@ class Rssdict(PlugPersist):
         self.feeds = LazyDict()
         PlugPersist.__init__(self, filename)
         if not self.data:
-            self.data = Lazydict()
+            self.data = LazyDict()
             self.data['names'] = []
             self.data['urls'] = {}
         else:
