@@ -267,6 +267,11 @@ def formatevent(bot, ievent):
                 'type': 'blip',
                 'txt': ievent.txt.strip(),
             })
+    elif ievent.cbtype == 'DISPATCH':
+            m.update({
+                'type': 'dipatch',
+                'txt': ievent.txt,
+            })
 
     return m
 
