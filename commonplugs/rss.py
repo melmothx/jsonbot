@@ -689,7 +689,7 @@ def shouldpoll(name, curtime):
     except KeyError: lp = lastpoll.data[name] = time.time() ; lastpoll.save()
     try: st = sleeptime.data[name]
     except KeyError: st = sleeptime.data[name] = 900 ; sleeptime.save()
-    logging.warn("rss - pollcheck - %s - %s - remaining %s" % (name, time.ctime(lp), (lp + st) - curtime))
+    logging.debug("rss - pollcheck - %s - %s - remaining %s" % (name, time.ctime(lp), (lp + st) - curtime))
     if curtime - lp > st: return True
 
 
