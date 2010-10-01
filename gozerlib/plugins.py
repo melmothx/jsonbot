@@ -102,11 +102,11 @@ class Plugins(LazyDict):
         logging.debug("plugins - trying %s" % modname)
         try: mod = _import(modname)
         except ImportError, ex:
-            logging.error("plugins - import error on %s - %s" % (modname, str(ex)))
+            logging.info("plugins - import error on %s - %s" % (modname, str(ex)))
             raise NoSuchPlugin(modname)
         try: self[modname] = mod
         except KeyError:
-            logging.error("plugins - failed to load %s" % modname)
+            logging.info("plugins - failed to load %s" % modname)
             raise NoSuchPlugin(modname)
         try: init = getattr(self[modname], 'init')
         except AttributeError:

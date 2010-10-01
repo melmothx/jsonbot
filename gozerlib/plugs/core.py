@@ -169,6 +169,7 @@ def handle_helpplug(bot, ievent):
         return
     plugin = None
     modname = ""
+    perms = []
     for package in plugin_packages:
         try:
              modname = "%s.%s" % (package, what)
@@ -211,7 +212,9 @@ def handle_helpplug(bot, ievent):
         what = what.upper()
         res.insert(0, "%s\n" % phelp.strip())
         ievent.reply('HELP ON %s \n\n' % what, res, dot="\n")
-    else: ievent.reply('no commands available for permissions: %s' % ", ".join(perms))
+    else:
+        if perms: ievent.reply('no commands available for permissions: %s' % ", ".join(perms))
+        else: ievent.reply("can't find help on %s" % what)
 
 cmnds.add('help', handle_helpplug, ['USER', 'GUEST'])
 examples.add('help', 'get help on <cmnd> or <plugin>', '1) help-plug test 2) help-plug misc')
