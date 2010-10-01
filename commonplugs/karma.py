@@ -94,7 +94,7 @@ def handle_karmawhoup(bot, event):
     res = []
     for i in sd.top():
         res.append("%s: %s" % i)
-    if item.data.whoup: event.reply("uppers of karma up are: ", res)
+    if item.data.whoup: event.reply("uppers of %s are: " % k, res)
     else: event.reply("nobody upped %s yet" % k)
 
 cmnds.add("karma-whoup", handle_karmawhoup, ['USER', ])
@@ -103,8 +103,8 @@ examples.add("karma-whoup", "show who upped an item", "karma-whoup jsonbot")
 def handle_karmawhydown(bot, event):
     k = event.rest.lower()
     item = KarmaItem(event.channel + "-" + k)
-    if item.data.whydown: event.reply("reasons for karma up are: ", item.data.whydown)
-    else: event.reply("no reasons for karmaup of %s known yet" % k)
+    if item.data.whydown: event.reply("reasons for karmadown are: ", item.data.whydown)
+    else: event.reply("no reasons for karmadown of %s known yet" % k)
 
 cmnds.add("karma-whydown", handle_karmawhydown, ['USER', ])
 examples.add("karma-whydown", "show why a karma item is downed", "karma-whydown jsonbot")
@@ -116,7 +116,7 @@ def handle_karmawhodown(bot, event):
     res = []
     for i in sd.down():
         res.append("%s: %s" % i)
-    if item.data.whodown: event.reply("downers of karma up are: ", res)
+    if item.data.whodown: event.reply("downers of %s are: " % k, res)
     else: event.reply("nobody downed %s yet" % k)
 
 cmnds.add("karma-whodown", handle_karmawhodown, ['USER', ])
