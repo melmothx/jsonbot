@@ -250,9 +250,11 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         msg = "LOCAL - %s - handling %s - %s - %s" % (self.name, event.cbtype, event.auth, event.how)
-        logging.warn(msg.upper())
-        if event.cbtype == "PRIVMSG": logging.info("botbase - local - %s" % event.dump())
-        else: logging.debug("botbase - local - %s" % event.tojson())
+        try: int(event.cbtype) ; logging.debug(msg.upper)
+        except ValueError:
+            if event.cbtype == 'PING': logging.debug(msg.upper())
+            else: logging.warn(msg.upper())
+        logging.debug("botbase - local - %s" % event.tojson())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":

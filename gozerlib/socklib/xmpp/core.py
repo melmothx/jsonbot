@@ -170,6 +170,7 @@ class XMLStream(NodeBuilder):
                 logging.error('%s - invalid stanza: %s' % (self.name, what))
                 return
             if what.startswith('<stream') or what.startswith('<message') or what.startswith('<presence') or what.startswith('<iq'):
+                logging.debug(u"%s - sxmpp - out - %s" % (self.name, what))
                 try: self.connection.send(what + u"\r\n")
                 except AttributeError: self.connection.write(what)
             else: logging.error('%s - invalid stanza: %s' % (self.name, what))

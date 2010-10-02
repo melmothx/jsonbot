@@ -91,7 +91,7 @@ class Irc(BotBase):
         try:
             self.lastoutput = time.time()
             itxt = toenc(outputmorphs.do(txt), self.encoding)
-            logging.warn(u"%s - out - %s" % (self.name, itxt))             
+            logging.debug(u"%s - out - %s" % (self.name, itxt))             
             if self.cfg.has_key('ssl') and self.cfg['ssl']: self.sock.write(itxt + '\n')
             else: self.sock.send(itxt[:500] + '\n')
         except UnicodeEncodeError, ex:

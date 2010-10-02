@@ -32,6 +32,7 @@ class WebBot(BotBase):
     def _raw(self, txt, response=None, end=u"<br>"):
         """  put txt to the client. """
         if not txt or not response: return 
+        logging.debug("%s - web - out - %s" % (self.name, txt))
         response.out.write(toenc(txt + end))
 
     def outnocb(self, channel, txt, how="msg", event=None, origin=None, response=None, *args, **kwargs):
