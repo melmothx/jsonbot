@@ -38,6 +38,7 @@ def dispatch(bot, event):
         logging.debug("dispatch - nodispatch option is set - ignoring %s" % event.userhost)
         return
     bot.status = "dispatch"
+    event.bind(bot)
     bot.curevent = event
     go = False
     try:
@@ -47,8 +48,7 @@ def dispatch(bot, event):
             e.usercmnd = execstr.split()[0]
             e.txt = execstr
             e.showexception = True
-            e.bind(bot)
-            #event.makeargs()
+            e.prepare()
             result = bot.plugs.dispatch(bot, e)
         else:
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))
