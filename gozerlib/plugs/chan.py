@@ -20,7 +20,8 @@ def handle_chanjoin(bot, ievent):
     ievent.done()
 
 cmnds.add('chan-join', handle_chanjoin, ['OPER', 'JOIN'])
-examples.add('cha-join', 'join <channel> [password]', '1) chan-join #test 2) chan-join #test mekker')
+cmnds.add('join', handle_chanjoin, ['OPER', 'JOIN'])
+examples.add('chan-join', 'chan-join <channel> [password]', '1) chan-join #test 2) chan-join #test mekker')
 
 ## chan-del command
 
@@ -55,8 +56,9 @@ def handle_chanpart(bot, ievent):
     except ValueError: pass
     ievent.done()
 
+cmnds.add('chan-part', handle_chanpart, 'OPER')
 cmnds.add('part', handle_chanpart, 'OPER')
-examples.add('part', 'part [<channel>]', '1) part 2) part #test')
+examples.add('chan-part', 'chan-part [<channel>]', '1) chan-part 2) chan-part #test')
 
 ## channels command
 
