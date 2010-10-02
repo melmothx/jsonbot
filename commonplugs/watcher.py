@@ -142,7 +142,7 @@ def watchcallback(bot, event):
     """ the watcher callback, see if channels are followed and if so send data. """
     subscribers = watched.subscribers(event.channel)
     watched.data.descriptions[event.channel.lower()] = event.title
-    logging.warn("watcher - %s - %s" % (event.channel, str(subscribers)))
+    logging.info("watcher - %s - %s" % (event.channel, str(subscribers)))
     for item in subscribers:
         try:
             (botname, type, channel) = item

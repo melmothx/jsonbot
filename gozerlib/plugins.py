@@ -110,13 +110,13 @@ class Plugins(LazyDict):
             raise NoSuchPlugin(modname)
         try: init = getattr(self[modname], 'init')
         except AttributeError:
-            logging.info("%s loaded - no init" % modname)
+            logging.debug("%s loaded - no init" % modname)
             return self[modname]
         try:
             init()
             logging.debug('plugins - %s init called' % modname)
         except Exception, ex: raise
-        logging.info("%s loaded - with init" % modname)
+        logging.debug("%s loaded - with init" % modname)
         return self[modname]
 
     def reload(self, modname, force=True):

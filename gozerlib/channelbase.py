@@ -42,7 +42,7 @@ class ChannelBase(Persist):
         self.data.denyplug = self.data.denyplug or []
         self.data.createdfrom = whichmodule()
         self.data.cacheindex = 0
-        logging.warn("channelbase - created channel %s" % id)
+        logging.debug("channelbase - created channel %s" % id)
 
     def setpass(self, type, key):
         """ set channel password based on type. """

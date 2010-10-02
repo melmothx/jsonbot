@@ -57,6 +57,7 @@ try:
             self.plugname = calledfrom(sys._getframe())
             if 'lib' in self.plugname: self.plugname = calledfrom(sys._getframe(1))
             self.fn = unicode(filename.strip()) # filename to save to
+            self.logname = os.sep.join(self.fn.split(os.sep)[-2:])
             self.key = None
             self.obj = None
             jsontxt = get(self.fn)
@@ -65,7 +66,7 @@ try:
                 default2.update(default)
             else: default2 = copy.deepcopy(default)
             if jsontxt is None:
-                logging.debug("persist - %s - loading from db" % self.fn) 
+                logging.debug("persist - %s - loading from db" % self.logname) 
                 try:
                     try: self.obj = JSONindb.get_by_key_name(self.fn)
                     except Timeout: self.obj = JSONindb.get_by_key_name(self.fn)
@@ -74,7 +75,7 @@ try:
                     self.data = default2
                     return
                 if self.obj == None:
-                    logging.debug("persist - %s - no entry found" % self.fn)
+                    logging.debug("persist - %s - no entry found" % self.logname)
                     self.obj = JSONindb(key_name=self.fn)
                     self.obj.content = unicode(default)
                     self.data = default2
@@ -98,8 +99,8 @@ try:
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
             if not 'run' in self.fn: 
-                if gotcache: logging.warn("persist - cache - loaded %s (%s) - %s - %s" % (self.fn, len(jsontxt), self.data.tojson(), cfrom))
-                else: logging.warn("persist - db - loaded %s (%s) - %s - %s" % (self.fn, len(jsontxt), self.data.tojson(), cfrom))
+                if gotcache: logging.info("persist - cache - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
+                else: logging.info("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
      
         def save(self):
             """ save json data to database. """
@@ -114,7 +115,7 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
+            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
             set(self.fn, bla)
 
 except ImportError:
@@ -138,6 +139,7 @@ except ImportError:
         def __init__(self, filename, default=None, init=True):
             """ Persist constructor """
             self.fn = filename.strip() # filename to save to
+            self.logname = os.sep.join(self.fn.split(os.sep)[-2:])
             self.lock = thread.allocate_lock() # lock used when saving)
             self.data = LazyDict() # attribute to hold the data
             if init:
@@ -159,10 +161,10 @@ except ImportError:
                 else: gotcache = True
             except IOError, ex:
                 if not 'No such file' in str(ex):
-                    logging.error('persist - failed to read %s: %s' % (self.fn, str(ex)))
+                    logging.error('persist - failed to read %s: %s' % (self.logname, str(ex)))
                     raise
                 else:
-                    logging.debug("persist - %s doesn't exist yet" % self.fn)
+                    logging.debug("persist - %s doesn't exist yet" % self.logname)
                     return
 
             try:
@@ -177,8 +179,8 @@ except ImportError:
                     if 'gozerlib' in cfrom: cfrom = whichmodule(4)
                 if not 'run' in self.fn: 
                     size = len(data)
-                    if gotcache: logging.warn("persist - cache - loaded %s (%s) - %s - %s" % (self.fn, size, self.data.tojson(), cfrom))
-                    else: logging.warn("persist - file - loaded %s (%s) - %s - %s" % (self.fn, size, self.data.tojson(), cfrom))
+                    if gotcache: logging.info("persist - cache - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
+                    else: logging.info("persist - file - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
             except Exception, ex:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
@@ -209,7 +211,7 @@ except ImportError:
                 tmp = self.fn + '.tmp' # tmp file to save to
                 try: datafile = open(tmp, 'w')
                 except IOError, ex:
-                    logging.error("persist - can't save %s: %s" % (self.fn, str(ex)))
+                    logging.error("persist - can't save %s: %s" % (self.logname, str(ex)))
                     return
                 dump(self.data, datafile)
                 datafile.close()
@@ -219,7 +221,7 @@ except ImportError:
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
                 set(self.fn, data)
-                logging.warn('persist - %s saved (%s)' % (self.fn, len(data)))
+                logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
             finally: pass
 
 class PlugPersist(Persist):

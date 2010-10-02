@@ -348,6 +348,7 @@ class Irc(BotBase):
         self.nickchanged = 0
         self.connecting = False
         self._raw('PING :RESUME %s' % str(time.time()))
+        self.dostart(self.name, self.type)
         self.connectok.set()
         self.connected = True
         self.reconnectcount = 0
