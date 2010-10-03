@@ -84,8 +84,8 @@ class RunnerLoop(ThreadLoop):
             if self.stopped: break
             if not data: break
             self.nowrunning = getname(data[1])
-            logging.debug('%s - now running %s' % (self.name, self.nowrunning))
-            self.handle(*data)
+            try: self.handle(*data)
+            except Exception, ex: handle_exception()
         self.running = False
         logging.debug('%s - stopping threadloop' % self.name)
 
@@ -107,7 +107,6 @@ class TimedLoop(ThreadLoop):
             if self.stopped:
                 logging.debug("%s - loop is stopped" % self.name)
                 break
-            logging.debug('%s - now running timedloop' % self.name)
             try: self.handle()
             except Exception, ex: handle_exception()
         self.running = False
