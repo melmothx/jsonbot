@@ -1346,7 +1346,7 @@ cmnds.add('rss-peek', handle_rsspeek, ['USER', ])
 
 def handle_rsspeekall(bot, ievent):
     """ peek all feeds. """
-    watcher.peekall(ievent.rest, event=ievent)
+    watcher.peekall(ievent)
     ievent.done()
 
 cmnds.add('rss-peekall', handle_rsspeekall, ['OPER', ])
