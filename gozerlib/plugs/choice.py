@@ -19,11 +19,9 @@ import random
 def handle_choice(bot, ievent):
     """ make a random choice out of different words or list elements. """ 
     result = []
-    if ievent.inqueue: result = waitforqueue(ievent.inqueue, 5)
-    elif not ievent.args:
-        ievent.missing('<space seperated list>')
-        return
-    else: result = ievent.args 
+    if ievent.args: result = ievent.args
+    elif ievent.inqueue: result = waitforqueue(ievent.inqueue, 5)
+    else: ievent.missing('<space seperated list>') ; return
     if result: ievent.reply(random.choice(result))
     else: ievent.reply('nothing to choose from: %s' % ievent.txt)
 
