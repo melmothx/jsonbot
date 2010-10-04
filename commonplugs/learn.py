@@ -51,7 +51,7 @@ def handle_forget(bot, event):
                 break
     event.reply("item removed from %s database" % event.channel)
 
-cmnds.add('forget', handle_forget, ['USER', 'OPER'])
+cmnds.add('forget', handle_forget, ['USER'])
 examples.add('forget', 'forget a description of an item.', "forget dunk and botpapa")
 
 def handle_whatis(bot, event):
@@ -60,7 +60,7 @@ def handle_whatis(bot, event):
     if what in items.data and items.data[what]: event.reply("%s is " % event.rest, items.data[what], dot=", ")
     else: event.reply("no information known about %s" % what)
 
-cmnds.add('whatis', handle_whatis, ['USER', 'OPER', 'GUEST'])
+cmnds.add('whatis', handle_whatis, ['USER', 'GUEST'])
 cmnds.add('?', handle_whatis, ['USER', 'OPER'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsonbot")
 

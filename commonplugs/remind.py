@@ -107,5 +107,5 @@ def handle_remind(bot, ievent):
         remind.add(userhost, [who, ievent.nick, txt, time.time()])
         ievent.reply("remind for %s added" % who)
 
-cmnds.add('remind', handle_remind, 'USER', allowqueue=False)
+cmnds.add('remind', handle_remind, ['USER', 'GUEST'], allowqueue=False)
 examples.add('remind', 'remind <nick> <txt>', 'remind dunker check the bot !')

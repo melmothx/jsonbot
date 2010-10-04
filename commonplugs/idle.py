@@ -31,9 +31,9 @@ if not idle.data:
 def preidle(bot, ievent):
     """ idle precondition aka check if it is not a command """
     if ievent.iscmnd():
-        return 0
+        return False
     else:
-        return 1
+        return True
         
 def idlecb(bot, ievent):
     """ idle PRIVMSG callback .. set time for channel and nick """
@@ -46,6 +46,7 @@ callbacks.add('PRIVMSG', idlecb, preidle)
 callbacks.add('MESSAGE', idlecb, preidle)
 callbacks.add('WEB', idlecb, preidle)
 callbacks.add('CONSOLE', idlecb, preidle)
+callbacks.add('DISPATCH', idlecb, preidle)
 
 ## commands
 
@@ -73,7 +74,7 @@ def handle_idle(bot, ievent):
         ievent.reply("%s is not idle" % who)
         return   
 
-cmnds.add('idle', handle_idle, ['USER', 'WEB', 'CLOUD'])
+cmnds.add('idle', handle_idle, ['USER', 'GUEST'])
 
 def handle_idle2(bot, ievent):
     """ show how idle a channel has been """

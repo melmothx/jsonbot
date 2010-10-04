@@ -84,7 +84,7 @@ def handle_karmawhyup(bot, event):
     if item.data.whyup: event.reply("reasons for karma up are: ", item.data.whyup)
     else: event.reply("no reasons for karmaup of %s known yet" % k)
 
-cmnds.add("karma-whyup", handle_karmawhyup, ['USER', ])
+cmnds.add("karma-whyup", handle_karmawhyup, ['USER', 'GUEST'])
 examples.add("karma-whyup", "show why a karma item is upped", "karma-whyup jsonbot")
 
 def handle_karmawhoup(bot, event):
@@ -97,7 +97,7 @@ def handle_karmawhoup(bot, event):
     if item.data.whoup: event.reply("uppers of %s are: " % k, res)
     else: event.reply("nobody upped %s yet" % k)
 
-cmnds.add("karma-whoup", handle_karmawhoup, ['USER', ])
+cmnds.add("karma-whoup", handle_karmawhoup, ['USER', 'GUEST'])
 examples.add("karma-whoup", "show who upped an item", "karma-whoup jsonbot")
 
 def handle_karmawhydown(bot, event):
@@ -106,7 +106,7 @@ def handle_karmawhydown(bot, event):
     if item.data.whydown: event.reply("reasons for karmadown are: ", item.data.whydown)
     else: event.reply("no reasons for karmadown of %s known yet" % k)
 
-cmnds.add("karma-whydown", handle_karmawhydown, ['USER', ])
+cmnds.add("karma-whydown", handle_karmawhydown, ['USER', 'GUEST'])
 examples.add("karma-whydown", "show why a karma item is downed", "karma-whydown jsonbot")
 
 def handle_karmawhodown(bot, event):
@@ -119,5 +119,5 @@ def handle_karmawhodown(bot, event):
     if item.data.whodown: event.reply("downers of %s are: " % k, res)
     else: event.reply("nobody downed %s yet" % k)
 
-cmnds.add("karma-whodown", handle_karmawhodown, ['USER', ])
+cmnds.add("karma-whodown", handle_karmawhodown, ['USER', 'GUEST'])
 examples.add("karma-whodown", "show who downed an item", "karma-whodown jsonbot")

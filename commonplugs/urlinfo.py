@@ -146,7 +146,7 @@ def handle_urlinfo_enable(bot, ievent):
   cfg.save()
   ievent.reply('urlinfo enabled')
 
-cmnds.add('urlinfo-enable', handle_urlinfo_enable, 'USER')
+cmnds.add('urlinfo-enable', handle_urlinfo_enable, ['OPER'])
 examples.add('urlinfo-enable', 'enable urlinfo in the channel', 'urlinfo-enable')
 
 # Disable on channel
@@ -155,7 +155,7 @@ def handle_urlinfo_disable(bot, ievent):
    cfg.save()
    ievent.reply('urlinfo disabled')
 
-cmnds.add('urlinfo-disable', handle_urlinfo_disable, 'USER')
+cmnds.add('urlinfo-disable', handle_urlinfo_disable, 'OPER')
 examples.add('urlinfo-disable', 'disable urlinfo in the channel', 'urlinfo-disable')
 
 def handle_urlinfo_list(bot, ievent):

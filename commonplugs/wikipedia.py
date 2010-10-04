@@ -104,5 +104,4 @@ def handle_wikipedia(bot, ievent):
         event.reply("no data found on %s" % event.rest)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
-examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search \
-wikipedia for <what>','1) wikipedia gozerbot 2) wikipedia -nl bot')
+examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search wikipedia for <what>','1) wikipedia gozerbot 2) wikipedia -nl bot')

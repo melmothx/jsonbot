@@ -28,7 +28,7 @@ def handle_quoteadd(bot, event):
     quotes.save()
     event.reply("quote %s added" % quotes.data.index)
 
-cmnds.add('quote-add', handle_quoteadd, ['USER', 'OPER'])
+cmnds.add('quote-add', handle_quoteadd, ['USER', 'GUEST'])
 examples.add('quote-add' , 'add a quote to the bot', 'quote-add blablabla')
 
 def handle_quote(bot, event):
@@ -41,5 +41,5 @@ def handle_quote(bot, event):
     else:
         event.reply("no quotes yet.")
 
-cmnds.add('quote', handle_quote, ['USER', 'OPER'])
+cmnds.add('quote', handle_quote, ['USER', 'GUEST'])
 examples.add('quote' , 'get a quote from the bot', 'quote')

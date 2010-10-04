@@ -110,7 +110,7 @@ def handle_twitter(bot, ievent):
         except (TweepError, urllib2.HTTPError), e:
             ievent.reply('twitter failed: %s' % (str(e),))
  
-cmnds.add('twitter', handle_twitter, 'USER')
+cmnds.add('twitter', handle_twitter, ['USER', 'GUEST'])
 examples.add('twitter', 'adds a message to your twitter account', 'twitter just found the http://gozerbot.org project')
 
 def handle_twittercmnd(bot, ievent):
@@ -174,7 +174,7 @@ def handle_twittercmnd(bot, ievent):
     except (TweepError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
 
-cmnds.add('twitter-cmnd', handle_twittercmnd, 'USER')
+cmnds.add('twitter-cmnd', handle_twittercmnd, 'OPER')
 examples.add('twitter-cmnd', 'do a cmnd on the twitter API', 'twitter-cmnd home_timeline')
 
 def handle_twitter_confirm(bot, ievent):
@@ -196,7 +196,7 @@ def handle_twitter_confirm(bot, ievent):
     twitteruser.add(ievent.user.data.name, access_token.to_string())
     ievent.reply("access token saved.")
 
-cmnds.add('twitter-confirm', handle_twitter_confirm, ['USER', 'OPER'])
+cmnds.add('twitter-confirm', handle_twitter_confirm, ['USER', 'GUEST'])
 examples.add('twitter-confirm', 'confirm your twitter account', '1) twitter-confirm 6992762')
 
 def handle_twitter_auth(bot, ievent):
@@ -217,7 +217,7 @@ def handle_twitter_auth(bot, ievent):
         ievent.reply("sign in at %s" % auth_url)
         ievent.reply("use the provided code in the twitter-confirm command.")
 
-cmnds.add('twitter-auth', handle_twitter_auth, ['USER', 'OPER'])
+cmnds.add('twitter-auth', handle_twitter_auth, ['USER', 'GUEST'])
 examples.add('twitter-auth', 'adds your twitter account', '1) twitter-auth')
 
 def handle_twitterfriends(bot, ievent):
@@ -254,5 +254,5 @@ def handle_twitterfriends(bot, ievent):
     except (TweepError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
 
-cmnds.add('twitter-friends', handle_twitterfriends, 'USER')
+cmnds.add('twitter-friends', handle_twitterfriends, ['USER', 'GUEST'])
 examples.add('twitter-friends', 'show your friends_timeline', 'twitter-friends')

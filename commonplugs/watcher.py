@@ -181,7 +181,7 @@ def handle_watcherstart(bot, event):
 
     event.done()
 
-cmnds.add('watcher-start', handle_watcherstart, 'USER')
+cmnds.add('watcher-start', handle_watcherstart, 'OPER')
 cmnds.add('watch', handle_watcherstart, 'USER')
 examples.add('watcher-start', 'start watching a channel. ', 'watcher-start <channel>')
 
@@ -190,7 +190,7 @@ def handle_watcherreset(bot, event):
     watched.reset(event.channel)
     event.done()
 
-cmnds.add('watcher-reset', handle_watcherreset, 'USER')
+cmnds.add('watcher-reset', handle_watcherreset, 'OPER')
 examples.add('watcher-reset', 'stop watching', 'watcher-reset')
 
 def handle_watcherstop(bot, event):
@@ -206,10 +206,10 @@ def handle_watcherstop(bot, event):
         event.chan.save()
     event.done()
 
-cmnds.add('watcher-stop', handle_watcherstop, 'USER')
+cmnds.add('watcher-stop', handle_watcherstop, 'OPER')
 examples.add('watcher-stop', 'stop watching a channel', 'watcher-stop #dunkbots')
 
-def handle_watcherchannels(bot, event):
+def handle_watcherlist(bot, event):
     """ see what channels we are watching. """
     chans = watched.channels(event.channel)
 
@@ -223,12 +223,12 @@ def handle_watcherchannels(bot, event):
 
         event.reply("channels watched on %s: " % event.channel, res)
 
-cmnds.add('watcher-channels', handle_watcherchannels, ['USER'])
-examples.add('watcher-channels', 'show what channels we are watching', 'watcher-channels')
+cmnds.add('watcher-list', handle_watcherlist, ['USER', 'GUEST'])
+examples.add('watcher-list', 'show what channels we are watching', 'watcher-channels')
 
-def handle_watcherlist(bot, event):
+def handle_watchersubscribers(bot, event):
     """" show channels that are watching us. """
     event.reply("watchers for %s: " % event.channel, watched.subscribers(event.channel))
 
-cmnds.add('watcher-list', handle_watcherlist, ['USER'])
-examples.add('watcher-list', 'show channels that are watching us. ', 'watcher-list')
+cmnds.add('watcher-subscribers', handle_watchersubscribers, ['USER', 'GUEST'])
+examples.add('watcher-subscribers', 'show channels that are watching us. ', 'watcher-list')
