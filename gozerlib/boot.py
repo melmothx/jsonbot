@@ -97,7 +97,7 @@ def boot(force=False, encoding="utf-8", umask=None):
 
 ## commands related commands
 
-def savecmndtable(modname):
+def savecmndtable(modname=None):
     """ save command -> plugin list to db backend. """
     global cmndtable
     if not cmndtable.data: cmndtable.data = {}

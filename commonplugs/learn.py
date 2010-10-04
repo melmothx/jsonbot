@@ -31,8 +31,8 @@ def handle_learn(bot, event):
     items.save()
     event.reply("%s item added to %s database" % (what, event.channel))
 
-cmnds.add('learn', handle_learn, ['USER', 'OPER'])
-cmnds.add('=', handle_learn, ['USER', 'OPER'])
+cmnds.add('learn', handle_learn, ['USER', 'GUEST'])
+cmnds.add('=', handle_learn, ['USER', 'GUEST'])
 examples.add('learn', 'learn the bot a description of an item.', "learn dunk is botpapa")
 
 def handle_forget(bot, event):
