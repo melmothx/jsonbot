@@ -69,15 +69,12 @@ def numeric_compare(x, y):
 def handle_sort(bot, ievent):
     """ sort the result list. """
     parser = SortOptionParser()
-    if not ievent.inqueue:
-        if not ievent.args:
-            ievent.missing('<input>')
-            return
+    if ievent.args:
         try: options, result = parser.parse_args(ievent.args)
         except SortError, e:
             ievent.reply(str(e))
             return
-    else:
+    elif ievent.inqueue:
         result = waitforqueue(ievent.inqueue, 30)
         try: options, args = parser.parse_args(ievent.rest.split())
         except SortError, e:

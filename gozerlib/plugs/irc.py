@@ -97,7 +97,7 @@ def handle_sendraw(bot, ievent):
     bot._raw(ievent.rest)
     ievent.done()
 
-cmnds.add('sendraw', handle_sendraw, 'SENDRAW')
+cmnds.add('sendraw', handle_sendraw, ['OPER', 'SENDRAW'])
 examples.add('sendraw', 'sendraw <txt> .. send raw string to the server', 'sendraw PRIVMSG #test :yo!')
 
 ## nicks command
@@ -136,7 +136,7 @@ def handle_nicks(bot, ievent):
         ievent.reply("nicks on %s (%s): " % (chan, bot.server), res)
     else: ievent.reply("can't get nicks of channel %s" % chan)
 
-cmnds.add('nicks', handle_nicks, ['OPER', 'WEB'], threaded=True)
+cmnds.add('nicks', handle_nicks, ['USER'], threaded=True)
 examples.add('nicks', 'show nicks on channel the command was given in', 'nicks')
 
 ## reconnect command

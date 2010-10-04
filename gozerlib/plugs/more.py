@@ -27,5 +27,5 @@ def handle_more(bot, ievent):
     bot.outnocb(ievent.channel, txt, response=ievent.response)
     bot.outmonitor(ievent.origin or ievent.userhost, ievent.channel, txt)
 
-cmnds.add('more', handle_more, ['USER', 'GUEST', 'CLOUD'])
+cmnds.add('more', handle_more, ['USER', 'GUEST'])
 examples.add('more', 'return txt from output cache', 'more')

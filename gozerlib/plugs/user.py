@@ -48,7 +48,7 @@ def handle_meet(bot, ievent):
         return
     result = 0
     name = stripname(nick.lower())
-    result = bot.users.add(name, [userhost, ], ['USER', ])
+    result = bot.users.add(name, [userhost, ], ['USER', 'GUEST']])
     if result: ievent.reply('%s - %s - (%s) added to user database' % (nick, userhost, name))
     else: ievent.reply('add failed')
 
@@ -69,7 +69,7 @@ def handle_adduser(bot, ievent):
         return
     result = 0
     name = stripname(name.lower()) 
-    result = bot.users.add(name, [userhost, ], ['USER', ])
+    result = bot.users.add(name, [userhost, ], ['USER', 'GUEST'])
     if result: ievent.reply('%s added to user database' % name)
     else: ievent.reply('add failed')
 
@@ -218,7 +218,7 @@ def handle_getname(bot, ievent):
 
     ievent.reply(name)
 
-cmnds.add('user-getname', handle_getname, ['USER', ])
+cmnds.add('user-getname', handle_getname, ['USER', 'GUEST'])
 examples.add('user-getname', 'user-getname <nick> .. get the name of <nick>', 'user-getname dunker')
 
 ## user-addperm command

@@ -74,11 +74,10 @@ class Commands(LazyDict):
 
         """
 
+        event.bind(bot)
         if event.groupchat: id = event.auth = event.userhost
         else: id = event.auth
         if mainconfig.auto_register: bot.users.addguest(id)
-        #if event.usercmnd:
-        #    logging.debug("setting user to %s" % id)
         if not event.user:
             event.user = bot.users.getuser(id)
             if event.user: event.userstate = UserState(event.user.data.name)
@@ -90,7 +89,6 @@ class Commands(LazyDict):
             event.usercmnd = cmnd.split()[0]
             event.prepare()
         except (TypeError, KeyError, AttributeError): pass
-        
         target = bot.plugs
         if target: target.reloadcheck(bot, event)
         try:
@@ -104,9 +102,12 @@ class Commands(LazyDict):
             else:
                 raise NoSuchCommand(cmnd)
 
+        ## core business
 
-        # core business
         if bot.allowall: return self.doit(bot, event, c, wait=wait)
+        elif event.chan and event.chan.data.allowcommands and event.usercmnd in event.chan.data.allowcommands: 
+            if not 'OPER' in c.perms:  return self.doit(bot, event, c, wait=wait)
+            else: logging.warn("commands - %s is not in allowlist" % c)
         elif not bot.users or bot.users.allowed(id, c.perms, bot=bot): return self.doit(bot, event, c, wait=wait)
         elif bot.users.allowed(id, c.perms, bot=bot): return self.doit(bot, event, c, wait=wait)
         return event

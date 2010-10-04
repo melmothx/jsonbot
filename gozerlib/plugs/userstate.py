@@ -30,7 +30,7 @@ def handle_userstate(bot, ievent):
     if result: ievent.reply("userstate of %s: " % username, result)
     else: ievent.reply('no userstate of %s known' % username)
 
-cmnds.add('userstate', handle_userstate, 'USER')
+cmnds.add('userstate', handle_userstate, ['USER', 'GUEST'])
 examples.add('userstate', 'get or set userstate', '1) userstate 2) userstate TZ -1')
 
 ## userstate-get command
@@ -70,5 +70,5 @@ def handle_unset(bot, ievent):
     userstate.save()
     ievent.reply('item %s deleted' % item)
 
-cmnds.add('unset', handle_unset, 'USER')
+cmnds.add('unset', handle_unset, ['USER', 'GUEST'])
 examples.add('unset', 'delete userstate variable for user gving the command', '1) unset TZ')

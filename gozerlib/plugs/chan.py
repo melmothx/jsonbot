@@ -69,7 +69,7 @@ def handle_channels(bot, ievent):
     if chans: ievent.reply("joined channels: ", chans)
     else: ievent.reply('no channels joined')
 
-cmnds.add('channels', handle_channels, ['USER', 'WEB'])
+cmnds.add('channels', handle_channels, ['USER', 'GUEST'])
 examples.add('channels', 'show what channels the bot is on', 'channels')
 
 ## cycle command
@@ -205,3 +205,20 @@ def handle_chanallowplug(bot, event):
 
 cmnds.add("chan-allowplug", handle_chanallowplug, 'OPER')
 examples.add("chan-allowplug", "allow a plugin command or callbacks to be executed in a channel", "chan-denyplug idle")
+
+def handle_chanallowcommand(bot, event):
+   """ allow a command in the channel. setting this enables a whitelist. """
+   try: cmnd = event.args[0] 
+   except (IndexError, KeyError): event.missing("<cmnd>") ; return
+   if not cmnd in event.chan.data.allowcommands: event.chan.data.allowcommands.append(cmnd) ; event.chan.save() ; event.done()
+
+cmnds.add("chan-allowcommand", handle_chanallowcommand, ["OPER", ])
+examples.add("chan-allowcommand", "add a command to the allow list. allows for all users. OPER commands are not allowed to be put on the allowlist", "chan-allowcommand learn")
+
+def handle_chanremovecommand(bot, event):
+   """ allow a command in the channel. setting this enables a whitelist. """
+   try: cmnd = event.args[0] ; event.chan.data.allowcommands.remove(cmnd) ; event.chan.save() ; event.done()
+   except (IndexError, ValueError): event.reply("%s is not in the whitelist" % event.rest)
+
+cmnds.add("chan-removecommand", handle_chanremovecommand, ["OPER", ])
+examples.add("chan-removecommand", "remove a command from the allow list.", "chan-removecommand learn")

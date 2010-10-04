@@ -27,5 +27,5 @@ def handle_choice(bot, ievent):
     if result: ievent.reply(random.choice(result))
     else: ievent.reply('nothing to choose from: %s' % ievent.txt)
 
-cmnds.add('choice', handle_choice, ['USER', 'GUEST', 'CLOUD'])
+cmnds.add('choice', handle_choice, ['USER', 'GUEST'])
 examples.add('choice', 'make a random choice', '1) choice a b c 2) list | choice')

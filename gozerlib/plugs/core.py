@@ -76,7 +76,7 @@ def handle_encoding(bot, ievent):
     """ show default encoding. """
     ievent.reply('default encoding is %s' % bot.encoding or sys.getdefaultencoding())
 
-cmnds.add('encoding', handle_encoding, ['USER', 'OPER'])
+cmnds.add('encoding', handle_encoding, ['USER', 'GUEST'])
 examples.add('encoding', 'show default encoding', 'encoding')
 
 ## uptime command
@@ -85,7 +85,7 @@ def handle_uptime(bot, ievent):
     """ show uptime. """
     ievent.reply("uptime is %s" % elapsedstring(time.time()-bot.starttime))
 
-cmnds.add('uptime', handle_uptime, ['USER', 'WEB', 'GUEST'])
+cmnds.add('uptime', handle_uptime, ['USER', 'GUEST'])
 examples.add('uptime', 'show uptime of the bot', 'uptime')
 
 ## list command
@@ -114,7 +114,7 @@ def handle_commands(bot, ievent):
         ievent.reply('%s has the following commands: ' % plugin, result)
     else: ievent.reply('no commands found for plugin %s' % plugin)
 
-cmnds.add('commands', handle_commands, ['USER', 'GUEST', 'CLOUD'])
+cmnds.add('commands', handle_commands, ['USER', 'GUEST'])
 examples.add('commands', 'show commands of <plugin>', '1) commands core')
 
 ## perm command
@@ -132,7 +132,7 @@ def handle_perm(bot, ievent):
     if perms: ievent.reply("%s command needs %s permission" % (cmnd, perms))
     else: ievent.reply("can't find perm for %s" % cmnd)
 
-cmnds.add('perm', handle_perm, ['USER', 'GUEST', 'WEB'])
+cmnds.add('perm', handle_perm, ['USER', 'GUEST'])
 examples.add('perm', 'show permission of command', 'perm quit')
 
 ## version command
@@ -269,7 +269,7 @@ def handle_versions(bot, ievent):
         except AttributeError, ex: pass
     ievent.reply("versions ==> %s" % str(versions))
 
-cmnds.add('versions', handle_versions, 'OPER')
+cmnds.add('versions', handle_versions, ['USER', 'GUEST'])
 examples.add('versions', 'show versions of all loaded modules', 'versions')
 
 ## loglevel command
@@ -301,7 +301,7 @@ def handle_threads(bot, ievent):
     result.sort()
     ievent.reply("threads running: ", result)
 
-cmnds.add('threads', handle_threads, ['USER', 'OPER'])
+cmnds.add('threads', handle_threads, ['USER', 'GUEST'])
 examples.add('threads', 'show running threads', 'threads')
 
 ## loaded command
@@ -310,7 +310,7 @@ def handle_loaded(bot, event):
     """ show plugins in cache. """
     event.reply("loaded plugins (cache): ", plugs.keys())
 
-cmnds.add('loaded', handle_loaded, ['OPER', 'USER', 'GUEST'])
+cmnds.add('loaded', handle_loaded, ['USER', 'GUEST'])
 examples.add('loaded', 'show list of loaded plugins', 'loaded')
 
 ## statusline command
@@ -319,7 +319,7 @@ def handle_statusline(bot, event):
     """ show a status line. """
     event.reply("<b>controlchars:</b> %s - <b>perms:</b> %s" % (event.chan.data.cc, ", ".join(event.user.data.perms)))
 	
-cmnds.add('statusline', handle_statusline, ['OPER', 'USER', 'GUEST'])
+cmnds.add('statusline', handle_statusline, ['USER', 'GUEST'])
 examples.add('statusline', 'show status line', 'statusline')
 
 ## topper command
@@ -328,7 +328,7 @@ def handle_topper(bot, event):
     """ show a 'topper' startus line. """
     event.reply("<b>forwards:</b> %s - <b>watched:</b> %s  - <b>feeds:</b> %s" % (", ".join(event.chan.data.forwards) or "none", ", ".join(event.chan.data.watched) or "none", ", ".join(event.chan.data.feeds) or "none"))
 
-cmnds.add('topper', handle_topper, ['OPER', 'USER', 'GUEST'])
+cmnds.add('topper', handle_topper, ['USER', 'GUEST'])
 examples.add('topper', 'show topper line', 'topper')
 
 ## running command
@@ -337,5 +337,5 @@ def handle_running(bot, event):
     """ show running tasks. """
     event.reply("<b>callbacks:</b> %s - <b>commands:</b> %s - <b>longrunning:</b> %s" % (defaultrunner.running(), cmndrunner.running(), longrunner.running()))
 
-cmnds.add('running', handle_running, ['OPER', 'USER', 'GUEST'])
+cmnds.add('running', handle_running, ['USER', 'GUEST'])
 examples.add('running', "show running tasks", "running")

@@ -77,7 +77,7 @@ def handle_fleetlist(bot, ievent):
     """ fleet-list .. list bot names in fleet. """
     ievent.reply("fleet: ", fleet.list())
 
-cmnds.add('fleet-list', handle_fleetlist, ['USER', 'WEB'])
+cmnds.add('fleet-list', handle_fleetlist, ['USER', 'GUEST'])
 examples.add('fleet-list', 'show current fleet list', 'fleet-list')
 
 ## fleet-del command
