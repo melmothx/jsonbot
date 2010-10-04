@@ -57,3 +57,11 @@ def gunzip(fileobj):
     """ gunzip the file object. """
     if type(fileobj) == types.StringType or isinstance(fileobj, istr): fileobj = cStringIO.StringIO(str(fileobj))
     return gzip.GzipFile(mode='rb', fileobj=fileobj).read()
+
+
+## mtime functions
+
+def mtime(path):
+     """ return last modification time. """
+     try: return os.stat(os.getcwd + os.sep + package.replace(".", os.sep))[stat.ST_MTIME]
+     except: pass

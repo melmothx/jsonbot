@@ -43,7 +43,7 @@ callbacktable = None
 
 rundir = datadir + os.sep + "run"
 
-## functions
+## boot function
 
 def boot(force=False, encoding="utf-8", umask=None):
     """ initialize the bot. """
@@ -95,10 +95,12 @@ def boot(force=False, encoding="utf-8", umask=None):
             plugs.reload(plug)
     logging.warn("boot - done")
 
-def savecmndtable():
+## commands related commands
+
+def savecmndtable(modname):
     """ save command -> plugin list to db backend. """
     global cmndtable
-    cmndtable.data = {}
+    if not cmndtable.data: cmndtable.data = {}
     from gozerlib.commands import cmnds
     assert cmnds
     if cmnds.subs:
@@ -106,6 +108,7 @@ def savecmndtable():
             if name:
                 if clist and len(clist) == 1: cmndtable.data[name] = clist[0].modname   
     for cmndname, c in cmnds.iteritems():
+        if modname and c.modname != modname: continue
         if cmndname and c:
             cmndtable.data[cmndname] = c.modname   
     logging.warn("saving command table")
@@ -118,16 +121,18 @@ def getcmndtable():
     if not cmndtable: boot()
     return cmndtable.data
 
-def savecallbacktable():
+## callbacks related commands
+
+def savecallbacktable(modname=None):
     """ save command -> plugin list to db backend. """
     global callbacktable
     assert callbacktable
-    callbacktable.data = {}
+    if not callbacktable.data: callbacktable.data = {}
     from gozerlib.callbacks import first_callbacks, callbacks, last_callbacks, remote_callbacks
-    assert callbacks
     for cb in [first_callbacks, callbacks, last_callbacks, remote_callbacks]:
         for type, cbs in cb.cbs.iteritems():
             for c in cbs:
+                if modname and c.modname != modname: continue
                 if not callbacktable.data.has_key(type): callbacktable.data[type] = []
                 callbacktable.data[type].append(c.modname)
     logging.warn("saving callback table")
@@ -140,13 +145,16 @@ def getcallbacktable():
     if not callbacktable: boot()
     return callbacktable.data
 
-def savepluginlist():
+## plugin list related commands
+
+def savepluginlist(modname=None):
     """ save a list of available plugins to db backend. """
     global pluginlist
-    pluginlist.data = []
+    if not pluginlist.data: pluginlist.data = []
     from gozerlib.commands import cmnds
     assert cmnds
     for cmndname, c in cmnds.iteritems():
+        if modname and c.modname != modname: continue
         if c and not c.plugname:
             logging.info("boot - not adding %s to pluginlist" % cmndname)
             continue
@@ -161,3 +169,12 @@ def getpluginlist():
     global pluginlist
     if not pluginlist: boot()
     return pluginlist.data
+
+## update_mod command
+
+def update_mod(modname):
+    """ update the tables with new module. """
+    savepluginlist(modname)
+    savecallbacktable(modname)
+    savecmndtable(modname)
+    
