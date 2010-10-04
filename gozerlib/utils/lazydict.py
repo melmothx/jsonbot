@@ -45,9 +45,10 @@ def checkignore(name, ignore):
             return True
     return False
 
-def dumpelement(element, withtypes=False):
+def dumpelement(element, prev={}, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
-    new = {}
+    try: new = dict(prev)
+    except (TypeError, ValueError): new = {}
     for name in element:
         if checkignore(name, defaultignore): continue
         if not element[name]: continue
@@ -59,7 +60,7 @@ def dumpelement(element, withtypes=False):
                 if withtypes: new[name] = unicode(type(element))
             else:
                 logging.warn("lazydict - dumpelement - %s" % element[name])
-                new[name] = dumpelement(element[name])
+                new[name] = dumpelement(element[name], new)
     return new
 
 ## LazyDict class

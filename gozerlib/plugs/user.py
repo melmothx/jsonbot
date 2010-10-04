@@ -48,7 +48,7 @@ def handle_meet(bot, ievent):
         return
     result = 0
     name = stripname(nick.lower())
-    result = bot.users.add(name, [userhost, ], ['USER', 'GUEST']])
+    result = bot.users.add(name, [userhost, ], ['USER', 'GUEST'])
     if result: ievent.reply('%s - %s - (%s) added to user database' % (nick, userhost, name))
     else: ievent.reply('add failed')
 
