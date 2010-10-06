@@ -96,7 +96,7 @@ class Config(LazyDict):
         for line in open(fname, 'r'):
             curline = line
             line = line.strip()
-            if not line or line.startswith('#'): continue
+            if line == "" or line.startswith('#'): continue
             else:
                 try:
                     key, value = line.split('=', 1)
@@ -130,6 +130,7 @@ class Config(LazyDict):
             configtmp = open(filename + '.tmp', 'w')
             teller = 0
             if not configlist: configtmp.write('# %s\n\n' % self.cfile)
+            configlist.sort()
             for line in configlist:
                 teller += 1
                 if line.startswith('#'):

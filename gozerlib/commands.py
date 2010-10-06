@@ -16,15 +16,21 @@ from utils.trace import calledfrom, whichmodule
 from utils.exception import handle_exception
 from utils.lazydict import LazyDict
 from errors import NoSuchCommand
-from config import cfg as mainconfig
+from config import cfg as mainconfig, Config
 from persiststate import UserState
 from runner import cmndrunner
+from datadir import datadir
 
 ## basic imports
 
 import logging
 import sys
 import types
+import os
+
+## defines
+
+cmndperms = Config(datadir + os.sep + "run" + os.sep + "cmndperms")
 
 ## Command class
 
@@ -103,13 +109,14 @@ class Commands(LazyDict):
                 raise NoSuchCommand(cmnd)
 
         ## core business
-
+        if cmndperms[c.cmnd]: perms = cmndperms[c.cmnd]
+        else: perms = c.perms
         if bot.allowall: return self.doit(bot, event, c, wait=wait)
         elif event.chan and event.chan.data.allowcommands and event.usercmnd in event.chan.data.allowcommands: 
-            if not 'OPER' in c.perms:  return self.doit(bot, event, c, wait=wait)
+            if not 'OPER' in perms:  return self.doit(bot, event, c, wait=wait)
             else: logging.warn("commands - %s is not in allowlist" % c)
-        elif not bot.users or bot.users.allowed(id, c.perms, bot=bot): return self.doit(bot, event, c, wait=wait)
-        elif bot.users.allowed(id, c.perms, bot=bot): return self.doit(bot, event, c, wait=wait)
+        elif not bot.users or bot.users.allowed(id, perms, bot=bot): return self.doit(bot, event, c, wait=wait)
+        elif bot.users.allowed(id, perms, bot=bot): return self.doit(bot, event, c, wait=wait)
         return event
 
     def doit(self, bot, event, target, wait=0):

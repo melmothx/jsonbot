@@ -10,6 +10,8 @@ from gozerlib.utils.generic import checkpermissions
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
 from gozerlib.datadir import datadir
+from gozerlib.config import Config
+
 import users
 
 ## basic imports
@@ -17,6 +19,7 @@ import users
 import logging
 import os
 import sys
+import types
 
 ## paths
 
@@ -40,12 +43,13 @@ loaded = False
 cmndtable = None 
 pluginlist = None
 callbacktable = None
+cmndperms = None
 
 rundir = datadir + os.sep + "run"
 
 ## boot function
 
-def boot(force=False, encoding="utf-8", umask=None):
+def boot(force=False, encoding="utf-8", umask=None, saveperms=True):
     """ initialize the bot. """
     logging.info("booting ..")
     try:
@@ -71,14 +75,16 @@ def boot(force=False, encoding="utf-8", umask=None):
     global cmndtable
     global pluginlist
     global callbacktable
+    global cmndperms
     if not cmndtable: cmndtable = Persist(rundir + os.sep + 'cmndtable')
     if not pluginlist: pluginlist = Persist(rundir + os.sep + 'pluginlist')
     if not callbacktable: callbacktable = Persist(rundir + os.sep + 'callbacktable')
+    if not cmndperms: cmndperms = Config(rundir + os.sep + 'cmndperms')
     from gozerlib.plugins import plugs
     if not cmndtable.data or force:
         plugs.loadall(plugin_packages, force=True)
         loaded = True
-        savecmndtable()
+        savecmndtable(saveperms=saveperms)
     if not pluginlist.data or force:
         if not loaded:
             plugs.loadall(plugin_packages, force=True)
@@ -97,23 +103,29 @@ def boot(force=False, encoding="utf-8", umask=None):
 
 ## commands related commands
 
-def savecmndtable(modname=None):
+def savecmndtable(modname=None, saveperms=True):
     """ save command -> plugin list to db backend. """
     global cmndtable
     if not cmndtable.data: cmndtable.data = {}
+    global cmndperms
+    #if not cmndperms.data: cmndperms.data = {}
     from gozerlib.commands import cmnds
     assert cmnds
     if cmnds.subs:
         for name, clist in cmnds.subs.iteritems():
             if name:
-                if clist and len(clist) == 1: cmndtable.data[name] = clist[0].modname   
+                if clist and len(clist) == 1: cmndtable.data[name] = clist[0].modname
     for cmndname, c in cmnds.iteritems():
-        if modname and c.modname != modname: continue
+        if modname and c.modname != modname or cmndname == "subs": continue
         if cmndname and c:
-            cmndtable.data[cmndname] = c.modname   
+            cmndtable.data[cmndname] = c.modname  
+            cmndperms[cmndname] = c.perms
     logging.warn("saving command table")
     assert cmndtable
     cmndtable.save()
+    if saveperms:
+        logging.warn("saving command perms")
+        cmndperms.save()
 
 def getcmndtable():
     """ save command -> plugin list to db backend. """

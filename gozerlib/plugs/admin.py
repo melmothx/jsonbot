@@ -24,7 +24,10 @@ from simplejson import dump
 
 def handle_adminboot(bot, ievent):
     """ boot the bot .. do some initialisation. """
-    boot(force=True)
+    if 'saveperms' in ievent.rest:
+        boot(force=True)
+    else:
+        boot(force=True, saveperms=False)
     ievent.done()
 
 cmnds.add('admin-boot', handle_adminboot, 'OPER')

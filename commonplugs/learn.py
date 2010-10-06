@@ -32,7 +32,6 @@ def handle_learn(bot, event):
     event.reply("%s item added to %s database" % (what, event.channel))
 
 cmnds.add('learn', handle_learn, ['USER', 'GUEST'])
-cmnds.add('=', handle_learn, ['USER', 'GUEST'])
 examples.add('learn', 'learn the bot a description of an item.', "learn dunk is botpapa")
 
 def handle_forget(bot, event):
@@ -61,7 +60,6 @@ def handle_whatis(bot, event):
     else: event.reply("no information known about %s" % what)
 
 cmnds.add('whatis', handle_whatis, ['USER', 'GUEST'])
-cmnds.add('?', handle_whatis, ['USER', 'OPER'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsonbot")
 
 def prelearn(bot, event):
