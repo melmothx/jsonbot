@@ -103,7 +103,7 @@ def handle_twitter(bot, ievent):
     else:
         try:
              nritems = postmsg(ievent.user.data.name, ievent.rest)
-             ievent.reply("%s tweets posted" % nritems)
+             ievent.reply("%s tweet posted" % nritems)
         except KeyError:
             #handle_exception()
             ievent.reply('you are not logged in yet. see the twitter-auth command.')
