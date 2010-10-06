@@ -207,16 +207,33 @@ cmnds.add("chan-allowplug", handle_chanallowplug, 'OPER')
 examples.add("chan-allowplug", "allow a plugin command or callbacks to be executed in a channel", "chan-denyplug idle")
 
 def handle_chanallowcommand(bot, event):
-   """ allow a command in the channel. setting this enables a whitelist. """
+   """ allow a command in the channel. """
    try: cmnd = event.args[0] 
    except (IndexError, KeyError): event.missing("<cmnd>") ; return
    if not cmnd in event.chan.data.allowcommands: event.chan.data.allowcommands.append(cmnd) ; event.chan.save() ; event.done()
 
 cmnds.add("chan-allowcommand", handle_chanallowcommand, ["OPER", ])
-examples.add("chan-allowcommand", "add a command to the allow list. allows for all users. OPER commands are not allowed to be put on the allowlist", "chan-allowcommand learn")
+examples.add("chan-allowcommand", "add a command to the allow list. allows for all users.", "chan-allowcommand learn")
+
+def handle_chansilentcommand(bot, event):
+   """ silence a command in the channel. /msg the result of a command."""
+   try: cmnd = event.args[0] 
+   except (IndexError, KeyError): event.missing("<cmnd>") ; return
+   if not cmnd in event.chan.data.silentcommands: event.chan.data.silentcommands.append(cmnd) ; event.chan.save() ; event.done()
+
+cmnds.add("chan-silentcommand", handle_chansilentcommand, ["OPER", ])
+examples.add("chan-silentcommand", "add a command to the allow list.", "chan-silentcommand learn")
+
+def handle_chanloudcommand(bot, event):
+   """ allow output of a command in the channel. """
+   try: cmnd = event.args[0] ; event.chan.data.silentcommands.remove(cmnd) ; event.chan.save() ; event.done()
+   except (IndexError, ValueError): event.reply("%s is not in the silencelist" % event.rest)
+
+cmnds.add("chan-loudcommand", handle_chanloudcommand, ["OPER", ])
+examples.add("chan-loudcommand", "remove a command from the silence list.", "chan-loudcommand learn")
 
 def handle_chanremovecommand(bot, event):
-   """ allow a command in the channel. setting this enables a whitelist. """
+   """ allow a command in the channel. """
    try: cmnd = event.args[0] ; event.chan.data.allowcommands.remove(cmnd) ; event.chan.save() ; event.done()
    except (IndexError, ValueError): event.reply("%s is not in the whitelist" % event.rest)
 

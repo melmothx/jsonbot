@@ -32,6 +32,7 @@ class ChannelBase(Persist):
         self.type = type
         self.lastmodified = time.time()
         self.data.id = id
+        self.data.silentcommands = self.data.silentcommands or []
         self.data.allowcommands = self.data.allowcommands or []
         self.data.feeds = self.data.feeds or []
         self.data.forwards = self.data.forwards or []

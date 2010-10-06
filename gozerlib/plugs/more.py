@@ -18,13 +18,15 @@ import logging
 def handle_more(bot, ievent):
     """ pop message from the output cache. """
     logging.warn("more - outputcache: %s" % bot.outcache.size(ievent.channel))
-    try: txt, size = bot.outcache.more(ievent.channel)
+    if ievent.msg: target = ievent.nick
+    else: target = ievent.channel
+    try: txt, size = bot.outcache.more(target)
     except IndexError: txt = None 
     if not txt:
-        ievent.reply('no more data available for %s' % ievent.channel)
+        ievent.reply('no more data available for %s' % target)
         return
     if size: txt += "<b> - %s more</b>" % str(size)
-    bot.outnocb(ievent.channel, txt, response=ievent.response)
+    bot.outnocb(target, txt, response=ievent.response)
     bot.outmonitor(ievent.origin or ievent.userhost, ievent.channel, txt)
 
 cmnds.add('more', handle_more, ['USER', 'GUEST'])

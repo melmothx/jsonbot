@@ -49,6 +49,7 @@ def dispatch(bot, event):
             e.txt = execstr
             e.showexception = True
             e.prepare()
+            if e.usercmnd in event.chan.data.silentcommands: e.silent = True
             result = bot.plugs.dispatch(bot, e)
         else:
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))
