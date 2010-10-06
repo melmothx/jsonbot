@@ -146,8 +146,11 @@ class Config(LazyDict):
                     configtmp.write('%s = %s\n' % (keyword, dumps(self[keyword])))
                     written.append(keyword)
                 else: configtmp.write(line)
-            for keyword, value in self.iteritems():
-                if keyword in written:continue
+            keywords = self.keys()
+            keywords.sort()
+            for keyword in keywords:
+                value = self[keyword]
+                if keyword in written: continue
                 if keyword == 'jsondb': continue
                 if keyword == 'isdb': continue
                 if keyword == 'optionslist': continue
