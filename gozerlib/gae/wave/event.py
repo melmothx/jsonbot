@@ -77,6 +77,7 @@ class WaveEvent(EventBase):
                     self.cmndhow = elem.get('how')
                     self.userhost = elem.get('who')
         self.auth = self.userhost
+        self.nick = self.userhost.split("@")[0]
         logging.debug("wave - event - auth is %s" % self.auth)
         self.root = wavelet
         self.rootblipid = wavelet._root_blip.blip_id
