@@ -29,6 +29,7 @@ import os
 import types
 import copy
 import sys
+import fcntl
 
 ## try google first
 
@@ -136,6 +137,7 @@ except ImportError:
 
         """ persist data attribute to JSON file. """
 
+        
         def __init__(self, filename, default=None, init=True):
             """ Persist constructor """
             self.fn = filename.strip() # filename to save to
@@ -146,7 +148,6 @@ except ImportError:
                 if default == None: default = LazyDict()
                 self.init(default)
 
-        @persistlocked
         def init(self, default={}):
             """ initialize the data. """
             logging.debug('persist - reading %s' % self.fn)
@@ -185,6 +186,7 @@ except ImportError:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
 
+        @persistlocked
         def get(self):
            return loads(get(self.fn)) 
 
@@ -213,7 +215,9 @@ except ImportError:
                 except IOError, ex:
                     logging.error("persist - can't save %s: %s" % (self.logname, str(ex)))
                     return
+                fcntl.flock(datafile, fcntl.LOCK_EX)
                 dump(self.data, datafile)
+                fcntl.flock(datafile, fcntl.LOCK_UN)
                 datafile.close()
                 try: os.rename(tmp, self.fn)
                 except OSError:
@@ -228,6 +232,7 @@ class PlugPersist(Persist):
 
     """ persist plug related data. data is stored in jsondata/plugs/{plugname}/{filename}. """
 
+    @persistlocked
     def __init__(self, filename, default=None):
         plugname = calledfrom(sys._getframe())
         Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + stripname(filename))

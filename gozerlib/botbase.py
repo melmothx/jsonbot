@@ -243,6 +243,7 @@ class BotBase(LazyDict):
         remote_callbacks.check(self, e0)
         return
 
+    @locked
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
@@ -406,7 +407,7 @@ class BotBase(LazyDict):
         if txt: return unicode(txt) + dot.join(res)   
         elif res: return dot.join(res)
         return ""
-
+    
     def reloadcheck(self, event):
         """ check if plugin need to be reloaded for callback, """
         plugloaded = []
