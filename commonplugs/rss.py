@@ -174,8 +174,9 @@ sleeptime=15*60, running=0):
     def fetchdata(self):
         """ get data of rss feed. """
         url = self.data['url']
+        logging.warn("rss - fetching %s" % url)
         result = feedparser.parse(url, agent=useragent())
-        logging.debug("rss - fetch - got result from %s" % url)
+        logging.debug("rss - got result from %s" % url)
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
         try:
             status = result.status

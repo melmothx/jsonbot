@@ -29,7 +29,7 @@ donot = ['twitter', 'stop', 'admin', 'quit', 'reboot', 'shutdown', 'exit', 'dele
 'snarf', 'validate', 'popcon', 'twitter', 'tinyurl', 'whois', 'rblcheck', \
 'wowwiki', 'wikipedia', 'tr', 'translate', 'serie', 'sc', 'shoutcast', 'mash', \
 'gcalc', 'identi', 'mail', 'part', 'cycle', 'exception', 'fleet', 'ln', 'markov-learn', 'pit', 'bugtracker', 'tu', 'banner', 'test', 'cloud', 'dispatch', 'lns', 'loglevel', \
-'cloneurl', 'clone', 'hb', 'rss-get', 'rss-sync']
+'cloneurl', 'clone', 'hb', 'rss-get', 'rss-sync', 'rss-add', 'rss-register']
 
 errors = {}
 teller = 0

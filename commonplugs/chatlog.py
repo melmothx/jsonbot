@@ -226,7 +226,7 @@ def formatevent(bot, ievent):
     elif ievent.cmnd in ('QUIT', 'NICK'):
         if not ievent.user or not ievent.user.data.channels:
             logging.debug("chatlog - can't find joined channels for %s" % ievent.userhost)
-            return
+            return m
         cmd = ievent.cmnd
         nick = cmd == 'NICK' and ievent.txt or ievent.nick
         for c in event.user.channels:
@@ -245,7 +245,7 @@ def formatevent(bot, ievent):
                         'target': c,
                     })
                     write(m)
-        return
+        return m
     elif ievent.cbtype == 'MESSAGE':
             m.update({
                 'type': 'comment',
@@ -286,14 +286,14 @@ def prechatlogcb(bot, ievent):
     """Check if event should be logged.  QUIT and NICK are not channel
     specific, so we will check each channel in log()."""
     if not cfg.channels:
-        return 0
+        return False
     if not ievent.msg and [bot.name, ievent.channel] in cfg.get('channels'):
-        return 1
+        return True
     if ievent.cmnd in ('QUIT', 'NICK'):
-        return 1
+        return True
     if ievent.cmnd == 'NOTICE':
         if [bot.name, ievent.arguments[0]] in cfg.get('channels'):
-            return 1
+            return True
 
 ## chatlog callbacks
 
