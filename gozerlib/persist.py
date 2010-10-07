@@ -29,7 +29,6 @@ import os
 import types
 import copy
 import sys
-import fcntl
 
 ## try google first
 
@@ -129,7 +128,11 @@ except ImportError:
 
     persistlock = thread.allocate_lock()
     persistlocked = lockdec(persistlock)
+
+    ## imports for shell bots
+
     from gozerlib.cache import get, set
+    import fcntl
 
     ## classes
 
@@ -232,7 +235,6 @@ class PlugPersist(Persist):
 
     """ persist plug related data. data is stored in jsondata/plugs/{plugname}/{filename}. """
 
-    @persistlocked
     def __init__(self, filename, default=None):
         plugname = calledfrom(sys._getframe())
         Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + stripname(filename))
