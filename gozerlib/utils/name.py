@@ -17,11 +17,10 @@ allowednamechars = string.ascii_letters + string.digits + '!.@-+#'
 def stripname(name, allowed=""):
     """ strip all not allowed chars from name. """
     res = u""
-    name = name.encode("utf-8")
     for c in name:
         if ord(c) < 31: continue
         else: res += c
-    res =  res.replace(os.sep, '+')
+    res = res.replace(os.sep, '+')
     return res
 
 ## testnam function
