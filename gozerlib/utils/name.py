@@ -14,7 +14,6 @@ import os
 allowednamechars = string.ascii_letters + string.digits + '!.@-+#'
 
 ## stripname function
-
 def stripname(name, allowed=""):
     """ strip all not allowed chars from name. """
     name = name.lower()
@@ -26,6 +25,7 @@ def stripname(name, allowed=""):
     res = res.replace(os.sep, '+')
     res = res.replace("@", '+')
     res = res.replace("#", '+')
+    res = res.encode("utf-8")
     return res
 
 ## testnam function
