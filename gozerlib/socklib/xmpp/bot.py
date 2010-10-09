@@ -262,18 +262,16 @@ class SXMPPBot(XMLStream, BotBase):
         """ disconnect handler. """
         self.reconnect()
 
-    def outnocb(self, printto, txt, how=None, *args, **kwargs):
+    def outnocb(self, printto, txt, how=None, event=None, html=False, *args, **kwargs):
         """ output txt to bot. """
         if printto and printto in self.state['joinedchannels']: outtype = 'groupchat'
         else: outtype = "chat"
         target = printto
-        if "<" in txt and ">" in txt: html = txt
-        else:
-            html = None 
+        if not html: 
             txt = self.normalize(txt)
         repl = Message({'from': self.me, 'to': target, 'type': outtype, 'txt': txt})
         if html:
-            repl.html = html
+            repl.html = txt
         if not repl.type: repl.type = 'normal'
         self.send(repl)
 
@@ -427,7 +425,7 @@ class SXMPPBot(XMLStream, BotBase):
         except (AttributeError, TypeError):
             handle_exception()
             return
-        if not self.parse_one(xml): logging.error("%s - NOT PROPER XML - %s" % (self.name, xml))
+        if not self.checkifvalid(xml): logging.error("%s - NOT PROPER XML - %s" % (self.name, xml))
         else: self._raw(xml)
            
     def action(self, printto, txt, fromm=None, groupchat=True):

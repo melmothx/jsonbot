@@ -111,7 +111,7 @@ class XMLStream(NodeBuilder):
         """ handle one xml stanza. """
         NodeBuilder.__init__(self)
         self._dispatch_depth = 2
-        try: self._parser.Parse(data.strip())
+        try: return self._parser.Parse(data.strip())
         except xml.parsers.expat.ExpatError, ex: 
             if 'not well-formed' in str(ex):  
                 logging.error("%s - data is not well formed" % self.name)
@@ -122,6 +122,17 @@ class XMLStream(NodeBuilder):
         except Exception, ex:
             handle_exception()
             return {}
+
+    def checkifvalid(self, data):
+        result = self.parse_one(data)
+        self.final = {}
+        self.reslist = []
+        self.tags = []
+        self.subelements = []
+        self.buffer = ""
+        return result
+
+
 
     def loop_one(self, data):
         """ handle one xml stanza. """

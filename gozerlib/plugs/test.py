@@ -169,7 +169,7 @@ examples.add('test-say', 'use bot.say()', 'test-say')
 def handle_testhtml(bot, ievent):
     if not ievent.rest: data = '<span style="font-family: fixed; font-size: 10pt"><b>YOOOO BROEDERS</b></span>'
     else: data = ievent.rest
-    ievent.reply(data)
+    ievent.reply(data, html=True)
 
 cmnds.add('test-html', handle_testhtml, 'OPER')
 examples.add('test-html', 'test html output', '1) test-html 2) test-html <h1><YOO</h1>')
