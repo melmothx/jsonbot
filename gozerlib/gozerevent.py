@@ -9,6 +9,7 @@
 
 ## gozerlib imports
 
+from gozerlib.utils.url import striphtml
 from gozerlib.eventbase import EventBase
 
 ## dom imports
@@ -67,9 +68,13 @@ class GozerEvent(EventBase):
                 continue
         main += ">"
         gotsub = False
+        if res.has_key('html'):
+            if res['html']:
+                main += u'<html xmlns="http://www.w3.org/1999/xhtml"><body>%s</body></html>' % res['html']
+                gotsub = True
         if res.has_key('txt'):
             if res['txt']:
-                main += u"<body>%s</body>" % XMLescape(res['txt'])
+                main += u"<body>%s</body>" % striphtml(res['txt'])
                 gotsub = True
         for subelement in subelements[elem]:
             try:

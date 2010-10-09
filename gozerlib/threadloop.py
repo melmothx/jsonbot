@@ -6,6 +6,7 @@
 
 ## lib imports
 
+from utils.exception import handle_exception
 from threads import start_new_thread, getname
 
 ## basic imports

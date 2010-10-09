@@ -163,3 +163,13 @@ def handle_testsay(bot, ievent):
 
 cmnds.add('test-say', handle_testsay, 'OPER')
 examples.add('test-say', 'use bot.say()', 'test-say')
+
+## test-xhtml command
+
+def handle_testhtml(bot, ievent):
+    if not ievent.rest: data = "<b>YOOOO BROEDERS</b>"
+    else: data = ievent.rest
+    ievent.reply(data)
+
+cmnds.add('test-html', handle_testhtml, 'OPER')
+examples.add('test-html', 'test html output', '1) test-html 2) test-html <h1><YOO</h1>')

@@ -267,8 +267,13 @@ class SXMPPBot(XMLStream, BotBase):
         if printto and printto in self.state['joinedchannels']: outtype = 'groupchat'
         else: outtype = "chat"
         target = printto
-        txt = self.normalize(txt)
+        if "<" in txt and ">" in txt: html = txt
+        else:
+            html = None 
+            txt = self.normalize(txt)
         repl = Message({'from': self.me, 'to': target, 'type': outtype, 'txt': txt})
+        if html:
+            repl.html = html
         if not repl.type: repl.type = 'normal'
         self.send(repl)
 
