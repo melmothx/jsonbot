@@ -427,7 +427,8 @@ class SXMPPBot(XMLStream, BotBase):
         except (AttributeError, TypeError):
             handle_exception()
             return
-        self._raw(xml)
+        if not self.parse_one(xml): logging.error("%s - NOT PROPER XML - %s" % (self.name, xml))
+        else: self._raw(xml)
            
     def action(self, printto, txt, fromm=None, groupchat=True):
         """ send an action. """
@@ -456,6 +457,7 @@ class SXMPPBot(XMLStream, BotBase):
 
     def quit(self):
         """ send unavailable presence. """
+        if self.error: return
         presence = Presence({'type': 'unavailable' ,'to': self.jid})
         if self.state:
             for i in self.state.data.joinedchannels:

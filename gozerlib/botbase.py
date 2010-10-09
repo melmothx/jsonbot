@@ -230,7 +230,7 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         msg = "REMOTE - %s - handling %s - %s - %s" % (self.name, event.cbtype, event.auth, event.how)
-        logging.warn(msg.upper())
+        logging.warn(msg)
         logging.debug("botbase - remote - %s" % event.dump())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
@@ -251,10 +251,10 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         msg = "LOCAL - %s - handling %s - %s - %s" % (self.name, event.cbtype, event.auth, event.how)
-        try: int(event.cbtype) ; logging.debug(msg.upper)
+        try: int(event.cbtype) ; logging.debug(msg)
         except ValueError:
-            if event.cbtype == 'PING': logging.debug(msg.upper())
-            else: logging.warn(msg.upper())
+            if event.cbtype == 'PING': logging.debug(msg)
+            else: logging.warn(msg)
         logging.debug("botbase - local - %s" % event.tojson())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return

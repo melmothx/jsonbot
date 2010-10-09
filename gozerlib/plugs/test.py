@@ -167,7 +167,7 @@ examples.add('test-say', 'use bot.say()', 'test-say')
 ## test-xhtml command
 
 def handle_testhtml(bot, ievent):
-    if not ievent.rest: data = "<b>YOOOO BROEDERS</b>"
+    if not ievent.rest: data = '<span style="font-family: fixed; font-size: 10pt"><b>YOOOO BROEDERS</b></span>'
     else: data = ievent.rest
     ievent.reply(data)
 

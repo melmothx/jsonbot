@@ -80,15 +80,19 @@ class XMLStream(NodeBuilder):
 
     def handle_stream(self, data):
         """ default stream handler. """
-        logging.info("%s - stream - %s" % (self.name, data.tojson()))
+        logging.info("%s - stream - %s" % (self.name, data.dump()))
 
+    def handle_streamend(self, data):
+        """ default stream handler. """
+        logging.warn("%s - stream END - %s" % (self.name, data))
+        
     def handle_streamerror(self, data):
         """ default stream error handler. """
-        logging.error("%s - STREAMERROR - %s" % (self.name, data.tojson()))
+        logging.error("%s - STREAMERROR - %s" % (self.name, data.dump()))
  
     def handle_streamfeatures(self, data):
         """ default stream features handler. """
-        logging.debug("sxmpp.core - STREAMFEATURES: %s" % LazyDict(data).dump())
+        logging.debug("%s - STREAMFEATURES: %s" % (self.name, LazyDict(data).dump()))
          
     def addHandler(self, namespace, func):
         """ add a namespace handler. """
@@ -103,7 +107,7 @@ class XMLStream(NodeBuilder):
         try: return self.handlers[namespace]
         except KeyError: return None
 
-    def loop_one(self, data):
+    def parse_one(self, data):
         """ handle one xml stanza. """
         NodeBuilder.__init__(self)
         self._dispatch_depth = 2
@@ -118,6 +122,10 @@ class XMLStream(NodeBuilder):
         except Exception, ex:
             handle_exception()
             return {}
+
+    def loop_one(self, data):
+        """ handle one xml stanza. """
+        self.parse_one(data)
         return self.finish(data)
 
     def _readloop(self):
@@ -128,6 +136,11 @@ class XMLStream(NodeBuilder):
         while not self.stopped:
             try:
                 data = jabberstrip(fromenc(self.connection.read()))
+                if data.endswith("</stream:stream>"):
+                    logging.error("%s - end of stream detected" % self.name)
+                    self.error = "streamend"
+                    self.disconnectHandler(Exception('remote %s disconnected' %  self.host))
+                    break
                 if data == "":
                     logging.error('%s - remote disconnected' % self.name)
                     self.error = 'disconnected'
