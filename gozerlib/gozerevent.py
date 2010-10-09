@@ -70,7 +70,7 @@ class GozerEvent(EventBase):
         gotsub = False
         if res.has_key('html'):
             if res['html']:
-                main += u'<html xmlns="http://www.w3.org/1999/xhtml"><body>%s</body></html>' % res['html']
+                main += u'<html xmlns="http://jabber.org/protocol/xhtml-im"><body xmlns="http://www.w3.org/1999/xhtml">%s</body></html>' % res['html']
                 gotsub = True
         if res.has_key('txt'):
             if res['txt']:
