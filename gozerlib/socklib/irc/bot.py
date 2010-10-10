@@ -347,8 +347,9 @@ class IRCBot(Irc):
             chan = ievent.channel
             self.getchannelmode(chan)
             if not ievent.chan: ievent.bind(self)
-            ievent.chan.mode = ievent.arguments[1]
-            ievent.chan.save()
+            if ievent.chan:
+                ievent.chan.data.mode = ievent.arguments[1]
+                ievent.chan.save()
 
     def handle_311(self, ievent):
         """ handle 311 response .. sync with userhosts cache. """
