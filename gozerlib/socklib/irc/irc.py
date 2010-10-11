@@ -99,17 +99,18 @@ class Irc(BotBase):
             return
         except Exception, ex:
             handle_exception()
-            try:
-                try:
-                    (errno, errstr) = ex
-                except ValueError:
-                    errno = 0
-                    errstr = str(ex)
-                if errno != 32 and errno != 9: raise
-                else: time.sleep(0.5)
-            except:
-                pass
+            #try:
+            #    try:
+            #        (errno, errstr) = ex
+            #    except ValueError:
+            #        errno = 0
+            #        errstr = str(ex)
+            #    if errno != 32 and errno != 9: raise
+            #    else: time.sleep(0.5)
+            #except:
+            #    pass
             logging.warn("%s - ERROR: can't send %s" % (self.name, str(ex)))
+            #self.reconnect()
 
     def _connect(self):
         """ connect to server/port using nick. """
@@ -273,15 +274,15 @@ class Irc(BotBase):
             except Exception, ex:
                 if self.stopped or self.stopreadloop:
                     break
-                err = ex
-                try:
-                    (errno, msg) = ex
-                except:
-                    errno = -1
-                    msg = err
-                if errno == 35 or errno == 11:
-                    time.sleep(0.5)
-                    continue
+                #err = ex
+                #try:
+                #    (errno, msg) = ex
+                #except:
+                #    errno = -1
+                #    msg = err
+                #if errno == 35 or errno == 11:
+                #    time.sleep(0.5)
+                #    continue
                 logging.error("%s - error in readloop: %s" % (self.name, msg))
                 doreconnect = 1
                 break
@@ -345,7 +346,6 @@ class Irc(BotBase):
             if not socktimeout: socktimeout = 301.0
             else: socktimeout = float(socktimeout)
             self.sock.settimeout(socktimeout)
-        self.reconnectcount = 0
         self.nickchanged = 0
         self.connecting = False
         self._raw('PING :RESUME %s' % str(time.time()))
@@ -435,12 +435,12 @@ class Irc(BotBase):
             self.connecting = False
         except (socket.gaierror, socket.error), ex:
             logging.error('%s - connecting error: %s' % (self.name, str(ex)))
-            self.reconnect()
+            #self.reconnect()
             return
         except Exception, ex:
             handle_exception()
             logging.error('%s - connecting error: %s' % (self.name, str(ex)))
-            self.reconnect()
+            #self.reconnect()
 
     def shutdown(self):
         """ shutdown the bot. """
@@ -555,12 +555,13 @@ class Irc(BotBase):
                 self.outputlock.release()
             except:
                 pass
-            if not self.blocking and 'broken pipe' in str(ex).lower(): time.sleep(0.5)
-            else:
-                logging.error('%s - send error: %s' % (self.name, str(ex)))
-                handle_exception()
-                self.reconnect()
-                return
+            #if not self.blocking and 'broken pipe' in str(ex).lower(): time.sleep(0.5)
+            #if True:
+            logging.error('%s - send error: %s' % (self.name, str(ex)))
+            handle_exception()
+            return
+            #     self.reconnect()
+            #     return
             
     def voice(self, channel, who):
         """ give voice. """

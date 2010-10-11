@@ -355,7 +355,6 @@ class BotBase(LazyDict):
     def reconnect(self):
         """ reconnect to the server. """
         try:
-            self.exit()
             self.reconnectcount += 1
             logging.warn('%s - reconnecting .. sleeping %s seconds' % (self.name, self.reconnectcount*15))
             time.sleep(self.reconnectcount * 15)   
@@ -364,7 +363,7 @@ class BotBase(LazyDict):
             handle_exception()
 
     def doreconnect(self):
-        self.start()
+        self.start(connect=True)
 
     def invite(self, *args, **kwargs):
         """ invite another user/bot. """
