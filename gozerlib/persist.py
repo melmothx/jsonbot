@@ -189,11 +189,9 @@ except ImportError:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
 
-        @persistlocked
         def get(self):
            return loads(get(self.fn)) 
 
-        @persistlocked
         def sync(self):
            logging.warn("persist - syncing %s" % self.fn)
            data = dumps(self.data)
@@ -224,11 +222,12 @@ except ImportError:
                 datafile.close()
                 try: os.rename(tmp, self.fn)
                 except OSError:
-                    #handle_exception()
+                    handle_exception()
                     os.remove(self.fn)
                     os.rename(tmp, self.fn)
                 set(self.fn, data)
                 logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
+            except: handle_exception()
             finally: pass
 
 class PlugPersist(Persist):

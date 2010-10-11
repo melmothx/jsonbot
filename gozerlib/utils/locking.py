@@ -39,7 +39,7 @@ def lockdec(lock):
         """ locking function for %s """ % str(func)
         def lockedfunc(*args, **kwargs):
             """ the locked function. """
-            where = whichmodule(1)
+            where = whichmodule(2)
             logging.debug('locking - locking on %s' % where)
             lock.acquire()
             res = None

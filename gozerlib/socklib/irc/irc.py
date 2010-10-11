@@ -99,18 +99,7 @@ class Irc(BotBase):
             return
         except Exception, ex:
             handle_exception()
-            #try:
-            #    try:
-            #        (errno, errstr) = ex
-            #    except ValueError:
-            #        errno = 0
-            #        errstr = str(ex)
-            #    if errno != 32 and errno != 9: raise
-            #    else: time.sleep(0.5)
-            #except:
-            #    pass
             logging.warn("%s - ERROR: can't send %s" % (self.name, str(ex)))
-            #self.reconnect()
 
     def _connect(self):
         """ connect to server/port using nick. """
@@ -125,13 +114,13 @@ class Irc(BotBase):
         assert(self.oldsock)
         server = self.bind()
         logging.warn('%s - connecting to %s (%s)' % (self.name, server, self.server))
-        self.oldsock.settimeout(15)
+        self.oldsock.settimeout(5)
         self.oldsock.connect((server, int(str(self.port))))	
+        self.blocking = 1
+        self.oldsock.setblocking(self.blocking)
         logging.warn('%s - connection ok' % self.name)
         self.connected = True
         self.fsock = self.oldsock.makefile("r")
-        self.blocking = 1
-        self.oldsock.setblocking(self.blocking)
         self.fsock._sock.setblocking(self.blocking)
         if self.blocking:
             socktimeout = self.cfg['socktimeout']
@@ -274,15 +263,6 @@ class Irc(BotBase):
             except Exception, ex:
                 if self.stopped or self.stopreadloop:
                     break
-                #err = ex
-                #try:
-                #    (errno, msg) = ex
-                #except:
-                #    errno = -1
-                #    msg = err
-                #if errno == 35 or errno == 11:
-                #    time.sleep(0.5)
-                #    continue
                 logging.error("%s - error in readloop: %s" % (self.name, msg))
                 doreconnect = 1
                 break
@@ -435,12 +415,10 @@ class Irc(BotBase):
             self.connecting = False
         except (socket.gaierror, socket.error), ex:
             logging.error('%s - connecting error: %s' % (self.name, str(ex)))
-            #self.reconnect()
             return
         except Exception, ex:
             handle_exception()
             logging.error('%s - connecting error: %s' % (self.name, str(ex)))
-            #self.reconnect()
 
     def shutdown(self):
         """ shutdown the bot. """
@@ -533,12 +511,12 @@ class Irc(BotBase):
         if not printto or not what: return
         self.send('PRIVMSG %s :%s' % (printto, what))
 
+    @outlocked
     def send(self, txt):
         """ send text to irc server. """
         if not txt: return
         if self.stopped: return
         try:
-            self.outputlock.acquire()
             now = time.time()
             timetosleep = 4 - (now - self.lastoutput)
             if timetosleep > 0 and not self.nolimiter and not (time.time() - self.connecttime < 5):
@@ -546,22 +524,10 @@ class Irc(BotBase):
                 time.sleep(timetosleep)
             txt = txt.rstrip()
             self._raw(txt)
-            try:
-                self.outputlock.release()
-            except:
-                pass
         except Exception, ex:
-            try:
-                self.outputlock.release()
-            except:
-                pass
-            #if not self.blocking and 'broken pipe' in str(ex).lower(): time.sleep(0.5)
-            #if True:
             logging.error('%s - send error: %s' % (self.name, str(ex)))
             handle_exception()
             return
-            #     self.reconnect()
-            #     return
             
     def voice(self, channel, who):
         """ give voice. """
@@ -684,8 +650,11 @@ class Irc(BotBase):
 
     def handle_error(self, ievent):
         """ show error. """
-        if ievent.txt.startswith('Closing'): logging.error("%s - %s" % (self.name, ievent.txt))
-        else: logging.error("irc - %s - %s" % (", ".join(ievent.arguments[1:]), ievent.txt))
+        txt = ievent.txt
+        if txt.startswith('Closing'):
+            if "banned" in txt.lower(): logging.error("WE ARE BANNED !! - %s - %s" % (self.server, ievent.txt)) ; self.exit()
+            else: logging.error("%s - %s" % (self.name, txt))
+        else: logging.error("irc - %s - %s" % (", ".join(ievent.arguments[1:]), txt))
 
     def ping(self):
         """ ping the irc server. """
@@ -714,3 +683,7 @@ class Irc(BotBase):
             logging.warn('%s - 700 encoding now is %s' % (self.name, self.encoding))
         except:
             pass
+
+    def handle_465(self, ievent):
+        """ we are banned.. exit the bot. """
+        self.exit()

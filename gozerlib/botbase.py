@@ -243,7 +243,7 @@ class BotBase(LazyDict):
         remote_callbacks.check(self, e0)
         return
 
-    @locked
+    #@locked
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
