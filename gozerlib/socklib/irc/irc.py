@@ -376,7 +376,7 @@ class Irc(BotBase):
             self.say(i, txt, speed=1)
 
     def normalize(self, what):
-        txt = strippedtxt(what)
+        txt = strippedtxt(what, ["\001", "\002"])
         txt = txt.replace("<b>", "\002")
         txt = txt.replace("</b>", "\002")
         txt = txt.replace("<i>", "")
@@ -638,7 +638,7 @@ class Irc(BotBase):
     def handle_ctcp(self, ievent):
         """ handle client to client request .. version and ping. """
         if ievent.txt.find('VERSION') != -1:
-            self.ctcpreply(ievent.nick, 'VERSION %s' % self.cfg['version'])
+            self.ctcpreply(ievent.nick, 'VERSION %s' % config.version)
         if ievent.txt.find('PING') != -1:
             try:
                 pingtime = ievent.txt.split()[1]
