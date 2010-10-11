@@ -633,7 +633,7 @@ class Rsswatcher(Rssdict):
         target = channel
         if not jsonstring([botname, bottype, target]) in rssitem.data.watchchannels and not [botname, bottype, target] in rssitem.data.watchchannels:
             rssitem.data.watchchannels.append([botname, bottype, target])
-        rssitem.lastpeek.data[target] = time.mktime(time.localtime())
+        #rssitem.lastpeek.data[target] = time.mktime(time.localtime())
         rssitem.itemslists[jsonstring([name, bottype, target])] = ['title', 'link']
         rssitem.markup.set(jsonstring([name, bottype, target]), 'tinyurl', 1)
         rssitem.data.running = 1
