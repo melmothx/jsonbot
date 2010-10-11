@@ -27,7 +27,7 @@ def handle_gcalc(bot, ievent):
     req = urllib2.Request("http://www.google.com/ig/calculator?hl=en&q=%s" % expr, None,  {'User-agent': useragent()})
     data = urllib2.urlopen(req).read()
     try:
-        ievent.reply(data)
+        #ievent.reply(data)
         res = data.split("rhs")[1].split(",")[0]
         #res = LazyDict(loads(str(data)))
         ievent.reply("%s is %s" % (ievent.rest, res))
