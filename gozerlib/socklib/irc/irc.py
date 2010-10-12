@@ -281,7 +281,7 @@ class Irc(BotBase):
         logging.warn('%s - registering with %s using nick %s' % (self.name, self.server, self.nick))
         logging.warn('%s - this may take a while' % self.name)
         username = self.nick or 'jsonbot'
-        realname = self.cfg['realname'] or username
+        realname = self.cfg['realname'] or os.getlogin()
         time.sleep(1)
         self._raw("NICK %s" % self.nick)
         time.sleep(1)
