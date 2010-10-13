@@ -668,13 +668,7 @@ class Irc(BotBase):
 
     def handle_401(self, ievent):
         """ handle 401 .. nick not available. """
-        try:
-            nick = ievent.arguments[1]
-            if nick not in self.nicks401:
-                logging.warn('irc - 401 on %s .. ignoring' % nick)
-                self.nicks401.append(nick)
-        except:
-            pass
+        pass
 
     def handle_700(self, ievent):
         """ handle 700 .. encoding request of the server. """
