@@ -419,7 +419,7 @@ class SXMPPBot(XMLStream, BotBase):
         try: del what['from']
         except KeyError: pass
         try:
-            xml = what.toxml()
+            xml = what.tojabber()
             if not xml:
                 raise Exception("can't convert %s to xml .. bot.send()" % what) 
         except (AttributeError, TypeError):

@@ -55,7 +55,7 @@ class GozerEvent(EventBase):
         if self.has_key(name): return self[name] 
         return EventBase()
 
-    def toxml(self):
+    def tojabber(self):
         """ convert the dictionary to xml. """
         res = dict(self)
         if not res:
