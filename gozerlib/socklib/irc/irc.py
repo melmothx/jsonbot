@@ -87,7 +87,7 @@ class Irc(BotBase):
         if not txt or self.stopped or not self.sock:
             logging.warn("%s - bot is stopped .. not sending." % self.name)
             return 0
-        logging.debug("%s - sending %s" % (self.name, txt))
+        logging.warn("%s - sending %s" % (self.name, txt))
         try:
             self.lastoutput = time.time()
             itxt = toenc(outputmorphs.do(txt), self.encoding)
@@ -285,7 +285,7 @@ class Irc(BotBase):
         time.sleep(1)
         self._raw("NICK %s" % self.nick)
         time.sleep(1)
-        self._raw("USER %s localhost localhost :%s" % (username, realname))
+        self._raw("USER %s localhost %s :%s" % (username, self.server, realname))
 
     def _onconnect(self):
         """ overload this to run after connect. """
