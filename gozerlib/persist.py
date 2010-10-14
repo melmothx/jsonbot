@@ -74,7 +74,7 @@ try:
                 logging.debug("persist - %s - loading from db" % self.logname) 
                 try:
                     try: self.obj = JSONindb.get_by_key_name(self.fn)
-                    except Timeout: self.obj = JSONindb.get_by_key_name(fn)
+                    except Timeout: self.obj = JSONindb.get_by_key_name(self.fn)
                 except Exception, ex:
                     # bw compat sucks
                     try: self.obj = JSONindb.get_by_key_name(fn)
@@ -171,29 +171,21 @@ except ImportError:
             fn = fn.replace("#", "+")
             try:
                 data = get(self.fn)
+                if not data: data = get(fn)
                 if not data:
-                   datafile = open(self.fn, 'r')
+                   if os.path.exists(fn): datafile = open(fn, 'r')
+                   else: datafile = open(self.fn, 'r')
                    data = datafile.read()
                    datafile.close()
                    set(self.fn, data)
                 else: gotcache = True
             except IOError, ex:
-                # bw compat sucks
-                try:
-                    data = get(fn)
-                    if not data:
-                       datafile = open(fn, 'r')
-                       data = datafile.read()
-                       datafile.close()
-                       set(self.fn, data)
-                    else: gotcache = True
-                except IOError, ex:
-                    if not 'No such file' in str(ex):
-                        logging.error('persist - failed to read %s: %s' % (self.logname, str(ex)))
-                        raise
-                    else:
-                        logging.debug("persist - %s doesn't exist yet" % self.logname)
-                        return
+                if not 'No such file' in str(ex):
+                    logging.error('persist - failed to read %s: %s' % (self.logname, str(ex)))
+                    raise
+                else:
+                    logging.debug("persist - %s doesn't exist yet" % self.logname)
+                    return
             try:
                 self.data = loads(data)
                 if type(self.data) == types.DictType:
