@@ -65,7 +65,7 @@ try:
         def init(self, default={}, filename=None):
             fn = self.fn.replace("@", "+")
             fn = fn.replace("#", "+")
-            jsontxt = get(fn) or get(self.fn)
+            jsontxt = get(self.fn) or get(fn)
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
