@@ -10,7 +10,6 @@
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.utils.url import useragent
-from gozerlib.utils.lazydict import LazyDict
 
 from simplejson import loads
 
@@ -27,10 +26,9 @@ def handle_gcalc(bot, ievent):
     req = urllib2.Request("http://www.google.com/ig/calculator?hl=en&q=%s" % expr, None,  {'User-agent': useragent()})
     data = urllib2.urlopen(req).read()
     try:
-        #ievent.reply(data)
-        res = data.split("rhs")[1].split(",")[0]
-        #res = LazyDict(loads(str(data)))
-        ievent.reply("%s is %s" % (ievent.rest, res))
+        rhs = data.split("rhs")[1].split("\"")[1]
+        lhs = data.split("lhs")[1].split("\"")[1]
+        ievent.reply("%s = %s" % (lhs,rhs.replace('\\x26#215;', '*').replace('\\x3csup\\x3e', '**').replace('\\x3c/sup\\x3e', '')))
     except Exception, ex:
         ievent.reply(str(ex))    
 
