@@ -87,11 +87,11 @@ class Irc(BotBase):
         if not txt or self.stopped or not self.sock:
             logging.warn("%s - bot is stopped .. not sending." % self.name)
             return 0
-        logging.warn("%s - sending %s" % (self.name, txt))
+        if not txt.startswith("PONG"): logging.warn("%s - sending %s" % (self.name, txt))
         try:
             self.lastoutput = time.time()
             itxt = toenc(outputmorphs.do(txt), self.encoding)
-            logging.debug(u"%s - out - %s" % (self.name, itxt))             
+            #logging.debug(u"%s - out - %s" % (self.name, itxt))             
             if self.cfg.has_key('ssl') and self.cfg['ssl']: self.sock.write(itxt + '\n')
             else: self.sock.send(itxt[:500] + '\n')
         except UnicodeEncodeError, ex:
@@ -654,7 +654,7 @@ class Irc(BotBase):
         if txt.startswith('Closing'):
             if "banned" in txt.lower(): logging.error("WE ARE BANNED !! - %s - %s" % (self.server, ievent.txt)) ; self.exit()
             else: logging.error("%s - %s" % (self.name, txt))
-        else: logging.error("irc - %s - %s" % (", ".join(ievent.arguments[1:]), txt))
+        else: logging.error("%s - %s - %s" % (self.name.upper(), ", ".join(ievent.arguments[1:]), txt))
 
     def ping(self):
         """ ping the irc server. """

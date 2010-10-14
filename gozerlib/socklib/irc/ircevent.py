@@ -98,7 +98,7 @@ class IrcEvent(EventBase):
                 self.channel = self.userhost
         try:
             nr = int(self.cmnd)
-            if nr > 399 and not nr == 422: logging.error('irc - %s - %s - %s' % (self.cmnd, self.arguments, self.txt))
+            if nr > 399 and not nr == 422: logging.error('%s - %s - %s - %s' % (self.bot.name, self.cmnd, self.arguments, self.txt))
         except ValueError: pass
         return self
 
