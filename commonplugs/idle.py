@@ -28,18 +28,18 @@ if not idle.data:
 
 ## callbacks
 
-def preidle(bot, ievent):
+def preidle(bot, event):
     """ idle precondition aka check if it is not a command """
-    if ievent.iscmnd():
+    if event.userhost not in bot.cfg.followlist:
         return False
     else:
         return True
         
-def idlecb(bot, ievent):
+def idlecb(bot, event):
     """ idle PRIVMSG callback .. set time for channel and nick """
     ttime = time.time()
-    idle.data[ievent.userhost] = ttime
-    idle.data[ievent.channel] = ttime
+    idle.data[event.userhost] = ttime
+    idle.data[event.channel] = ttime
     idle.save()
 
 callbacks.add('PRIVMSG', idlecb, preidle)

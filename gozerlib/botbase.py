@@ -96,6 +96,7 @@ class BotBase(LazyDict):
             else:
                 self.uuid = self.cfg.uuid = uuid.uuid4()
                 self.cfg.save()
+        if self.cfg and not self.cfg.followlist: self.cfg.followlist = [] ; self.cfg.save()
         self.datadir = datadir + os.sep + self.fleetdir
         self.name = self.botname
         self.owner = self.cfg.owner
