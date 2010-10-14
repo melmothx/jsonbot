@@ -34,7 +34,7 @@ import time
 
 ## defines
 boot()
-donot = ['stop',]
+donot = ['stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get']
 bot = BotBase()
 bot.allowall = True
 plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
@@ -340,7 +340,7 @@ if __name__ == '__main__':
             threads.append(start_new_thread(gendoc, ('gaeplugs', file, f)))
 
         for thread in threads:
-            thread.join()
+            thread.join(10)
 
     domods('gozerlib')
     domods('gozerlib' + os.sep + 'plugs')
