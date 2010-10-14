@@ -60,7 +60,13 @@ try:
             self.logname = os.sep.join(self.fn.split(os.sep)[-2:])
             self.key = None
             self.obj = None
-            jsontxt = get(self.fn)
+            tmpname = self.fn.replace("@", "+")
+            tmpname = tmpname.replace("#", "+")
+            self.init(default, tmpname)
+
+        def init(self, default={}, filename=None):
+            fn = filename or self.fn
+            jsontxt = get(fn)
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -68,8 +74,8 @@ try:
             if jsontxt is None:
                 logging.debug("persist - %s - loading from db" % self.logname) 
                 try:
-                    try: self.obj = JSONindb.get_by_key_name(self.fn)
-                    except Timeout: self.obj = JSONindb.get_by_key_name(self.fn)
+                    try: self.obj = JSONindb.get_by_key_name(fn)
+                    except Timeout: self.obj = JSONindb.get_by_key_name(fn)
                 except Exception, ex:
                     handle_exception()
                     self.data = default2
@@ -81,7 +87,7 @@ try:
                     self.data = default2
                     return
                 jsontxt = self.obj.content
-                if jsontxt: set(self.fn, jsontxt)
+                if jsontxt: set(fn, jsontxt)
                 logging.debug('persist - jsontxt is %s' % jsontxt)
                 gotcache = False
             else: gotcache = True
@@ -118,6 +124,10 @@ try:
             logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
             set(self.fn, bla)
 
+        def upgrade(self, filename):
+            self.init(self.data, filename=filename)
+
+
 except ImportError:
 
     ## file based persist
@@ -149,14 +159,16 @@ except ImportError:
             self.data = LazyDict() # attribute to hold the data
             if init:
                 if default == None: default = LazyDict()
+                tmpname = self.fn.replace("@", "+")
+                tmpname = tmpname.replace("#", "+")
                 self.init(default)
 
-        def init(self, default={}):
+        def init(self, default={}, filename=None):
             """ initialize the data. """
             logging.debug('persist - reading %s' % self.fn)
             gotcache = False
             try:
-                data = get(self.fn)
+                data = get(filename or self.fn)
                 if not data:
                    datafile = open(self.fn, 'r')
                    data = datafile.read()
@@ -189,21 +201,26 @@ except ImportError:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise
 
+        def upgrade(self, filename):
+            self.init(self.data, filename=filename)
+            self.save(filename)
+
         def get(self):
-           return loads(get(self.fn)) 
+            return loads(get(self.fn)) 
 
         def sync(self):
-           logging.warn("persist - syncing %s" % self.fn)
-           data = dumps(self.data)
-           set(self.fn, data)
-           return data
+            logging.warn("persist - syncing %s" % self.fn)
+            data = dumps(self.data)
+            set(self.fn, data)
+            return data
 
         @persistlocked
-        def save(self):
+        def save(self, filename=None):
             """ persist data attribute. """
             try:
+                fn = filename or self.fn
                 data = dumps(self.data)
-                set(self.fn, data)
+                set(fn, data)
                 dirr = []
                 for p in self.fn.split(os.sep)[:-1]:
                     dirr.append(p)
@@ -211,7 +228,7 @@ except ImportError:
                     if not os.path.isdir(pp):
                         logging.warn("persist - creating %s dir" % pp)
                         os.mkdir(pp)
-                tmp = self.fn + '.tmp' # tmp file to save to
+                tmp = fn + '.tmp' # tmp file to save to
                 try: datafile = open(tmp, 'w')
                 except IOError, ex:
                     logging.error("persist - can't save %s: %s" % (self.logname, str(ex)))
@@ -220,11 +237,11 @@ except ImportError:
                 dump(self.data, datafile)
                 fcntl.flock(datafile, fcntl.LOCK_UN)
                 datafile.close()
-                try: os.rename(tmp, self.fn)
+                try: os.rename(tmp, fn)
                 except OSError:
                     handle_exception()
                     os.remove(self.fn)
-                    os.rename(tmp, self.fn)
+                    os.rename(tmp, fn)
                 set(self.fn, data)
                 logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
             except: handle_exception()
