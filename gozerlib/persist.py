@@ -60,13 +60,12 @@ try:
             self.logname = os.sep.join(self.fn.split(os.sep)[-2:])
             self.key = None
             self.obj = None
-            tmpname = self.fn.replace("@", "+")
-            tmpname = tmpname.replace("#", "+")
-            self.init(default, tmpname)
+            self.init(default)
 
         def init(self, default={}, filename=None):
-            fn = filename or self.fn
-            jsontxt = get(fn)
+            fn = self.fn.replace("@", "+")
+            fn = fn.replace("#", "+")
+            jsontxt = get(fn) or get(self.fn)
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -74,12 +73,15 @@ try:
             if jsontxt is None:
                 logging.debug("persist - %s - loading from db" % self.logname) 
                 try:
-                    try: self.obj = JSONindb.get_by_key_name(fn)
+                    try: self.obj = JSONindb.get_by_key_name(self.fn)
                     except Timeout: self.obj = JSONindb.get_by_key_name(fn)
                 except Exception, ex:
-                    handle_exception()
-                    self.data = default2
-                    return
+                    # bw compat sucks
+                    try: self.obj = JSONindb.get_by_key_name(fn)
+                    except Exception, ex:
+                        handle_exception()
+                        self.data = default2
+                        return
                 if self.obj == None:
                     logging.debug("persist - %s - no entry found" % self.logname)
                     self.obj = JSONindb(key_name=self.fn)
@@ -121,8 +123,8 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
             set(self.fn, bla)
+            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
 
         def upgrade(self, filename):
             self.init(self.data, filename=filename)
@@ -159,16 +161,16 @@ except ImportError:
             self.data = LazyDict() # attribute to hold the data
             if init:
                 if default == None: default = LazyDict()
-                tmpname = self.fn.replace("@", "+")
-                tmpname = tmpname.replace("#", "+")
                 self.init(default)
 
         def init(self, default={}, filename=None):
             """ initialize the data. """
             logging.debug('persist - reading %s' % self.fn)
             gotcache = False
+            fn = self.fn.replace("@", "+")
+            fn = fn.replace("#", "+")
             try:
-                data = get(filename or self.fn)
+                data = get(self.fn)
                 if not data:
                    datafile = open(self.fn, 'r')
                    data = datafile.read()
@@ -176,13 +178,22 @@ except ImportError:
                    set(self.fn, data)
                 else: gotcache = True
             except IOError, ex:
-                if not 'No such file' in str(ex):
-                    logging.error('persist - failed to read %s: %s' % (self.logname, str(ex)))
-                    raise
-                else:
-                    logging.debug("persist - %s doesn't exist yet" % self.logname)
-                    return
-
+                # bw compat sucks
+                try:
+                    data = get(fn)
+                    if not data:
+                       datafile = open(fn, 'r')
+                       data = datafile.read()
+                       datafile.close()
+                       set(self.fn, data)
+                    else: gotcache = True
+                except IOError, ex:
+                    if not 'No such file' in str(ex):
+                        logging.error('persist - failed to read %s: %s' % (self.logname, str(ex)))
+                        raise
+                    else:
+                        logging.debug("persist - %s doesn't exist yet" % self.logname)
+                        return
             try:
                 self.data = loads(data)
                 if type(self.data) == types.DictType:
