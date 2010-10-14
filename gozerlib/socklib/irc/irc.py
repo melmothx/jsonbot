@@ -125,7 +125,7 @@ class Irc(BotBase):
         if self.blocking:
             socktimeout = self.cfg['socktimeout']
             if not socktimeout:
-                socktimeout = 301.0
+                socktimeout = 500.0
             else:
                 socktimeout = float(socktimeout)
             self.oldsock.settimeout(socktimeout)

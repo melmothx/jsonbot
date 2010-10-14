@@ -37,7 +37,7 @@ class NSAuth(Pdod):
         """ add a nickserv entry. """
         options = {
             'nickserv': 'NickServ',
-            'identify': 'IDENTIFY',
+            'identify': 'identify',
         }
         options.update(kwargs)
         assert options.has_key('password'), 'A password must be set'
@@ -62,9 +62,9 @@ class NSAuth(Pdod):
 
     def identify(self, bot):
         """ identify a bot to nickserv. """
-        if self.has_key(bot.name) and self.has_key2(bot.name, 'nickserv'):
-            bot.outnocb(self.get(bot.name, 'nickserv', ), '%s %s' % (self.get(bot.name, 'identify'), self.get(bot.name, 'password')), how="msg")
+        if self.has_key(bot.name):
             logging.warn('nickserv - identify sent on %s' % bot.server)
+            bot.outnocb(self.get(bot.name, 'nickserv', ), '%s %s' % (self.get(bot.name, 'identify'), self.get(bot.name, 'password')), how="msg")
 
     def listbots(self):
         """ list all bots know. """
