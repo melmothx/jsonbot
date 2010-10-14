@@ -50,8 +50,8 @@ class IrcEvent(EventBase):
         rawstr = rawstr.rstrip()
         splitted = re.split('\s+', rawstr)
         if not rawstr[0] == ':':
-            splitted.insert(0, ":none!none@none")
-            rawstr = ":none!none@none " + rawstr
+            splitted.insert(0, u":%s!%s@%s" % (bot.nick, bot.name, bot.server))
+            rawstr = u":%s!%s@%s %s" % (bot.nick, bot.name, bot.server, rawstr)
         self.prefix = splitted[0][1:]
         nickuser = self.prefix.split('!')
         if len(nickuser) == 2:

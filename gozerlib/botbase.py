@@ -230,7 +230,7 @@ class BotBase(LazyDict):
         if not event: raise NoEventProvided()
         self.status = "callback"
         starttime = time.time()
-        msg = "REMOTE - %s - handling %s - %s - %s" % (self.name, event.cbtype, event.auth, event.how)
+        msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)
         logging.warn(msg)
         logging.debug("botbase - remote - %s" % event.dump())
         if self.closed:
@@ -251,7 +251,7 @@ class BotBase(LazyDict):
         if event.isremote(): self.doremote(event) ; return
         self.status = "callback"
         starttime = time.time()
-        msg = "LOCAL - %s - handling %s - %s - %s" % (self.name, event.cbtype, event.auth, event.how)
+        msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)
         try: int(event.cbtype) ; logging.debug(msg)
         except ValueError:
             if event.cbtype == 'PING': logging.debug(msg)
