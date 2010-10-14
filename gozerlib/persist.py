@@ -73,8 +73,8 @@ try:
             if jsontxt is None:
                 logging.debug("persist - %s - loading from db" % self.logname) 
                 try:
-                    try: self.obj = JSONindb.get_by_key_name(self.fn)
-                    except Timeout: self.obj = JSONindb.get_by_key_name(self.fn)
+                    try: self.obj = JSONindb.get_by_key_name(fn)
+                    except Timeout: self.obj = JSONindb.get_by_key_name(fn)
                 except Exception, ex:
                     # bw compat sucks
                     try: self.obj = JSONindb.get_by_key_name(fn)
