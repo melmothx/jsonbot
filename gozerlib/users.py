@@ -105,8 +105,7 @@ class Users(Persist):
             user = self.byname(self.data.names[userhost])
             if user: return user
         except KeyError:
-            logging.warn("user - can't find %s in names cache" % userhost) 
-            return
+            logging.debug("user - can't find %s in names cache" % userhost) 
 
     ## Check functions
 
