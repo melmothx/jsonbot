@@ -60,7 +60,7 @@ class TaskHandler(webapp.RequestHandler):
 
         except Exception, ex:
             handle_exception()
-            self.send_error(500)
+            #self.send_error(500)
 
     def post(self):
         """ this is where the task gets dispatched. """
@@ -82,7 +82,7 @@ class TaskHandler(webapp.RequestHandler):
 
         except Exception, ex:
             handle_exception()
-            self.send_error(500)
+            #self.send_error(500)
 
 # the application 
 
