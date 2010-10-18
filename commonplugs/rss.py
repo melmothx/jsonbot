@@ -124,9 +124,9 @@ if not lastpoll.data: lastpoll.data = LazyDict() ; lastpoll.save()
 sleeptime = PlugPersist('sleeptime')
 if not sleeptime.data: sleeptime.data = LazyDict() ; sleeptime.save()
 
-## Rssitem class
+## Feed class
 
-class Rssitem(Persist):
+class Feed(Persist):
 
     """ item that contains rss data """
 
@@ -255,12 +255,12 @@ class Rssdict(PlugPersist):
             if not self.data.has_key('names'): self.data['names'] = []
             if not self.data.has_key('urls'): self.data['urls'] = {}
             if not feedname: pass
-            else: self.feeds[feedname] = Rssitem(feedname)
+            else: self.feeds[feedname] = Feed(feedname)
         #self.startwatchers()
 
     def savelastpeek(self, feedname):
         logging.warn("rss - %s - saving lastpeek." % feedname)
-        feed = Rssitem(feedname)
+        feed = Feed(feedname)
         try: feed.lastpeek.save()
         except Exception, ex: handle_exception()
 
@@ -280,7 +280,7 @@ class Rssdict(PlugPersist):
         """ add rss item. """
         logging.warn('rss - adding %s - %s - (%s)' % (name, url, owner))
         if name not in self.data['names']: self.data['names'].append(name)
-        self.feeds[name] = Rssitem(name, url, owner, ['title', 'link'])
+        self.feeds[name] = Feed(name, url, owner, ['title', 'link'])
         self.data['urls'][url] = name
         self.feeds[name].save()
         self.watch(name)
@@ -299,7 +299,7 @@ class Rssdict(PlugPersist):
         """ return rss item by name. """
         try: return self.feeds[name]
         except KeyError:
-            item = Rssitem(name)
+            item = Feed(name)
             if item.data.url: self.feeds[name] = item ; return self.feeds[name]
 
     def cloneurl(self, url, auth):
@@ -357,17 +357,18 @@ class Rsswatcher(Rssdict):
         except KeyError: return
         return self.byname(name)
 
-    def handledata(self, data, name=None):
+    def handle_data(self, data, name=None):
         """ handle data received in callback. """
         try:
             result = feedparser.parse(data.content)
             if name: rssitem = self.byname(name)
             else: url = find_self_url(result.feed.links) ; rssitem = self.byurl(url)
             if rssitem: name = rssitem.data.name
-            else: logging.debug("rss - can't find %s item" % url) ; return
-            logging.warn("rss - handledata - %s" % name)
+            else: logging.warn("rss - can't find %s item" % url) ; del data ; return
+            logging.warn("rss - handle_data - %s" % name)
             if self.peek(name, data=result.entries): rssitem.lastpeek.save()
         except Exception, ex: handle_exception(txt=name)
+        del data
         return True
 
     def insertdata(self, data):
@@ -408,7 +409,7 @@ class Rsswatcher(Rssdict):
 
     def getall(self):
         """ get all feeds. """
-        for name in self.data['names']: self.feeds[name] = Rssitem(name)
+        for name in self.data['names']: self.feeds[name] = Feed(name)
         return self.feeds
        
     def shouldpoll(self, name, curtime):
@@ -715,7 +716,8 @@ def shouldpoll(name, curtime):
 
 def rssfetchcb(rpc):
     data = rpc.get_result()
-    watcher.handledata(data, name=rpc.feedname)
+    if data.status_code == 200: watcher.handle_data(data, name=rpc.feedname)
+    else: logging.error("rss - fetch returned status code %s - %" % (data.status_code, data.url))
 
 def create_rsscallback(rpc):
     return lambda: rssfetchcb(rpc)
@@ -734,7 +736,7 @@ def doperiodicalGAE(*args, **kwargs):
     logging.warn("rss - feeds to fetch: %s" % str(feedstofetch))
     for f in feedstofetch:
         lastpoll.data[f] = curtime
-        feed = Rssitem(f)
+        feed = Feed(f)
         rpc = urlfetch.create_rpc()
         rpc.feedname = f
         rpc.callback = create_rsscallback(rpc)

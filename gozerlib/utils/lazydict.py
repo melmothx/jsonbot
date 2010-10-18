@@ -47,6 +47,8 @@ def checkignore(name, ignore):
 
 def dumpelement(element, prev={}, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
+    try: element = cpy(element)
+    except (TypeError, ValueError): pass
     try: new = dict(prev)
     except (TypeError, ValueError): new = {}
     for name in element:
