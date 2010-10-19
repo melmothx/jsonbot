@@ -17,6 +17,9 @@ import sys
 class JsonBotError(Exception):
     pass
 
+class FeedAlreadyExists(JsonBotError):
+     pass
+
 class BotNotEnabled(JsonBotError):
      pass
 

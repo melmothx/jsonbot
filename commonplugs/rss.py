@@ -32,7 +32,7 @@ from gozerlib.callbacks import callbacks
 from gozerlib.fleet import fleet
 from gozerlib.threadloop import TimedLoop
 from gozerlib.threads import start_new_thread
-from gozerlib.errors import NoSuchBotType
+from gozerlib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
 from gozerlib.datadir import datadir
 from gozerlib.config import cfg as mainconfig
 
@@ -132,7 +132,7 @@ class Feed(Persist):
 
     def __init__(self, name="nonameset", url="", owner="noownerset", itemslist=['title', 'link'], watchchannels=[], \
 sleeptime=15*60, running=0):
-        if True:
+        if name:
             filebase = datadir + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
             Persist.__init__(self, filebase + '-core')
             if not self.data: self.data = {}
@@ -146,7 +146,8 @@ sleeptime=15*60, running=0):
             self.itemslists = Pdol(filebase + '-itemslists')
             self.markup = Pdod(filebase + '-markup')
             self.lastpeek = Persist(filebase + '-lastpeek')
-            
+        else: raise NameNotSet()
+
     def ownercheck(self, userhost):
         """ check is userhost is the owner of the feed. """
         try: return self.data.owner.lower() == userhost.lower()
@@ -280,6 +281,7 @@ class Rssdict(PlugPersist):
         """ add rss item. """
         logging.warn('rss - adding %s - %s - (%s)' % (name, url, owner))
         if name not in self.data['names']: self.data['names'].append(name)
+        else: raise FeedAlreadyExists("feed already exists: %s" % name)
         self.feeds[name] = Feed(name, url, owner, ['title', 'link'])
         self.data['urls'][url] = name
         self.feeds[name].save()
@@ -297,6 +299,7 @@ class Rssdict(PlugPersist):
 
     def byname(self, name):
         """ return rss item by name. """
+        if not name: return
         try: return self.feeds[name]
         except KeyError:
             item = Feed(name)
@@ -713,10 +716,15 @@ def shouldpoll(name, curtime):
     logging.debug("rss - pollcheck - %s - %s - remaining %s" % (name, time.ctime(lp), (lp + st) - curtime))
     if curtime - lp > st: return True
 
+def dodata(data, name):
+    watcher.handle_data(data, name=name)    
 
 def rssfetchcb(rpc):
     data = rpc.get_result()
-    if data.status_code == 200: watcher.handle_data(data, name=rpc.feedname)
+    if data.status_code == 200:
+        from google.appengine.ext.deferred import defer
+        logging.warn("rss- defered %s feed" % rpc.feedname)
+        defer(dodata, data, rpc.feedname)
     else: logging.error("rss - fetch returned status code %s - %" % (data.status_code, data.url))
 
 def create_rsscallback(rpc):
@@ -1399,3 +1407,29 @@ def handle_rsspeekall(bot, ievent):
     ievent.done()
 
 cmnds.add('rss-peekall', handle_rsspeekall, ['OPER', ])
+
+def handle_rssimport(bot, ievent):
+    """ import feeds uses OPML. """
+    import xml.etree.ElementTree as etree
+    data = open('opml1.xml', 'r').read()
+    element = etree.fromstring(data)
+    teller = 0
+    errors = {}
+    for elem in element.getiterator():
+        name = elem.get("title")
+        if name: name = "+".join(name.split())
+        url = elem.get("xmlUrl")
+        try:
+            logging.warn("rss - import - adding %s - %s" % (name, url))
+            watcher.add(name, url, ievent.userhost)
+            teller += 1
+        except Exception, ex:
+            errors[name] = str(ex)
+    ievent.reply("added %s items" % teller)
+    if errors:
+        errlist = []
+        for name, err in errors.iteritems():
+            errlist.append("%s - %s" % (name, err))
+        ievent.reply("there were errors: ", errlist)
+
+cmnds.add('rss-import', handle_rssimport, ['OPER', ])

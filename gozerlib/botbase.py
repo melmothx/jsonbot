@@ -302,6 +302,7 @@ class BotBase(LazyDict):
         print txt
 
     def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
+        if not txt: return ""
         txt = self.makeresponse(txt, result, dot)
         res1, nritems = self.less(printto, txt, nr+extend)
         return res1
