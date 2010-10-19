@@ -363,12 +363,18 @@ class Rsswatcher(Rssdict):
     def handle_data(self, data, name=None):
         """ handle data received in callback. """
         try:
-            result = feedparser.parse(data.content)
+            global etags
+            if name and etags.data.has_key(name): etag = etags.data[name]
+            else: etag = None
+            result = feedparser.parse(data.content, etag=etag)
             if name: rssitem = self.byname(name)
             else: url = find_self_url(result.feed.links) ; rssitem = self.byurl(url)
             if rssitem: name = rssitem.data.name
             else: logging.warn("rss - can't find %s item" % url) ; del data ; return
             logging.warn("rss - handle_data - %s" % name)
+            etag = result.etag
+            if etag and etags.data[name] != etag: etags.data[name] = etag ; etags.save()
+            if not name in urls.data: urls.data[name] = url ; urls.save()
             if self.peek(name, data=result.entries): rssitem.lastpeek.save()
         except Exception, ex: handle_exception(txt=name)
         del data
@@ -558,9 +564,7 @@ class Rsswatcher(Rssdict):
         """ stop watcher thread. """
         try:
             feed = self.byname(name)
-            feed.data.running = 0
-            feed.save()
-            return True
+            if feed: feed.data.running = 0 ; feed.save() ; return True
         except KeyError: pass
         return False
 
@@ -689,6 +693,9 @@ class Rsswatcher(Rssdict):
 # the watcher object 
 
 watcher = Rsswatcher('rss')
+urls = PlugPersist('urls')
+etags = PlugPersist('etags')
+
 assert(watcher)
 
 ## dosync function
@@ -742,16 +749,19 @@ def doperiodicalGAE(*args, **kwargs):
         if not shouldpoll(feed, curtime): continue
         feedstofetch.append(feed)
     logging.warn("rss - feeds to fetch: %s" % str(feedstofetch))
+    got = False
     for f in feedstofetch:
         lastpoll.data[f] = curtime
-        feed = Feed(f)
+        if f not in urls.data: url = Feed(f).data.url ; urls.data[f] = url ; got = True
+        else: url = urls.data[f]
         rpc = urlfetch.create_rpc()
         rpc.feedname = f
         rpc.callback = create_rsscallback(rpc)
-        urlfetch.make_fetch_call(rpc, feed.data.url)
+        urlfetch.make_fetch_call(rpc, url)
         rpcs.append(rpc)
     for rpc in rpcs: rpc.wait()
     if feedstofetch: lastpoll.save()
+    if got: urls.save()
 
 def doperiodical(*args, **kwargs):
     """ rss periodical function. """
@@ -1156,10 +1166,13 @@ def handle_rssstopwatch(bot, ievent):
     """ stop watching a feed. """
     try: name = ievent.args[0]
     except IndexError: ievent.missing('<name>') ; return
-    rssitem = watcher.byname(name)
-    if not rssitem: ievent.reply("there is no %s rssitem" % name) ; return
-    if not watcher.stopwatch(name): ievent.reply("can't stop %s watcher" % name) ; return
-    ievent.reply('stopped %s rss watch' % name)
+    stopped = []
+    if name == "all":
+        for name in watcher.list():
+            if watcher.stopwatch(name): stopped.append(name)
+    else:
+        if watcher.stopwatch(name): stopped.append(name)
+    ievent.reply('stopped rss watchers: ', stopped)
 
 cmnds.add('rss-stopwatch', handle_rssstopwatch, ['OPER', ])
 examples.add('rss-stopwatch', 'rss-stopwatch <name> .. stop polling <name>', 'rss-stopwatch jsonbot')
