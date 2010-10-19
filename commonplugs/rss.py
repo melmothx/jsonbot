@@ -1410,16 +1410,21 @@ cmnds.add('rss-peekall', handle_rsspeekall, ['OPER', ])
 
 def handle_rssimport(bot, ievent):
     """ import feeds uses OPML. """
+    if not ievent.rest: ievent.missing("<url>") ; return
     import xml.etree.ElementTree as etree
-    data = open('opml1.xml', 'r').read()
-    element = etree.fromstring(data)
+    data = geturl2(ievent.rest)
+    if not data: ievent.reply("can't fetch data from %s" % ievent.rest)
+    try: element = etree.fromstring(data)
+    except Exception, ex: ievent.reply("error reading %s: %s" % (ievent.rest, str(ex))) ; return
     teller = 0
     errors = {}
     for elem in element.getiterator():
-        name = elem.get("title")
+        name = elem.get("text")
         if name: name = "+".join(name.split())
-        url = elem.get("xmlUrl")
+        url = elem.get('url') or elem.get("xmlUrl")
         try:
+            assert(name)
+            assert(url)
             logging.warn("rss - import - adding %s - %s" % (name, url))
             watcher.add(name, url, ievent.userhost)
             teller += 1

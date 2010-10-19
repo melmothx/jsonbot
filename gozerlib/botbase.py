@@ -402,6 +402,7 @@ class BotBase(LazyDict):
         res = []
         if result:
             for i in result:
+                if not i: continue
                 if type(i) == types.ListType or type(i) == types.TupleType:
                     try:
                         res.append(dot.join(i))
