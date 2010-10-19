@@ -267,7 +267,7 @@ def handle_versions(bot, ievent):
         except AttributeError, ex: pass
         try: versions['python'] = sys.version
         except AttributeError, ex: pass
-    ievent.reply("versions ==> %s" % str(versions))
+    ievent.reply("versions ==> %s" % unicode(versions))
 
 cmnds.add('versions', handle_versions, ['USER', 'GUEST'])
 examples.add('versions', 'show versions of all loaded modules', 'versions')
@@ -326,7 +326,7 @@ examples.add('statusline', 'show status line', 'statusline')
 
 def handle_topper(bot, event):
     """ show a 'topper' startus line. """
-    event.reply("<b>forwards:</b> %s - <b>watched:</b> %s  - <b>feeds:</b> %s" % (", ".join(event.chan.data.forwards) or "none", ", ".join(event.chan.data.watched) or "none", ", ".join([str(x) for x in event.chan.data.feeds]) or "none"))
+    event.reply("<b>forwards:</b> %s - <b>watched:</b> %s  - <b>feeds:</b> %s" % (", ".join(event.chan.data.forwards) or "none", ", ".join(event.chan.data.watched) or "none", ", ".join([unicode(x) for x in event.chan.data.feeds]) or "none"))
 
 cmnds.add('topper', handle_topper, ['USER', 'GUEST'])
 examples.add('topper', 'show topper line', 'topper')

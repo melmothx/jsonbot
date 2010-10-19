@@ -137,9 +137,9 @@ sleeptime=15*60, running=0):
             Persist.__init__(self, filebase + '-core')
             if not self.data: self.data = {}
             self.data = LazyDict(self.data)
-            self.data['name'] = self.data.name or str(name)
-            self.data['url'] = self.data.url or str(url)
-            self.data['owner'] = self.data.owner or str(owner)
+            self.data['name'] = self.data.name or unicode(name)
+            self.data['url'] = self.data.url or unicode(url)
+            self.data['owner'] = self.data.owner or unicode(owner)
             self.data['result'] = []
             self.data['watchchannels'] = self.data.watchchannels or list(watchchannels)
             self.data['running'] = self.data.running or running
@@ -1426,7 +1426,7 @@ def handle_rssimport(bot, ievent):
             assert(name)
             assert(url)
             logging.warn("rss - import - adding %s - %s" % (name, url))
-            watcher.add(name, url, ievent.userhost)
+            watcher.add(fromenc(name), fromenc(url), ievent.userhost)
             teller += 1
         except Exception, ex:
             errors[name] = str(ex)
