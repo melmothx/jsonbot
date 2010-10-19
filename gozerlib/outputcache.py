@@ -7,11 +7,13 @@
 from persist import Persist
 from utils.name import stripname
 from datadir import datadir
+from gozerlib.utils.timeutils import hourmin
 
 ## basic imports
 
 import os
 import logging
+import time
 
 ## clear function
 
@@ -32,10 +34,13 @@ def clear(target):
 def add(target, txtlist):
     """ add list of txt to target entry. """
     logging.warn("outputcache - adding %s lines" % len(txtlist))
+    t = []
+    for item in txtlist:
+        t.append("[%s] %s" % (hourmin(time.time()), item))
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     d = cache.data
     if not d.has_key('msg'): d['msg'] = []
-    d['msg'].extend(txtlist)
+    d['msg'].extend(t)
     while len(d['msg']) > 10: d['msg'].pop(0)
     cache.save()
 
@@ -43,9 +48,12 @@ def add(target, txtlist):
 
 def set(target, txtlist):
     """ set target entry to list. """
+    t = []
+    for item in txtlist:
+        t.append("[%s] %s" % (hourmin(time.time()), item))
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     if not cache.data.has_key('msg'): cache.data['msg'] = []
-    cache.data['msg'] = txtlist
+    cache.data['msg'] = t
     cache.save()
 
 ## get function
