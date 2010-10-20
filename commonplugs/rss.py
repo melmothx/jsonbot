@@ -367,12 +367,18 @@ class Rsswatcher(Rssdict):
             if name and etags.data.has_key(name): etag = etags.data[name]
             else: etag = None
             result = feedparser.parse(data.content, etag=etag)
+            try: status = result.status
+            except AttributeError: status = None
+            logging.warn("rss - status returned of %s feed is %s" % (name, status))
+            if status and status != 200: return
             if name: rssitem = self.byname(name)
             else: url = find_self_url(result.feed.links) ; rssitem = self.byurl(url)
             if rssitem: name = rssitem.data.name
             else: logging.warn("rss - can't find %s item" % url) ; del data ; return
             logging.warn("rss - handle_data - %s" % name)
-            etag = result.etag
+            try: etag = result.etag
+            except AttributeError: etrag = None
+            logging.warn("rss - etag of %s feed is %s" % (name, etag))
             if etag and etags.data[name] != etag: etags.data[name] = etag ; etags.save()
             if not name in urls.data: urls.data[name] = url ; urls.save()
             if self.peek(name, data=result.entries): rssitem.lastpeek.save()
