@@ -733,10 +733,16 @@ def dodata(data, name):
     watcher.handle_data(data, name=name)    
 
 def rssfetchcb(rpc):
-    data = rpc.get_result()
+    import google
+    try: data = rpc.get_result()
+    except google.appengine.api.urlfetch_errors.DownloadError, ex: logging.warn("rss - %s - error: %s" % (rpc.final_url, str(ex))) ; return
+    name = rpc.feedname
+    logging.warn("rss - headers of %s: %s" % (name, unicode(data.headers)))
+    try: etags.data[name] = data.headers.get('etag') ; logging.warn("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.save()
+    except KeyError: pass
     if data.status_code == 200:
+        logging.warn("rss - defered %s feed" % rpc.feedname)
         from google.appengine.ext.deferred import defer
-        logging.warn("rss- defered %s feed" % rpc.feedname)
         defer(dodata, data, rpc.feedname)
     else: logging.error("rss - fetch returned status code %s - %" % (data.status_code, data.url))
 
@@ -763,9 +769,14 @@ def doperiodicalGAE(*args, **kwargs):
         rpc = urlfetch.create_rpc()
         rpc.feedname = f
         rpc.callback = create_rsscallback(rpc)
-        urlfetch.make_fetch_call(rpc, url)
-        rpcs.append(rpc)
-    for rpc in rpcs: rpc.wait()
+        try: etag = etags.data[f]
+        except KeyError: etag = ""
+        logging.warn("rss - %s - sending request - %s" % (f, etag))
+        try: urlfetch.make_fetch_call(rpc, url, headers={"etag": etag}) ; rpcs.append(rpc)
+        except Exception, ex: handle_exception()
+    for rpc in rpcs: 
+        try: rpc.wait()
+        except Exception, ex: handle_exception()
     if feedstofetch: lastpoll.save()
     if got: urls.save()
 
