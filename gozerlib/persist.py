@@ -132,6 +132,7 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
+            set(self.fn, bla)
             mc.set(self.fn, bla)
             logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
 

@@ -372,15 +372,13 @@ class Rsswatcher(Rssdict):
             except AttributeError: status = None
             logging.warn("rss - status returned of %s feed is %s" % (name, status))
             if status and status != 200: return
+            try: etag = etags.data[name] = data.headers.get('etag') ; logging.warn("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
+            except KeyError: etag = None
             if name: rssitem = self.byname(name)
             else: url = find_self_url(result.feed.links) ; rssitem = self.byurl(url)
             if rssitem: name = rssitem.data.name
             else: logging.warn("rss - can't find %s item" % url) ; del data ; return
-            logging.warn("rss - handle_data - %s" % name)
-            try: etag = result.etag
-            except AttributeError: etrag = None
             logging.warn("rss - etag of %s feed is %s" % (name, etag))
-            if etag and etags.data[name] != etag: etags.data[name] = etag ; etags.save()
             if not name in urls.data: urls.data[name] = url ; urls.save()
             if self.peek(name, data=result.entries): rssitem.lastpeek.save()
         except Exception, ex: handle_exception(txt=name)
@@ -725,10 +723,10 @@ def shouldpoll(name, curtime):
     """ check whether a new poll is needed. """
     global lastpoll
     try: lp = lastpoll.data[name]
-    except KeyError: lp = lastpoll.data[name] = time.time() ; lastpoll.save()
+    except KeyError: lp = lastpoll.data[name] = time.time() ; lastpoll.sync()
     global sleeptime
     try: st = sleeptime.data[name]
-    except KeyError: st = sleeptime.data[name] = 900 ; sleeptime.save()
+    except KeyError: st = sleeptime.data[name] = 900 ; sleeptime.sync()
     logging.debug("rss - pollcheck - %s - %s - remaining %s" % (name, time.ctime(lp), (lp + st) - curtime))
     if curtime - lp > st: return True
 
@@ -741,8 +739,6 @@ def rssfetchcb(rpc):
     except google.appengine.api.urlfetch_errors.DownloadError, ex: logging.warn("rss - %s - error: %s" % (rpc.final_url, str(ex))) ; return
     name = rpc.feedname
     logging.warn("rss - headers of %s: %s" % (name, unicode(data.headers)))
-    try: etags.data[name] = data.headers.get('etag') ; logging.warn("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
-    except KeyError: pass
     if data.status_code == 200:
         logging.warn("rss - defered %s feed" % rpc.feedname)
         from google.appengine.ext.deferred import defer
