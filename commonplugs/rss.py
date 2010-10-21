@@ -1449,7 +1449,7 @@ def handle_rssimport(bot, ievent):
     teller = 0
     errors = {}
     for elem in element.getiterator():
-        name = elem.get("text")
+        name = elem.get("keyname") or elem.get("text")
         if name: name = "+".join(name.split())
         url = elem.get('url') or elem.get("xmlUrl")
         try:

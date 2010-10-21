@@ -233,7 +233,6 @@ except ImportError:
         def sync(self):
             logging.warn("persist - syncing %s" % self.fn)
             set(self.fn, self.data)
-            mc.set(self.fn, dumps(self.data))
             return self.data
 
         @persistlocked
@@ -243,7 +242,6 @@ except ImportError:
                 fn = filename or self.fn
                 data = dumps(self.data)
                 set(fn, self.data)
-                mc.set(fn, data)
                 dirr = []
                 for p in self.fn.split(os.sep)[:-1]:
                     dirr.append(p)
