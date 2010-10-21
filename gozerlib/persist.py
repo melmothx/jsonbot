@@ -66,9 +66,9 @@ try:
         def init(self, default={}, filename=None):
             fn = self.fn.replace("@", "+")
             fn = fn.replace("#", "+")
-            cache = ""
-            tmp = get(self.fn) or get(fn) ; cache = "mem"
-            if tmp: self.data = tmp ; logging.warn("persist - %s - init from memcache" % self.fn) ; return
+            cachetype = ""
+            tmp = get(self.fn) or get(fn) ; cachetype = "mem"
+            if tmp: self.data = tmp ; logging.warn("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
             else: jsontxt =  mc.get(self.fn) or mc.get(fn) ; cache = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
@@ -95,8 +95,9 @@ try:
                 jsontxt = self.obj.content
                 if jsontxt: mc.set(self.fn, jsontxt)
                 logging.debug('persist - jsontxt is %s' % jsontxt)
-                gotcache = False
-            else: gotcache = True
+                cachetype = "file"
+            else: cachetype = "cache"
+            logging.warn("persist - %s - loaded %s" % (cachetype, self.fn))
             self.data = loads(jsontxt)
             if type(self.data) == types.DictType:
                 d = LazyDict()
@@ -111,8 +112,8 @@ try:
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
             if not 'run' in self.fn: 
-                if cache: logging.warn("persist - %s - loaded %s (%s) - %s - %s" % (cache, self.logname, len(jsontxt), self.data.tojson(), cfrom))
-                else: logging.warn("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
+                if cachetype: logging.debug("persist - %s - loaded %s (%s) - %s - %s" % (cache, self.logname, len(jsontxt), self.data.tojson(), cfrom))
+                else: logging.debug("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
             if self.data:
                 set(self.fn, self.data)
 
@@ -179,9 +180,14 @@ except ImportError:
         def init(self, default={}, filename=None):
             """ initialize the data. """
             logging.debug('persist - reading %s' % self.fn)
+            cfrom = whichmodule(2)
+            if 'gozerlib' in cfrom: 
+                cfrom = whichmodule(3)
+                if 'gozerlib' in cfrom: cfrom = whichmodule(4)
             gotcache = False
             fn = self.fn.replace("@", "+")
             fn = fn.replace("#", "+")
+            cachetype = "cache"
             try:
                 data = get(self.fn)
                 if not data: data = get(fn)
@@ -190,12 +196,18 @@ except ImportError:
                    else: datafile = open(self.fn, 'r')
                    data = datafile.read()
                    datafile.close()
+                   cachetype = "file"
                 else:
                     if type(data) == types.DictType:
                         d = LazyDict()
                         d.update(data)
                     else: d = data
                     self.data = d
+                    cachetype = "mem"
+                    logging.warn("persist - %s - loaded %s" % (cachetype, self.fn))
+                    if not 'run' in self.fn: 
+                        size = len(d)
+                        logging.debug("persist - mem - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
                     return
             except IOError, ex:
                 if not 'No such file' in str(ex):
@@ -211,14 +223,11 @@ except ImportError:
                     d = LazyDict()
                     d.update(self.data)
                     self.data = d
-                cfrom = whichmodule(2)
-                if 'gozerlib' in cfrom: 
-                    cfrom = whichmodule(3)
-                    if 'gozerlib' in cfrom: cfrom = whichmodule(4)
+                logging.warn("persist - %s - loaded %s" % (cachetype, self.fn))
                 if not 'run' in self.fn: 
                     size = len(data)
-                    if gotcache: logging.info("persist - cache - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
-                    else: logging.info("persist - file - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
+                    if gotcache: logging.debug("persist - cache - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
+                    else: logging.debug("persist - file - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
             except Exception, ex:
                 logging.error('persist - ERROR: %s' % self.fn)
                 raise

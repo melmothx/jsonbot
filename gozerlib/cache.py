@@ -19,12 +19,12 @@ def get(name, namespace=""):
     global cache
     try: 
         data = cache[name]
-        if data: logging.warn("cache - returning %s" % name) ; return data
+        if data: logging.debug("cache - returning %s" % name) ; return data
     except KeyError: pass
 
 def set(name, item, namespace=""):
     """ set data in the cache. """
-    logging.warn("cache - setting %s (%s)" % (name, len(item)))
+    logging.debug("cache - setting %s (%s)" % (name, len(item)))
     global cache
     cache[name] = item
 
@@ -33,5 +33,6 @@ def delete(name, namespace=""):
     try:
         global cache
         del cache[name]
+        logging.warn("cache - deleted %s" % name)
         return True
     except KeyError: return False
