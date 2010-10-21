@@ -21,11 +21,8 @@ def clear(target):
     """ clear target's outputcache. """
     cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     try:
-        result = cache.data['msg']
-        if result:
-            cache.data['msg'] = []
-            cache.save()
-            return result
+        cache.data['msg'] = []
+        cache.save()
     except KeyError: pass
     return []
 
