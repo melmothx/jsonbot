@@ -66,7 +66,9 @@ try:
         def init(self, default={}, filename=None):
             fn = self.fn.replace("@", "+")
             fn = fn.replace("#", "+")
-            jsontxt = get(self.fn) or get(fn) or mc.get(self.fn) or mc.get(fn)
+            cache = ""
+            jsontxt = get(self.fn) or get(fn) ; cache = "mem"
+            if not jsontxt: jsontxt =  mc.get(self.fn) or mc.get(fn) ; cache = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -108,8 +110,8 @@ try:
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
             if not 'run' in self.fn: 
-                if gotcache: logging.info("persist - cache - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
-                else: logging.info("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
+                if cache: logging.warn("persist - %s - loaded %s (%s) - %s - %s" % (cache, self.logname, len(jsontxt), self.data.tojson(), cfrom))
+                else: logging.warn("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
 
         def sync(self):
             logging.warn("persist - syncing %s" % self.fn)

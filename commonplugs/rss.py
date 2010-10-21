@@ -367,7 +367,7 @@ class Rsswatcher(Rssdict):
             if name and etags.data.has_key(name): etag = etags.data[name]
             else: etag = None
             result = feedparser.parse(data.content, etag=etag)
-            try: status = result.status
+            try: status = data.status_code
             except AttributeError: status = None
             logging.warn("rss - status returned of %s feed is %s" % (name, status))
             if status and status != 200: return
@@ -746,7 +746,7 @@ def rssfetchcb(rpc):
         logging.warn("rss - defered %s feed" % rpc.feedname)
         from google.appengine.ext.deferred import defer
         defer(dodata, data, rpc.feedname)
-    else: logging.error("rss - fetch returned status code %s - %" % (data.status_code, data.url))
+    else: logging.error("rss - fetch returned status code %s - %s" % (data.status_code, data.final_url))
 
 def create_rsscallback(rpc):
     return lambda: rssfetchcb(rpc)
