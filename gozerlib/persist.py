@@ -68,7 +68,7 @@ try:
             fn = fn.replace("#", "+")
             cache = ""
             tmp = get(self.fn) or get(fn) ; cache = "mem"
-            if tmp: self.data = tmp ; return
+            if tmp: self.data = tmp ; logging.warn("persist - %s - init from memcache" % self.fn) ; return
             else: jsontxt =  mc.get(self.fn) or mc.get(fn) ; cache = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
@@ -87,7 +87,7 @@ try:
                         self.data = default2
                         return
                 if self.obj == None:
-                    logging.debug("persist - %s - no entry found" % self.logname)
+                    logging.warn("persist - %s - no entry found" % self.logname)
                     self.obj = JSONindb(key_name=self.fn)
                     self.obj.content = unicode(default)
                     self.data = default2
@@ -135,7 +135,7 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            set(self.fn, bla)
+            set(self.fn, self.data)
             mc.set(self.fn, bla)
             logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
 
