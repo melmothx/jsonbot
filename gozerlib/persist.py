@@ -67,8 +67,9 @@ try:
             fn = self.fn.replace("@", "+")
             fn = fn.replace("#", "+")
             cache = ""
-            jsontxt = get(self.fn) or get(fn) ; cache = "mem"
-            if not jsontxt: jsontxt =  mc.get(self.fn) or mc.get(fn) ; cache = "cache"
+            tmp = get(self.fn) or get(fn) ; cache = "mem"
+            if tmp: self.data = tmp ; return
+            else: jsontxt =  mc.get(self.fn) or mc.get(fn) ; cache = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -92,7 +93,7 @@ try:
                     self.data = default2
                     return
                 jsontxt = self.obj.content
-                if jsontxt: mc.set(fn, jsontxt)
+                if jsontxt: mc.set(self.fn, jsontxt)
                 logging.debug('persist - jsontxt is %s' % jsontxt)
                 gotcache = False
             else: gotcache = True
@@ -112,11 +113,12 @@ try:
             if not 'run' in self.fn: 
                 if cache: logging.warn("persist - %s - loaded %s (%s) - %s - %s" % (cache, self.logname, len(jsontxt), self.data.tojson(), cfrom))
                 else: logging.warn("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
+            set(self.fn, self.data)
 
         def sync(self):
             logging.warn("persist - syncing %s" % self.fn)
             data = dumps(self.data)
-            set(self.fn, data) ; mc.set(self.fn, data)
+            set(self.fn, self.data) ; mc.set(self.fn, self.data)
             return data
      
         def save(self):
@@ -187,8 +189,13 @@ except ImportError:
                    else: datafile = open(self.fn, 'r')
                    data = datafile.read()
                    datafile.close()
-                   set(self.fn, data)
-                else: gotcache = True
+                else:
+                    if type(data) == types.DictType:
+                        d = LazyDict()
+                        d.update(data)
+                    else: d = data
+                    self.data = d
+                    return
             except IOError, ex:
                 if not 'No such file' in str(ex):
                     logging.error('persist - failed to read %s: %s' % (self.logname, str(ex)))
@@ -198,6 +205,7 @@ except ImportError:
                     return
             try:
                 self.data = loads(data)
+                set(self.fn, self.data)
                 if type(self.data) == types.DictType:
                     d = LazyDict()
                     d.update(self.data)
@@ -223,9 +231,8 @@ except ImportError:
 
         def sync(self):
             logging.warn("persist - syncing %s" % self.fn)
-            data = dumps(self.data)
-            set(self.fn, data)
-            return data
+            set(self.fn, self.data)
+            return self.data
 
         @persistlocked
         def save(self, filename=None):
@@ -233,7 +240,7 @@ except ImportError:
             try:
                 fn = filename or self.fn
                 data = dumps(self.data)
-                set(fn, data)
+                set(fn, self.data)
                 dirr = []
                 for p in self.fn.split(os.sep)[:-1]:
                     dirr.append(p)
@@ -255,7 +262,6 @@ except ImportError:
                     handle_exception()
                     os.remove(self.fn)
                     os.rename(tmp, fn)
-                set(self.fn, data)
                 logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
             except: handle_exception()
             finally: pass
