@@ -113,12 +113,13 @@ try:
             if not 'run' in self.fn: 
                 if cache: logging.warn("persist - %s - loaded %s (%s) - %s - %s" % (cache, self.logname, len(jsontxt), self.data.tojson(), cfrom))
                 else: logging.warn("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
-            set(self.fn, self.data)
+            if self.data:
+                set(self.fn, self.data)
 
         def sync(self):
             logging.warn("persist - syncing %s" % self.fn)
             data = dumps(self.data)
-            set(self.fn, self.data) ; mc.set(self.fn, self.data)
+            set(self.fn, self.data) ; mc.set(self.fn, data)
             return data
      
         def save(self):
@@ -232,6 +233,7 @@ except ImportError:
         def sync(self):
             logging.warn("persist - syncing %s" % self.fn)
             set(self.fn, self.data)
+            mc.set(self.fn, dumps(self.data))
             return self.data
 
         @persistlocked
@@ -241,6 +243,7 @@ except ImportError:
                 fn = filename or self.fn
                 data = dumps(self.data)
                 set(fn, self.data)
+                mc.set(fn, data)
                 dirr = []
                 for p in self.fn.split(os.sep)[:-1]:
                     dirr.append(p)
