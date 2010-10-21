@@ -22,11 +22,13 @@ def get(name, namespace=""):
 def set(name, item, namespace=""):
     """ set data in the cache. """
     logging.debug("cache - setting %s (%s)" % (name, len(item)))
+    global cache
     cache[name] = item
 
 def delete(name, namespace=""):
     """ delete data from the cache. """
     try:
+        global cache
         del cache[name]
         return True
     except KeyError: return False

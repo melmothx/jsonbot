@@ -722,8 +722,10 @@ def dosync(feedname):
 
 def shouldpoll(name, curtime):
     """ check whether a new poll is needed. """
+    global lastpoll
     try: lp = lastpoll.data[name]
     except KeyError: lp = lastpoll.data[name] = time.time() ; lastpoll.save()
+    global sleeptime
     try: st = sleeptime.data[name]
     except KeyError: st = sleeptime.data[name] = 900 ; sleeptime.save()
     logging.debug("rss - pollcheck - %s - %s - remaining %s" % (name, time.ctime(lp), (lp + st) - curtime))
@@ -738,7 +740,7 @@ def rssfetchcb(rpc):
     except google.appengine.api.urlfetch_errors.DownloadError, ex: logging.warn("rss - %s - error: %s" % (rpc.final_url, str(ex))) ; return
     name = rpc.feedname
     logging.warn("rss - headers of %s: %s" % (name, unicode(data.headers)))
-    try: etags.data[name] = data.headers.get('etag') ; logging.warn("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.save()
+    try: etags.data[name] = data.headers.get('etag') ; logging.warn("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
     except KeyError: pass
     if data.status_code == 200:
         logging.warn("rss - defered %s feed" % rpc.feedname)

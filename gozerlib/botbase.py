@@ -431,7 +431,7 @@ class BotBase(LazyDict):
             else:
                 logging.warn("botbase - on demand reloading of %s" % name)
                 try:
-                    plugloaded.append(plugs.reload(name, True))
+                    plugloaded.append(plugs.reload(name))
                 except Exception, ex: handle_exception(event)
         return plugloaded
 

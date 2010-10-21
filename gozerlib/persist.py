@@ -16,6 +16,7 @@ from utils.exception import handle_exception
 from utils.name import stripname
 from utils.locking import lockdec
 from datadir import datadir
+from cache import get, set
 
 ## simplejson imports
 
@@ -34,7 +35,7 @@ import sys
 
 try:
     from google.appengine.ext import db
-    from google.appengine.api.memcache import get, set
+    import google.appengine.api.memcache as mc
     from google.appengine.api.datastore_errors import Timeout
     logging.debug("persist - using BigTable based Persist")
 
@@ -65,7 +66,7 @@ try:
         def init(self, default={}, filename=None):
             fn = self.fn.replace("@", "+")
             fn = fn.replace("#", "+")
-            jsontxt = get(self.fn) or get(fn)
+            jsontxt = get(self.fn) or get(fn) or mc.get(self.fn) or mc.get(fn)
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -89,7 +90,7 @@ try:
                     self.data = default2
                     return
                 jsontxt = self.obj.content
-                if jsontxt: set(fn, jsontxt)
+                if jsontxt: mc.set(fn, jsontxt)
                 logging.debug('persist - jsontxt is %s' % jsontxt)
                 gotcache = False
             else: gotcache = True
@@ -109,6 +110,12 @@ try:
             if not 'run' in self.fn: 
                 if gotcache: logging.info("persist - cache - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
                 else: logging.info("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
+
+        def sync(self):
+            logging.warn("persist - syncing %s" % self.fn)
+            data = dumps(self.data)
+            set(self.fn, data) ; mc.set(self.fn, data)
+            return data
      
         def save(self):
             """ save json data to database. """
@@ -123,7 +130,7 @@ try:
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            set(self.fn, bla)
+            mc.set(self.fn, bla)
             logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
 
         def upgrade(self, filename):
