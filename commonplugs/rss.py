@@ -204,8 +204,9 @@ sleeptime=15*60, running=0):
         except (KeyError, ValueError): lastpeeked = 0 ; logging.debug("last peek of %s is initialised" % str(name))
         logging.warn("rss - %s feed - using lastpeeked: %s for %s" % (self.data.name, time.ctime(lastpeeked), str(item)))
         got = False
-        tobereturned = [] 
-        result = data or self.getdata() 
+        tobereturned = []
+        if data == None: result = self.getdata()
+        else: result = data
         logging.debug("got %s rss items for %s" % (len(result), str(item)))
         if result:
             r = lastpeeked
@@ -746,7 +747,7 @@ def rssfetchcb(rpc):
         logging.warn("rss - defered %s feed" % rpc.feedname)
         from google.appengine.ext.deferred import defer
         defer(dodata, data, rpc.feedname)
-    else: logging.error("rss - fetch returned status code %s - %s" % (data.status_code, data.final_url))
+    else: logging.warn("rss - fetch returned status code %s - %s" % (data.status_code, data.final_url))
 
 def create_rsscallback(rpc):
     return lambda: rssfetchcb(rpc)
@@ -765,6 +766,7 @@ def doperiodicalGAE(*args, **kwargs):
     logging.warn("rss - feeds to fetch: %s" % str(feedstofetch))
     got = False
     for f in feedstofetch:
+        if not f: continue
         lastpoll.data[f] = curtime
         if f not in urls.data: url = Feed(f).data.url ; urls.data[f] = url ; got = True
         else: url = urls.data[f]
@@ -774,7 +776,7 @@ def doperiodicalGAE(*args, **kwargs):
         try: etag = etags.data[f]
         except KeyError: etag = ""
         logging.warn("rss - %s - sending request - %s" % (f, etag))
-        try: urlfetch.make_fetch_call(rpc, url, headers={"etag": etag}) ; rpcs.append(rpc)
+        try: urlfetch.make_fetch_call(rpc, url, headers={"If-None-Match": etag}) ; rpcs.append(rpc)
         except Exception, ex: handle_exception()
     for rpc in rpcs: 
         try: rpc.wait()
