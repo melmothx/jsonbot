@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+#
+#
+
+""" upload all instances in ~/jsonreg/ """
+
+## gozerlib imports
+
+from gozerlib.utils.popen import gozerpopen
+
+## basic imports
+
+from subprocess import Popen, PIPE
+import os
+
+## do the thing
+
+for item in os.listdir(os.path.expanduser("~" + os.sep + 'jsonregs')):
+    print "UPLOADING %s" % item
+    execlist = ['./bin/jsb-release', item]
+    proc = Popen(execlist)
+    proc.wait()
+    execlist = ['./bin/jsb-upload', item]
+    proc = Popen(execlist)
+    proc.wait()
