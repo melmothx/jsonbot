@@ -45,6 +45,19 @@ def makeopts():
     opts.args = args
     return opts
 
+## makeeventopts() function
+
+
+def makeeventopts(txt):
+    """ create option parser for events. """
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: [options]', version=getversion())
+    parser.add_option('-c', '--chan', type='string', default=False, dest='channel', help="target channel")
+    parser.add_option('-s', '--silent', action='store_true', default=False, dest='silent',  help="give bot response in /pm")
+    opts, args = parser.parse_args(txt.split())
+    opts.args = args
+    return opts
+
 ## makeconfig function
 
 def makeconfig(type, opts, botname=None):

@@ -11,6 +11,7 @@ from utils.lazydict import LazyDict
 from utils.generic import splittxt, stripped
 from errors import NoSuchUser
 from config import cfg as mainconfig
+from utils.opts import makeeventopts
 
 ## simplejson imports
 
@@ -46,6 +47,7 @@ class EventBase(LazyDict):
         self.closequeue = True
         self.ttl = 1
         self.how = "normal"
+        self.chantag = None
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
@@ -60,7 +62,7 @@ class EventBase(LazyDict):
         assert(self.bot)
         self.origin = self.bot.user or self.bot.server
         self.origtxt = self.txt
-        self.makeargs()
+        if not self.options: self.makeoptions()
         logging.info("%s - prepared event - %s" % (self.cbtype, self.dump()))
 
     def bind(self, bot=None, user=None, chan=None):
@@ -133,6 +135,12 @@ class EventBase(LazyDict):
         self.ttl -= 1
         if self.ttl <= 0 : self.status = "done"
 
+    def makeoptions(self):
+        logging.warn("eventbase - creating options from %s" % self.txt)
+        self.options = makeeventopts(self.txt)
+        self.txt = ' '.join(self.options.args)
+        self.makeargs()
+
     def makeargs(self):
         """ make arguments and rest attributes from self.txt. """
         if not self.txt:
@@ -140,6 +148,7 @@ class EventBase(LazyDict):
             self.rest = ""
         else:
             args = self.txt.split()
+            self.chantag = args[0]
             if len(args) > 1:
                 self.args = args[1:]
                 self.rest = ' '.join(self.args)

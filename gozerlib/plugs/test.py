@@ -165,6 +165,14 @@ def handle_testsay(bot, ievent):
 cmnds.add('test-say', handle_testsay, 'OPER')
 examples.add('test-say', 'use bot.say()', 'test-say')
 
+## test-options command
+
+def handle_testoptions(bot, ievent):
+    ievent.reply('"%s" - %s' % (ievent.txt, unicode(ievent.options)))
+
+cmnds.add('test-options', handle_testoptions, 'OPER')
+examples.add('test-options', "test event options", "test-options")
+
 ## test-xhtml command
 
 def handle_testhtml(bot, ievent):
