@@ -15,13 +15,24 @@ from gozerlib.utils.name import stripname
 
 import os
 import uuid
+import logging
+import optparse
+
+## EventOptionParser class
+
+class EventOptionParser(optparse.OptionParser):
+
+     def exit(self):
+         pass
+
+     def error(self):
+         pass
 
 ## makeopts function
 
 def makeopts():
     """ create commandline parser options. """
-    from optparse import OptionParser
-    parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser = optparse.OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
     parser.add_option('', '-r', type='string', default=False, dest='doresume',  metavar='PATH', 
                   help="resume the bot from the folder specified")
     parser.add_option('-u', '--user', type='string', default=False, dest='user',  help="JID of the bot")
@@ -50,11 +61,11 @@ def makeopts():
 
 def makeeventopts(txt):
     """ create option parser for events. """
-    from optparse import OptionParser
-    parser = OptionParser(usage='usage: [options]', version=getversion())
+    parser = EventOptionParser()
     parser.add_option('-c', '--chan', type='string', default=False, dest='channel', help="target channel")
     parser.add_option('-s', '--silent', action='store_true', default=False, dest='silent',  help="give bot response in /pm")
-    opts, args = parser.parse_args(txt.split())
+    try: opts, args = parser.parse_args(txt.split())
+    except Exception, ex: logging.warn("opts - can't parse %s" % txt) ; return
     opts.args = args
     return opts
 

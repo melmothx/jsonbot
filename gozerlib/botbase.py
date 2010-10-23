@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from utils.exception import handle_exception
-from runner import defaultrunner, cmndrunner, longrunner
+from runner import defaultrunner
 from eventhandler import mainhandler
 from utils.lazydict import LazyDict
 from plugins import plugs as coreplugs
@@ -124,8 +124,6 @@ class BotBase(LazyDict):
         if not fleet.byname(self.name): fleet.bots.append(self)
         if not self.isgae:
             defaultrunner.start()
-            cmndrunner.start()
-            longrunner.start()
             tickloop.start(self)
 
     def put(self, event):
@@ -270,14 +268,14 @@ class BotBase(LazyDict):
         self.reloadcheck(event)
         if event.msg or event.isdcc: event.speed = 2
         e1 = cpy(event)
-        e2 = cpy(event)
-        e3 = cpy(event)
-        first_callbacks.check(self, e1)
-        if not event.forwarded:
-            e2 = cpy(event)
-            callbacks.check(self, e2)
-            e3 = cpy(event)
-            last_callbacks.check(self, e3)
+        #e2 = cpy(event)
+        #e3 = cpy(event)
+        callbacks.check(self, e1)
+        #if not event.forwarded:
+        #    e2 = cpy(event)
+        #    callbacks.check(self, e2)
+        #    e3 = cpy(event)
+        #    last_callbacks.check(self, e3)
         event.callbackdone = True
         return event
 
@@ -422,7 +420,7 @@ class BotBase(LazyDict):
         """ check if plugin need to be reloaded for callback, """
         plugloaded = []
         target = event.cbtype or event.cmnd
-        logging.debug("botbase - checking for reload of %s (%s)" % (target, event.userhost))
+        #logging.debug("botbase - checking for reload of %s (%s)" % (target, event.userhost))
         try:
             from boot import getcallbacktable   
             plugins = getcallbacktable()[target]

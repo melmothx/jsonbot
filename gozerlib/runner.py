@@ -68,7 +68,7 @@ class BotEventRunner(Runner):
         """ schedule a bot command. """
         try:
             self.starttime = time.time()
-            #lockmanager.acquire(getname(str(func)))
+            lockmanager.acquire(getname(str(func)))
             name = getname(str(func))
             self.name = name
             self.working = True
@@ -85,7 +85,7 @@ class BotEventRunner(Runner):
         except Exception, ex:
             if ievent.showexception: handle_exception(ievent)
             else: handle_exception()
-        #finally: lockmanager.release(getname(str(func)))
+        finally: lockmanager.release(getname(str(func)))
         self.working = False
 
 ## Runners class
@@ -144,21 +144,16 @@ class Runners(object):
 
     def cleanup(self):
         """ clean up idle runners. """
-        nr = len(self.runners)
-        if nr > 1:
-            for runner in self.runners:
-                logging.debug("runner - cleanup %s" % runner.name)
-                if not runner.queue.qsize(): runner.stop() 
+        for index in range(len(self.runners)-1, -1, -1):
+            runner = self.runners[index]
+            logging.debug("runner - cleanup %s" % runner.name)
+            if not runner.queue.qsize(): runner.stop() ; del self.runners[index]
 
 ## global runners
 
-defaultrunner = Runners(10, BotEventRunner)
-cmndrunner = Runners(10, BotEventRunner)
-longrunner = Runners(10, BotEventRunner)
+cmndrunner = defaultrunner = longrunner = Runners(10, BotEventRunner)
 
-def docleanup(bot, event):
-    defaultrunner.cleanup()
+def runnercleanup(bot, event):
     cmndrunner.cleanup()
-    longrunner.cleanup()
 
-callbacks.add("TICK", docleanup)
+callbacks.add("TICK", runnercleanup)
