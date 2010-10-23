@@ -28,6 +28,7 @@ def twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token=None, *args, **kwargs):
     if token:
         auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         auth.set_access_token(token.key, token.secret)
+
     return API(auth, *args, **kwargs)
 
 ## twittertoken function

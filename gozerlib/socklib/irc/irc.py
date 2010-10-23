@@ -92,6 +92,7 @@ class Irc(BotBase):
             self.lastoutput = time.time()
             itxt = toenc(outputmorphs.do(txt), self.encoding)
             #logging.debug(u"%s - out - %s" % (self.name, itxt))             
+            if not self.sock: logging.warn("%s - socket disappeared - not sending." % self.name)
             if self.cfg.has_key('ssl') and self.cfg['ssl']: self.sock.write(itxt + '\n')
             else: self.sock.send(itxt[:500] + '\n')
         except UnicodeEncodeError, ex:
@@ -263,7 +264,7 @@ class Irc(BotBase):
             except Exception, ex:
                 if self.stopped or self.stopreadloop:
                     break
-                logging.error("%s - error in readloop: %s" % (self.name, msg))
+                logging.error("%s - error in readloop: %s" % (self.name, str(ex)))
                 doreconnect = 1
                 break
         logging.info('%s - readloop stopped' % self.name)

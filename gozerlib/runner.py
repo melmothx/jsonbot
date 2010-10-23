@@ -12,6 +12,7 @@ from gozerlib.utils.locking import locked, lockdec
 from gozerlib.utils.lockmanager import rlockmanager, lockmanager
 from gozerlib.utils.trace import callstack
 from gozerlib.threadloop import RunnerLoop
+from gozerlib.callbacks import callbacks
 
 ## basic imports
 
@@ -47,6 +48,7 @@ class Runner(RunnerLoop):
         try:
             rlockmanager.acquire(getname(str(func)))
             name = getname(str(func))
+            self.name = name
             logging.debug('runner - running %s: %s' % (descr, name))
             self.starttime = time.time()
             func(*args, **kwargs)
@@ -68,6 +70,7 @@ class BotEventRunner(Runner):
             self.starttime = time.time()
             #lockmanager.acquire(getname(str(func)))
             name = getname(str(func))
+            self.name = name
             self.working = True
             logging.debug("runner - now running %s" % name)
             func(bot, ievent, *args, **kwargs)
@@ -117,7 +120,6 @@ class Runners(object):
             if not runner.queue.qsize():
                 runner.put(*data)
                 return
-        self.cleanup()
         runner = self.makenew()
         runner.put(*data)
          
@@ -145,6 +147,7 @@ class Runners(object):
         nr = len(self.runners)
         if nr > 1:
             for runner in self.runners:
+                logging.warn("runner - cleanup %s" % runner.name)
                 if not runner.queue.qsize(): runner.stop() 
 
 ## global runners
@@ -152,3 +155,10 @@ class Runners(object):
 defaultrunner = Runners(10, BotEventRunner)
 cmndrunner = Runners(10, BotEventRunner)
 longrunner = Runners(10, BotEventRunner)
+
+def docleanup(bot, event):
+    defaultrunner.cleanup()
+    cmndrunner.cleanup()
+    longrunner.cleanup()
+
+callbacks.add("TICK", docleanup)

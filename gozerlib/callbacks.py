@@ -14,7 +14,6 @@ from threads import getname, start_new_thread
 from utils.exception import handle_exception
 from utils.trace import calledfrom, whichplugin, callstack
 from utils.dol import Dol
-from runner import defaultrunner
 
 ## basic imports
 
@@ -146,7 +145,9 @@ class Callbacks(object):
             if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
             else:
                 if bot.isgae: cb.func(bot, event)
-                else: defaultrunner.put(cb.modname, cb.func, bot, event)
+                else:
+                    from runner import defaultrunner
+                    defaultrunner.put(cb.modname, cb.func, bot, event)
             return True
         except Exception, ex:
             handle_exception()

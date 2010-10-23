@@ -221,7 +221,10 @@ class BotBase(LazyDict):
             start_new_thread(self._outloop, ())
             start_new_thread(self._eventloop, ())
             start_new_thread(self._readloop, ())
-            if connect: self.connectok.wait() ; start_new_thread(self.joinchannels, ())
+            if connect:
+                self.connectok.wait(30)
+                if self.connectok.isSet():
+                    start_new_thread(self.joinchannels, ())
         self.status == "running"
         self.dostart(self.botname, self.type)
 
@@ -287,12 +290,13 @@ class BotBase(LazyDict):
     def exit(self):
         """ exit the bot. """ 
         logging.warn("%s - exit" % self.name)
-        self.quit()
+        if not self.stopped: self.quit()
         self.stopped = True   
         self.stopreadloop = True  
         self.connected = False
         self.put(None)
         self.tickqueue.put_nowait('go')
+        self.outqueue.put_nowait(None)
         self.shutdown()
         self.save()
 
@@ -359,6 +363,8 @@ class BotBase(LazyDict):
     def reconnect(self):
         """ reconnect to the server. """
         try:
+            try: self.exit()
+            except Exception, ex: handle_exception()
             self.reconnectcount += 1
             logging.warn('%s - reconnecting .. sleeping %s seconds' % (self.name, self.reconnectcount*15))
             time.sleep(self.reconnectcount * 15)   

@@ -67,7 +67,7 @@ def postmsg(username, txt):
     
 ## classes
 
-class TwitterUser(PlugPersist):
+class TwitterUsers(PlugPersist):
 
     def add(self, user, token):
         user = user.strip().lower()
