@@ -147,7 +147,7 @@ class Runners(object):
         nr = len(self.runners)
         if nr > 1:
             for runner in self.runners:
-                logging.warn("runner - cleanup %s" % runner.name)
+                logging.debug("runner - cleanup %s" % runner.name)
                 if not runner.queue.qsize(): runner.stop() 
 
 ## global runners
