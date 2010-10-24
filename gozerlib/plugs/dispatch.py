@@ -48,7 +48,8 @@ def dispatch(bot, event):
             e.usercmnd = execstr.split()[0]
             e.txt = execstr
             e.showexception = True
-            e.prepare()
+            if not e.options: e.makeoptions()
+            else: e.prepare()
             if e.usercmnd in event.chan.data.silentcommands: e.silent = True
             result = bot.plugs.dispatch(bot, e)
         else:
