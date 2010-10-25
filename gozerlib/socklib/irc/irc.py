@@ -92,7 +92,7 @@ class Irc(BotBase):
             self.lastoutput = time.time()
             itxt = toenc(outputmorphs.do(txt), self.encoding)
             #logging.debug(u"%s - out - %s" % (self.name, itxt))             
-            if not self.sock: logging.warn("%s - socket disappeared - not sending." % self.name)
+            if not self.sock: logging.warn("%s - socket disappeared - not sending." % self.name) ; return
             if self.cfg.has_key('ssl') and self.cfg['ssl']: self.sock.write(itxt + '\n')
             else: self.sock.send(itxt[:500] + '\n')
         except UnicodeEncodeError, ex:
@@ -114,8 +114,8 @@ class Irc(BotBase):
             self.oldsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         assert(self.oldsock)
         server = self.bind()
-        logging.warn('%s - connecting to %s (%s)' % (self.name, server, self.server))
-        self.oldsock.settimeout(5)
+        logging.warn('%s - connecting to %s - %s - %s' % (self.name, server, self.server, self.port))
+        self.oldsock.settimeout(30)
         self.oldsock.connect((server, int(str(self.port))))	
         self.blocking = 1
         self.oldsock.setblocking(self.blocking)
@@ -296,6 +296,8 @@ class Irc(BotBase):
         """ resume to server/port using nick. """
         try:
             if data['ssl']:
+                self.exit()
+                time.sleep(3)
                 self.start()
                 return 1
         except KeyError:
