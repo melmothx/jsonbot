@@ -75,11 +75,11 @@ try:
             if jsontxt is None:
                 logging.debug("persist - %s - loading from db" % self.logname) 
                 try:
-                    try: self.obj = JSONindb.get_by_key_name(fn)
-                    except Timeout: self.obj = JSONindb.get_by_key_name(fn)
+                    try: self.obj = JSONindb.get_by_key_name(self.fn)
+                    except Timeout: self.obj = JSONindb.get_by_key_name(self.fn)
                 except Exception, ex:
                     # bw compat sucks
-                    try: self.obj = JSONindb.get_by_key_name(fn)
+                    try: self.obj = JSONindb.get_by_key_name(self.fn)
                     except Exception, ex:
                         handle_exception()
                         self.data = default2
@@ -265,7 +265,7 @@ except ImportError:
                 try: os.rename(tmp, fn)
                 except OSError:
                     handle_exception()
-                    os.remove(self.fn)
+                    os.remove(fn)
                     os.rename(tmp, fn)
                 logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
             except: handle_exception()
