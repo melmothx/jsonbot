@@ -64,12 +64,10 @@ try:
             self.init(default)
 
         def init(self, default={}, filename=None):
-            fn = self.fn.replace("@", "+")
-            fn = fn.replace("#", "+")
             cachetype = ""
-            tmp = get(self.fn) or get(fn) ; cachetype = "mem"
+            tmp = get(self.fn) ; cachetype = "mem"
             if tmp: self.data = tmp ; logging.warn("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
-            else: jsontxt =  mc.get(self.fn) or mc.get(fn) ; cache = "cache"
+            else: jsontxt =  mc.get(self.fn) ; cache = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -137,6 +135,7 @@ try:
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
             set(self.fn, self.data)
+            set(self.fn, self.data)
             mc.set(self.fn, bla)
             logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
 
@@ -185,15 +184,11 @@ except ImportError:
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
             gotcache = False
-            fn = self.fn.replace("@", "+")
-            fn = fn.replace("#", "+")
             cachetype = "cache"
             try:
                 data = get(self.fn)
-                if not data: data = get(fn)
                 if not data:
-                   if os.path.exists(fn): datafile = open(fn, 'r')
-                   else: datafile = open(self.fn, 'r')
+                   datafile = open(self.fn, 'r')
                    data = datafile.read()
                    datafile.close()
                    cachetype = "file"

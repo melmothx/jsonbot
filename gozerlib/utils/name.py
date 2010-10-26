@@ -20,7 +20,10 @@ def stripname(name, allowed=""):
     for c in name:
         if ord(c) < 31: continue
         else: res += c
-    res = res.replace(os.sep, '+')
+    res = res.replace(os.sep, '=')
+    res = res.replace("@", '+')
+    res = res.replace("#", '-')
+    res = res.replace("~", '_')
     return res
 
 ## testnam function

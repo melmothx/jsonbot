@@ -186,7 +186,7 @@ class Config(LazyDict):
             self.setdefault('floodallow', 0)
             self.setdefault('auto_register', 0)
             self.setdefault('ondemand', 1)
-            self['version'] = "JSONBOT 0.5 BETA1"
+            self['version'] = "JSONBOT 0.5 BETA2"
         self['createdfrom'] = whichmodule()
 
     def reload(self):
