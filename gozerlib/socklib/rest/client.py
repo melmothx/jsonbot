@@ -125,7 +125,7 @@ class RestClient(object):
         return self.do(posturl, self.url, *args, **kwargs)
 
     def delete(self, nr=None):
-         """ delete a REST item. """
+        """ delete a REST item. """
         if nr: return self.do(deleteurl, self.url + '/' + str(nr))
         else: return self.do(deleteurl, self.url)
 
