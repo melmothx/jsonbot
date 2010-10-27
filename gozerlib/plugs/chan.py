@@ -243,11 +243,20 @@ examples.add("chan-removecommand", "remove a command from the allow list.", "cha
 
 def handle_chanupgrade(bot, event):
     """ upgrade the channel. """
-    prevchan = event.chan.fn.replace("+", "@")
-    prevchan = prevchan.replace("-", "#")
+    prevchan = event.chan.fn
+    # 0.4.1
+    if prevchan.startswith("-"): prevchan[0] = "+"
+    prevchan = prevchan.replace("@", "+")
     prev = Persist(prevchan)
-    if prev.data: event.chan.update(prev.data) ; event.chan.save() ; event.reply("done")
-    else: event.reply("can't find previous channel %s" % prevchan)
+    if prev.data: event.chan.data.update(prev.data) ; event.chan.save() ; event.reply("done")
+    else: 
+        # pre 0.5
+        prevchan = event.chan.fn
+        prevchan = prevchan.replace("-", "#")
+        prevchan = prevchan.replace("+", "@")
+        prev = Persist(prevchan)
+        if prev.data: event.chan.data.update(prev.data) ; event.chan.save() ; event.reply("done")
+        else: event.reply("can't find previous channel data")
 
 cmnds.add("chan-upgrade", handle_chanupgrade, ["OPER", ])
 examples.add("chan-upgrade", "upgrade the channel.", "chan-upgrade")
