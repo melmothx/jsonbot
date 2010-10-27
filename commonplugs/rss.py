@@ -569,7 +569,7 @@ class Rsswatcher(Rssdict):
         """ stop watcher thread. """
         try:
             feed = self.byname(name)
-            if feed: feed.data.running = 0 ; feed.save() ; return True
+            if feed: feed.data.running = 0 ; feed.data.stoprunning = 1 ; feed.save() ; return True
         except KeyError: pass
         return False
 
@@ -1185,7 +1185,7 @@ def handle_rssstopwatch(bot, ievent):
     except IndexError: ievent.missing('<name>') ; return
     stopped = []
     if name == "all":
-        for name in watcher.list():
+        for name, channels in watcher.runners():
             if watcher.stopwatch(name): stopped.append(name)
     else:
         if watcher.stopwatch(name): stopped.append(name)
