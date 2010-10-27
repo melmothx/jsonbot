@@ -2,7 +2,23 @@
 #
 #
 
-""" name related helper functions. """
+"""
+name related helper functions.
+
+google requirements on file names:
+  - It must contain only letters, numbers, _, +, /, $, ., and -.
+  - It must be less than 256 chars.
+  - It must not contain "/./", "/../", or "//".
+  - It must not end in "/".
+  - All spaces must be in the middle of a directory or file name.
+
+
+"""
+
+## gozerlib imports
+
+from gozerlib.utils.generic import toenc, fromenc
+
 
 ## basic imports
 
@@ -12,9 +28,9 @@ import re
 
 ## defines
 
-allowednamechars = string.ascii_letters + string.digits + '!.@-+#'
+allowednamechars = string.ascii_letters + string.digits + '_+/$.-'
 
-## slugify function taken from django
+## slugify function taken from django (not used now)
 
 def slugify(value):
     """
@@ -22,35 +38,29 @@ def slugify(value):
     and converts spaces to hyphens.
     """
     import unicodedata
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+    value = unicodedata.normalize('NFKD', value)
     value = unicode(re.sub('[^\w\s-]', '', value).strip())
     return re.sub('[-\s]+', '-', value)
 
-
-
 ## stripname function
+
 def stripname(name, allowed=""):
     """ strip all not allowed chars from name. """
+    n = name.replace(os.sep, '+')
+    n = n.replace("@", '+')
+    n = n.replace("#", '-')
+    n = n.replace("!", '.')
     res = u""
-    for c in name:
+    for c in n:
         if ord(c) < 31: continue
-        else: res += c
-    res = res.replace(os.sep, '=')
-    res = res.replace("@", '+')
-    res = res.replace("#", '-')
-    res = res.replace("~", '_')
-    res = res.replace("$", '^')
-    res = res.replace("`", "'")
-    res = res.replace(">", ".")
-    res = res.replace("<", ",")
-    res = res.replace("|", "!")
+        elif c in allowednamechars + allowed: res += c
+        else: res += "-" + str(ord(c))
     return res
-    #return slugify(res)
 
-## testnam function
+## testname function
 
 def testname(name):
     """ test if name is correct. """
     for c in name:
-        if c not in allowedchars or ord(c) < 31: return False
+        if c not in allowednamechars or ord(c) < 31: return False
     return True
