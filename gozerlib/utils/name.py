@@ -8,10 +8,25 @@
 
 import string
 import os
+import re
 
 ## defines
 
 allowednamechars = string.ascii_letters + string.digits + '!.@-+#'
+
+## slugify function taken from django
+
+def slugify(value):
+    """
+    Normalizes string, converts to lowercase, removes non-alpha characters,
+    and converts spaces to hyphens.
+    """
+    import unicodedata
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+    value = unicode(re.sub('[^\w\s-]', '', value).strip())
+    return re.sub('[-\s]+', '-', value)
+
+
 
 ## stripname function
 def stripname(name, allowed=""):
@@ -21,10 +36,15 @@ def stripname(name, allowed=""):
         if ord(c) < 31: continue
         else: res += c
     res = res.replace(os.sep, '=')
-    res = res.replace("@", '+')
-    res = res.replace("#", '-')
-    res = res.replace("~", '_')
-    return res
+#    res = res.replace("@", '+')
+#    res = res.replace("#", '-')
+#    res = res.replace("~", '_')
+#    res = res.replace("$", '^')
+#    res = res.replace("`", "'")
+#    res = res.replace(">", ".")
+#    res = res.replace("<", ",")
+#    res = res.replace("|", "!")
+    return slugify(res)
 
 ## testnam function
 

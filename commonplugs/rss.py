@@ -540,6 +540,8 @@ class Rsswatcher(Rssdict):
                 except ValueError:
                     logging.debug('rss - %s is not in the format (botname, type, channel)' % str(item))
                     continue
+                if not botname: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
+                if not type: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
                 try:
                     bot = fleet.byname(botname)
                     if not bot: bot = fleet.makebot(type, botname)

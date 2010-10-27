@@ -64,10 +64,10 @@ class BotBase(LazyDict):
     """ base class for all bots. """
 
     def __init__(self, cfg=None, usersin=None, plugs=None, botname=None, nick=None, *args, **kwargs):
-        if not botname and cfg: botname = cfg.botname
+        if not botname and cfg and cfg.botname: botname = cfg.botname
         if botname: self.botname = botname
         else: self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
-        logging.debug("botbase - name is %s" % self.botname)
+        logging.warn("botbase - name is %s" % self.botname)
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
         if cfg: self.update(cfg)
         self.cfg = cfg or Config(self.fleetdir + os.sep + u'config')

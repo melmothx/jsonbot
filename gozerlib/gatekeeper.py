@@ -22,7 +22,7 @@ class GateKeeper(Persist):
 
     def __init__(self, name):
         self.name = name
-        try: import waveapi ; pass 
+        try: import waveapi
         except:
             if not os.path.exists(datadir + os.sep +'gatekeeper'): os.mkdir(datadir + os.sep + 'gatekeeper')
         Persist.__init__(self, datadir + os.sep + 'gatekeeper' + os.sep + name)

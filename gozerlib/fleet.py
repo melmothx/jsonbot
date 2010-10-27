@@ -99,7 +99,7 @@ class Fleet(Persist):
         bot = None
         if not cfg:
             cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
-            cfg['name'] = name
+            cfg['name'] = cfg['botname'] = name
         if not cfg.type and type:
             logging.debug("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type

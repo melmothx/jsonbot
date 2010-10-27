@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.url import geturl3, geturl4, posturl, deleteurl, useragent
+from gozerlib.utils.url import geturl4, posturl, deleteurl, useragent
 from gozerlib.utils.generic import toenc
 from gozerlib.utils.exception import handle_exception, exceptionmsg
 from gozerlib.utils.locking import lockdec
@@ -231,7 +231,8 @@ class RestClientAsync(RestClient, asynchat.async_chat):
     def handle_incoming(self): 
         """ handle incoming data. """
         logging.info("rest.client - %s - incoming: %s" % (self.url, self.buffer))
-        if not self.reading_headers: result = RestResult(self.url, self.name)
+        if not self.reading_headers:
+            result = RestResult(self.url, self.name)
             if self.status >= 400:
                 logging.warn('rest.client - %s - error status: %s' % (self.url, self.status))
                 result.error = self.status

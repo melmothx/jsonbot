@@ -138,7 +138,7 @@ class EventBase(LazyDict):
     def makeoptions(self):
         self.options = makeeventopts(self.txt)
         if not self.options: return
-        logging.warn("eventbase - options detected - %s" % unicode(self.options))
+        logging.warn("eventbase - options - %s" % unicode(self.options))
         self.txt = ' '.join(self.options.args)
         self.makeargs()
 
