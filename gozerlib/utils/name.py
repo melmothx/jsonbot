@@ -36,15 +36,16 @@ def stripname(name, allowed=""):
         if ord(c) < 31: continue
         else: res += c
     res = res.replace(os.sep, '=')
-#    res = res.replace("@", '+')
-#    res = res.replace("#", '-')
-#    res = res.replace("~", '_')
-#    res = res.replace("$", '^')
-#    res = res.replace("`", "'")
-#    res = res.replace(">", ".")
-#    res = res.replace("<", ",")
-#    res = res.replace("|", "!")
-    return slugify(res)
+    res = res.replace("@", '+')
+    res = res.replace("#", '-')
+    res = res.replace("~", '_')
+    res = res.replace("$", '^')
+    res = res.replace("`", "'")
+    res = res.replace(">", ".")
+    res = res.replace("<", ",")
+    res = res.replace("|", "!")
+    return res
+    #return slugify(res)
 
 ## testnam function
 
