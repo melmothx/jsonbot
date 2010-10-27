@@ -2,6 +2,7 @@
 #
 #
 
+from gozerlib.persist import Persist
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.callbacks import callbacks
@@ -207,35 +208,46 @@ cmnds.add("chan-allowplug", handle_chanallowplug, 'OPER')
 examples.add("chan-allowplug", "allow a plugin command or callbacks to be executed in a channel", "chan-denyplug idle")
 
 def handle_chanallowcommand(bot, event):
-   """ allow a command in the channel. """
-   try: cmnd = event.args[0] 
-   except (IndexError, KeyError): event.missing("<cmnd>") ; return
-   if not cmnd in event.chan.data.allowcommands: event.chan.data.allowcommands.append(cmnd) ; event.chan.save() ; event.done()
+    """ allow a command in the channel. """
+    try: cmnd = event.args[0] 
+    except (IndexError, KeyError): event.missing("<cmnd>") ; return
+    if not cmnd in event.chan.data.allowcommands: event.chan.data.allowcommands.append(cmnd) ; event.chan.save() ; event.done()
 
 cmnds.add("chan-allowcommand", handle_chanallowcommand, ["OPER", ])
 examples.add("chan-allowcommand", "add a command to the allow list. allows for all users.", "chan-allowcommand learn")
 
 def handle_chansilentcommand(bot, event):
-   """ silence a command in the channel. /msg the result of a command."""
-   try: cmnd = event.args[0] 
-   except (IndexError, KeyError): event.missing("<cmnd>") ; return
-   if not cmnd in event.chan.data.silentcommands: event.chan.data.silentcommands.append(cmnd) ; event.chan.save() ; event.done()
+    """ silence a command in the channel. /msg the result of a command."""
+    try: cmnd = event.args[0] 
+    except (IndexError, KeyError): event.missing("<cmnd>") ; return
+    if not cmnd in event.chan.data.silentcommands: event.chan.data.silentcommands.append(cmnd) ; event.chan.save() ; event.done()
 
 cmnds.add("chan-silentcommand", handle_chansilentcommand, ["OPER", ])
 examples.add("chan-silentcommand", "add a command to the allow list.", "chan-silentcommand learn")
 
 def handle_chanloudcommand(bot, event):
-   """ allow output of a command in the channel. """
-   try: cmnd = event.args[0] ; event.chan.data.silentcommands.remove(cmnd) ; event.chan.save() ; event.done()
-   except (IndexError, ValueError): event.reply("%s is not in the silencelist" % event.rest)
+    """ allow output of a command in the channel. """
+    try: cmnd = event.args[0] ; event.chan.data.silentcommands.remove(cmnd) ; event.chan.save() ; event.done()
+    except (IndexError, ValueError): event.reply("%s is not in the silencelist" % event.rest)
 
 cmnds.add("chan-loudcommand", handle_chanloudcommand, ["OPER", ])
 examples.add("chan-loudcommand", "remove a command from the silence list.", "chan-loudcommand learn")
 
 def handle_chanremovecommand(bot, event):
-   """ allow a command in the channel. """
-   try: cmnd = event.args[0] ; event.chan.data.allowcommands.remove(cmnd) ; event.chan.save() ; event.done()
-   except (IndexError, ValueError): event.reply("%s is not in the whitelist" % event.rest)
+    """ allow a command in the channel. """
+    try: cmnd = event.args[0] ; event.chan.data.allowcommands.remove(cmnd) ; event.chan.save() ; event.done()
+    except (IndexError, ValueError): event.reply("%s is not in the whitelist" % event.rest)
 
 cmnds.add("chan-removecommand", handle_chanremovecommand, ["OPER", ])
 examples.add("chan-removecommand", "remove a command from the allow list.", "chan-removecommand learn")
+
+def handle_chanupgrade(bot, event):
+    """ upgrade the channel. """
+    prevchan = event.chan.fn.replace("+", "@")
+    prevchan = prevchan.replace("-", "#")
+    prev = Persist(prevchan)
+    if prev.data: event.chan.update(prev.data) ; event.chan.save() ; event.reply("done")
+    else: event.reply("can't find previous channel %s" % prevchan)
+
+cmnds.add("chan-upgrade", handle_chanupgrade, ["OPER", ])
+examples.add("chan-upgrade", "upgrade the channel.", "chan-upgrade")
