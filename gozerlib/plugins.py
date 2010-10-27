@@ -120,11 +120,13 @@ class Plugins(LazyDict):
         logging.debug("%s loaded - with init" % modname)
         return self[modname]
 
-    def reload(self, modname, force=True):
+    def reload(self, modname, force=True, showerror=False):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname): self.unload(modname)
         try: return self.load(modname, force=force)
-        except ImportError, ex: logging.info("plugins - %s not found - %s" % (modname, str(ex)))
+        except ImportError, ex:
+            if showerror: handle_exception()
+            logging.info("plugins - %s not found - %s" % (modname, str(ex)))
 
     def dispatch(self, bot, event, wait=0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
