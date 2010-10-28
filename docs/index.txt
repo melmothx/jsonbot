@@ -17,11 +17,11 @@ JSONBOT is all of the following:
     * plugin infrastructure to write your own functionality
     * event driven framework by the use of callbacks
 
-note: JSONBOT is in ALPHA stage right now and still subject to change of protocols and API.
+note: JSONBOT is in BETA stage right now and still subject to change of protocols and API.
 
 see http://jsonbot.googlecode.com.
 
-if you want to upload this bot to the GAE ypu need "google_appengine" installed in your home dir.
+if you want to upload this bot to the GAE you need "google_appengine" installed in your home dir.
 
 documentation
 ~~~~~~~~~~~~~~
@@ -47,6 +47,7 @@ jsonbot provides the following programs:
     * jsb-run - run a release in the GAE dev_appserver
     * jsb-stop - stop a running bot
     * jsb-upload - upload a release to the GAE
+    * jsb-uploadall - upload all bot in ~/jsonregs to the GAE
 
 see docs/UPLOAD on how to upload your own bot.
 
@@ -79,7 +80,8 @@ contact the developer
     * email: bthate@gmail.com
     * jabber/xmpp: bthate@gmail.com
     * IRC: #dunkbots on Freenode
-    
+    * Twitter: http://twitter.com/jsonbot
+ 
 plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
 

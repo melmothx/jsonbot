@@ -129,12 +129,12 @@ try:
                 self.obj.content = bla
             else: self.obj.content = bla
             self.obj.filename = self.fn
-            key = self.obj.put()  
+            from google.appengine.ext import db
+            key = db.run_in_transaction(self.obj.put)
             cfrom = whichmodule(0)
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            set(self.fn, self.data)
             set(self.fn, self.data)
             mc.set(self.fn, bla)
             logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
