@@ -36,6 +36,7 @@ class ChannelBase(Persist):
         self.data.allowcommands = self.data.allowcommands or []
         self.data.feeds = self.data.feeds or []
         self.data.forwards = self.data.forwards or []
+        self.data.allowwatch = self.data.allowwatch or []
         self.data.watched = self.data.watched or []
         self.data.passwords = self.data.passwords or {}
         self.data.cc = self.data.cc or "!"

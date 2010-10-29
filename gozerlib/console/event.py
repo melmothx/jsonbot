@@ -38,6 +38,6 @@ class ConsoleEvent(EventBase):
         self.txt = input
         self.usercmnd = input.split()[0]
         self.channel = self.userhost
-        self.chan = ChannelBase(self.channel)
+        #self.chan = ChannelBase(self.channel)
         self.cbtype = self.cmnd = unicode("CONSOLE")
         self.makeargs()

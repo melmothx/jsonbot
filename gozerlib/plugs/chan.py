@@ -260,3 +260,22 @@ def handle_chanupgrade(bot, event):
 
 cmnds.add("chan-upgrade", handle_chanupgrade, ["OPER", ])
 examples.add("chan-upgrade", "upgrade the channel.", "chan-upgrade")
+
+def handle_chanallowwatch(bot, event):
+    """ add a target channel to the allowwatch list. """
+    if not event.rest: event.missing("<JID>") ; return
+    if event.rest not in event.chan.data.allowwatch: event.chan.data.allowwatch.append(event.rest) ; event.chan.save()
+    event.done()
+
+cmnds.add("chan-allowwatch", handle_chanallowwatch, "OPER")
+examples.add("chan-allowwatch", "allow channel events to be watch when forwarded", "chan-allowwatch bthate@gmail.com")
+
+def handle_chandelwatch(bot, event):
+    """ add a target channel to the allowout list. """
+    if not event.rest: event.missing("<JID>") ; return
+    try: event.chan.data.allowwatch.remove(event.rest)
+    except: event.reply("%s is not in the allowout list" % event.rest) ; return
+    event.done()
+
+cmnds.add("chan-delwatch", handle_chandelwatch, "OPER")
+examples.add("chan-delwatch", "deny channel events to be watched when forwarded", "chan-delwatch bthate@gmail.com")
