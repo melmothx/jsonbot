@@ -13,8 +13,8 @@
       var viewerid = "";
       var parameters = ""
       var identtime = new Date();
-      var consoletxt = '<div align="center"><form><b>&lt;-</b><input length="50" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div class="body" align="center" id="content_div"><i>Welcome to JSONBOT</i></div>';
-      var feedstxt = '<div class="body" align="left"><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div></div>';
+      var consoletxt = '<br><form><b>&lt;-</b><input length="100" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form><div class="body" background-color="pink" align="center" id="content_div"><i>Welcome to JSONBOT</i></div>';
+      var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
 
       // utils functions
 
@@ -47,9 +47,10 @@
 
       function start() {
           setCookie();
-          setTimeout("update();", 10);
-          setTimeout("doCmnd('!help', response, 'background');", 50);
-          setInterval("loop();", 300000);
+          update();
+          setTimeout("doCmnd('!welcome', response, 'background');", 50);
+          //setTimeout("update();", 10);
+          setInterval("loop();", 60000);
       }
 
 
@@ -59,10 +60,10 @@
 
       function consolestart() {
           doconsole();
-          status("booting");
+          status("booting - ");
           output(url);
           start();
-          status("booting done");
+          statusadd("done - " + elapsed() + " msec");
       }
 
       function update(what) {
@@ -101,7 +102,6 @@
 
       function submitfeed(form) {
            cmnd = "!rss-register " + form.name.value + " " + form.url.value;           
-           status("sending command ");
            doCmnd(cmnd, response);
            setTimeout("update();", 500);
            return false;
@@ -117,7 +117,6 @@
         if (keycode == 13)
         {
            cmnd = "!rss-register " + form.name.value + " " + form.url.value;           
-           status("sending command ");
            doCmnd(cmnd, response, "background");
            setTimeout("update();", 500);
            return false;
@@ -133,11 +132,10 @@
         else return true;
         if (keycode == 13) {
            cmnd = form.cmnd.value; 
-           status("sending command ");
            doCmnd(cmnd, response);
            form.cmnd.value = "";
            form.focus();
-           setTimeout("update();", 500);
+           setTimeout("update();", 1000);
            return false;
         }
         else
@@ -147,7 +145,7 @@
       // output functions
 
       function output(text) {
-        var html = text;
+        var html = "<br>" + text;
         var element = document.getElementById("content_div");  
         element.innerHTML = html;
       }
@@ -202,10 +200,28 @@
         element.innerHTML = html;
       }
 
-      function bottom(text) {
+      function status2add(text) {
         var html = "<b>";
         html += text;
         html += "</b>";
+
+        var element = document.getElementById("status_div2");  
+        element.innerHTML += html;
+      }
+
+      function status2(text) {
+        var html = "<b>";
+        html += text;
+        html += "</b>";
+
+        var element = document.getElementById("status_div2");  
+        element.innerHTML = html;
+      }
+
+      function bottom(text) {
+        var html = "<p>";
+        html += text;
+        html += "</p>";
 
         var element = document.getElementById("bottom_div");  
         element.innerHTML = html;
@@ -219,16 +235,19 @@
       // response functions
 
       function response(obj) {
-          statusadd(" - " + obj.readyState.toString())
+          if (obj.how != "background") {
+              statusadd(" - " + obj.readyState.toString())
+          }
           if (obj.readyState==4){
-              statusadd(" - " + obj.status)
+              statusadd(" - status: " + obj.status + " - ")
               if (obj.status==200) {
-                   statusadd(" - response ok");
                    output(obj.responseText);
+                   statusadd(elapsed() + " msec - OK");
               }
               else {
-                   statusadd(" - response NOT ok");
-                   output("no result");
+                   statusadd(elapsed() + " msec - NOT OK");
+                   topper("status is " + obj.status)
+                   output(obj.responseText);
               }
           }
       }
@@ -287,13 +306,21 @@
                   } catch (e) {}
               }
           }
+
           if (!request) {
               topper("can't make connection to server");
               return false;
           }
 
+          request.cmnd = cmnd;
+          request.how = how;
+
           request.onreadystatechange = function () {
               resp(request);
+          }
+
+          if (how != "background") {
+              status("sending command " + cmnd);
           }
 
           request.open("POST", url, true);
@@ -301,7 +328,7 @@
           request.setRequestHeader("Content-Length", parameters.length);
           request.setRequestHeader("Cache-Control", "no-cache");
           parameters="content="+encodeURIComponent(cmnd) + "&how=" + encodeURIComponent(how);
-
+          starttime = new Date();
           request.send(parameters);
           return true;
       }

@@ -10,21 +10,28 @@
         <li class="right" style="margin-right: 10px">
           <a href="{{ logouturl }}" title="logout">logout</i></a></li>
         <li class="right" style="margin-right: 10px">{{ loginurl }} - {{ who }}</i></a> |</li>
+        <li><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><b>DOCS</b></a></li>
+        <li>-</li>
         <li><a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
         <li>-</li>
         <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
       </ul>
     </div> 
+    <div align="center" class="footer" id="status_div"></div>
     <div class="footer" id="info_div"></div>
-    <div class="body" align="center">
-        <div><h1>{{ appname }}</h1></div><br>
-        <div id="topper_div"></div><br>  
-        <div id="screen_div"></div>
-        <div id="down_div"><i>running on {{ host }}</i></div>
+    <div align="center">
+    <div class="body"><h1><b>{{ appname }}</b></h1><div><br>
+    <div id="topper_div"></div><br>
+    <div style="position: relative; width: 90%; height: 80px; background-color: pink;" id="screen_div"></div>
+    </div></div>
+    <br><br>
+    <div class="related" id="status_div2">
+      <ul>
+        <li><b>outputcache<b></li>
+      </ul>
     </div>
-    <div class="footer" id="status_div"></div>
-    <div class="footer" id="doc_div"><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><i><b>DOCS</b></i></a></div>
-    <div class="footer" id="bottom_div"></div>
+    <div align="left" class="footer" id="bottom_div"></div>
+    <div id="down_div"><i>running on {{ host }}</i></div>
 </body>
 <body onLoad="init();" />
 </html>

@@ -173,6 +173,15 @@ def handle_testoptions(bot, ievent):
 cmnds.add('test-options', handle_testoptions, 'OPER')
 examples.add('test-options', "test event options", "test-options")
 
+## test-deadline command
+
+def handle_testdeadline(bot, ievent):
+    ievent.reply('starting 40 sec sleep')
+    time.sleep(40)
+
+cmnds.add('test-deadline', handle_testdeadline, 'OPER')
+examples.add('test-deadline', "sleep 40 sec to trigger deadlineexceeded exception (GAE)", "test-deadline")
+
 ## test-xhtml command
 
 def handle_testhtml(bot, ievent):

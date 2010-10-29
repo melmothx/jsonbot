@@ -131,13 +131,14 @@ try:
             self.obj.filename = self.fn
             from google.appengine.ext import db
             key = db.run_in_transaction(self.obj.put)
+            logging.warn("persist - transaction returned %s" % key)
+            set(self.fn, self.data)
+            mc.set(self.fn, bla)
             cfrom = whichmodule(0)
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(3)
-            set(self.fn, self.data)
-            mc.set(self.fn, bla)
-            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.logname, len(bla)))
+            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
 
         def upgrade(self, filename):
             self.init(self.data, filename=filename)

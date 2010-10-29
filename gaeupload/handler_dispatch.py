@@ -41,6 +41,7 @@ import time
 import types
 import os
 import logging
+import google
 
 logging.warn(getversion('GAE DISPATCH'))
 boot()
@@ -65,11 +66,12 @@ class Dispatch_Handler(RequestHandler):
     def post(self):
 
         """ this is where the command get disaptched. """
-
+        starttime = time.time()
         try:
             logging.warn("DISPATCH incoming: %s - %s" % (self.request.get('content'), self.request.remote_addr))
             if not gusers.get_current_user():
                 logging.warn("denied access for %s - %s" % (self.request.remote_addr, self.request.get('content')))
+                self.response.out.write("acess denied .. plz loging")
                 self.response.set_status(400)
                 return
             event = WebEvent(bot=bot).parse(self.response, self.request)
@@ -79,12 +81,13 @@ class Dispatch_Handler(RequestHandler):
             bot.gatekeeper.allow(userhost)
             event.bind(bot)
             bot.doevent(event)
-
         except NoSuchCommand:
-            event.reply("no such command: %s" % event.usercmnd)
+            self.response.out.write("no such command: %s" % event.usercmnd)
+        except google.appengine.runtime.DeadlineExceededError, ex:
+            self.response.out.write("the command took too long to finish: %s" % str(time.time()-starttime))
         except Exception, ex:
+            self.response.out.write("the command had an eror: %s" % str(ex))
             handle_exception()
-            #self.send_error(500)
 
     get = post
 

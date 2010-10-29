@@ -9,13 +9,9 @@ import logging
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import fromenc, toenc, getversion
-from gozerlib.utils.xmpp import stripped
-from gozerlib.plugins import plugs
+from gozerlib.utils.generic import getversion
 from gozerlib.utils.exception import handle_exception
-from gozerlib.persist import Persist
-from gozerlib.errors import NoSuchCommand
-from gozerlib.utils.log import setloglevel
+
 
 ## gaelib import
 
@@ -38,6 +34,7 @@ import time
 import types
 import os
 import logging
+import google
 
 ## init
 
@@ -54,17 +51,21 @@ class HomePageHandler(RequestHandler):
         self.response.headers.add_header("Allow: *")
         
     def get(self):
-
         """ show basic page. """
+
         logging.warn("web_handler - in")
-
-        user = finduser()
-        if not user:
+        try:
+            user = finduser()
+            if not user:
+                login(self.response, {'appname': 'JSONBOT' , 'who': 'not logged in yet', 'loginurl': 'not logged in', 'logouturl': 'JSONBOT', 'onload': 'consoleinit();'})
+            else:
+                logout = logouturl(self.request, self.response)
+                start(self.response, {'appname': 'JSONBOT' , 'who': user, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();'})
+        except google.appengine.runtime.DeadlineExceededError:
             login(self.response, {'appname': 'JSONBOT' , 'who': 'not logged in yet', 'loginurl': 'not logged in', 'logouturl': 'JSONBOT', 'onload': 'consoleinit();'})
-        else:
-            logout = logouturl(self.request, self.response)
-            start(self.response, {'appname': 'JSONBOT' , 'who': user, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();'})
-
+        except Excpetion, ex:
+            self.response.out.write("An exception occured: %s" % str(ex))
+            handle_exception()
         logging.warn("web_handler - out")
         
 ## the application 

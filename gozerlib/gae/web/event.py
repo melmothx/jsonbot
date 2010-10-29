@@ -80,10 +80,11 @@ class WebEvent(EventBase):
         self.makeargs()
         return self
 
-    def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
+
+    def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=600, extend=0, *args, **kwargs):
         """ reply to this event """#
         if self.checkqueues(result): return
-        txt = self.bot.makeoutput(self.channel, txt, result, origin=origin, extend=extend, *args, **kwargs)
+        txt = self.bot.makeoutput(self.channel, txt, result, origin=origin, nr=nr, extend=extend, *args, **kwargs)
         if not txt: return
         if self.how == "background": self.bot.outnocb(self.channel, txt, response=self.response)
         else: self.bot.out(self.channel, txt, response=self.response)

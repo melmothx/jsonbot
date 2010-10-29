@@ -421,6 +421,8 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
+    height: 300px;
+    overflow: scroll;
 }
 
 div.document {
@@ -457,7 +459,7 @@ div.footer a {
 }
 
 div.related {
-    background-color: #133f52;
+    background-color: #200000;
     line-height: 30px;
     color: #ffffff;
     text-align: left;
@@ -529,7 +531,7 @@ a:hover {
 
 div.body p, div.body dd, div.body li {
     text-align: justify;
-    line-height: 130%;
+    line-height: 100%;
 }
 
 div.body h1,
@@ -547,7 +549,7 @@ div.body h6 {
     padding: 3px 0 3px 10px;
 }
 
-div.body h1 { margin-top: 0; font-size: 200%; }
+div.body h1 { margin-top: 0; font-size: 300%; }
 div.body h2 { font-size: 160%; }
 div.body h3 { font-size: 140%; }
 div.body h4 { font-size: 120%; }

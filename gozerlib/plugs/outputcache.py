@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.outputcache import get, set
+from gozerlib.outputcache import get, set, clear
 from gozerlib.callbacks import callbacks
 from gozerlib.examples import examples
 
@@ -34,8 +34,8 @@ examples.add('outputcache', 'forward the outputcache to the user.', 'outputcache
 
 def handle_outputcacheclear(bot, event):
     """ flush outputcache of a channel. """
-    set(event.channel, [])
+    clear(event.channel)
     event.done()
 
-cmnds.add('outputcache-clear', handle_outputcacheclear, 'OPER')
+cmnds.add('outputcache-clear', handle_outputcacheclear, ['USER', 'GUEST'])
 examples.add('outputcache-clear', 'flush output cache of a channel', 'outputcache-clear')

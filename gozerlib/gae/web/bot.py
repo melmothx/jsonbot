@@ -51,6 +51,7 @@ class WebBot(BotBase):
     def normalize(self, txt):
         txt = cgi.escape(txt)
         txt = strippedtxt(txt)
+        txt = txt.replace("&lt;br&gt;", "<br>")
         txt = txt.replace("&lt;b&gt;", "<b>")
         txt = txt.replace("&lt;/b&gt;", "</b>")
         txt = txt.replace("&lt;i&gt;", "<i>")
