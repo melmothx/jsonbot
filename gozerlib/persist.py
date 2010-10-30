@@ -16,7 +16,7 @@ from utils.exception import handle_exception
 from utils.name import stripname
 from utils.locking import lockdec
 from datadir import datadir
-from cache import get, set
+from cache import get, set, delete
 
 ## simplejson imports
 
@@ -54,11 +54,12 @@ try:
 
         """ persist data attribute to database backed JSON file. """ 
 
-        def __init__(self, filename, default={}):
+        def __init__(self, filename, default={}, type="cache"):
             self.plugname = calledfrom(sys._getframe())
             if 'lib' in self.plugname: self.plugname = calledfrom(sys._getframe(1))
             self.fn = unicode(filename.strip()) # filename to save to
             self.logname = os.sep.join(self.fn.split(os.sep)[-2:])
+            self.type = type
             self.counter = mcounter = mc.incr(self.fn, 1, "counters", 0)
             self.key = None
             self.obj = None
@@ -68,10 +69,10 @@ try:
             cachetype = ""
             mcounter = mc.incr(self.fn, 1, "counters")
             logging.debug("persist - %s - %s" % (self.counter, mcounter))
-            if mcounter - self.counter <= 2:
+            if self.type == "mem":
                 tmp = get(self.fn) ; cachetype = "mem"
                 if tmp: self.data = tmp ; logging.warn("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
-            jsontxt =  mc.get(self.fn) ; cache = "cache"
+            jsontxt =  mc.get(self.fn) ; cachetype = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -114,7 +115,7 @@ try:
                 cfrom = whichmodule(3)
                 if 'gozerlib' in cfrom: cfrom = whichmodule(4)
             if not 'run' in self.fn: 
-                if cachetype: logging.debug("persist - %s - loaded %s (%s) - %s - %s" % (cache, self.logname, len(jsontxt), self.data.tojson(), cfrom))
+                if cachetype: logging.debug("persist - %s - loaded %s (%s) - %s - %s" % (cachetype, self.logname, len(jsontxt), self.data.tojson(), cfrom))
                 else: logging.debug("persist - db - loaded %s (%s) - %s - %s" % (self.logname, len(jsontxt), self.data.tojson(), cfrom))
             if self.data:
                 set(self.fn, self.data)
@@ -122,8 +123,8 @@ try:
         def sync(self):
             logging.warn("persist - syncing %s" % self.fn)
             data = dumps(self.data)
-            set(self.fn, self.data) ; mc.set(self.fn, data)
-            self.counter = mc.incr(self.fn, 1, "counters")
+            mc.set(self.fn, data)
+            delete(self.fn, self.data)
             return data
      
         def save(self):
@@ -137,9 +138,8 @@ try:
             from google.appengine.ext import db
             key = db.run_in_transaction(self.obj.put)
             logging.warn("persist - transaction returned %s" % key)
-            set(self.fn, self.data)
             mc.set(self.fn, bla)
-            self.counter = mc.incr(self.fn, 1, "counters")
+            delete(self.fn, self.data)
             cfrom = whichmodule(0)
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
