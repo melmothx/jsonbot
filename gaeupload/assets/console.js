@@ -73,9 +73,10 @@
             doCmnd('!rss-feeds', doinfo, "background");
         }
         else {
+            setTimeout('doCmnd("!statusline", dotop, "background");', 5000);
             doCmnd('!outputcache', dobottom, "background");
-            doCmnd('!statusline', dotop, "background");
             doCmnd('!topper', doinfo, "background");
+            setTimeout('doCmnd("!uptime", dotop, "background");', 100);
         }
       }
 
@@ -135,7 +136,7 @@
            doCmnd(cmnd, response);
            form.cmnd.value = "";
            form.focus();
-           setTimeout("update();", 1000);
+           setTimeout("update();", 100);
            return false;
         }
         else

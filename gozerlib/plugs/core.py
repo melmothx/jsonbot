@@ -83,7 +83,7 @@ examples.add('encoding', 'show default encoding', 'encoding')
 
 def handle_uptime(bot, ievent):
     """ show uptime. """
-    ievent.reply("uptime is %s" % elapsedstring(time.time()-bot.starttime))
+    ievent.reply("<b>uptime is %s<b>" % elapsedstring(time.time()-bot.starttime))
 
 cmnds.add('uptime', handle_uptime, ['USER', 'GUEST'])
 examples.add('uptime', 'show uptime of the bot', 'uptime')
