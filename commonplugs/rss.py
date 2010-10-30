@@ -325,7 +325,7 @@ class Rssdict(PlugPersist):
         if rssitem == None: raise RssNoSuchItem("no %s rss item found" % name)
         return rssitem.getdata()
 
-    def watch(self, name):
+    def watch(self, name, sleepsec=900):
         """ start a watcher thread """
         logging.debug('trying %s rss feed watcher' % name)
         rssitem = self.byname(name)
@@ -336,7 +336,7 @@ class Rssdict(PlugPersist):
             rssitem.save()
         #lastpoll.data[name] = time.time()
         #lastpoll.save()
-        sleeptime.data[name] = 900
+        sleeptime.data[name] = sleepsec
         sleeptime.save()
         logging.warn('rss - started %s rss watch' % name)
 
@@ -928,10 +928,9 @@ def handle_rsswatch(bot, ievent):
             if not sleeptime.data.has_key(name): sleeptime.data[feed] = sleepsec ; sleeptime.save()
             rssitem.data.running = 1
             rssitem.data.stoprunning = 0
-            got = True
             watcher.save(feed)
-            try: watcher.watch(feed)
-            except Exception, ex: ievent.reply('rss - %s - %s' % (feed, str(ex))) ; return
+            try: watcher.watch(feed, sleepsec)
+            except Exception, ex: ievent.reply('rss - %s - %s' % (feed, str(ex))) ; continue
             got.append(feed)
     if got: ievent.reply('watcher started ', got)
     else: ievent.reply('already watching ', target)
