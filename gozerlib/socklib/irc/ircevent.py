@@ -105,7 +105,6 @@ class IrcEvent(EventBase):
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result): return
-        if result: txt = u"<b>" + txt + u"</b>"
         if self.isdcc: self.bot.say(self.sock, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
         elif self.msg: self.bot.say(self.nick, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
         elif self.silent or (self.chan and self.chan.data and self.chan.data.silent): self.bot.say(self.nick, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
