@@ -54,7 +54,7 @@ try:
 
         """ persist data attribute to database backed JSON file. """ 
 
-        def __init__(self, filename, default={}, type="mem"):
+        def __init__(self, filename, default={}, type="cache"):
             self.plugname = calledfrom(sys._getframe())
             if 'lib' in self.plugname: self.plugname = calledfrom(sys._getframe(1))
             self.fn = unicode(filename.strip()) # filename to save to

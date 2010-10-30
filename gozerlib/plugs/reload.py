@@ -31,7 +31,7 @@ def handle_reload(bot, ievent):
         for package in plugin_packages:
             modname = "%s.%s" % (package, plug)
             try:
-                if bot.plugs.reload(modname, force=True):
+                if bot.plugs.reload(modname, force=True, showerror=False):
                     update_mod(modname)
                     reloaded.append(modname)
                     logging.warn("reload - %s reloaded" % modname) 

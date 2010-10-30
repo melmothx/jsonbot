@@ -120,7 +120,7 @@ class Plugins(LazyDict):
         logging.debug("%s loaded - with init" % modname)
         return self[modname]
 
-    def reload(self, modname, force=True, showerror=False):
+    def reload(self, modname, force=True, showerror=True):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname): self.unload(modname)
         try: return self.load(modname, force=force)
