@@ -62,7 +62,7 @@ class HomePageHandler(RequestHandler):
                 logout = logouturl(self.request, self.response)
                 start(self.response, {'appname': 'JSONBOT' , 'who': user, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();'})
         except google.appengine.runtime.DeadlineExceededError:
-            login(self.response, {'appname': 'JSONBOT' , 'who': 'not logged in yet', 'loginurl': 'not logged in', 'logouturl': 'JSONBOT', 'onload': 'consoleinit();'})
+            self.response.out.write("DeadLineExceededError .. this request took too long to finish.")
         except Excpetion, ex:
             self.response.out.write("An exception occured: %s" % str(ex))
             handle_exception()
