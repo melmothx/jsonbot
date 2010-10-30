@@ -47,8 +47,6 @@ def checkignore(name, ignore):
 
 def dumpelement(element, prev={}, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
-    try: element = cpy(element)
-    except (TypeError, ValueError): raise Exception("lazydict - dumpelement - can't copy %s" % unicode(element))
     try: new = dict(prev)
     except (TypeError, ValueError): new = {}
     
@@ -98,7 +96,7 @@ class LazyDict(dict):
     def dump(self, withtypes=False):
         """ just dunp the lazydict object. DON'T convert to json. """
         logging.debug("lazydict - dumping - %s" %  type(self))
-        return dumpelement(self, withtypes)
+        return dumpelement(cpy(self), withtypes)
 
     def load(self, input):
         """ load from json string. """  
