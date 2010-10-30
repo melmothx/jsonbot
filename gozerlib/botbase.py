@@ -405,6 +405,7 @@ class BotBase(LazyDict):
         """ create a response from a string and result list. """
         res = []
         if result:
+            txt = u"<b>" + txt + u"</b>"   
             for i in result:
                 if not i: continue
                 if type(i) == types.ListType or type(i) == types.TupleType:

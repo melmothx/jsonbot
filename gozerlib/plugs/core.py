@@ -166,6 +166,7 @@ def handle_helpplug(bot, ievent):
     try: what = ievent.args[0]
     except (IndexError, TypeError):
         ievent.reply("available plugins: ", getpluginlist())
+        ievent.reply("see !help <plugin> to get help on a plugin.")
         return
     plugin = None
     modname = ""
@@ -217,7 +218,7 @@ def handle_helpplug(bot, ievent):
         else: ievent.reply("can't find help on %s" % what)
 
 cmnds.add('help', handle_helpplug, ['USER', 'GUEST'])
-examples.add('help', 'get help on <cmnd> or <plugin>', '1) help-plug test 2) help-plug misc')
+examples.add('help', 'get help on <cmnd> or <plugin>', '1) help 2) help misc')
 
 ## apro command
 

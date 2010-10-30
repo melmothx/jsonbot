@@ -110,8 +110,6 @@ class EventBase(LazyDict):
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
         if self.checkqueues(result): return
-        if result:
-            txt = u"<b>" + txt + u"</b>"
         if self.silent:
             self.msg = True
             self.bot.say(self.nick, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)

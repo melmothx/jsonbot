@@ -16,6 +16,7 @@ from gozerlib.utils.url import re_url_match
 import logging
 import re
 import cgi
+import urllib
 
 ## WebBot class
 
@@ -50,7 +51,6 @@ class WebBot(BotBase):
 
     def normalize(self, txt):
         txt = cgi.escape(txt)
-        txt = strippedtxt(txt)
         txt = txt.replace("&lt;br&gt;", "<br>")
         txt = txt.replace("&lt;b&gt;", "<b>")
         txt = txt.replace("&lt;/b&gt;", "</b>")
@@ -62,4 +62,5 @@ class WebBot(BotBase):
         txt = txt.replace("&lt;/h3&gt;", "</h3>")
         txt = txt.replace("&lt;li&gt;", "<li>") 
         txt = txt.replace("&lt;/li&gt;", "</li>")
+        txt = strippedtxt(txt)
         return txt
