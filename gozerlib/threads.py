@@ -104,9 +104,14 @@ def start_new_thread(func, arglist, kwargs={}):
         thread = Thr(None, target=func, name=name, args=arglist, kwargs=kwargs)
         thread.start()
         return thread
+    except thread.error, ex:
+        if "can't start" in str(ex):
+            logging.error("threads - thread space is exhausted - can't start thread %s" % name)
+            handle_exception()
+            time.sleep(3)
     except:
         handle_exception()
-        time.sleep(1)
+        time.sleep(3)
 
 ## start_bot_cpmmand function
 

@@ -59,15 +59,19 @@ try:
             if 'lib' in self.plugname: self.plugname = calledfrom(sys._getframe(1))
             self.fn = unicode(filename.strip()) # filename to save to
             self.logname = os.sep.join(self.fn.split(os.sep)[-2:])
+            self.counter = mcounter = mc.incr(self.fn, 1, "counters", 0)
             self.key = None
             self.obj = None
             self.init(default)
 
         def init(self, default={}, filename=None):
             cachetype = ""
-            tmp = get(self.fn) ; cachetype = "mem"
-            if tmp: self.data = tmp ; logging.warn("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
-            else: jsontxt =  mc.get(self.fn) ; cache = "cache"
+            mcounter = mc.incr(self.fn, 1, "counters")
+            logging.debug("persist - %s - %s" % (self.counter, mcounter))
+            if mcounter - self.counter <= 2:
+                tmp = get(self.fn) ; cachetype = "mem"
+                if tmp: self.data = tmp ; logging.warn("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
+            jsontxt =  mc.get(self.fn) ; cache = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
                 default2.update(default)
@@ -119,6 +123,7 @@ try:
             logging.warn("persist - syncing %s" % self.fn)
             data = dumps(self.data)
             set(self.fn, self.data) ; mc.set(self.fn, data)
+            self.counter = mc.incr(self.fn, 1, "counters")
             return data
      
         def save(self):
@@ -134,6 +139,7 @@ try:
             logging.warn("persist - transaction returned %s" % key)
             set(self.fn, self.data)
             mc.set(self.fn, bla)
+            self.counter = mc.incr(self.fn, 1, "counters")
             cfrom = whichmodule(0)
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)
@@ -176,6 +182,7 @@ except ImportError:
             if init:
                 if default == None: default = LazyDict()
                 self.init(default)
+            self.count = 0
 
         def init(self, default={}, filename=None):
             """ initialize the data. """

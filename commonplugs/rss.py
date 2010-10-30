@@ -795,7 +795,7 @@ def doperiodical(*args, **kwargs):
             defer(dosync, feed)
         except ImportError:
             try: start_new_thread(dosync, (feed, ))
-            except Exception, ex: handle_exception() ; time.sleep(1)
+            except Exception, ex: handle_exception() ; return
 
 callbacks.add('TICK', doperiodical)
 
