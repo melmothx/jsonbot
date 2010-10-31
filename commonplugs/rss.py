@@ -75,8 +75,9 @@ savelist = []
 possiblemarkup = {'separator': 'set this to desired item separator', \
 'all-lines': "set this to 1 if you don't want items to be aggregated", \
 'tinyurl': "set this to 1 when you want to use tinyurls", 'skipmerge': \
-"set this to 1 if you want to skip merge commits", 'reverse-order': 'set \
-this to 1 if you want the rss items displayed with oldest item first'}
+"set this to 1 if you want to skip merge commits", 'reverse-order': \
+'set this to 1 if you want the rss items displayed with oldest item first', \
+'nofeedname': "if you don't want the feedname shown"}
 
 def txtindicts(result, d):
     """ return lowlevel values in (nested) dicts. """
@@ -493,7 +494,8 @@ class Rsswatcher(Rssdict):
         """ loop over result to make a response. """
         rssitem = self.byname(name)
         if not rssitem: logging.error("rss - no %s rss item available" % name) ; return
-        result = u"[%s] - " % name 
+        if rssitem.markup.get(jsonstring([name, type, channel]), 'nofeedname'): result = u""
+        else: result = u"<b>[%s]</b> - " % name 
         try: itemslist = rssitem.itemslists.data[jsonstring([name, type, channel])]
         except KeyError:
             itemslist = rssitem.itemslists.data[jsonstring([name, type, channel])] = ['title', 'link']
@@ -501,10 +503,8 @@ class Rsswatcher(Rssdict):
         for j in res:
             if rssitem.markup.get(jsonstring([name, type, channel]), 'skipmerge') and 'Merge branch' in j['title']: continue
             resultstr = u""
-            #logging.debug("rss - using itemslist: %s" % str(itemslist))
             for i in itemslist:
                 try:
-                    #logging.debug("rss - trying %s" % unicode(i))
                     item = getattr(j, i)
                     if not item: continue
                     item = unicode(item)
@@ -758,7 +758,7 @@ def doperiodicalGAE(*args, **kwargs):
     curtime = time.time()
     feedstofetch = []
     rpcs = []
-    for feed in watcher.data.names:
+    for feed, channels in watcher.runners():
         if not shouldpoll(feed, curtime): continue
         feedstofetch.append(feed)
     logging.warn("rss - feeds to fetch: %s" % str(feedstofetch))
@@ -962,18 +962,23 @@ examples.add('rss-start', 'rss-start <name> .. start a rss feed \
 def handle_rssstop(bot, ievent):
     """ rss-start <name> .. start a rss feed to a user. """
     if not ievent.rest: ievent.missing('<feed name>') ; return
-    name = ievent.rest
-    rssitem = watcher.byname(name)
-    target = ievent.channel
-    if rssitem == None: ievent.reply("we don't have a %s rss feed" % name) ; return
-    if not rssitem.data.running: ievent.reply('%s watcher is not running' % name) ; return
-    try: rssitem.data.watchchannels.remove([bot.name, bot.type, target])
-    except ValueError:
+    if ievent.rest == "all": loopover = ievent.chan.data.feeds
+    else: loopover = [ievent.rest, ]
+    stopped = []
+    for name in loopover:
+        if name in ievent.chan.data.feeds: ievent.chan.data.feeds.remove(name) 
+        rssitem = watcher.byname(name)
+        target = ievent.channel
+        if rssitem == None: continue
+        if not rssitem.data.running: continue
         try: rssitem.data.watchchannels.remove([bot.name, bot.type, target])
-        except ValueError: ievent.reply('we are not monitoring %s on (%s,%s)' % (name, bot.name, target)) ; return
-    rssitem.save()
-    if name in ievent.chan.data.feeds: ievent.chan.data.feeds.remove(name) ; ievent.chan.save()
-    ievent.reply('%s stopped' % name)
+        except ValueError:
+            try: rssitem.data.watchchannels.remove([bot.name, bot.type, target])
+            except ValueError: continue
+        rssitem.save()
+        stopped.append(name)
+    ievent.chan.save()
+    ievent.reply('stopped feeds: ', stopped)
 
 cmnds.add('rss-stop', handle_rssstop, ['RSS', 'USER'])
 examples.add('rss-stop', 'rss-stop <name> .. stop a rss feed (per user/channel) ', 'rss-stop jsonbot')
