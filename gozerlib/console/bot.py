@@ -105,6 +105,7 @@ class ConsoleBot(BotBase):
     def outnocb(self, printto, txt, *args, **kwargs):
         txt = self.normalize(txt)
         self._raw(txt)         
+
     def _raw(self, txt):
         """ do raw output to the console. """
         logging.info("%s - out - %s" % (self.name, txt))             
@@ -112,14 +113,18 @@ class ConsoleBot(BotBase):
         sys.stdout.write(txt)
         sys.stdout.write('\n')
 
+    def action(self, channel, txt):
+        txt = self.normalize(txt)
+        self._raw(txt)
+
     def exit(self):
         """ called on exit. """
         console.save_history()
 
     def normalize(self, what):
         what = strippedtxt(what)
-        what = what.replace("<b>", self.BOLD)
+        what = what.replace("<b>", self.RED)
         what = what.replace("</b>", self.ENDC)
-        what = what.replace("&lt;b&gt;", self.BOLD)
+        what = what.replace("&lt;b&gt;", self.RED)
         what = what.replace("&lt;/b&gt;", self.ENDC)
         return what
