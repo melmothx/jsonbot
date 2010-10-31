@@ -213,6 +213,7 @@ class SXMPPBot(XMLStream, BotBase):
         logging.debug('sxmpp - register - %s' % result)
         if iq.error:
             logging.warn('%s - register FAILED - %s' % (self.name, iq.error))
+            if not iq.error.code: logging.error("%s - can't determine error code" % self.name) ; return False
             if iq.error.code == "405": logging.error("%s - this server doesn't allow registration by the bot, you need to create an account for it yourself" % self.name)
             elif iq.error.code == "500": logging.error("%s - %s" % (self.name, iq.error.text.data))
             else: logging.error("%s - %s" % (self.name, xmpperrors[iq.error.code]))

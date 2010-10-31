@@ -110,7 +110,7 @@ class BotBase(LazyDict):
         self.outcache = Less(3)
         self.userhosts = {}
         self.connectok = threading.Event()
-        if not self.nick: self.nick = nick or self.cfg.nick or u'jsonbot'
+        if not self.nick: self.nick = (nick or self.cfg.nick or u'jsonbot')
         try:
             if not os.isdir(self.datadir): os.mkdir(self.datadir)
         except: pass
@@ -229,6 +229,7 @@ class BotBase(LazyDict):
     def doremote(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
+        event.prepare(self)
         self.status = "callback"
         starttime = time.time()
         msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)
@@ -250,6 +251,7 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         if event.isremote(): self.doremote(event) ; return
+        event.prepare(self)
         self.status = "callback"
         starttime = time.time()
         msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)

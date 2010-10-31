@@ -263,7 +263,7 @@ examples.add("chan-upgrade", "upgrade the channel.", "chan-upgrade")
 
 def handle_chanallowwatch(bot, event):
     """ add a target channel to the allowwatch list. """
-    if not event.rest: event.missing("<JID>") ; return
+    if not event.rest: event.missing("<JID or channel>") ; return
     if event.rest not in event.chan.data.allowwatch: event.chan.data.allowwatch.append(event.rest) ; event.chan.save()
     event.done()
 
@@ -273,7 +273,7 @@ examples.add("chan-allowwatch", "allow channel events to be watch when forwarded
 def handle_chandelwatch(bot, event):
     """ add a target channel to the allowout list. """
     if not event.rest: event.missing("<JID>") ; return
-    try: event.chan.data.allowwatch.remove(event.rest)
+    try: event.chan.data.allowwatch.remove(event.rest) ; event.chan.save()
     except: event.reply("%s is not in the allowout list" % event.rest) ; return
     event.done()
 

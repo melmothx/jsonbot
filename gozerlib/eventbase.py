@@ -179,7 +179,8 @@ class EventBase(LazyDict):
 
     def iscmnd(self):
         """ check if event is a command. """
-        if self.isremote(): return
+        if self.isremote(): logging.warn("eventbase - event is remote") ; return
+        logging.debug("eventbase - trying to match %s" % self.txt)
         cc = "!"
         if self.chan: 
             cc = self.chan.data.cc
@@ -188,9 +189,9 @@ class EventBase(LazyDict):
                 self.chan.save()
         if not cc: cc = "!"
         if self.type == "DISPATCH": cc += "!"
-        logging.debug("dispatch - cc for %s is %s (%s)" % (self.title or self.channel or self.userhost, cc, self.bot.nick))
-        matchnick = unicode(self.bot.nick + u":")
-        logging.debug("dispatch - trying to match %s" % self.txt)
         if self.txt and self.txt[0] in cc: return self.txt[1:]
-        elif self.txt.startswith(matchnick): return self.txt[len(matchnick):]
+        if not self.bot: logging.warn("eventbase - bot is not bind into event.") ; return False
+        logging.debug("eventbase - cc for %s is %s (%s)" % (self.title or self.channel or self.userhost, cc, self.bot.nick))
+        matchnick = unicode(self.bot.nick + u":")
+        if self.txt.startswith(matchnick): return self.txt[len(matchnick):]
         return False

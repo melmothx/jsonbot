@@ -70,6 +70,7 @@ def forwardoutcb(bot, event):
     e.forwarded = True
     e.source = bot.jid
     e.botname = bot.server or bot.name
+    if not event.chan: event.bind(bot)
     if event.chan: e.allowwatch = event.chan.data.allowwatch
     for jid in forward.data.channels[event.channel.lower()]:
         logging.warn("forward - sending to %s" % jid)
