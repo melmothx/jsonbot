@@ -14,7 +14,7 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.plugins import plugs
-from gozerlib.boot import plugin_packages, getpluginlist, boot, getcmndtable
+from gozerlib.boot import plugin_packages, getpluginlist, boot, getcmndtable, whatcommands
 from gozerlib.persist import Persist
 from gozerlib.reboot import reboot, reboot_stateful
 from gozerlib.eventhandler import mainhandler
@@ -92,7 +92,8 @@ examples.add('uptime', 'show uptime of the bot', 'uptime')
 
 def handle_available(bot, ievent):
     """ show available plugins .. to enable use !reload. """
-    ievent.reply("available plugins: ", getpluginlist(), raw=True)
+    if ievent.rest: ievent.reply("%s plugin has the following commands: " % ievent.rest, whatcommands(ievent.rest))
+    else: ievent.reply("available plugins: ", getpluginlist(), raw=True) ; return
 
 cmnds.add('list', handle_available, ['USER', 'GUEST'])
 examples.add('list', 'list available plugins', 'list')

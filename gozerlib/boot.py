@@ -44,7 +44,6 @@ cmndtable = None
 pluginlist = None
 callbacktable = None
 cmndperms = None
-
 rundir = datadir + os.sep + "run"
 
 ## boot function
@@ -76,6 +75,7 @@ def boot(force=False, encoding="utf-8", umask=None, saveperms=True):
     global pluginlist
     global callbacktable
     global cmndperms
+    global plugcommands
     if not cmndtable: cmndtable = Persist(rundir + os.sep + 'cmndtable')
     if not pluginlist: pluginlist = Persist(rundir + os.sep + 'pluginlist')
     if not callbacktable: callbacktable = Persist(rundir + os.sep + 'callbacktable')
@@ -189,4 +189,11 @@ def update_mod(modname):
     savepluginlist(modname)
     savecallbacktable(modname)
     savecmndtable(modname)
-    
+
+def whatcommands(plug):
+    tbl = getcmndtable()
+    result = []
+    for cmnd, mod in tbl.iteritems():
+        if plug in mod:
+            result.append(cmnd)
+    return result
