@@ -23,6 +23,7 @@ import logging
 import urlparse
 import urllib
 import warnings
+import socket
 
 ## classes
 
@@ -36,21 +37,24 @@ class OpenIdLoginHandler(webapp.RequestHandler):
         try:
             cont = self.request.get('continue')
             logging.info('openid - login form %s' % cont)
-            urlstring = create_openid_url(self, cont)
+            urlstring = self.create_openid_url(cont)
             template_values = {
                 'continue': cont,
                 'urlstring': urlstring,
                 'appname': getversion()
             }
-
-            path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+            try: host = socket.gethostname()
+            except AttributeError:
+                if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
+                else: host = os.environ['SERVER_NAME']
+            inputdict = {'version': getversion(), 'host': host}
+            template_values.update(inputdict)
+            temp = os.path.join(os.getcwd(), 'templates/login.html')
             from google.appengine.ext.webapp import template
-            logging.info("openid - diplaying page to %s" % self.request.remote_addr)
-            self.response.out.write(template.render(path, template_values))      
-
+            outstr = template.render(temp, template_values)  
+            self.response.out.write(outstr)
         except Exception, ex:
             handle_exception()
-            #self.send_error(500)
 
     def post(self):
         try:
@@ -67,7 +71,6 @@ class OpenIdLoginHandler(webapp.RequestHandler):
                 self.send_error(400)
         except Exception, ex:
             handle_exception()
-            #self.send_error(500)
 
 ## the application 
 
