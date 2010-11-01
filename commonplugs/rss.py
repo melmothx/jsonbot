@@ -589,6 +589,7 @@ class Rsswatcher(Rssdict):
 
     def runners(self):
         if runners.data: return runners.data.keys()
+        return []
 
     def checkrunners(self):	
         """ show names/channels of running watchers. """
