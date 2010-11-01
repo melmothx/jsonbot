@@ -300,7 +300,8 @@ class Rssdict(PlugPersist):
             target.data.stoprunning = 1
             target.data.running = 0
             target.save()
-            del self.feeds[name]
+            try: del self.feeds[name]
+            except KeyError: pass
             self.save()
 
     def byname(self, name):
