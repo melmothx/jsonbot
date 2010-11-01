@@ -22,11 +22,15 @@ handlers:
   script: handler_task.py
   login: admin
 
+- url: /_ah/assets/(.*)
+  static_files: assets/\1
+  upload: assets/(.*)
+
 - url: /assets/(.*)
   static_files: assets/\1
   upload: assets/(.*)
 
-- url: /_wave.*
+- url: /_wave/.*
   script: handler_wave.py
 
 - url: /_ah/xmpp/.*
@@ -44,16 +48,13 @@ handlers:
 - url: /feeds.*
   script: handler_web.py
 
-- url: /docs/html/(.*)
-  static_files: docs/html/\1
-  upload: docs/html/(.*)
-
-- url: /
-  script: handler_web.py
-
 - url: /(.*\.xml)  
   static_files: gadgets/\1
   upload: gadgets/(.*\.xml)
+
+- url: /docs/html/(.*)
+  static_files: docs/html/\1
+  upload: docs/html/(.*)
 
 - url: /_static/(.*)
   static_files: assets/\1
@@ -63,9 +64,13 @@ handlers:
   static_files: assets/favicon.ico
   upload: assets/favivon.ico
 
+- url: /
+  script: handler_web.py
+
 inbound_services:
 
 - xmpp_message   
 
 derived_file_type:
 - python_precompiled
+
