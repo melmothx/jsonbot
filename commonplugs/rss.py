@@ -529,7 +529,7 @@ class Rsswatcher(Rssdict):
             if resultstr: result += u"%s %s " % (resultstr, sep)
         return result[:-(len(sep)+2)]
 
-    def peek(self, name, event=None, data=None, save=False, *args, **kwargs):
+    def peek(self, name, event=None, data=None, save=True, *args, **kwargs):
         """ poll a feed. display not yet shown items. """
         rssitem = self.byname(name)
         got = False
