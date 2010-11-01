@@ -572,13 +572,17 @@ class Rsswatcher(Rssdict):
             return got
         except Exception, ex: handle_exception(txt=name) ; return False
 
-    def stopwatch(self, name):
+    def stopwatch(self, name, save=True):
         """ stop watcher thread. """
         try:
             feed = self.byname(name)
-            if feed: feed.data.running = 0 ; feed.data.stoprunning = 1 ; feed.save() ; return True
+            if feed: feed.data.running = 0 ; feed.data.stoprunning = 1
+            if save: feed.save()
         except KeyError: pass
-        try: del runners.data[name] ; runners.save() ; return True
+        try:
+             del runners.data[name]
+             if save: runners.save()
+             return True
         except KeyError: pass
         return False
 

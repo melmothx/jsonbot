@@ -36,12 +36,10 @@ class OpenIdLoginHandler(webapp.RequestHandler):
         try:
             cont = self.request.get('continue')
             logging.info('openid - login form %s' % cont)
-            urlstring = u""
-            for name, url in loginurl(self.request, self.response).iteritems():
-                urlstring += '<a href="%s"><b>%s</b></a> - ' % (url, name)
+            urlstring = create_openid_url(self, cont)
             template_values = {
                 'continue': cont,
-                'urlstring': urlstring[:-3],
+                'urlstring': urlstring,
                 'appname': getversion()
             }
 

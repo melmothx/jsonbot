@@ -98,7 +98,11 @@ application = WSGIApplication([Route('/dispatch/', Dispatch_Handler) ], debug=Tr
 def main():
     global bot
     global application
-    application.run()
+    try: application.run()
+    except google.appengine.runtime.DeadlineExceededError:
+        pass
+    except Exception, ex:
+        logging.error("dispatch - %s" % str(ex))
 
 if __name__ == "__main__":
     main()
