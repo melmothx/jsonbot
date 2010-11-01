@@ -21,7 +21,6 @@ __author__ = 'Bas van Oostveen'
 ## gozerlib imports
 
 from gozerlib.utils.trace import calledfrom, whichplugin
-from gozerlib.commands import cmnds, Command
 from gozerlib.examples import examples
 from gozerlib.datadir import datadir
 from gozerlib.persist import Persist
@@ -53,6 +52,7 @@ class PersistConfig(Config):
         Config.__init__(self, 'plugs' + os.sep + self.modname, "config")
         cmndname = "%s-cfg" % self.plugname
         logging.debug('persistconfig - added command %s (%s)' % (cmndname, self.plugname))
+        from gozerlib.commands import cmnds, Command
         cmnds[cmndname] = Command(self.modname, cmndname, self.cmnd_cfg, ['OPER', ])
         examples.add(cmndname, "%s configuration" % self.plugname, cmndname)
         cmndnamesave = cmndname + "save"
