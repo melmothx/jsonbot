@@ -18,6 +18,10 @@ from gozerlib.channelbase import ChannelBase
 from gozerlib.errors import BotNotSetInEvent
 from gozerlib.gozerevent import GozerEvent
 
+## xmpp import
+
+from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape, XMLunescape
+
 ## basic imports
 
 import types
