@@ -71,7 +71,7 @@ try:
             logging.debug("persist - %s - %s" % (self.counter, mcounter))
             if self.type == "mem":
                 tmp = get(self.fn) ; cachetype = "mem"
-                if tmp: self.data = tmp ; logging.warn("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
+                if tmp: self.data = tmp ; logging.debug("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
             jsontxt =  mc.get(self.fn) ; cachetype = "cache"
             if type(default) == types.DictType:
                 default2 = LazyDict()
@@ -90,7 +90,7 @@ try:
                         self.data = default2
                         return
                 if self.obj == None:
-                    logging.warn("persist - %s - no entry found" % self.logname)
+                    logging.debug("persist - %s - no entry found" % self.logname)
                     self.obj = JSONindb(key_name=self.fn)
                     self.obj.content = unicode(default)
                     self.data = default2
@@ -100,7 +100,7 @@ try:
                 logging.debug('persist - jsontxt is %s' % jsontxt)
                 cachetype = "file"
             else: cachetype = "cache"
-            logging.warn("persist - %s - loaded %s" % (cachetype, self.fn))
+            logging.debug("persist - %s - loaded %s" % (cachetype, self.fn))
             self.data = loads(jsontxt)
             if type(self.data) == types.DictType:
                 d = LazyDict()
@@ -137,7 +137,7 @@ try:
             self.obj.filename = self.fn
             from google.appengine.ext import db
             key = db.run_in_transaction(self.obj.put)
-            logging.warn("persist - transaction returned %s" % key)
+            logging.debug("persist - transaction returned %s" % key)
             mc.set(self.fn, bla)
             delete(self.fn, self.data)
             cfrom = whichmodule(0)
@@ -207,7 +207,7 @@ except ImportError:
                     else: d = data
                     self.data = d
                     cachetype = "mem"
-                    logging.warn("persist - %s - loaded %s" % (cachetype, self.fn))
+                    logging.debug("persist - %s - loaded %s" % (cachetype, self.fn))
                     if not 'run' in self.fn: 
                         size = len(d)
                         logging.debug("persist - mem - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))
@@ -226,7 +226,7 @@ except ImportError:
                     d = LazyDict()
                     d.update(self.data)
                     self.data = d
-                logging.warn("persist - %s - loaded %s" % (cachetype, self.fn))
+                logging.debug("persist - %s - loaded %s" % (cachetype, self.fn))
                 if not 'run' in self.fn: 
                     size = len(data)
                     if gotcache: logging.debug("persist - cache - loaded %s (%s) - %s - %s" % (self.logname, size, self.data.tojson(), cfrom))

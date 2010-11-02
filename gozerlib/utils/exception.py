@@ -18,6 +18,14 @@ import logging
 exceptionlist = []
 exceptionevents = []
 
+ERASE_LINE = '\033[2K'
+BOLD='\033[1m'
+RED = '\033[91m'
+YELLOW = '\033[93m'
+GREEN = '\033[92m'
+ENDC = '\033[0m'
+
+
 ## exceptionmsg function
 
 def exceptionmsg():
@@ -48,7 +56,7 @@ def handle_exception(event=None, log=True, txt=""):
     """ handle exception.. for now only print it. """
     errormsg = exceptionmsg()
     if txt: errormsg = "%s - %s" % (txt, errormsg)
-    if log: logging.error(errormsg)
+    if log: logging.error(RED + errormsg + ENDC)
     if event:
         exceptionevents.append((event, errormsg))
         if event.bot:

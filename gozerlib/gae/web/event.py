@@ -76,7 +76,7 @@ class WebEvent(EventBase):
         self.stripped = stripped(self.auth)
         self.domain = None
         self.channel = stripped(userhost)
-        logging.info(u'web - parsed - %s - %s' % (self.txt, self.userhost)) 
+        logging.debug(u'web - parsed - %s - %s' % (self.txt, self.userhost)) 
         self.makeargs()
         return self
 

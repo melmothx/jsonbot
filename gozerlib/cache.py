@@ -22,7 +22,7 @@ def get(name, namespace=""):
         if data: logging.debug("cache - returning %s" % name) ; return data
     except KeyError: pass
 
-def set(name, item, namespace=""):
+def set(name, item, timeout=0, namespace=""):
     """ set data in the cache. """
     logging.debug("cache - setting %s (%s)" % (name, len(item)))
     global cache

@@ -63,7 +63,7 @@ class EventBase(LazyDict):
         self.origin = self.bot.user or self.bot.server
         self.origtxt = self.txt
         self.makeargs()
-        logging.info("%s - prepared event - %s" % (self.cbtype, self.dump()))
+        logging.debug("%s - prepared event - %s" % (self.cbtype, self.dump()))
 
     def bind(self, bot=None, user=None, chan=None):
         """ bind event.bot event.user and event.chan to execute a command on it. """
@@ -136,7 +136,7 @@ class EventBase(LazyDict):
     def makeoptions(self):
         self.options = makeeventopts(self.txt)
         if not self.options: return
-        logging.warn("eventbase - options - %s" % unicode(self.options))
+        logging.debug("eventbase - options - %s" % unicode(self.options))
         self.txt = ' '.join(self.options.args)
         self.makeargs()
 

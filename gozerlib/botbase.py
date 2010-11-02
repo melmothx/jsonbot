@@ -19,7 +19,7 @@ from commands import Commands
 from config import Config
 from utils.pdod import Pdod
 from channelbase import ChannelBase
-from less import Less
+from less import Less, outcache
 from boot import boot
 from utils.locking import lockdec
 from exit import globalshutdown
@@ -105,9 +105,9 @@ class BotBase(LazyDict):
             from config import cfg as mainconfig
             self.owner = mainconfig.owner
         self.setusers(usersin)
-        logging.info(u"botbase - owner is %s" % self.owner)
+        logging.warn(u"botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
-        self.outcache = Less(3)
+        self.outcache = outcache
         self.userhosts = {}
         self.connectok = threading.Event()
         if not self.nick: self.nick = (nick or self.cfg.nick or u'jsonbot')
@@ -233,7 +233,8 @@ class BotBase(LazyDict):
         self.status = "callback"
         starttime = time.time()
         msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)
-        logging.warn(msg)
+        if event.how == "background": logging.debug(msg)
+        else: logging.warn(msg)
         logging.debug("botbase - remote - %s" % event.dump())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
@@ -259,7 +260,7 @@ class BotBase(LazyDict):
         else:
             try: int(event.cbtype) ; logging.debug(msg)
             except ValueError:
-                if event.cbtype == 'PING': logging.debug(msg)
+                if event.cbtype == 'PING' or event.how == "background": logging.debug(msg)
                 else: logging.warn(msg)
         logging.debug("%s - %s" % (self.name, event.tojson()))
         if self.closed:
@@ -343,8 +344,8 @@ class BotBase(LazyDict):
         res = txtlist[0]
         length = len(txtlist)
         if length > 1:
-            logging.debug("addding %s lines to %s outputcache" % (len(txtlist), printto))
-            self.outcache.set(printto, txtlist[1:])
+            logging.warn("addding %s lines to %s outputcache" % (len(txtlist), printto))
+            outcache.set(u"%s-%s" % (self.name, printto), txtlist[1:])
             res += "<b> - %s more</b>" % (length - 1) 
         return [res, length]
 

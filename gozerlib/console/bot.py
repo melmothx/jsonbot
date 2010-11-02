@@ -123,8 +123,8 @@ class ConsoleBot(BotBase):
 
     def normalize(self, what):
         what = strippedtxt(what)
-        what = what.replace("<b>", self.RED)
+        what = what.replace("<b>", self.GREEN)
         what = what.replace("</b>", self.ENDC)
-        what = what.replace("&lt;b&gt;", self.RED)
+        what = what.replace("&lt;b&gt;", self.GREEN)
         what = what.replace("&lt;/b&gt;", self.ENDC)
         return what

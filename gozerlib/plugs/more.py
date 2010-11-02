@@ -8,6 +8,7 @@
 
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
+from gozerlib.less import outcache
 
 ## basic imports
 
@@ -17,10 +18,9 @@ import logging
 
 def handle_more(bot, ievent):
     """ pop message from the output cache. """
-    logging.warn("more - outputcache: %s" % bot.outcache.size(ievent.channel))
     if ievent.msg: target = ievent.nick
     else: target = ievent.channel
-    try: txt, size = bot.outcache.more(target)
+    try: txt, size = outcache.more(u"%s-%s" % (bot.name, target))
     except IndexError: txt = None 
     if not txt:
         ievent.reply('no more data available for %s' % target)
