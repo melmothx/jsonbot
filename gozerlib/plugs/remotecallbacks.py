@@ -34,14 +34,14 @@ cpy = copy.deepcopy
 
 def remotecb(bot, event):
     """ dispatch an event. """
-    try: container = Container().load(XMLunescape(event.txt))
+    try: container = Container().load(event.txt)
     except TypeError:
         handle_exception()
         logging.warn("remotecallbacks - not a remote event - %s " % event.userhost)
         return
     logging.debug('doing REMOTE callback')
     try:
-        digest = hmac.new(str(container.hashkey), container.payload, hashlib.sha512).hexdigest()
+        digest = hmac.new(str(container.hashkey), XMLunescape(container.payload), hashlib.sha512).hexdigest()
         logging.debug("remotecallbacks - digest is %s" % digest)
     except TypeError:
         handle_exception()

@@ -18,10 +18,16 @@ from gozerlib.container import Container
 from gozerlib.errors import NoProperDigest
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.locking import locked
+from gozerlib.utils.generic import strippedtxt
 
 ## commonplugs imports
 
 from commonplugs.twitter import postmsg
+
+## xmpp import
+
+from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape, XMLunescape
+
 
 ## basic imports
 
@@ -83,7 +89,8 @@ def forwardoutcb(bot, event):
         if outbot:
             e.source = outbot.jid
             txt = outbot.normalize(e.tojson())
-            container = Container(outbot.jid, txt)
+            #txt = e.tojson()
+            container = Container(outbot.jid, strippedtxt(txt))
             outbot.outnocb(jid, container.tojson()) 
         else: logging.error("forward - no xmpp bot found in fleet".upper())
 

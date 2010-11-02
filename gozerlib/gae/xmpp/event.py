@@ -13,6 +13,10 @@ from gozerlib.utils.lazydict import LazyDict
 from gozerlib.gae.utils.auth import checkuser
 from gozerlib.utils.generic import  strippedtxt
 
+## xmpp import
+
+from gozerlib.contrib.xmlstream import XMLescape, XMLunescape
+
 ## basic imports
 
 import cgi

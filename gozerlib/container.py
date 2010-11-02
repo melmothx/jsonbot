@@ -11,6 +11,10 @@ __version__ = "1"
 from gozerlib.gozerevent import GozerEvent
 from simplejson import dumps
 
+## xmpp import
+
+from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape, XMLunescape
+
 ## basic imports
 
 import hmac
@@ -42,7 +46,7 @@ class Container(GozerEvent):
         self.createtime = time.time()
         self.origin = origin
         self.type = str(type) 
-        self.payload = payload
+        self.payload = XMLescape(payload)
         self.makeid()
         if key: self.makehmac(key)
         else: self.makehmac(self.id)

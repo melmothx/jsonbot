@@ -80,7 +80,7 @@ class GozerEvent(EventBase):
             try:
                 data = res[subelement]
                 if data:
-                    main += "<%s>%s</%s>" % (subelement, XMLescape(data), subelement)
+                    main += "<%s>%s</%s>" % (subelement, data, subelement)
                     gotsub = True
             except KeyError: pass
         if gotsub: main += "</%s>" % elem

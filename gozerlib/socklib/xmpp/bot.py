@@ -550,7 +550,7 @@ class SXMPPBot(XMLStream, BotBase):
         self.doevent(msg)
 
     def normalize(self, what):
-        what = cgi.escape(what)
+        #what = cgi.escape(what)
         what = what.replace("\002", "")
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
@@ -560,4 +560,4 @@ class SXMPPBot(XMLStream, BotBase):
         what = what.replace("</i>", "")
         what = what.replace("&lt;i&gt;", "")
         what = what.replace("&lt;/i&gt;", "")
-        return XMLescape(what)
+        return what
