@@ -260,7 +260,7 @@ class BotBase(LazyDict):
         else:
             try: int(event.cbtype) ; logging.debug(msg)
             except ValueError:
-                if event.cbtype == 'PING' or event.how == "background": logging.debug(msg)
+                if event.cbtype in ['PING', 'PRESENCE'] or event.how == "background": logging.debug(msg)
                 else: logging.warn(msg)
         logging.debug("%s - %s" % (self.name, event.tojson()))
         if self.closed:

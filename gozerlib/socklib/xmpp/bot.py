@@ -28,6 +28,7 @@ from gozerlib.utils.generic import toenc, fromenc
 
 ## xmpp imports
 
+from gozerlib.contrib.xmlstream import XMLescape, XMLunescape
 from presence import Presence
 from message import Message
 from iq import Iq
@@ -48,6 +49,7 @@ import xml
 import re
 import hashlib
 import logging
+import cgi
 
 ## locks
 
@@ -548,6 +550,7 @@ class SXMPPBot(XMLStream, BotBase):
         self.doevent(msg)
 
     def normalize(self, what):
+        what = cgi.escape(what)
         what = what.replace("\002", "")
         what = what.replace("<b>", "")
         what = what.replace("</b>", "")
@@ -557,4 +560,4 @@ class SXMPPBot(XMLStream, BotBase):
         what = what.replace("</i>", "")
         what = what.replace("&lt;i&gt;", "")
         what = what.replace("&lt;/i&gt;", "")
-        return what
+        return XMLescape(what)

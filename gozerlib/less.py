@@ -44,7 +44,6 @@ class Less(object):
     def set(self, channel, listoftxt):
         """ set listoftxt to channel's output. """
         channel = unicode(channel).lower()
-        logging.warn("less - setting %s: %s" % (channel, listoftxt))
         set(u"outcache-" + channel, listoftxt, 3600)
 
     def get(self, channel):
@@ -52,7 +51,6 @@ class Less(object):
         channel = unicode(channel).lower()
         global get
         data = get(u"outcache-" + channel)
-        logging.warn("less - %s - data returned: %s" % (channel, unicode(data)))
         if not data: txt = None
         else: 
             try: txt = data.pop(0) ; set(u"outcache-" + channel, data, 3600)
