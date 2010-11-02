@@ -34,7 +34,7 @@ cpy = copy.deepcopy
 
 def remotecb(bot, event):
     """ dispatch an event. """
-    try: container = Container().load(event.txt)
+    try: container = Container().load(XMLunescape(event.txt))
     except TypeError:
         handle_exception()
         logging.warn("remotecallbacks - not a remote event - %s " % event.userhost)

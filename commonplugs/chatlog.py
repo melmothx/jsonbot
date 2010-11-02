@@ -128,7 +128,8 @@ def file_write(m):
         'target': m.get('target'), 
         'network': m.get('network') 
     }
-    if args['target'].startswith('#'): args['channel_name'] = args['target'][1:]
+    if args['target'][0] in "#-": args['channel_name'] = args['target'][1:]
+    else: args['channel_name'] = args['target']
     f = time.strftime(format_opt('filename')) % args
     if m['type'] != 'comment':
         event_filename = format_opt('event_filename')
