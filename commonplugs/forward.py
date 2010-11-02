@@ -90,7 +90,7 @@ def forwardoutcb(bot, event):
             e.source = outbot.jid
             txt = outbot.normalize(e.tojson())
             #txt = e.tojson()
-            container = Container(outbot.jid, strippedtxt(txt))
+            container = Container(outbot.jid, txt)
             outbot.outnocb(jid, container.tojson()) 
         else: logging.error("forward - no xmpp bot found in fleet".upper())
 

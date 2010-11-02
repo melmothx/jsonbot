@@ -46,7 +46,7 @@ class Container(GozerEvent):
         self.createtime = time.time()
         self.origin = origin
         self.type = str(type) 
-        self.payload = XMLescape(payload)
+        self.payload = payload
         self.makeid()
         if key: self.makehmac(key)
         else: self.makehmac(self.id)

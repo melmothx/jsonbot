@@ -49,6 +49,7 @@ def remotecb(bot, event):
         return
     if container.digest == digest: e = EventBase().load(XMLunescape(container.payload))
     else: raise NoProperDigest()
+    e.txt = XMLunescape(e.txt)
     e.nodispatch = True
     e.forwarded = True
     bot.doevent(e)

@@ -74,13 +74,13 @@ class GozerEvent(EventBase):
                 gotsub = True
         if res.has_key('txt'):
             if res['txt']:
-                main += u"<body>%s</body>" % striphtml(res['txt'])
+                main += u"<body>%s</body>" % XMLescape(res['txt'])
                 gotsub = True
         for subelement in subelements[elem]:
             try:
                 data = res[subelement]
                 if data:
-                    main += "<%s>%s</%s>" % (subelement, data, subelement)
+                    main += "<%s>%s</%s>" % (subelement, XMLescape(data), subelement)
                     gotsub = True
             except KeyError: pass
         if gotsub: main += "</%s>" % elem

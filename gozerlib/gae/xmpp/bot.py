@@ -10,6 +10,10 @@ from gozerlib.botbase import BotBase
 from gozerlib.socklib.xmpp.presence import Presence
 from gozerlib.utils.generic import strippedtxt
 
+## xmpp import
+
+from gozerlib.contrib.xmlstream import NodeBuilder, XMLescape, XMLunescape
+
 ## basic imports
 
 import types
@@ -61,6 +65,4 @@ class XMPPBot(BotBase):
         what = what.replace("</i>", "")
         what = what.replace("&lt;i&gt;", "")
         what = what.replace("&lt;/i&gt;", "")
-        what = what.replace("&lt;", "<")
-        what = what.replace("&gt;", ">")
         return what
