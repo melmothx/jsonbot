@@ -61,4 +61,6 @@ class XMPPBot(BotBase):
         what = what.replace("</i>", "")
         what = what.replace("&lt;i&gt;", "")
         what = what.replace("&lt;/i&gt;", "")
+        what = what.replace("&lt;", "<")
+        what = what.replace("&gt;", ">")
         return what
