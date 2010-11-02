@@ -148,7 +148,7 @@ def watchcallback(bot, event):
         try:
             (botname, type, channel) = item
         except ValueError: continue
-        if channel.lower() not in event.allowwatch: logging.warn("watcher - allowwatch denied %s - %s" % (channel, event.allowwatch)) ; continue
+        if channel not in event.allowwatch: logging.warn("watcher - allowwatch denied %s - %s" % (channel, event.allowwatch)) ; continue
         m = formatevent(bot, event)
         if m.nick == bot.nick or event.cbtype not in ['PRIVMSG', 'DISPATCH', 'MESSAGE', 'BLIP_SUBMITTED']: txt = u"[!] %s" % m.txt
         else: txt = u"[%s] %s" % (m.nick or event.nick or event.auth, m.txt)
