@@ -55,7 +55,7 @@ else:
 
 def postmsg(username, txt):
     result = splittxt(txt, 139)
-    twitteruser = TwitterUser("users")
+    twitteruser = TwitterUsers("users")
     token = twittertoken(CONSUMER_KEY, CONSUMER_SECRET, twitteruser, username)
     if not token:
         raise TweepError("Can't get twitter token")
