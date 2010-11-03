@@ -67,8 +67,8 @@ def boot(force=False, encoding="utf-8", umask=None, saveperms=True):
             sys.setdefaultencoding(encoding)
     except (AttributeError, IOError): pass
     try:
-        if not umask: checkpermissions('gozerdata', 0700) 
-        else: checkpermissions('gozerdata', umask)  
+        if not umask: checkpermissions(datadir, 0700) 
+        else: checkpermissions(datadir, umask)  
     except: handle_exception()
     global loaded
     global cmndtable

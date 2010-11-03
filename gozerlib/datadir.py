@@ -10,18 +10,28 @@ import re
 import os
 import shutil
 import logging
+import os
 
 ## the global datadir
 
-datadir = 'gozerdata'
+try: homedir = os.path.abspath(os.path.expanduser("~"))
+except: homedir = os.getcwd()
+
+datadir = "gozerdata"
+
 
 ## functions
 
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
-    ddir = ddir or datadir
+    if not ddir: ddir = homedir + os.sep + (ddir or datadir)
     curdir = os.getcwd()
-    logging.debug("making dirs in %s" % ddir)
+    logging.warn("making dirs in %s" % ddir)
+    if not os.path.isdir(ddir):
+        try: os.mkdir(ddir)
+        except: logging.warn("can't make %s dir" % ddir)
+    try: os.chmod(ddir, 0700)
+    except: pass
     if not os.path.isdir(ddir):
         try:
             import pkg_resources

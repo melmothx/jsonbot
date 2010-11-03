@@ -37,7 +37,16 @@ import os
 ## options parser
 
 opts = makeopts()
+
+if opts.datadir:
+    import gozerlib
+    gozerlib.datadir.datadir = opts.datadir
+    makedirs(opts.datadir)
+else:
+    makedirs()
+
 cfg = makeconfig('sxmpp', opts)
+if opts.nick: cfg.nick = opts.nick
 cfg.save()
 
 ## runtime

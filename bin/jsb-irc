@@ -42,8 +42,17 @@ import os
 ## options parser
 
 opts = makeopts()
+
+if opts.datadir:
+    import gozerlib
+    gozerlib.datadir.datadir = opts.datadir
+    makedirs(opts.datadir)
+else:
+    makedirs()
+
 cfg = makeconfig('irc', opts)
 cfg.type = "irc"
+if opts.nick: cfg.nick = opts.nick
 cfg.save()
 
 ## runtime

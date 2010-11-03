@@ -35,6 +35,7 @@ def makeopts():
     parser = optparse.OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
     parser.add_option('', '-r', type='string', default=False, dest='doresume',  metavar='PATH', 
                   help="resume the bot from the folder specified")
+    parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir',  help="datadir of the bot")
     parser.add_option('-u', '--user', type='string', default=False, dest='user',  help="JID of the bot")
     parser.add_option('-o', '--owner', type='string', default=False, dest='owner',  help="owner of the bot")
     parser.add_option('-s', '--server', type='string', default=False, dest='server',  help="server to connect to (irc)")
@@ -44,7 +45,7 @@ def makeopts():
     parser.add_option('', '--name', type='string', default=False, dest='name', help="bot's name")
     parser.add_option('', '--port', type='string', default=False, dest='port',  help="set port of server to connect to")
     parser.add_option('', '--save', action='store_true', default=False, dest='save',  help="save to config file")
-    parser.add_option('-n', '--nick', type='string', default="jsonbot", dest='nick',  help="nick of the bot")
+    parser.add_option('-n', '--nick', type='string', default=False, dest='nick',  help="nick of the bot")
     parser.add_option('-a', '--all', action='store_true', default=False, dest='all', help="show available fleet bots")
     parser.add_option('', '--ssl', action='store_true', default=False, dest='ssl',  help="use ssl")
     parser.add_option('-y', '--nossl', action='store_true', default=False, dest='nossl',  help="don't use ssl")
