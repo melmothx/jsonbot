@@ -125,7 +125,7 @@ def handle_twittercmnd(bot, ievent):
     target =  strippedtxt(ievent.args[0])
 
     try:
-        twitteruser = TwitterUser("users")
+        twitteruser = TwitterUsers("users")
         token = twitteruser.data.get(ievent.user.data.name)
         if not token:
             ievent.reply("you are not logged in yet .. run the twitter-auth command.")
