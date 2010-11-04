@@ -21,6 +21,7 @@ curdir = os.getcwd()
 
 if os.path.isdir("gozerdata"): datadir = "gozerdata"
 else: datadir = homedir + os.sep + ".jsonbot"
+print "datadir is %s" % datadir
 
 ## functions
 
@@ -33,28 +34,29 @@ def makedirs(ddir=None):
         logging.warn("making dirs in %s" % ddir)
     try: os.chmod(ddir, 0700)
     except: pass
+    last = datadir.split(os.sep)[-1]
     if not os.path.isdir(ddir):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename('gozerdata', '')
+            source = pkg_resources.resource_filename(last, '')
             shutil.copytree(source, ddir)
         except ImportError: logging.error("datadir - failed to copy gozerdata")
     if not os.path.isdir(ddir + os.sep + 'myplugs'):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename('gozerdata', 'myplugs')
+            source = pkg_resources.resource_filename(last, 'myplugs')
             shutil.copytree(source, ddir + os.sep + 'myplugs')
         except ImportError: logging.error("datadir - failed to copy gozerdata/myplugs")
     if not os.path.isdir(ddir + os.sep + 'examples'):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename('gozerdata', 'examples')
+            source = pkg_resources.resource_filename(last, 'examples')
             shutil.copytree(source, ddir + os.sep + 'examples')
         except ImportError: logging.error("datadir - failed to copy gozerdata/examples")
     if not os.path.isdir(ddir + os.sep + 'config'):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename('gozerdata', 'examples')
+            source = pkg_resources.resource_filename(last, 'examples')
             shutil.copytree(source, ddir + os.sep + 'config')
         except ImportError: logging.error("datadir - failed to copy gozerdata/examples")
     try:

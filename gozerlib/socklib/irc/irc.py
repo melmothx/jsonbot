@@ -23,6 +23,7 @@ from gozerlib.channelbase import ChannelBase
 from gozerlib.morphs import inputmorphs, outputmorphs
 from gozerlib.exit import globalshutdown
 from gozerlib.fleet import fleet
+from gozerlib.config import Config
 
 ## gozerlib.irc imports
 
@@ -143,7 +144,7 @@ class Irc(BotBase):
 
     def bind(self):
         server = self.server
-        elite = self.cfg['bindhost'] or config['bindhost']
+        elite = self.cfg['bindhost'] or Config()['bindhost']
         if elite:
             try:
                 self.oldsock.bind((elite, 0))
