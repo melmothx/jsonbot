@@ -38,25 +38,25 @@ def makedirs(ddir=None):
     if not os.path.isdir(ddir):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename(last, '')
+            source = pkg_resources.resource_filename('gozerdata', '')
             shutil.copytree(source, ddir)
         except ImportError: logging.error("datadir - failed to copy gozerdata")
     if not os.path.isdir(ddir + os.sep + 'myplugs'):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename(last, 'myplugs')
+            source = pkg_resources.resource_filename('gozerdata', 'myplugs')
             shutil.copytree(source, ddir + os.sep + 'myplugs')
         except ImportError: logging.error("datadir - failed to copy gozerdata/myplugs")
     if not os.path.isdir(ddir + os.sep + 'examples'):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename(last, 'examples')
+            source = pkg_resources.resource_filename('gozerdata', 'examples')
             shutil.copytree(source, ddir + os.sep + 'examples')
         except ImportError: logging.error("datadir - failed to copy gozerdata/examples")
     if not os.path.isdir(ddir + os.sep + 'config'):
         try:
             import pkg_resources
-            source = pkg_resources.resource_filename(last, 'examples')
+            source = pkg_resources.resource_filename('gozerdata', 'examples')
             shutil.copytree(source, ddir + os.sep + 'config')
         except ImportError: logging.error("datadir - failed to copy gozerdata/examples")
     try:

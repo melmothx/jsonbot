@@ -11,7 +11,7 @@ from utils.lazydict import LazyDict
 from utils.exception import handle_exception
 from utils.name import stripname
 from datadir import datadir
-from errors import CantSaveConfig
+from errors import CantSaveConfig, NoSuchFile
 
 ## simplejson imports
 
@@ -92,7 +92,7 @@ class Config(LazyDict):
         curline = ""
         fname = filename
         logging.debug("config - fromfile - %s" % fname)
-        if not os.path.exists(fname): return
+        if not os.path.exists(fname): return False 
         for line in open(fname, 'r'):
             curline = line
             line = line.strip()
@@ -111,9 +111,10 @@ class Config(LazyDict):
         except ImportError:
             logging.debug("can't save %s to file .. os.mkdir() not suported" % filename)
             return
-        ddir = "."
-        d = []
+        if filename.startswith(os.sep): d = [os.sep,]
+        else: d = []
         for p in filename.split(os.sep)[:-1]:
+            if not p: continue
             d.append(p)
             ddir = os.sep.join(d)
             if not os.path.isdir(ddir):
@@ -161,6 +162,7 @@ class Config(LazyDict):
             return teller
 
         except Exception, ex:
+            handle_exception()
             print "ERROR WRITING %s CONFIG FILE: %s .. %s" % (self.cfile, str(ex), curitem)
 
     def save(self):

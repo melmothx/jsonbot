@@ -20,6 +20,9 @@ class JsonBotError(Exception):
 class FeedAlreadyExists(JsonBotError):
      pass
 
+class NoSuchFile(JsonBotError):
+     pass
+
 class BotNotEnabled(JsonBotError):
      pass
 

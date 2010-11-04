@@ -24,13 +24,6 @@ import logging
 
 cpy = copy.deepcopy
 
-try:
-    from gozerlib.config import Config
-    dotchars = Config()['dotchars']
-    if not dotchars: dotchars = ','
-except KeyError:
-    dotchars = ', '
-
 ## Ircevent class
 
 class IrcEvent(EventBase):
@@ -56,8 +49,8 @@ class IrcEvent(EventBase):
         nickuser = self.prefix.split('!')
         if len(nickuser) == 2:
             self.nick = nickuser[0]
-            if self.bot.cfg['stripident'] or Config()['stripident']: self.userhost = stripident(nickuser[1])
-            else: self.userhost = nickuser[1]
+            #if self.bot.cfg['stripident'] or Config()['stripident']: self.userhost = stripident(nickuser[1])
+            self.userhost = nickuser[1]
         self.cmnd = splitted[1]
         self.cbtype = self.cmnd
         if pfc.has_key(self.cmnd):

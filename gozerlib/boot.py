@@ -9,7 +9,7 @@
 from gozerlib.utils.generic import checkpermissions
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
-from gozerlib.datadir import datadir
+from gozerlib.datadir import datadir, makedirs
 from gozerlib.config import Config
 
 ## basic imports
@@ -49,6 +49,7 @@ rundir = datadir + os.sep + "run"
 def boot(force=False, encoding="utf-8", umask=None, saveperms=True):
     """ initialize the bot. """
     logging.info("booting ..")
+    makedirs()
     try:
         if os.getuid() == 0:
             print "don't run the bot as root"

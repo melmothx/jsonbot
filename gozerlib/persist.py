@@ -254,8 +254,11 @@ except ImportError:
                 fn = filename or self.fn
                 data = dumps(self.data)
                 set(fn, self.data)
-                dirr = []
-                for p in self.fn.split(os.sep)[:-1]:
+                if fn.startswith(os.sep): d = [os.sep,]
+                else: d = []
+                dirr = ["/", ]
+                for p in fn.split(os.sep)[:-1]:
+                    if not p: continue
                     dirr.append(p)
                     pp = os.sep.join(dirr)
                     if not os.path.isdir(pp):
@@ -264,7 +267,7 @@ except ImportError:
                 tmp = fn + '.tmp' # tmp file to save to
                 try: datafile = open(tmp, 'w')
                 except IOError, ex:
-                    logging.error("persist - can't save %s: %s" % (self.logname, str(ex)))
+                    logging.error("persist - can't save %s: %s" % (self.fn, str(ex)))
                     return
                 fcntl.flock(datafile, fcntl.LOCK_EX)
                 dump(self.data, datafile)
