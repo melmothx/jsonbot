@@ -17,7 +17,10 @@ import os
 try: homedir = os.path.abspath(os.path.expanduser("~"))
 except: homedir = os.getcwd()
 
-datadir = homedir + os.sep + ".jsonbot"
+isgae = False
+
+try: getattr(os, "makedir") ; datadir = homedir + os.sep + ".jsonbot"
+except AttributeError: logging.warn("datadir - skipping makedirs") ; datadir = "gozerdata" ; isgae = True
 
 ## functions
 
@@ -27,6 +30,7 @@ def makedirs(ddir=None):
     global datadir
     datadir = ddir
     logging.warn("datadir - %s" % datadir)
+    if isgae: return
     if not os.path.isdir(ddir):
         try: os.mkdir(ddir)
         except: logging.warn("can't make %s dir" % ddir)

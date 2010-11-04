@@ -4,6 +4,11 @@
 
 """ jsonbot dispatch handler.  dispatches remote commands.  """
 
+## boot
+
+from gozerlib.boot import boot
+boot("gozerdata")
+
 ## gozerlib imports
 
 from gozerlib.utils.generic import fromenc, toenc
@@ -13,7 +18,6 @@ from gozerlib.utils.url import getpostdata, useragent
 from gozerlib.plugins import plugs
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
-from gozerlib.boot import boot
 from gozerlib.fleet import fleet
 from gozerlib.errors import NoSuchCommand
 from gozerlib.gae.utils.web import loginurl
@@ -44,7 +48,6 @@ import logging
 import google
 
 logging.warn(getversion('GAE DISPATCH'))
-boot()
 
 bot = WebBot()
 

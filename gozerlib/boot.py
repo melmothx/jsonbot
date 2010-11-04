@@ -45,7 +45,7 @@ cmndperms = None
 
 ## boot function
 
-def boot(ddir, force=False, encoding="utf-8", umask=None, saveperms=True):
+def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     """ initialize the bot. """
     logging.info("booting ..")
     ddir = ddir or datadir
