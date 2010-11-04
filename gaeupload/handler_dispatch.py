@@ -14,7 +14,6 @@ from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
 from gozerlib.boot import boot
 from gozerlib.fleet import fleet
-from gozerlib.config import cfg as maincfg
 from gozerlib.errors import NoSuchCommand
 from gozerlib.gae.utils.web import loginurl
 

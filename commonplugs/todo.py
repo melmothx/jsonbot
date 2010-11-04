@@ -18,7 +18,6 @@ from gozerlib.users import users
 from gozerlib.datadir import datadir
 from gozerlib.persist import PlugPersist
 from gozerlib.persiststate import UserState
-from gozerlib.config import cfg as config
 from gozerlib.utils.lazydict import LazyDict
 
 ## basic imports

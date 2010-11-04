@@ -13,7 +13,6 @@ from gozerlib.persist import PlugPersist
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.examples import examples
 from gozerlib.fleet import fleet
-from gozerlib.config import cfg
 from gozerlib.container import Container
 from gozerlib.errors import NoProperDigest
 from gozerlib.utils.exception import handle_exception

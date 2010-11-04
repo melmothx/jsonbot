@@ -25,7 +25,6 @@ from gozerlib.examples import examples
 from gozerlib.datadir import datadir
 from gozerlib.persist import Persist
 from gozerlib.config import Config
-from gozerlib.config import cfg as config
 
 ## basic imports
 

@@ -7,7 +7,6 @@
 ## gozerlib imports
 
 from generic import fromenc, toenc
-from gozerlib.config import cfg
 
 ## basic imports
 
@@ -46,7 +45,8 @@ class istr(str):
 
 def useragent():
     """ provide useragent string """
-    (name, version) = cfg['version'].split()[0:2]
+    from gozerlib.version import version
+    (name, version) = version.split()[0:2]
     return 'Mozilla/5.0 (compatible; %s %s; http://jsonbot.appspot.com)' % (name, version)
 
 ## CBURLopener class

@@ -13,7 +13,6 @@ from gozerlib.utils.trace import whichmodule
 from gozerlib.utils.generic import toenc, fromenc, jabberstrip
 from gozerlib.utils.locking import lockdec
 from gozerlib.eventbase import EventBase
-from gozerlib.config import cfg
 from gozerlib.channelbase import ChannelBase
 from gozerlib.errors import BotNotSetInEvent
 from gozerlib.gozerevent import GozerEvent
@@ -34,11 +33,6 @@ import re
 
 replylock = thread.allocate_lock()
 replylocked = lockdec(replylock)
-
-if cfg['dotchars']:
-    dotchars = cfg['dotchars']
-else:
-    dotchars = ' .. '
 
 ## classes
 

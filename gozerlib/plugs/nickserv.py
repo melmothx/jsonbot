@@ -15,7 +15,6 @@ from gozerlib.commands import cmnds
 from gozerlib.datadir import datadir
 from gozerlib.fleet import fleet
 from gozerlib.utils.pdod import Pdod
-from gozerlib.config import cfg as config
 
 ## basic imports
 

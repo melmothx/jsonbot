@@ -10,7 +10,6 @@
 from gozerlib.utils.generic import toenc, fromenc, strippedtxt
 from gozerlib.socklib.utils.generic import fix_format, stripident, makeargrest
 from gozerlib.eventbase import EventBase
-from gozerlib.config import cfg as config
 from gozerlib.channelbase import ChannelBase
 
 ## basic imports
@@ -26,7 +25,8 @@ import logging
 cpy = copy.deepcopy
 
 try:
-    dotchars = config['dotchars']
+    from gozerlib.config import Config
+    dotchars = Config()['dotchars']
     if not dotchars: dotchars = ','
 except KeyError:
     dotchars = ', '
@@ -56,7 +56,7 @@ class IrcEvent(EventBase):
         nickuser = self.prefix.split('!')
         if len(nickuser) == 2:
             self.nick = nickuser[0]
-            if self.bot.cfg['stripident'] or config['stripident']: self.userhost = stripident(nickuser[1])
+            if self.bot.cfg['stripident'] or Config()['stripident']: self.userhost = stripident(nickuser[1])
             else: self.userhost = nickuser[1]
         self.cmnd = splitted[1]
         self.cbtype = self.cmnd

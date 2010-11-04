@@ -15,7 +15,6 @@ from gozerlib.utils.generic import toenc, fromenc
 from gozerlib.socklib.utils.generic import getrandomnick, strippedtxt
 from gozerlib.socklib.utils.generic import fix_format, splittxt, waitforqueue, uniqlist
 from gozerlib.utils.locking import lockdec
-from gozerlib.config import cfg as config
 from gozerlib.datadir import datadir
 from gozerlib.botbase import BotBase
 from gozerlib.threads import start_new_thread, threaded
@@ -641,7 +640,8 @@ class Irc(BotBase):
     def handle_ctcp(self, ievent):
         """ handle client to client request .. version and ping. """
         if ievent.txt.find('VERSION') != -1:
-            self.ctcpreply(ievent.nick, 'VERSION %s' % config.version)
+            from gozerlib.version import version
+            self.ctcpreply(ievent.nick, 'VERSION %s' % version)
         if ievent.txt.find('PING') != -1:
             try:
                 pingtime = ievent.txt.split()[1]

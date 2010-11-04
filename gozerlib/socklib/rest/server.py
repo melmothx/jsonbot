@@ -6,9 +6,9 @@
 
 from gozerlib.utils.exception import handle_exception, exceptionmsg
 from gozerlib.utils.trace import calledfrom
-from gozerlib.config import cfg as config
 from gozerlib.persiststate import ObjectState
 from gozerlib.threads import start_new_thread
+from gozerlib.version import version
 
 ## basic imports
 
@@ -192,7 +192,7 @@ class RestRequestHandler(BaseHTTPRequestHandler):
         """ write headers to the client. """
         self.send_response(200)
         self.send_header('Content-type', '%s; charset=%s ' % (type,sys.getdefaultencoding()))
-        self.send_header('Server', config['version'])
+        self.send_header('Server', version)
         self.end_headers()
 
     def sendresult(self):

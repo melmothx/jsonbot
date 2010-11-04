@@ -34,7 +34,6 @@ from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.generic import strippedtxt
 from gozerlib.utils.locking import lockdec
-from gozerlib.config import cfg as config
 from gozerlib.socklib.partyline import partyline
 from gozerlib.threads import start_new_thread
 from gozerlib.contrib.rijndael import rijndael

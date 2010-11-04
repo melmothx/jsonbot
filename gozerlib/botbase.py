@@ -102,8 +102,8 @@ class BotBase(LazyDict):
         self.owner = self.cfg.owner
         if not self.owner:
             logging.debug(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
-            from config import cfg as mainconfig
-            self.owner = mainconfig.owner
+            from config import Config
+            self.owner = Config().owner
         self.setusers(usersin)
         logging.warn(u"botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
@@ -121,6 +121,7 @@ class BotBase(LazyDict):
         self.outqueues = [Queue.Queue() for i in range(10)]
         self.tickqueue = Queue.Queue()
         self.encoding = self.cfg.encoding or "utf-8"
+        from gozerlib.config import Config
         self.cmndperms = Config(datadir + os.sep + "run" + os.sep + "cmndperms")
         if not fleet.byname(self.name): fleet.bots.append(self)
         if not self.isgae:
@@ -199,8 +200,7 @@ class BotBase(LazyDict):
 
     def joinchannels(self):
         """ join channels. """
-        from config import cfg as mainconfig
-        time.sleep(mainconfig.waitforjoin or 5)
+        time.sleep(Config().waitforjoin or 5)
         for i in self.state['joinedchannels']:
             try:
                 logging.debug("%s - joining %s" % (self.name, i))

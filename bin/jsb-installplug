@@ -19,7 +19,6 @@ sys.path.insert(0, os.getcwd())
 
 ## gozerlib plugins
 
-from gozerlib.config import cfg as config
 from gozerlib.datadir import datadir
 from gozerlib.utils.popen import gozerpopen
 
@@ -57,7 +56,8 @@ class PGP(object):
         if not os.path.exists(self.homedir):
             logging.debug('creating directory %s' % self.homedir)
             os.mkdir(self.homedir)
-        if hasattr(config, 'pgpkeyserver'): self.keyserver = config.pgpkeyserver
+        from gozerlib.config import Config
+        if hasattr(Config(), 'pgpkeyserver'): self.keyserver = config.pgpkeyserver
         else: self.keyserver = 'pgp.mit.edu'
         os.chmod(self.homedir, 0700)
         logging.debug('will be using public key server %s' % self.keyserver)

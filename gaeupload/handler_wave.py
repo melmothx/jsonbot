@@ -7,7 +7,6 @@
 ## gozerlib imports
 
 from gozerlib.utils.generic import getversion
-from gozerlib.config import cfg
 from gozerlib.errors import NoSuchCommand
 from gozerlib.boot import boot
 
@@ -27,7 +26,7 @@ boot()
 
 # the bot
 
-bot = WaveBot(domain=cfg.domain)
+bot = WaveBot(domain="googlewave.com")
 
 def main():
     bot.run()

@@ -8,7 +8,6 @@
 
 from gozerlib.datadir import datadir
 from gozerlib.fleet import fleet
-from gozerlib.config import cfg as config
 
 ## basic imports
 

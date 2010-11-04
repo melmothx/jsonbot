@@ -34,7 +34,6 @@ from gozerlib.threadloop import TimedLoop
 from gozerlib.threads import start_new_thread
 from gozerlib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
 from gozerlib.datadir import datadir
-from gozerlib.config import cfg as mainconfig
 
 import gozerlib.contrib.feedparser as feedparser
 

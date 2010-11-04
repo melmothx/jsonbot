@@ -22,7 +22,6 @@ from gozerlib.utils.url import useragent, geturl2
 from gozerlib.utils.statdict import StatDict
 from gozerlib.utils.exception import handle_exception
 from gozerlib.fleet import fleet
-from gozerlib.config import Config, cfg
 from gozerlib.channelbase import ChannelBase
 from gozerlib.utils.url import posturl
 from gozerlib.errors import NoSuchBotType
