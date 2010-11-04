@@ -17,17 +17,16 @@ import os
 try: homedir = os.path.abspath(os.path.expanduser("~"))
 except: homedir = os.getcwd()
 
-curdir = os.getcwd()
-
-if os.path.isdir("gozerdata"): datadir = "gozerdata"
-else: datadir = homedir + os.sep + ".jsonbot"
-logging.warn("datadir - %s" % datadir)
+datadir = homedir + os.sep + ".jsonbot"
 
 ## functions
 
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     ddir = ddir or datadir
+    global datadir
+    datadir = ddir
+    logging.warn("datadir - %s" % datadir)
     if not os.path.isdir(ddir):
         try: os.mkdir(ddir)
         except: logging.warn("can't make %s dir" % ddir)

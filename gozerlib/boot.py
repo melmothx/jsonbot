@@ -42,14 +42,16 @@ cmndtable = None
 pluginlist = None
 callbacktable = None
 cmndperms = None
-rundir = datadir + os.sep + "run"
 
 ## boot function
 
-def boot(force=False, encoding="utf-8", umask=None, saveperms=True):
+def boot(ddir, force=False, encoding="utf-8", umask=None, saveperms=True):
     """ initialize the bot. """
     logging.info("booting ..")
-    makedirs()
+    ddir = ddir or datadir
+    if ddir: makedirs(ddir)
+    else: makedirs()
+    rundir = datadir + os.sep + "run"
     try:
         if os.getuid() == 0:
             print "don't run the bot as root"

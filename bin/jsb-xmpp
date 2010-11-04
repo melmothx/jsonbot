@@ -16,7 +16,6 @@ print getversion('SOCKET XMPP')
 ## gozerlib impors
 
 from gozerlib.socklib.xmpp.bot import SXMPPBot
-from gozerlib.datadir import makedirs
 from gozerlib.boot import plugin_packages, boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.config import Config
@@ -36,13 +35,7 @@ import os
 ## options parser
 
 opts = makeopts()
-
-if opts.datadir:
-    import gozerlib
-    gozerlib.datadir.datadir = opts.datadir
-    makedirs(opts.datadir)
-else:
-    makedirs()
+boot(opts.datadir)
 
 cfg = makeconfig('sxmpp', opts)
 if opts.nick: cfg.nick = opts.nick
@@ -51,9 +44,6 @@ cfg.save()
 ## runtime
 
 setloglevel(cfg.loglevel)
-
-makedirs()
-boot()
 
 #from gozerlib.plugins import plugs
 #plugs.loadall()

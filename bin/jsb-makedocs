@@ -24,16 +24,17 @@ from gozerlib.commands import cmnds
 from gozerlib.threads import start_new_thread
 from gozerlib.boot import boot
 from gozerlib.botbase import BotBase
-from gozerlib.datadir import makedirs
 
 ## basic imports
 
 import os
 import re
 import time
+import sys
 
 ## defines
-boot()
+if sys.argc > 2: boot(sys.argv[2])
+else: boot()
 donot = ['stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get']
 bot = BotBase()
 bot.allowall = True
@@ -275,7 +276,8 @@ def domods(dir):
 
 if __name__ == '__main__':
     threads = []
-    makedirs()
+    if sys.argc > 2: boot(sys.arv[2])
+    else: boot()
     import shutil
     from gozerlib.socklib.utils.generic import touch
     try:

@@ -17,7 +17,6 @@ print getversion('LAUNCH')
 
 ## gozerlib imports
 
-from gozerlib.datadir import makedirs
 from gozerlib.boot import boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.fleet import fleet
@@ -50,19 +49,17 @@ if opts.all:
 
 ## start the fleet
 
-boot()
+boot(opts.datadir)
 
 if opts.owner:
     users = users_boot()
     users.make_owner(opts.owner)
 
-fleet.loadall(opts.args)
-
 if opts.doresume:
     fleet.resume(opts.doresume)
     os.unlink(opts.doresume)
 else:
-    if fleet.avail(): fleet.startall()
+    if fleet.avail(): fleet.loadall(opts.args) ; fleet.startall()
     else:
         cfg = makeconfig('irc', opts)
         cfg.type = "irc"

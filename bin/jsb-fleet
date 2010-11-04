@@ -44,16 +44,9 @@ if opts.all:
     print "available fleet bots: %s" % fleet.avail()
     os._exit(0)
 
-if opts.datadir:
-    import gozerlib
-    gozerlib.datadir.datadir = opts.datadir
-    makedirs(opts.datadir)
-else:
-    makedirs()
-
 ## start the fleet
 
-boot()
+boot(opts.datadir)
 
 if opts.owner:
     users = users_boot()

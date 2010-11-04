@@ -254,13 +254,12 @@ except ImportError:
                 fn = filename or self.fn
                 data = dumps(self.data)
                 set(fn, self.data)
+                d = []
                 if fn.startswith(os.sep): d = [os.sep,]
-                else: d = []
-                dirr = ["/", ]
                 for p in fn.split(os.sep)[:-1]:
                     if not p: continue
-                    dirr.append(p)
-                    pp = os.sep.join(dirr)
+                    d.append(p)
+                    pp = os.sep.join(d)
                     if not os.path.isdir(pp):
                         logging.warn("persist - creating %s dir" % pp)
                         os.mkdir(pp)

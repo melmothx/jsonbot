@@ -18,7 +18,6 @@ print getversion('SOCKET IRC')
 from gozerlib.utils.exception import handle_exception
 from gozerlib.socklib.partyline import partyline
 from gozerlib.socklib.irc.bot import IRCBot
-from gozerlib.datadir import makedirs
 from gozerlib.boot import plugin_packages, boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.config import Config
@@ -41,13 +40,7 @@ import os
 ## options parser
 
 opts = makeopts()
-
-if opts.datadir:
-    import gozerlib
-    gozerlib.datadir.datadir = opts.datadir
-    makedirs(opts.datadir)
-else:
-    makedirs()
+boot(opts.datadir)
 
 cfg = makeconfig('irc', opts)
 cfg.type = "irc"
@@ -57,9 +50,6 @@ cfg.save()
 ## runtime
 
 setloglevel(cfg.loglevel)
-
-makedirs()
-boot()
 
 ## resume or start the bot
 
