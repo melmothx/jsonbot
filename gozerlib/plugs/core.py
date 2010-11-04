@@ -9,7 +9,6 @@
 from gozerlib.utils.statdict import StatDict
 from gozerlib.utils.log import setloglevel
 from gozerlib.utils.timeutils import elapsedstring
-from gozerlib.utils.generic import getversion
 from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
@@ -140,6 +139,7 @@ examples.add('perm', 'show permission of command', 'perm quit')
 
 def handle_version(bot, ievent):
     """ show bot's version. """
+    from gozerlib.version import getversion
     ievent.reply(getversion(bot.type.upper()))
 
 cmnds.add('version', handle_version, ['USER', 'GUEST'])
