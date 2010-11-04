@@ -10,7 +10,6 @@
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.trace import calledfrom
-from gozerlib.config import cfg as config
 from gozerlib.utils.lazydict import LazyDict
 
 ## simplejson
@@ -68,14 +67,6 @@ def makedirs(datadir):
         os.mkdir(datadir + '/db/')
     if not os.path.isdir(datadir + '/configs/'):
         os.mkdir(datadir + '/configs/')
-
-def getversion():
-    version = config['version']
-    if config['nodb']:
-        version += ' JSON_USERS'
-    else:
-        version += ' ' + config['dbtype'].upper()
-    return version
 
 def makeoptions(ievent, options={}):
     options = LazyDict(options)
@@ -170,12 +161,13 @@ def plugfile(datadir):
     return datadir + os.sep + calledfrom(sys._getframe())
 
 def cchar(bot, ievent):
+    from gozerlib.config import Config
     try:
         cchar = bot.channels[ievent.channel]['cc']
     except LookupError:
-        cchar = config['defaultcc'] or '!'
+        cchar = Config()['defaultcc'] or '!'
     except TypeError:
-        cchar = config['defaultcc'] or '!'
+        cchar = Config()['defaultcc'] or '!'
     return cchar
 
 def splittxt(what, l=375):

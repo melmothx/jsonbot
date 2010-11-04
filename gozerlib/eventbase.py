@@ -10,7 +10,6 @@ from channelbase import ChannelBase
 from utils.lazydict import LazyDict
 from utils.generic import splittxt, stripped
 from errors import NoSuchUser
-from config import cfg as mainconfig
 from utils.opts import makeeventopts
 
 ## simplejson imports
@@ -71,7 +70,7 @@ class EventBase(LazyDict):
         bot = bot or self.bot
         assert bot
         if not self.user and target:
-            if mainconfig.auto_register: 
+            if bot.cfg.auto_register: 
                 bot.users.addguest(target)
             self.user = user or bot.users.getuser(target)
         logging.debug("eventbase - binding user - %s" % str(self.user))

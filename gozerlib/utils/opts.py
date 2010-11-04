@@ -8,7 +8,7 @@
 
 from gozerlib.errors import NameNotSet
 from gozerlib.config import Config
-from gozerlib.utils.generic import getversion
+from gozerlib.version import getversion
 from gozerlib.utils.name import stripname
 
 ## basic imports

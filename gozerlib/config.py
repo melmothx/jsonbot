@@ -198,7 +198,3 @@ def ownercheck(userhost):
     if not userhost: return False
     if userhost in cfg['owner']: return True
     return False
-
-## global config
-
-cfg = Config()

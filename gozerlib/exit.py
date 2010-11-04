@@ -10,7 +10,6 @@ from utils.trace import whichmodule
 from plugins import plugs
 from fleet import fleet
 from runner import defaultrunner, cmndrunner
-from gozerlib.config import cfg as config
 
 ## basic imports
 

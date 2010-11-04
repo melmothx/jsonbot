@@ -60,13 +60,6 @@ def getwho(bot, who):
     for user in bot.userhosts:
         if user.lower() == who: return bot.userhosts[user]
 
-## getversion function
-
-def getversion(txt=""):
-    """ return a version string. """
-    from gozerlib.config import cfg
-    return u"%s" % (cfg.get('version') + u' ' + txt)
-
 ## splitxt function
 
 def splittxt(what, l=375):

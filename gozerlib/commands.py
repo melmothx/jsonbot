@@ -16,7 +16,6 @@ from utils.trace import calledfrom, whichmodule
 from utils.exception import handle_exception
 from utils.lazydict import LazyDict
 from errors import NoSuchCommand
-from config import cfg as mainconfig, Config
 from persiststate import UserState
 from runner import cmndrunner
 from datadir import datadir
@@ -27,10 +26,6 @@ import logging
 import sys
 import types
 import os
-
-## defines
-
-cmndperms = Config(datadir + os.sep + "run" + os.sep + "cmndperms")
 
 ## Command class
 
@@ -83,7 +78,7 @@ class Commands(LazyDict):
         event.bind(bot)
         if event.groupchat: id = event.auth = event.userhost
         else: id = event.auth
-        if mainconfig.auto_register: bot.users.addguest(id)
+        if bot.cfg.auto_register: bot.users.addguest(id)
         if not event.user:
             event.user = bot.users.getuser(id)
             if event.user: event.userstate = UserState(event.user.data.name)
@@ -109,7 +104,7 @@ class Commands(LazyDict):
                 raise NoSuchCommand(cmnd)
 
         ## core business
-        if cmndperms[c.cmnd]: perms = cmndperms[c.cmnd]
+        if bot.cmndperms[c.cmnd]: perms = cmndperms[c.cmnd]
         else: perms = c.perms
         if bot.allowall: return self.doit(bot, event, c, wait=wait)
         elif event.chan and event.chan.data.allowcommands and event.usercmnd in event.chan.data.allowcommands: 

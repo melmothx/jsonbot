@@ -12,8 +12,6 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.datadir import datadir
 from gozerlib.config import Config
 
-import users
-
 ## basic imports
 
 import logging

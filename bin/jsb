@@ -12,7 +12,7 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.utils.generic import getversion, waitforqueue
+from gozerlib.version import getversion
 print getversion('SOCKET CONSOLE')
 
 ## make config from cmndline options
@@ -29,6 +29,7 @@ setloglevel(opts.loglevel or "error")
  
 # gozerlib imports
 
+from gozerlib.utils.generic import waitforqueue
 from gozerlib.utils.mainloop import mainloop
 from gozerlib.plugins import Plugins
 from gozerlib.console.bot import ConsoleBot

@@ -12,7 +12,6 @@ from utils.name import stripname
 from persist import Persist
 from utils.lazydict import LazyDict
 from datadir import datadir
-from config import cfg as mainconfig
 from errors import NoSuchUser
 
 ## basic imports
@@ -273,7 +272,7 @@ class Users(Persist):
 
     def addguest(self, userhost):
         if not self.getname(userhost):
-            if mainconfig['guestasuser']: self.add(userhost, [userhost, ], ["USER",])
+            if Config().guestasuser: self.add(userhost, [userhost, ], ["USER",])
             else: self.add(userhost, [userhost, ], ["GUEST",])
 
     def addemail(self, userhost, email):

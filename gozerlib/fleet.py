@@ -9,7 +9,6 @@
 from utils.exception import handle_exception
 from utils.generic import waitforqueue
 from config import Config
-from config import cfg as mainconfig
 from users import users
 from plugins import plugs
 from persist import Persist
@@ -109,7 +108,8 @@ class Fleet(Persist):
                 self.save()
             except ValueError: pass
             raise Exception("no bot type specified")
-        if not cfg.owner: cfg.owner = mainconfig.owner
+        if not cfg.owner:
+            cfg.owner = Config().owner
         if not cfg.domain and domain: cfg.domain = domain
         if not cfg: raise Exception("can't make config for %s" % name)
         cfg.save()

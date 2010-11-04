@@ -121,6 +121,7 @@ class BotBase(LazyDict):
         self.outqueues = [Queue.Queue() for i in range(10)]
         self.tickqueue = Queue.Queue()
         self.encoding = self.cfg.encoding or "utf-8"
+        self.cmndperms = Config(datadir + os.sep + "run" + os.sep + "cmndperms")
         if not fleet.byname(self.name): fleet.bots.append(self)
         if not self.isgae:
             defaultrunner.start()
