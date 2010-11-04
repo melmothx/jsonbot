@@ -96,7 +96,7 @@ def boot(force=False, encoding="utf-8", umask=None, saveperms=True):
     if not loaded:
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
-            plugs.reload(plug)
+            plugs.reload(plug, showerror=True)
     logging.warn("boot - done")
 
 ## commands related commands

@@ -84,7 +84,7 @@ class Plugins(LazyDict):
         except KeyError: pass
         return True
 
-    def load(self, modname, force=False):
+    def load(self, modname, force=False, showerror=True):
         """ load a plugin. """
         if self.has_key(modname):
             try:
@@ -104,6 +104,7 @@ class Plugins(LazyDict):
         try: mod = _import(modname)
         except ImportError, ex:
             logging.info("plugins - import error on %s - %s" % (modname, str(ex)))
+            if showerror: handle_exception()
             raise NoSuchPlugin(modname)
         try: self[modname] = mod
         except KeyError:
@@ -123,8 +124,8 @@ class Plugins(LazyDict):
     def reload(self, modname, force=True, showerror=True):
         """ reload a plugin. just load for now. """ 
         if self.has_key(modname): self.unload(modname)
-        try: return self.load(modname, force=force)
-        except ImportError, ex:
+        try: return self.load(modname, force=force, showerror=showerror)
+        except Exception, ex:
             if showerror: handle_exception()
             logging.info("plugins - %s not found - %s" % (modname, str(ex)))
 
