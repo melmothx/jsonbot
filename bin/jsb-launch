@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+#
+#
+
+""" JSONBOT starter program. """
+
+## bootstrap
+
+import warnings
+warnings.simplefilter("ignore")
+
+import os, sys, logging
+sys.path.insert(0, os.getcwd())
+
+from gozerlib.utils.generic import getversion
+print getversion('LAUNCH')
+
+## gozerlib imports
+
+from gozerlib.datadir import makedirs
+from gozerlib.boot import boot
+from gozerlib.utils.log import setloglevel
+from gozerlib.fleet import fleet
+from gozerlib.utils.mainloop import mainloop
+from gozerlib.utils.opts import makeopts, makeconfig
+from gozerlib.users import users_boot
+from gozerlib.config import Config
+from gozerlib.threads import start_new_thread
+
+import gozerlib
+
+## basic imports
+
+import logging
+import time
+
+## options parser
+
+opts = makeopts()
+
+if opts.loglevel:
+    setloglevel(opts.loglevel)
+else:
+    setloglevel("warning")
+
+if opts.all:
+    print "available fleet bots: %s" % fleet.avail()
+    os._exit(0)
+
+if opts.datadir:
+    import gozerlib
+    gozerlib.datadir.datadir = opts.datadir
+    makedirs(opts.datadir)
+else:
+    makedirs()
+
+## start the fleet
+
+boot()
+
+if opts.owner:
+    users = users_boot()
+    users.make_owner(opts.owner)
+
+fleet.loadall(opts.args)
+
+if opts.doresume:
+    fleet.resume(opts.doresume)
+    os.unlink(opts.doresume)
+else:
+    if fleet.avail(): fleet.startall()
+    else:
+        cfg = Config("default-irc")
+        cfg.update(makeconfig('irc', opts))
+        cfg.type = "irc"
+        if opts.nick: cfg.nick = opts.nick
+        cfg.save()
+        try:
+            bot = IRCBot(cfg, nick=opts.nick)
+            bot.nick = cfg.nick or 'jsonbot' 
+        except NoOwnerSet, ex:
+            print "owner is not set in %s - use the -o option" % str(ex)
+            os._exit(1)
+        if opts.channel and not opts.channel in bot.state['joinedchannels']:
+            bot.state['joinedchannels'].append(opts.channel)
+            bot.state.save()
+        fleet.addbot(bot)
+        if opts.forward: 
+            print "starting forward bot (%s)" % str(cfg)
+            forwardcfg = makeconfig('sxmpp', opts, 'forwardbot') # sxmpp for the forward bo
+            forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
+            start_new_thread(forwardbot.start, ())
+        start_new_thread(bot.start, ())
+
+mainloop()
