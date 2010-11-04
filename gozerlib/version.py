@@ -4,7 +4,7 @@
 
 """ version related stuff. """
 
-version = "0.5 RELEASE"
+version = "0.5 RC1"
 
 ## getversion function
 
