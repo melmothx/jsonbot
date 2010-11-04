@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.gae.utils.web import loginurl
-from gozerlib.utils.generic import getversion
+from gozerlib.version import getversion
 from gozerlib.utils.exception import handle_exception
 
 ## google imports
