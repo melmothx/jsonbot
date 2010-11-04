@@ -9,8 +9,7 @@
 from gozerlib.persist import Persist
 from gozerlib.botbase import BotBase
 from gozerlib.plugins import plugs
-from gozerlib.utils.version import getversion
-from gozerlib.utils.generic strippedtxt
+from gozerlib.version import getversion
 from gozerlib.callbacks import callbacks
 from gozerlib.outputcache import add
 from gozerlib.config import Config
@@ -126,7 +125,8 @@ class WaveBot(BotBase, robot.Robot):
         if event.chan.data.json_data: wavelet = self.blind_wavelet(event.chan.data.json_data)
         else: logging.info("did not join channel %s" % event.id) ; return
         if not wavelet: logging.error("cant get wavelet") ; return
-        txt = unicode(strippedtxt(txt.strip()))
+        txt = self.normalize(txt)
+        txt = unicode(txt.strip())
         logging.debug("%s - wave - out - %s" % (self.name, txt))             
         try:
             annotations = []

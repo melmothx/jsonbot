@@ -19,15 +19,15 @@ except: homedir = os.getcwd()
 
 isgae = False
 
-try: getattr(os, "makedir") ; datadir = homedir + os.sep + ".jsonbot"
+try: getattr(os, "mkdir") ; logging.warn("datadir - shell detected") ; datadir = homedir + os.sep + ".jsonbot"
 except AttributeError: logging.warn("datadir - skipping makedirs") ; datadir = "gozerdata" ; isgae = True
 
 ## functions
 
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
-    ddir = ddir or datadir
     global datadir
+    ddir = ddir or datadir
     datadir = ddir
     logging.warn("datadir - %s" % datadir)
     if isgae: return
