@@ -21,7 +21,7 @@ curdir = os.getcwd()
 
 if os.path.isdir("gozerdata"): datadir = "gozerdata"
 else: datadir = homedir + os.sep + ".jsonbot"
-print "datadir is %s" % datadir
+logging.warn("datadir - %s" % datadir)
 
 ## functions
 

@@ -9,7 +9,7 @@ import logging
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import getversion
+from gozerlib.version import getversion
 from gozerlib.utils.exception import handle_exception
 
 

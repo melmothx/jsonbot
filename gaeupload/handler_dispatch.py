@@ -6,7 +6,8 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import fromenc, toenc, getversion
+from gozerlib.utils.generic import fromenc, toenc
+from gozerlib.version import getversion
 from gozerlib.utils.xmpp import stripped
 from gozerlib.utils.url import getpostdata, useragent
 from gozerlib.plugins import plugs

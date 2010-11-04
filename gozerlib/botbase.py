@@ -102,7 +102,6 @@ class BotBase(LazyDict):
         self.owner = self.cfg.owner
         if not self.owner:
             logging.debug(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
-            from config import Config
             self.owner = Config().owner
         self.setusers(usersin)
         logging.warn(u"botbase - owner is %s" % self.owner)
@@ -121,8 +120,7 @@ class BotBase(LazyDict):
         self.outqueues = [Queue.Queue() for i in range(10)]
         self.tickqueue = Queue.Queue()
         self.encoding = self.cfg.encoding or "utf-8"
-        from gozerlib.config import Config
-        self.cmndperms = Config(datadir + os.sep + "run" + os.sep + "cmndperms")
+        self.cmndperms = Config(self.fleetdir+ os.sep + "cmndperms")
         if not fleet.byname(self.name): fleet.bots.append(self)
         if not self.isgae:
             defaultrunner.start()

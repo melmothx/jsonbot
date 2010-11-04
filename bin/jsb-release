@@ -20,7 +20,8 @@ sys.path.insert(0, os.getcwd())
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import gethighest, dosed, getversion
+from gozerlib.utils.generic import gethighest, dosed
+from gozerlib.version import getversion
 
 ## options
 

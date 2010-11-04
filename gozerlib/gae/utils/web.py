@@ -6,7 +6,8 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import fromenc, getversion
+from gozerlib.utils.generic import fromenc
+from gozerlib.version import getversion
 
 ## gaelib imports
 
