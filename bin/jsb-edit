@@ -17,7 +17,7 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.utils.generic import getversion
+from gozerlib.version import getversion
 print getversion('EDIT')
 
 ## make config from opts

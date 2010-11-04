@@ -262,7 +262,8 @@ for keyid, keydata in gozerbot_pgp_keys.iteritems():
 ## plugin section
 
 from gozerlib.utils.url import geturl, geturl2
-from gozerlib.utils.generic import touch, getversion
+from gozerlib.utils.generic import touch
+from gozerlib.version import getversion
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.exception import exceptionmsg, handle_exception
 from gozerlib.utils.generic import uniqlist

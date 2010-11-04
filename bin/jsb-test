@@ -37,7 +37,7 @@ from gozerlib.utils.exception import handle_exception, exceptionevents, exceptio
 from gozerlib.utils.url import useragent, striphtml
 from gozerlib.admin import plugin_packages
 from gozerlib.utils.log import setloglevel
-from gozerlib.utils.generic import getversion
+from gozerlib.version import getversion
 
 setloglevel("error")
 

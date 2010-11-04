@@ -9,7 +9,8 @@
 from gozerlib.persist import Persist
 from gozerlib.botbase import BotBase
 from gozerlib.plugins import plugs
-from gozerlib.utils.generic import getversion, strippedtxt
+from gozerlib.utils.version import getversion
+from gozerlib.utils.generic strippedtxt
 from gozerlib.callbacks import callbacks
 from gozerlib.outputcache import add
 from gozerlib.config import Config
