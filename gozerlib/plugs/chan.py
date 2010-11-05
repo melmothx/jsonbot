@@ -248,13 +248,13 @@ def handle_chanupgrade(bot, event):
     # 0.4.1
     if prevchan.startswith("-"): prevchan[0] = "+"
     prevchan = prevchan.replace("@", "+")
-    prev = ChannelBase(prevchan)
+    prev = Persist("channels" + os.sep + prevchan)
     if prev.data: event.chan.data.update(prev.data) ; event.chan.save() ; event.reply("done")
     else: 
         prevchan = event.channel
         prevchan = prevchan.replace("-", "#")
         prevchan = prevchan.replace("+", "@")
-        prev = ChannelBase(prevchan)
+        prev = Persist("channels" + os.sep + prevchan)
         if prev.data: event.chan.data.update(prev.data) ; event.chan.save() ; event.reply("done")
         else: event.reply("can't find previous channel data")
 
