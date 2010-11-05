@@ -45,7 +45,7 @@ from gozerlib.users import Users, users
 from gozerlib.errors import NoOwnerSet
 from gozerlib.threads import start_new_thread
 from gozerlib.utils.opts import makeconfig, makeopts
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 
 ## basic imports
 
@@ -76,6 +76,7 @@ if opts.command:
     else: print "can't execute %s" % opts.command    
     os._exit(0)
 elif opts.forward:
+    fleet = getfleet(opts.datadir)
     fleet.addbot(bot)
     print "starting forward bot (%s)" % str(cfg)
     forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)

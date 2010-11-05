@@ -10,7 +10,7 @@ from gozerlib.callbacks import callbacks
 from gozerlib.socklib.partyline import partyline
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 import gozerlib.threads as thr
 
 ## basic imports
@@ -29,7 +29,7 @@ def handle_broadcast(bot, ievent):
          ievent.missing('<txt>')
          return
     ievent.reply('broadcasting')
-    fleet.broadcast(ievent.rest)
+    getfleet().broadcast(ievent.rest)
     partyline.say_broadcast(ievent.rest)
     ievent.reply('done')
 

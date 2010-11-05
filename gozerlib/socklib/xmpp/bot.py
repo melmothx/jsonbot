@@ -16,7 +16,6 @@ from gozerlib.datadir import datadir
 from gozerlib.less import Less
 from gozerlib.callbacks import callbacks, remote_callbacks
 from gozerlib.threads import start_new_thread
-from gozerlib.fleet import fleet
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
 from gozerlib.channelbase import ChannelBase

@@ -20,7 +20,7 @@ from gozerlib.boot import plugin_packages, boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.config import Config
 from gozerlib.errors import NoOwnerSet
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.utils.mainloop import mainloop
 from gozerlib.utils.opts import makeopts, makeconfig
 import gozerlib.users as users
@@ -59,7 +59,9 @@ except NoOwnerSet, ex:
 if opts.channel and not opts.channel in bot.state['joinedchannels']:
     bot.state['joinedchannels'].append(opts.channel)
     bot.state.save()
-    
+
+fleet = getfleet(opts.datadir, new=True)
+
 if opts.all:
     print "available fleet bots: %s" % fleet.avail()
 

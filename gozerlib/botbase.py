@@ -14,7 +14,6 @@ from plugins import plugs as coreplugs
 from callbacks import callbacks, first_callbacks, last_callbacks, remote_callbacks
 from eventbase import EventBase
 from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet, NoEventProvided
-from datadir import datadir
 from commands import Commands
 from config import Config
 from utils.pdod import Pdod
@@ -25,7 +24,7 @@ from utils.locking import lockdec
 from exit import globalshutdown
 from utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt
 from utils.trace import whichmodule
-from fleet import fleet
+from fleet import getfleet
 from utils.name import stripname
 from tick import tickloop
 from threads import start_new_thread, threaded
@@ -97,6 +96,8 @@ class BotBase(LazyDict):
                 self.uuid = self.cfg.uuid = uuid.uuid4()
                 self.cfg.save()
         if self.cfg and not self.cfg.followlist: self.cfg.followlist = [] ; self.cfg.save()
+        from gozerlib.datadir import getdatadir
+        datadir = getdatadir()
         self.datadir = datadir + os.sep + self.fleetdir
         self.name = self.botname
         self.owner = self.cfg.owner
@@ -121,7 +122,8 @@ class BotBase(LazyDict):
         self.tickqueue = Queue.Queue()
         self.encoding = self.cfg.encoding or "utf-8"
         self.cmndperms = Config(self.fleetdir+ os.sep + "cmndperms")
-        if not fleet.byname(self.name): fleet.bots.append(self)
+        fleet = getfleet(datadir)
+        if not fleet.byname(self.name): fleet.bots.append(self) ; 
         if not self.isgae:
             defaultrunner.start()
             tickloop.start(self)

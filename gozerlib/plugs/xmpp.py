@@ -8,7 +8,7 @@
 
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 
 ## xmpp-invite command
 
@@ -17,7 +17,7 @@ def handle_xmppinvite(bot, event):
     if not event.rest:
         event.missing("<list of jids>")
         return
-    bot = fleet.getfirstjabber()
+    bot = getfleet().getfirstjabber()
     if bot:
         for jid in event.args: bot.invite(jid)
         event.done()

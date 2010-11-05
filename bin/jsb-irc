@@ -22,7 +22,7 @@ from gozerlib.boot import plugin_packages, boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.config import Config
 from gozerlib.errors import NoOwnerSet
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.utils.mainloop import mainloop
 from gozerlib.utils.opts import makeconfig, makeopts
 from gozerlib.threads import start_new_thread
@@ -73,6 +73,7 @@ else:
     if opts.all:
         print "available fleet bots: %s" % fleet.avail()
         os._exit(0)
+    fleet = getfleet(opts.datadir)
     fleet.addbot(bot)
     if opts.forward:
         print "starting forward bot (%s)" % str(cfg)

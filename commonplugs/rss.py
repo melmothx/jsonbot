@@ -29,7 +29,7 @@ from gozerlib.users import users
 from gozerlib.utils.id import getrssid
 from gozerlib.tasks import taskmanager
 from gozerlib.callbacks import callbacks
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.threadloop import TimedLoop
 from gozerlib.threads import start_new_thread
 from gozerlib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
@@ -403,7 +403,7 @@ class Rsswatcher(Rssdict):
             for item in loopover:
                 try: (botname, type, channel) = item
                 except: logging.debug('rss - %s is not in the format (botname,channel)' % str(item))
-                bot = fleet.byname(botname)
+                bot = getfleet().byname(botname)
                 if not bot: logging.debug("rss - can't find %s bot in fleet" % botname) ; continue
                 res2 = result.entries
                 if not res2:
@@ -547,8 +547,8 @@ class Rsswatcher(Rssdict):
                 if not botname: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
                 if not type: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
                 try:
-                    bot = fleet.byname(botname)
-                    if not bot: bot = fleet.makebot(type, botname)
+                    bot = getfleet().byname(botname)
+                    if not bot: bot = getfleet().makebot(type, botname)
                 except NoSuchBotType, ex: logging.warn("rss - can't make bot - %s" % str(ex)) ; continue
                 if not bot: logging.error("rss - can't find %s bot in fleet" % botname) ; continue
                 res2 = self.check(name, item, save=save, data=data)

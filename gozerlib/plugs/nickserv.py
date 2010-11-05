@@ -13,7 +13,7 @@ from gozerlib.examples import examples
 from gozerlib.callbacks import callbacks
 from gozerlib.commands import cmnds
 from gozerlib.datadir import datadir
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.utils.pdod import Pdod
 
 ## basic imports
@@ -123,7 +123,7 @@ def handle_nsdel(bot, ievent):
         ievent.missing('<fleetbot name>')
         return
     botname = ievent.args[0]
-    fbot = fleet.byname(botname)
+    fbot = getfleet().byname(botname)
     if not fbot:
         ievent.reply('fleet bot %s not found' % botname)
         return
@@ -157,7 +157,7 @@ def handle_nsauth(bot, ievent):
     if bot.jabber: return
     if len(ievent.args) != 1: name = bot.name
     else: name = ievent.args[0]
-    fbot = fleet.byname(name)
+    fbot = getfleet().byname(name)
     if not fbot:
         ievent.reply('fleet bot %s not found' % name)
         return

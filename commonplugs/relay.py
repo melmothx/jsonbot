@@ -10,7 +10,7 @@ from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks
 from gozerlib.persist import PlugPersist
 from gozerlib.examples import examples
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.errors import NoSuchWave
 
@@ -80,6 +80,7 @@ def relaycallback(bot, event):
                         continue
 
                 # retrieve the bot from fleet (based on type)
+                fleet = getfleet()
                 outbot = fleet.byname(botname)
                 if not outbot:
                     outbot = fleet.makebot(type, botname)

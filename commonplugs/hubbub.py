@@ -21,7 +21,7 @@ from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.url import useragent, geturl2
 from gozerlib.utils.statdict import StatDict
 from gozerlib.utils.exception import handle_exception
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.channelbase import ChannelBase
 from gozerlib.utils.url import posturl
 from gozerlib.errors import NoSuchBotType
@@ -212,6 +212,7 @@ class HubbubWatcher(PlugPersist):
             item = self.byurl(url)
             name = item.data.name
             try:
+                fleet = getfleet()
                 bot = fleet.byname(botname)
                 if not bot and type:
                     bot = fleet.makebot(type, botname)

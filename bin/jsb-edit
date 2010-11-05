@@ -59,12 +59,12 @@ else:
     print "%s of %s set to %s" % (attr, filename, value)
 if opts.fleet:
     print "enabling fleet on %s" % configfile
-    from gozerlib.fleet import fleet
     if not cfg.type and not opts.type:
         print "bot type not defined .. use -t option"
         os._exit(1)        
     cfg.type = opts.type or cfg.type
     botcfg = makeconfig(cfg.type, cfg)
-    fleet.enable(botcfg)
+    from gozerlib.fleet import getfleet
+    getfleet().enable(botcfg)
 
 print cfg.dump()

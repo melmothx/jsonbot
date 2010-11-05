@@ -16,7 +16,6 @@ from gozerlib.persistconfig import PersistConfig
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.timeutils import hourmin
 from gozerlib.examples import examples
-from gozerlib.fleet import fleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.lazydict import LazyDict
 

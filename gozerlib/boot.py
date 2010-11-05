@@ -54,7 +54,6 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     else: makedirs() 
     if not datadir in sys.path: sys.path.append(datadir)
     rundir = datadir + os.sep + "run"
-    global plugin_packages
     try:
         if os.getuid() == 0:
             print "don't run the bot as root"

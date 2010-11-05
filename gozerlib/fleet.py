@@ -15,7 +15,6 @@ from persist import Persist
 from errors import NoSuchBotType, BotNotEnabled
 from threads import start_new_thread
 from eventhandler import mainhandler
-from datadir import datadir
 from utils.name import stripname
 
 ## simplejson imports
@@ -44,7 +43,7 @@ class Fleet(Persist):
 
     """
 
-    def __init__(self):
+    def __init__(self, datadir):
         Persist.__init__(self, datadir + os.sep + 'fleet' + os.sep + 'fleet.main')
         if not self.data.has_key('names'): self.data['names'] = []
         if not self.data.has_key('types'): self.data['types'] = {}
@@ -301,4 +300,12 @@ class Fleet(Persist):
 
 ## global fleet object
 
-fleet = Fleet()
+fleet = None
+
+def getfleet(datadir=None, new=False):
+    if not datadir:
+         from gozerlib.datadir import getdatadir 
+         datadir = getdatadir()
+    global fleet
+    if not fleet or new: fleet = Fleet(datadir)
+    return fleet

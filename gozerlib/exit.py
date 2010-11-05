@@ -8,7 +8,6 @@
 
 from utils.trace import whichmodule
 from plugins import plugs
-from fleet import fleet
 from runner import defaultrunner, cmndrunner
 
 ## basic imports
@@ -29,8 +28,11 @@ def globalshutdown():
     logging.error('shutting down'.upper())
     try:os.remove('gozerlib.pid')
     except: pass
-    logging.info('shutting down fleet')
-    fleet.exit()
+    from fleet import getfleet
+    fleet = getfleet()
+    if fleet:
+        logging.info('shutting down fleet')
+        fleet.exit()
     logging.info('shutting down plugins')
     plugs.exit()
     logging.info('done')

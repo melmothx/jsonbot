@@ -10,7 +10,7 @@ from utils.trace import whichmodule
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
 from utils.name import stripname
-from datadir import datadir
+from datadir import getdatadir
 from errors import CantSaveConfig, NoSuchFile
 
 ## simplejson imports
@@ -38,6 +38,7 @@ class Config(LazyDict):
     def __init__(self, filename=None, verbose=False, input={}, *args, **kw):
         LazyDict.__init__(self, input, *args, **kw)
         self.filename = filename or 'mainconfig'
+        datadir = getdatadir()
         self.dir = datadir + os.sep + 'config'
         if datadir not in self.filename: self.cfile = self.dir + os.sep + self.filename
         else: self.cfile = self.filename

@@ -13,7 +13,6 @@ from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
 from gozerlib.utils.generic import strippedtxt
 from gozerlib.utils.exception import handle_exception
-from gozerlib.fleet import fleet
 from event import ConsoleEvent
 
 ## basic imports

@@ -83,3 +83,7 @@ def makedirs(ddir=None):
     if not os.path.isdir(ddir + '/pgp/'): os.mkdir(ddir + '/pgp/')
     if not os.path.isdir(ddir + '/plugs/'): os.mkdir(ddir + '/plugs/')
     if not os.path.isdir(ddir + '/old/'): os.mkdir(ddir + '/old/')
+
+def getdatadir():
+    global datadir
+    return datadir

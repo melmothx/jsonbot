@@ -10,7 +10,7 @@ from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks
 from gozerlib.persist import PlugPersist
 from gozerlib.examples import examples
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 
 ## basic imports
 
@@ -44,6 +44,7 @@ def askcallback(bot, event):
         txt = event.txt
     txt = txt.strip()
     done = []
+    fleet = getfleet()
     for botname, type, userhost, channel in sendto:
         if not printto or userhost != printto: continue
         askbot = fleet.makebot(type)
@@ -82,6 +83,7 @@ def handle_ask(bot, event):
     except KeyError:
         if '@' in subject: expertslist = [subject, ]
         else: expertslist = [defaultJID, ]
+    fleet = getfleet()
     xmppbot = fleet.getfirstjabber()
     if xmppbot:
         for expert in expertslist: xmppbot.say(expert, "%s (%s) asks you: %s" % (event.userhost, bot.name, question))

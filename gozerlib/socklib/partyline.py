@@ -10,7 +10,7 @@ __author__ = 'Aim'
 
 ## gozerlib imports
 
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.threads import start_new_thread
 
@@ -38,6 +38,7 @@ class PartyLine(object):
 
     def _doresume(self, data, reto=None):
         """ resume a party line connection after reboot. """
+        fleet = getfleet()
         for i in data['partyline']:
             bot = fleet.byname(i['botname'])
             sock = socket.fromfd(i['fileno'], socket.AF_INET, socket.SOCK_STREAM)

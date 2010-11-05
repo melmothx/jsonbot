@@ -17,7 +17,7 @@ from gozerlib.boot import plugin_packages, getpluginlist, boot, getcmndtable, wh
 from gozerlib.persist import Persist
 from gozerlib.reboot import reboot, reboot_stateful
 from gozerlib.eventhandler import mainhandler
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.socklib.partyline import partyline
 from gozerlib.exit import globalshutdown
 from gozerlib.runner import defaultrunner, cmndrunner, longrunner
@@ -48,7 +48,7 @@ def handle_reboot(bot, ievent):
     time.sleep(3)
     if ievent.rest == "cold": stateful = False
     else: stateful = True
-    if stateful: mainhandler.put(0, reboot_stateful, bot, ievent, fleet, partyline)
+    if stateful: mainhandler.put(0, reboot_stateful, bot, ievent, getfleet(), partyline)
     else:
         bot.exit()
         mainhandler.put(0, reboot)

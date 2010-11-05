@@ -12,7 +12,7 @@ from gozerlib.eventbase import EventBase
 from gozerlib.persist import PlugPersist
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.examples import examples
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.container import Container
 from gozerlib.errors import NoProperDigest
 from gozerlib.utils.exception import handle_exception
@@ -77,6 +77,7 @@ def forwardoutcb(bot, event):
     e.botname = bot.server or bot.name
     if not event.chan: event.bind(bot)
     if event.chan: e.allowwatch = event.chan.data.allowwatch
+    fleet = getfleet()
     for jid in forward.data.channels[event.channel.lower()]:
         logging.warn("forward - sending to %s" % jid)
         if jid == "twitter":

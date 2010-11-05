@@ -9,7 +9,7 @@
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks, remote_callbacks, last_callbacks, first_callbacks
 from gozerlib.persist import PlugPersist
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
 from gozerlib.gae.wave.waves import Wave
@@ -123,8 +123,8 @@ watched = Watched('channels')
 ## functions
 
 def writeout(botname, type, channel, txt):
-    watchbot = fleet.byname(botname)
-    if not watchbot: watchbot = fleet.makebot(type, botname)
+    watchbot = getfleet().byname(botname)
+    if not watchbot: watchbot = getfleet().makebot(type, botname)
     if watchbot: watchbot.outnocb(channel, txt)
 
 ## callbacks

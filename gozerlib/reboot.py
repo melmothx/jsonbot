@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.datadir import datadir
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 
 ## basic imports
 
@@ -38,5 +38,5 @@ def reboot_stateful(bot, ievent, fleet, partyline):
     session['partyline'] = partyline._resumedata()
     sessionfile = tempfile.mkstemp('-session', 'jsonbot-')[1]
     dump(session, open(sessionfile, 'w'))
-    fleet.save()
+    getfleet().save()
     os.execl(sys.argv[0], sys.argv[0], '-r', sessionfile)

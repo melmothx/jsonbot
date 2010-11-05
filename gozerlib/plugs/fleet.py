@@ -12,7 +12,7 @@
 
 from gozerlib.config import Config
 from gozerlib.threads import start_new_thread
-from gozerlib.fleet import fleet, FleetBotAlreadyExists
+from gozerlib.fleet import getfleet, FleetBotAlreadyExists
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.datadir import datadir
@@ -26,7 +26,7 @@ import os
 
 def handle_fleetavail(bot, ievent):
     """ show available fleet bots. """
-    ievent.reply('available bots: ', fleet.avail()) 
+    ievent.reply('available bots: ', getfleet().avail()) 
 
 cmnds.add('fleet-avail', handle_fleetavail, 'OPER')
 examples.add('fleet-avail', 'show available fleet bots', 'fleet-avail')
@@ -41,6 +41,7 @@ def handle_fleetconnect(bot, ievent):
         ievent.missing('<botname>')
         return
     try:
+        fleet = getfleet()
         fleetbot = fleet.byname(botname)
         if fleetbot:
             start_new_thread(fleetbot.connect, ())
@@ -64,6 +65,7 @@ def handle_fleetdisconnect(bot, ievent):
         return
     ievent.reply('exiting %s' % botname)
     try:
+        fleet = getfleet()
         if fleet.exit(botname): ievent.reply("%s bot stopped" % botname)
         else: ievent.reply("can't stop %s bot" % botname)
     except Exception, ex: ievent.reply("fleet - %s" % str(ex))
@@ -75,7 +77,7 @@ examples.add('fleet-disconnect', 'fleet-disconnect <name> .. disconnect bot with
 
 def handle_fleetlist(bot, ievent):
     """ fleet-list .. list bot names in fleet. """
-    ievent.reply("fleet: ", fleet.list())
+    ievent.reply("fleet: ", getfleet().list())
 
 cmnds.add('fleet-list', handle_fleetlist, ['USER', 'GUEST'])
 examples.add('fleet-list', 'show current fleet list', 'fleet-list')
@@ -89,7 +91,7 @@ def handle_fleetdel(bot, ievent):
         ievent.missing('<name>')
         return
     try:
-        if fleet.delete(name): ievent.reply('%s deleted' % name)
+        if getfleet().delete(name): ievent.reply('%s deleted' % name)
         else: ievent.reply('%s delete failed' % name)
     except Exception, ex: ievent.reply(str(ex))
 
@@ -104,6 +106,7 @@ def fleet_disable(bot, ievent):
         ievent.missing("list of fleet bots")
         return
     bots = ievent.rest.split()
+    fleet = getfleet()
     for name in bots:
         bot = fleet.byname(name)
         if bot:
@@ -124,6 +127,7 @@ def fleet_enable(bot, ievent):
         ievent.missing("list of fleet bots")
         return
     bots = ievent.rest.split()
+    fleet = getfleet()
     for name in bots:
         bot = fleet.byname(name)
         if bot:

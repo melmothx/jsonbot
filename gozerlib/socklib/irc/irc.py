@@ -22,7 +22,6 @@ from gozerlib.utils.pdod import Pdod
 from gozerlib.channelbase import ChannelBase
 from gozerlib.morphs import inputmorphs, outputmorphs
 from gozerlib.exit import globalshutdown
-from gozerlib.fleet import fleet
 from gozerlib.config import Config
 
 ## gozerlib.irc imports

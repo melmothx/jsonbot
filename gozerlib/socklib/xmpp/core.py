@@ -19,7 +19,7 @@ from gozerlib.utils.locking import lockdec
 from gozerlib.threads import start_new_thread
 from gozerlib.utils.trace import whichmodule
 from gozerlib.gozerevent import GozerEvent
-from gozerlib.fleet import fleet
+from gozerlib.fleet import getfleet
 
 ## xmpp import
 
@@ -348,7 +348,7 @@ class XMLStream(NodeBuilder):
     def doreconnect(self):
         """ reconnect to the server. """
         botjid = self.jid
-        newbot = fleet.makebot('sxmpp', self.name, self)
+        newbot = getfleet().makebot('sxmpp', self.name, self)
         newbot.reconnectcount = self.reconnectcount
         self.exit()
         if newbot.start():
