@@ -60,7 +60,6 @@ setup(
                'bin/jsb-stop',
                'bin/jsb-udp',
                'bin/jsb-upload',
-               'bin/jsb-uploadall'],
     packages=['gozerlib', 
               'gozerlib.utils', 
               'gozerlib.console',
