@@ -315,24 +315,24 @@ class BotBase(LazyDict):
         res1, nritems = self.less(printto, txt, nr+extend)
         return res1
 
-    def out(self, printto, txt, how="msg", event=None, origin=None, *args, **kwargs):
-        self.outnocb(printto, txt, how, event, *args, **kwargs)
-        self.outmonitor(self.me, printto, txt)
+    def out(self, printto, txt, how="msg", event=None, origin=None, html=False, *args, **kwargs):
+        self.outnocb(printto, txt, how, event, origin=origin, html=html, *args, **kwargs)
+        self.outmonitor(origin, printto, txt)
 
     write = out
 
-    def outnocb(self, printto, txt, how="msg", event=None, html=False, *args, **kwargs):
+    def outnocb(self, printto, txt, how="msg", event=None, origin=None, html=False, *args, **kwargs):
         self._raw(txt)
 
     writenocb = outnocb
 
     def say(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        if txt: self.out(channel, txt, how, event, *args, **kwargs)
+        if txt: self.out(channel, txt, how, event, origin=channel, *args, **kwargs)
         
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        if txt: self.outnocb(channel, txt, event=event, *args, **kwargs)
+        if txt: self.outnocb(channel, txt, event=event, origin=channel, *args, **kwargs)
 
     def less(self, printto, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """

@@ -59,7 +59,7 @@ class EventBase(LazyDict):
         self.result = []
         if bot: self.bot = bot
         assert(self.bot)
-        self.origin = self.bot.user or self.bot.server
+        self.origin = self.channel
         self.origtxt = self.txt
         self.makeargs()
         logging.debug("%s - prepared event - %s" % (self.cbtype, self.dump()))

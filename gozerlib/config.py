@@ -156,6 +156,7 @@ class Config(LazyDict):
                 if keyword == 'jsondb': continue
                 if keyword == 'isdb': continue
                 if keyword == 'optionslist': continue
+                if keyword == 'gatekeeper': continue
                 curitem = keyword
                 configtmp.write('%s = %s\n' % (keyword, dumps(value)))
             configtmp.close()
