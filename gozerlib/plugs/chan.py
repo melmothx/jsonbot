@@ -2,11 +2,17 @@
 #
 #
 
+## gozerlib imports
+
 from gozerlib.persist import Persist
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.callbacks import callbacks
 from gozerlib.channelbase import ChannelBase
+
+## basic imports
+
+import os
 
 ## chan-join command
 
