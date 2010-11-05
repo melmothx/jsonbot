@@ -6,7 +6,6 @@
 
 ## gozerlib imports
 
-from gozerlib.channelbase import ChannelBase
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.xmpp import stripped, resource
 from gozerlib.utils.lazydict import LazyDict

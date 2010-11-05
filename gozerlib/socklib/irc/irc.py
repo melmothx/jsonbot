@@ -475,7 +475,7 @@ class Irc(BotBase):
         if not channel: return
         if password:
             self._raw('JOIN %s %s' % (channel, password))
-            chan = ChannelBase(channel)
+            chan = ChannelBase(channel, self.botname)
             if chan: chan.setpass('IRC', password)            
         else: self._raw('JOIN %s' % channel)
         if self.state:
@@ -579,7 +579,7 @@ class Irc(BotBase):
                     self.nicks401.remove(ievent.nick)
                     logging.debug('%s - %s joined .. unignoring' % (self.name, ievent.nick))
             if not ievent.chan and ievent.channel:
-                ievent.chan = ChannelBase(ievent.channel)
+                ievent.chan = ChannelBase(ievent.channel, self.botname)
             method = getattr(self,'handle_' + ievent.cmnd.lower())
             if method:
                 try:

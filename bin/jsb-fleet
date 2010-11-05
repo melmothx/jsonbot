@@ -50,7 +50,7 @@ if opts.owner:
 
 from gozerlib.fleet import getfleet
 fleet = getfleet(opts.datadir)
-
+if not fleet.avail(): logging.error("fleet - no bots found.") ; os._exit(1)
 if opts.all:
     print "available fleet bots: %s" % fleet.avail()
     os._exit(0)

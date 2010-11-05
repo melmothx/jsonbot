@@ -10,7 +10,6 @@
 from gozerlib.utils.generic import toenc, fromenc, strippedtxt
 from gozerlib.socklib.utils.generic import fix_format, stripident, makeargrest
 from gozerlib.eventbase import EventBase
-from gozerlib.channelbase import ChannelBase
 
 ## basic imports
 

@@ -38,8 +38,8 @@ class Wave(ChannelBase):
 
     """ a wave is seen as a channel. """
 
-    def __init__(self, waveid):
-        ChannelBase.__init__(self, waveid)
+    def __init__(self, waveid, botname=None):
+        ChannelBase.__init__(self, waveid, botname)
         self.data.seenblips = self.data.seenblips or 0
         self.data.threshold = self.data.threshold or -1
         self.data.nrcloned = self.data.nrcloned or 0

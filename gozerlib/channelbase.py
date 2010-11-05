@@ -25,9 +25,10 @@ class ChannelBase(Persist):
 
     """ Base class for all channel objects. """
 
-    def __init__(self, id, type="notset"):
+    def __init__(self, id, botname=None, type="notset"):
         if not id: raise NoChannelSet()
-        Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + stripname(id))
+        if not botname: Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + stripname(id))
+        else: Persist.__init__(self, datadir + os.sep + 'fleet' + os.sep + botname + os.sep + 'channels' + os.sep + stripname(id))
         self.id = id
         self.type = type
         self.lastmodified = time.time()

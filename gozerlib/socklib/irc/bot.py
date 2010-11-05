@@ -221,7 +221,7 @@ class IRCBot(Irc):
         result = Irc.join(self, channel, password)
         if result != 1:
             return result
-        chan = ChannelBase(channel)
+        chan = ChannelBase(channel, self.botname)
         got = False
         if password:
             chan.setkey('IRC',password)

@@ -493,7 +493,7 @@ class SXMPPBot(XMLStream, BotBase):
                 if channel not in self.channels409: self.channels409.append(channel)
             return err
         self.timejoined[channel] = time.time()
-        chan = ChannelBase(channel)
+        chan = ChannelBase(channel, self.botname)
         chan.data['nick'] = nick
         if password:
             chan.data['key'] = password
