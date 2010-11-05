@@ -51,7 +51,6 @@ setup(
     license='MIT',
     scripts = ['bin/jsb',
                'bin/jsb-edit',
-               'bin/jsb-installplug',
                'bin/jsb-irc', 
                'bin/jsb-fleet', 
                'bin/jsb-xmpp', 
