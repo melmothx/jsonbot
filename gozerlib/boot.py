@@ -9,7 +9,7 @@
 from gozerlib.utils.generic import checkpermissions
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
-from gozerlib.datadir import datadir, makedirs
+from gozerlib.datadir import makedirs
 from gozerlib.config import Config
 
 ## basic imports
@@ -29,9 +29,9 @@ sys.path.insert(0, os.getcwd() + os.sep + '..')
 ongae = False
 try:
     import waveapi
-    plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs']
+    plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'myplugs']
     ongae = True
-except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'gozerdata.myplugs', 'waveplugs', 'socketplugs']
+except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'socketplugs', 'myplugs']
 
 default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch']
 
@@ -48,10 +48,13 @@ cmndperms = None
 def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     """ initialize the bot. """
     logging.info("booting ..")
+    from gozerlib.datadir import datadir
     ddir = ddir or datadir
     if ddir: makedirs(ddir)
-    else: makedirs()
+    else: makedirs() 
+    if not datadir in sys.path: sys.path.append(datadir)
     rundir = datadir + os.sep + "run"
+    global plugin_packages
     try:
         if os.getuid() == 0:
             print "don't run the bot as root"
@@ -100,6 +103,8 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
             plugs.reload(plug, showerror=True)
+    
+
     logging.warn("boot - done")
 
 ## commands related commands

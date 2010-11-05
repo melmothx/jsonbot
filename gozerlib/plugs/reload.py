@@ -9,7 +9,7 @@
 from gozerlib.utils.exception import handle_exception, exceptionmsg
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.boot import plugin_packages, savecmndtable, savepluginlist, update_mod
+from gozerlib.boot import savecmndtable, savepluginlist, update_mod
 from gozerlib.errors import NoSuchPlugin
 
 ## basic imports
@@ -27,11 +27,12 @@ def handle_reload(bot, ievent):
         return
     reloaded = []
     errors = []
+    from gozerlib.boot import plugin_packages
     for plug in pluglist:
         for package in plugin_packages:
             modname = "%s.%s" % (package, plug)
             try:
-                if bot.plugs.reload(modname, force=True, showerror=False):
+                if bot.plugs.reload(modname, force=True, showerror=True):
                     update_mod(modname)
                     reloaded.append(modname)
                     logging.warn("reload - %s reloaded" % modname) 
