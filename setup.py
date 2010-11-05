@@ -54,7 +54,6 @@ setup(
                'bin/jsb-import',
                'bin/jsb-installplug',
                'bin/jsb-irc', 
-               'bin/jsb-launch',
                'bin/jsb-fleet', 
                'bin/jsb-xmpp', 
                'bin/jsb-release',
