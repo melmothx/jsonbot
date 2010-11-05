@@ -181,11 +181,11 @@ class EventBase(LazyDict):
         if self.isremote(): logging.warn("eventbase - event is remote") ; return
         logging.debug("eventbase - trying to match %s" % self.txt)
         cc = "!"
-        if self.chan: 
-            cc = self.chan.data.cc
-            if not cc:
-                self.chan.data.cc = "!"
-                self.chan.save()
+        if not self.chan: self.chan = ChannelBase(self.channel) 
+        cc = self.chan.data.cc
+        if not cc:
+            self.chan.data.cc = "!"
+            self.chan.save()
         if not cc: cc = "!"
         if self.type == "DISPATCH": cc += "!"
         if self.txt and self.txt[0] in cc: return self.txt[1:]
