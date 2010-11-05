@@ -6,7 +6,8 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import fromenc, toenc, getversion
+from gozerlib.utils.generic import fromenc, toenc
+from gozerlib.version import getversion
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.exception import handle_exception
 from gozerlib.plugins import plugs

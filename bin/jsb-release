@@ -22,30 +22,34 @@ sys.path.insert(0, os.getcwd())
 
 from gozerlib.utils.generic import gethighest, dosed
 from gozerlib.version import getversion
+from gozerlib.datadir import getdatadir
 
 ## options
 
 from optparse import OptionParser
 parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
 parser.add_option('-b', '--backup', action='store_true', default=False, dest='backup', help="remove backup dir")
+parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
 opts, args = parser.parse_args()
 opts.args = args
 
+if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 if len(sys.argv) > 1:
-     if not os.path.isdir('releases'):
-         os.mkdir('releases')
-     release = 'releases' + os.sep + sys.argv[1]
+     ddir = opts.datadir or getdatadir()
+     if not os.path.isdir(ddir + os.sep + 'releases'):
+         os.mkdir(ddir + os.sep + 'releases')
+     release = ddir + os.sep + 'releases' + os.sep + sys.argv[1]
      if not os.path.isdir(release):
          os.mkdir(release)
      targetin = sys.argv[1]
 else:
-     release = "releases" + os.sep + 'jsonbot'
+     release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsonbot'
      targetin = 'jsonbot'
 
 
 if os.path.isdir(release + '.old'):
-    backup = 'releases' + os.sep + gethighest('releases', targetin + '.old')
+    backup = (opts.datadir or getdatadir()) + 'releases' + os.sep + gethighest('releases', targetin + '.old')
 else:
     backup = release + '.old'
 

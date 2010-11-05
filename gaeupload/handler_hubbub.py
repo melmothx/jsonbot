@@ -5,7 +5,7 @@
 ## gozerlib imports
 
 from gozerlib.contrib import feedparser
-from gozerlib.utils.generic import getversion
+from gozerlib.version import getversion
 from gozerlib.plugins import plugs
 
 ## google imports

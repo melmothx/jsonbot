@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import getversion
+from gozerlib.version import getversion
 
 ## google imports
 
