@@ -6,6 +6,7 @@ from gozerlib.persist import Persist
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.callbacks import callbacks
+from gozerlib.channelbase import ChannelBase
 
 ## chan-join command
 
@@ -243,18 +244,17 @@ examples.add("chan-removecommand", "remove a command from the allow list.", "cha
 
 def handle_chanupgrade(bot, event):
     """ upgrade the channel. """
-    prevchan = event.chan.fn
+    prevchan = event.channel
     # 0.4.1
     if prevchan.startswith("-"): prevchan[0] = "+"
     prevchan = prevchan.replace("@", "+")
-    prev = Persist(prevchan)
+    prev = ChannelBase(prevchan)
     if prev.data: event.chan.data.update(prev.data) ; event.chan.save() ; event.reply("done")
     else: 
-        # pre 0.5
-        prevchan = event.chan.fn
+        prevchan = event.channel
         prevchan = prevchan.replace("-", "#")
         prevchan = prevchan.replace("+", "@")
-        prev = Persist(prevchan)
+        prev = ChannelBase(prevchan)
         if prev.data: event.chan.data.update(prev.data) ; event.chan.save() ; event.reply("done")
         else: event.reply("can't find previous channel data")
 
