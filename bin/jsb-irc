@@ -56,6 +56,7 @@ setloglevel(cfg.loglevel)
 if opts.doresume and os.path.isfile(opts.doresume):
     logging.warn("irc - resuming from %s" % opts.doresume)
     if True:
+        fleet = getfleet()
         fleet.resume(opts.doresume)
         fleet.startok.wait()
     partyline.resume(opts.doresume)
