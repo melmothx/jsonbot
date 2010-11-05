@@ -1,6 +1,0 @@
-# copy gozerdata dir over from another bot
-#
-#
-
-mv gozerdata gozerdata.2
-cp -Ra $1/gozerdata .
