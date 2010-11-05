@@ -219,9 +219,11 @@ class BotBase(LazyDict):
             start_new_thread(self._eventloop, ())
             start_new_thread(self._readloop, ())
             if connect:
-                self.connectok.wait(30)
+                self.connectok.wait(120)
                 if self.connectok.isSet():
+                    logging.warn('%s - logged on !' % self.name)
                     start_new_thread(self.joinchannels, ())
+                else: logging.warn("%s - failed to logon - connectok is not set" % self.name)
         self.status == "running"
         self.dostart(self.botname, self.type)
 

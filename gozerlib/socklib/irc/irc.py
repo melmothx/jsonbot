@@ -203,7 +203,7 @@ class Irc(BotBase):
                         continue
                     if not rr: continue
                     res = rr
-                    logging.debug(u"%s - %s" % (self.name, res))
+                    logging.info(u"%s - %s" % (self.name, res))
                     try:
                         ievent = IrcEvent().parse(self, res)
                     except Exception, ex:
@@ -276,6 +276,7 @@ class Irc(BotBase):
 
     def logon(self):
         """ log on to the network. """
+        time.sleep(2)
         if self.password:
             logging.debug('%s - sending password' % self.name)
             self._raw("PASS %s" % self.password)
@@ -407,14 +408,13 @@ class Irc(BotBase):
         """
         try:
             self._connect()
-            logging.info("%s - logon" % self.name)
+            logging.info("%s - starting logon" % self.name)
             self.logon()
             time.sleep(1)
             self.nickchanged = 0
             self.reconnectcount = 0
             self._onconnect()
             self.connected = True
-            logging.warn('%s - logged on !' % self.name)
             self.connecting = False
         except (socket.gaierror, socket.error), ex:
             logging.error('%s - connecting error: %s' % (self.name, str(ex)))
@@ -579,8 +579,8 @@ class Irc(BotBase):
                 if ievent.nick in self.nicks401:
                     self.nicks401.remove(ievent.nick)
                     logging.debug('%s - %s joined .. unignoring' % (self.name, ievent.nick))
-            #if not ievent.chan and ievent.channel:
-            #    ievent.chan = ChannelBase(ievent.channel)
+            if not ievent.chan and ievent.channel:
+                ievent.chan = ChannelBase(ievent.channel)
             method = getattr(self,'handle_' + ievent.cmnd.lower())
             if method:
                 try:

@@ -11,7 +11,7 @@ import os, sys
 sys.path.insert(0, os.getcwd())
 
 from gozerlib.version import getversion
-print getversion('SOCKET XMPP')
+print getversion('SXMPP')
 
 ## gozerlib impors
 

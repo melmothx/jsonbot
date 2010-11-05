@@ -11,7 +11,7 @@ import os, sys
 sys.path.insert(0, os.getcwd())
 
 from gozerlib.version import getversion
-print getversion('SOCKET IRC')
+print getversion('IRC')
 
 ## gozerlib imports
 
@@ -62,7 +62,7 @@ if opts.doresume and os.path.isfile(opts.doresume):
     os.unlink(opts.doresume)
 else:
     try:
-        bot = IRCBot(cfg, nick=opts.nick)
+        bot = IRCBot(cfg)
         bot.nick = cfg.nick or 'jsonbot'
     except NoOwnerSet, ex:
         print "owner is not set in %s - use the -o option" % str(ex)
@@ -72,6 +72,7 @@ else:
         bot.state.save()
     if opts.all:
         print "available fleet bots: %s" % fleet.avail()
+        os._exit(0)
     fleet.addbot(bot)
     if opts.forward:
         print "starting forward bot (%s)" % str(cfg)

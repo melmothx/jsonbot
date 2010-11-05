@@ -10,5 +10,5 @@ version = "0.5 RC1"
 
 def getversion(txt=""):
     """ return a version string. """
-    if txt: return version + u" " + txt
-    else: return version
+    if txt: return "JSONBOT %s %s" % (version, txt)
+    else: return "JSONBOT %s" % version
