@@ -12,7 +12,6 @@ from gozerlib.utils.trace import whichmodule
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.pdod import Pdod
 from gozerlib.utils.dol import Dol
-from gozerlib.datadir import datadir
 from gozerlib.less import Less
 from gozerlib.callbacks import callbacks, remote_callbacks
 from gozerlib.threads import start_new_thread

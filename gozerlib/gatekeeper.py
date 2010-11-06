@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.persist import Persist
-from gozerlib.datadir import datadir
+from gozerlib.datadir import getdatadir
 
 ## basic imports
 
@@ -24,8 +24,8 @@ class GateKeeper(Persist):
         self.name = name
         try: import waveapi
         except:
-            if not os.path.exists(datadir + os.sep +'gatekeeper'): os.mkdir(datadir + os.sep + 'gatekeeper')
-        Persist.__init__(self, datadir + os.sep + 'gatekeeper' + os.sep + name)
+            if not os.path.exists(getdatadir() + os.sep +'gatekeeper'): os.mkdir(datadir + os.sep + 'gatekeeper')
+        Persist.__init__(self, getdatadir() + os.sep + 'gatekeeper' + os.sep + name)
         self.data.whitelist = self.data.whitelist or []
 
     def isblocked(self, userhost):

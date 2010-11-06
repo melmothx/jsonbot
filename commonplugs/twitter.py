@@ -9,7 +9,6 @@
 
 from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
-from gozerlib.datadir import datadir
 from gozerlib.examples import examples
 from gozerlib.utils.pdol import Pdol
 from gozerlib.utils.textutils import html_unescape

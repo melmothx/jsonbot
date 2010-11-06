@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.datadir import datadir
+from gozerlib.datadir import getdatadir
 from gozerlib.socklib.utils.generic import waitforqueue
 from gozerlib.errors import NoSuchCommand, NoInput
 from gozerlib.botbase import BotBase
@@ -30,7 +30,7 @@ import re
 
 ## defines
 
-histfilepath = os.path.expanduser(datadir + os.sep + "run" + os.sep + "console-history")
+histfilepath = os.path.expanduser(getdatadir() + os.sep + "run" + os.sep + "console-history")
 
 ## HistoryConsole class
 
@@ -93,7 +93,7 @@ class ConsoleBot(BotBase):
                     result = self.doevent(event)
                     if not result: continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
-                    waitforqueue(event.outqueue, 3)
+                    waitforqueue(result.outqueue, 3)
                 except NoSuchCommand: print "no such command: %s" % event.usercmnd
             except NoInput: continue
             except (KeyboardInterrupt, EOFError): break

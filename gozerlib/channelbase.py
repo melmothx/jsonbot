@@ -9,7 +9,7 @@
 from gozerlib.utils.name import stripname
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.persist import Persist
-from gozerlib.datadir import datadir
+from gozerlib.datadir import getdatadir
 from gozerlib.utils.trace import whichmodule
 from gozerlib.errors import NoChannelProvided, NoChannelSet
 
@@ -27,8 +27,8 @@ class ChannelBase(Persist):
 
     def __init__(self, id, botname=None, type="notset"):
         if not id: raise NoChannelSet()
-        if not botname: Persist.__init__(self, datadir + os.sep + 'channels' + os.sep + stripname(id))
-        else: Persist.__init__(self, datadir + os.sep + 'fleet' + os.sep + botname + os.sep + 'channels' + os.sep + stripname(id))
+        if not botname: Persist.__init__(self, getdatadir() + os.sep + 'channels' + os.sep + stripname(id))
+        else: Persist.__init__(self, getdatadir() + os.sep + 'fleet' + os.sep + botname + os.sep + 'channels' + os.sep + stripname(id))
         self.id = id
         self.type = type
         self.lastmodified = time.time()

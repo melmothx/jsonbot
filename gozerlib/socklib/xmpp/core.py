@@ -10,7 +10,6 @@
 ## gozerlib imports
 
 from gozerlib.eventbase import EventBase
-from gozerlib.datadir import datadir
 from gozerlib.config import Config
 from gozerlib.utils.generic import toenc, jabberstrip, fromenc
 from gozerlib.utils.lazydict import LazyDict

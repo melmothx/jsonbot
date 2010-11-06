@@ -16,7 +16,6 @@ sys.path.insert(0, os.getcwd())
 
 import gozerlib
 from gozerlib.config import Config
-from gozerlib.datadir import datadir
 
 from optparse import OptionParser
 

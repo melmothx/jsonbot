@@ -11,7 +11,7 @@ from utils.generic import stripped
 from utils.name import stripname
 from persist import Persist
 from utils.lazydict import LazyDict
-from datadir import datadir
+from datadir import getdatadir
 from errors import NoSuchUser
 
 ## basic imports
@@ -31,8 +31,8 @@ class JsonUser(Persist):
     def __init__(self, name, userhosts=[], perms=[], permits=[], status=[], email=[]):
         assert name
         name = stripname(name.lower())
-        Persist.__init__(self, datadir + os.sep + 'users' + os.sep + name)
-        self.data.datadir = datadir
+        Persist.__init__(self, getdatadir() + os.sep + 'users' + os.sep + name)
+        self.data.datadir = self.data.datadir or getdatadir()
         self.data.name = self.data.name or name
         self.data.userhosts = self.data.userhosts or userhosts
         self.data.perms = self.data.perms or perms
@@ -47,7 +47,7 @@ class Users(Persist):
     """ class representing all users. """
 
     def __init__(self, ddir=None, filename=None):
-        self.datadir = ddir or datadir
+        self.datadir = ddir or getdatadir()
         self.filename = filename or 'mainusers'
         Persist.__init__(self, self.datadir + os.sep + self.filename)
         if not self.data: self.data = LazyDict()

@@ -22,7 +22,6 @@ __author__ = 'Bas van Oostveen'
 
 from gozerlib.utils.trace import calledfrom, whichplugin
 from gozerlib.examples import examples
-from gozerlib.datadir import datadir
 from gozerlib.persist import Persist
 from gozerlib.config import Config
 

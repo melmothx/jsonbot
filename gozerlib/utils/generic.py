@@ -9,7 +9,6 @@
 from exception import handle_exception
 from trace import calledfrom, whichmodule
 from lazydict import LazyDict
-from gozerlib.datadir import datadir
 
 ## simplejson import
 

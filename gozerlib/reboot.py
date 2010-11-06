@@ -6,7 +6,6 @@
 
 ## gozerlib imports
 
-from gozerlib.datadir import datadir
 from gozerlib.fleet import getfleet
 
 ## basic imports

@@ -48,12 +48,12 @@ cmndperms = None
 def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     """ initialize the bot. """
     logging.info("booting ..")
-    from gozerlib.datadir import datadir
-    ddir = ddir or datadir
+    from gozerlib.datadir import getdatadir
+    ddir = ddir or getdatadir()
     if ddir: makedirs(ddir)
     else: makedirs() 
-    if not datadir in sys.path: sys.path.append(datadir)
-    rundir = datadir + os.sep + "run"
+    if not ddir in sys.path: sys.path.append(ddir)
+    rundir = ddir + os.sep + "run"
     try:
         if os.getuid() == 0:
             print "don't run the bot as root"
@@ -70,8 +70,8 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
             sys.setdefaultencoding(encoding)
     except (AttributeError, IOError): pass
     try:
-        if not umask: checkpermissions(datadir, 0700) 
-        else: checkpermissions(datadir, umask)  
+        if not umask: checkpermissions(getdatadir(), 0700) 
+        else: checkpermissions(getdatadir(), umask)  
     except: handle_exception()
     global loaded
     global cmndtable

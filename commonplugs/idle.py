@@ -11,7 +11,6 @@ from gozerlib.utils.generic import getwho
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks
 from gozerlib.examples import examples
-from gozerlib.datadir import datadir
 from gozerlib.persist import PlugPersist
 
 ## basic imports

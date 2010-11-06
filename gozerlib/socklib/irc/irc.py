@@ -15,7 +15,6 @@ from gozerlib.utils.generic import toenc, fromenc
 from gozerlib.socklib.utils.generic import getrandomnick, strippedtxt
 from gozerlib.socklib.utils.generic import fix_format, splittxt, waitforqueue, uniqlist
 from gozerlib.utils.locking import lockdec
-from gozerlib.datadir import datadir
 from gozerlib.botbase import BotBase
 from gozerlib.threads import start_new_thread, threaded
 from gozerlib.utils.pdod import Pdod

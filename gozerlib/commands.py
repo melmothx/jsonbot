@@ -18,7 +18,6 @@ from utils.lazydict import LazyDict
 from errors import NoSuchCommand
 from persiststate import UserState
 from runner import cmndrunner
-from datadir import datadir
 from boot import getcmndperms
 
 ## basic imports

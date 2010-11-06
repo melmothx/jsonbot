@@ -16,7 +16,6 @@ from gozerlib.utils.generic import waitforqueue, uniqlist, strippedtxt
 from gozerlib.commands import cmnds
 from gozerlib.callbacks import callbacks
 from gozerlib.plugins import plugs as plugins
-from gozerlib.datadir import datadir
 from gozerlib.threads import start_new_thread, threaded
 from gozerlib.utils.dol import Dol
 from gozerlib.utils.pdod import Pdod

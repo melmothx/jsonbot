@@ -13,7 +13,6 @@
 
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.datadir import datadir
 
 ## basic imports
 

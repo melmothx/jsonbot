@@ -14,7 +14,6 @@ from gozerlib.utils.url import geturl
 from gozerlib.socklib.utils.generic import waitforuser
 from gozerlib.utils.generic import getwho
 from gozerlib.commands import cmnds
-from gozerlib.datadir import datadir
 from gozerlib.persist import Persist
 from gozerlib.examples import examples
 from gozerlib.persiststate import UserState

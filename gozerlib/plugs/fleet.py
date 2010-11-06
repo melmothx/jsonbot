@@ -15,7 +15,6 @@ from gozerlib.threads import start_new_thread
 from gozerlib.fleet import getfleet, FleetBotAlreadyExists
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.datadir import datadir
 from gozerlib.utils.name import stripname
 
 ## basic imports

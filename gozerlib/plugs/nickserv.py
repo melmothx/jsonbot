@@ -12,7 +12,7 @@ __license__ ='BSD'
 from gozerlib.examples import examples
 from gozerlib.callbacks import callbacks
 from gozerlib.commands import cmnds
-from gozerlib.datadir import datadir
+from gozerlib.datadir import getdatadir
 from gozerlib.fleet import getfleet
 from gozerlib.utils.pdod import Pdod
 
@@ -30,7 +30,7 @@ class NSAuth(Pdod):
 
     def __init__(self):
         self.registered = False
-        Pdod.__init__(self, datadir + os.sep + 'plugs' + os.sep + 'gozerlib.plugs.nickserv' + os.sep + 'nickserv')
+        Pdod.__init__(self, getdatadir() + os.sep + 'plugs' + os.sep + 'gozerlib.plugs.nickserv' + os.sep + 'nickserv')
 
     def add(self, bot, **kwargs):
         """ add a nickserv entry. """

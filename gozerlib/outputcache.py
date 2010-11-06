@@ -6,7 +6,7 @@
 
 from persist import Persist
 from utils.name import stripname
-from datadir import datadir
+from datadir import getdatadir
 from gozerlib.utils.timeutils import hourmin
 
 ## basic imports
@@ -19,7 +19,7 @@ import time
 
 def clear(target):
     """ clear target's outputcache. """
-    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
+    cache = Persist(getdatadir() + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     try:
         cache.data['msg'] = []
         cache.save()
@@ -34,7 +34,7 @@ def add(target, txtlist):
     t = []
     for item in txtlist:
         t.append("[%s] %s" % (hourmin(time.time()), item))
-    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
+    cache = Persist(getdatadir() + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     d = cache.data
     if not d.has_key('msg'): d['msg'] = []
     d['msg'].extend(t)
@@ -48,7 +48,7 @@ def set(target, txtlist):
     t = []
     for item in txtlist:
         t.append("[%s] %s" % (hourmin(time.time()), item))
-    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
+    cache = Persist(getdatadir() + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     if not cache.data.has_key('msg'): cache.data['msg'] = []
     cache.data['msg'] = t
     cache.save()
@@ -57,7 +57,7 @@ def set(target, txtlist):
 
 def get(target):
     """ get output for target. """
-    cache = Persist(datadir + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
+    cache = Persist(getdatadir() + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     try:
         result = cache.data['msg']
         if result: return result

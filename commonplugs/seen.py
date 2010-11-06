@@ -10,7 +10,7 @@
 
 from gozerlib.callbacks import callbacks
 from gozerlib.commands import cmnds
-from gozerlib.datadir import datadir
+from gozerlib.datadir import getdatadir
 from gozerlib.utils.pdod import Pdod
 from gozerlib.persistconfig import PersistConfig
 from gozerlib.examples import examples
@@ -29,7 +29,7 @@ cfg.define('tz', '+0100')
 
 class Seen(Pdod):
     def __init__(self):
-        self.datadir = datadir + os.sep + 'plugs' + os.sep + 'commonplugs.seen'
+        self.datadir = getdatadir() + os.sep + 'plugs' + os.sep + 'commonplugs.seen'
         Pdod.__init__(self, os.path.join(self.datadir, 'seen.data'))
 
     def handle_seen(self, bot, ievent):

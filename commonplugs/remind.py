@@ -10,7 +10,6 @@ from gozerlib.utils.generic import getwho
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.callbacks import callbacks
-from gozerlib.datadir import datadir
 from gozerlib.persist import PlugPersist
 
 ## basic imports

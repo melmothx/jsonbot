@@ -15,7 +15,6 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.users import users
-from gozerlib.datadir import datadir
 from gozerlib.persist import PlugPersist
 from gozerlib.persiststate import UserState
 from gozerlib.utils.lazydict import LazyDict

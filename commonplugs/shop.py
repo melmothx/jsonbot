@@ -10,7 +10,6 @@ from gozerlib.utils.generic import getwho, jsonstring
 from gozerlib.users import users
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.datadir import datadir
 from gozerlib.utils.pdol import Pdol
 
 ## basic imports

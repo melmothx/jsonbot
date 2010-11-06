@@ -40,7 +40,7 @@ from gozerlib.console.bot import ConsoleBot
 from gozerlib.console.event import ConsoleEvent
 from gozerlib.plugins import Plugins
 from gozerlib.config import Config
-from gozerlib.datadir import makedirs, datadir
+from gozerlib.datadir import makedirs
 from gozerlib.users import Users, users
 from gozerlib.errors import NoOwnerSet
 from gozerlib.threads import start_new_thread
