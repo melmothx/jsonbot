@@ -63,7 +63,7 @@ class HomePageHandler(RequestHandler):
                 start(self.response, {'appname': 'JSONBOT' , 'who': user, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();'})
         except google.appengine.runtime.DeadlineExceededError:
             self.response.out.write("DeadLineExceededError .. this request took too long to finish.")
-        except Excpetion, ex:
+        except Exception, ex:
             self.response.out.write("An exception occured: %s" % str(ex))
             handle_exception()
         logging.warn("web_handler - out")

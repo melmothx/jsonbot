@@ -8,6 +8,7 @@
 
 from gozerlib.utils.generic import fromenc
 from gozerlib.version import getversion
+from gozerlib.config import Config
 
 ## gaelib imports
 
@@ -56,7 +57,7 @@ def start(response, input={}):
     except AttributeError:
          if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
          else: host = os.environ['SERVER_NAME']
-    inputdict = {'version': getversion(), 'host': host}
+    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#123456"}
     if input: inputdict.update(input)
     temp = os.path.join(os.getcwd(), 'templates/start.html')
     from google.appengine.ext.webapp import template

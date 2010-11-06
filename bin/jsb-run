@@ -1,2 +1,36 @@
-export PATH="./bin:.:$PATH"
-~/google_appengine/dev_appserver.py releases/$1
+#!/usr/bin/env python
+#
+#
+
+""" upload all instances in ~/jsonreg/ """
+
+## gozerlib imports
+
+from gozerlib.utils.popen import gozerpopen
+from gozerlib.utils.opts import makeopts
+from gozerlib.datadir import getdatadir
+## basic imports
+
+from subprocess import Popen, PIPE
+import os
+import sys
+
+## options parser
+
+opts = makeopts()
+
+ddir = opts.datadir or getdatadir()
+homedir = os.path.expanduser("~")
+try: target = opts.args[0]
+except IndexError:
+    print "jsb-run <botname>"
+    os._exit(1)
+
+execlist = ['jsb-release', target]
+print execlist
+proc = Popen(execlist)
+proc.wait()
+print "STARTING %s" % target
+execstring = '%s/google_appengine/dev_appserver.py %s%sreleases%s%s' % (homedir, ddir, os.sep, os.sep, target)
+proc = Popen(execstring.split())
+proc.wait()

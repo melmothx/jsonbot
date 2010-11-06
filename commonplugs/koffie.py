@@ -87,7 +87,7 @@ def init():
 
 def do(bot, ievent, txt):
     if not bot.isgae: bot.action(ievent.channel, txt)
-    else: bot.action(ievent.channel, txt)
+    else: bot.say(ievent.channel, txt)
 
 ## commands
 
