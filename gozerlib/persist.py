@@ -15,7 +15,7 @@ from utils.lazydict import LazyDict
 from utils.exception import handle_exception
 from utils.name import stripname
 from utils.locking import lockdec
-from datadir import datadir
+from datadir import getdatadir
 from cache import get, set, delete
 
 ## simplejson imports
@@ -287,4 +287,4 @@ class PlugPersist(Persist):
 
     def __init__(self, filename, default=None):
         plugname = calledfrom(sys._getframe())
-        Persist.__init__(self, datadir + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + stripname(filename))
+        Persist.__init__(self, getdatadir() + os.sep + 'plugs' + os.sep + stripname(plugname) + os.sep + stripname(filename))

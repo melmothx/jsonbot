@@ -64,3 +64,13 @@ def testname(name):
     for c in name:
         if c not in allowednamechars or ord(c) < 31: return False
     return True
+
+def oldname(name):
+    from gozerlib.datadir import getdatadir
+    if name.startswith("-"): name[0] = "+"
+    name = name.replace("@", "+")
+    if os.path.exists(getdatadir() + os.sep + name): return name
+    name = name.replace("-", "#")
+    name  = prevchan.replace("+", "@")
+    if os.path.exists(getdatadir() + os.sep + name): return name
+    return ""

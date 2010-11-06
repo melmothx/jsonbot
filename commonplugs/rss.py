@@ -33,7 +33,7 @@ from gozerlib.fleet import getfleet
 from gozerlib.threadloop import TimedLoop
 from gozerlib.threads import start_new_thread
 from gozerlib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
-from gozerlib.datadir import datadir
+from gozerlib.datadir import getdatadir
 
 import gozerlib.contrib.feedparser as feedparser
 
@@ -136,7 +136,7 @@ class Feed(Persist):
     def __init__(self, name="nonameset", url="", owner="noownerset", itemslist=['title', 'link'], watchchannels=[], \
 sleeptime=15*60, running=0):
         if name:
-            filebase = datadir + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
+            filebase = getdatadir() + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
             Persist.__init__(self, filebase + '-core')
             if not self.data: self.data = {}
             self.data = LazyDict(self.data)
