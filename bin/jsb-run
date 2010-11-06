@@ -4,11 +4,15 @@
 
 """ upload all instances in ~/jsonreg/ """
 
+import sys, os
+sys.path.append(os.getcwd())
+
 ## gozerlib imports
 
 from gozerlib.utils.popen import gozerpopen
 from gozerlib.utils.opts import makeopts
 from gozerlib.datadir import getdatadir
+
 ## basic imports
 
 from subprocess import Popen, PIPE

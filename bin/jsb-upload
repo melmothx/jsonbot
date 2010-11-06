@@ -12,6 +12,8 @@ sys.path.append(os.getcwd())
 from gozerlib.utils.popen import gozerpopen
 from gozerlib.utils.opts import makeopts
 from gozerlib.datadir import getdatadir
+from gozerlib.version import getversion
+
 ## basic imports
 
 from subprocess import Popen, PIPE
@@ -21,19 +23,22 @@ import sys
 
 ## options parser
 
-opts = makeopts()
+from optparse import OptionParser
+parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
+opts, args = parser.parse_args()
+opts.args = args
+
+if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 ddir = opts.datadir or getdatadir()
 homedir = os.path.expanduser("~")
 target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
+
 ## upload all instances in ~/jsonregs/
 
 for item in target:
     print "UPLOADING %s" % item
-    execlist = ['jsb-release', item]
-    print execlist
-    proc = Popen(execlist)
-    proc.wait()
     execstring = '%s/google_appengine/appcfg.py update %s%sreleases%s%s' % (homedir, ddir, os.sep, os.sep, item)
     proc = Popen(execstring.split())
     proc.wait()
