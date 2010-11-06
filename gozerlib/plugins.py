@@ -84,7 +84,7 @@ class Plugins(LazyDict):
         except KeyError: pass
         return True
 
-    def load(self, modname, force=False, showerror=True):
+    def load(self, modname, force=False, showerror=False):
         """ load a plugin. """
         if not modname: raise NoSuchPlugin(modname)
         if self.has_key(modname):
@@ -122,7 +122,7 @@ class Plugins(LazyDict):
         logging.debug("%s loaded - with init" % modname)
         return self[modname]
 
-    def reload(self, modname, force=True, showerror=True):
+    def reload(self, modname, force=True, showerror=False):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
         if self.has_key(modname): self.unload(modname)
