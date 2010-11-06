@@ -47,9 +47,10 @@ else:
      release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsonbot'
      targetin = 'jsonbot'
 
-
+ddir = opts.datadir or getdatadir()
+ddir = ddir + os.sep + "releases"
 if os.path.isdir(release + '.old'):
-    backup = (opts.datadir or getdatadir()) + os.sep + 'releases' + os.sep + gethighest('releases', targetin + '.old')
+    backup = ddir + os.sep + gethighest(ddir, targetin + '.old')
 else:
     backup = release + '.old'
 
