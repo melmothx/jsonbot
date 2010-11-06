@@ -18,6 +18,8 @@ from gozerlib.utils.timeutils import hourmin
 from gozerlib.examples import examples
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.lazydict import LazyDict
+from gozerlib.datadir import getdatadir
+from gozerlib.utils.name import stripname
 
 ## basic imports
 
@@ -38,7 +40,7 @@ outlocked = lockdec(outlock)
 cfg = PersistConfig()
 cfg.define('channels', [])
 cfg.define('format', 'simple')
-cfg.define('basepath', '')
+cfg.define('basepath', getdatadir())
 cfg.define('nologprefix', '[nolog]')
 cfg.define('nologmsg', '-= THIS MESSAGE NOT LOGGED =-')
 cfg.define('backend', 'file')
@@ -67,14 +69,14 @@ formats = {
     'simple': {
         'timestamp_format': '%Y-%m-%d %H:%M:%S',
         'basepath': None,
-        'filename': 'logs/%%(network)s/simple/%%(target)s.%Y%m%d.slog',
+        'filename': 'chatlogs/%%(network)s/simple/%%(target)s.%Y%m%d.slog',
         'event_prefix': '',
-        'event_filename': 'logs/%%(network)s/simple/%%(channel_name)s.%Y%m%d.slog',
+        'event_filename': 'chatlogs/%%(network)s/simple/%%(channel_name)s.%Y%m%d.slog',
         'separator': ' | ',
     },
     'supy': {
         'timestamp_format': '%Y-%m-%dT%H:%M:%S',
-        'filename': 'logs/%%(network)s/supy/%%(target)s/%%(target)s.%Y-%m-%d.log',
+        'filename': 'chatlogs/%%(network)s/supy/%%(target)s/%%(target)s.%Y-%m-%d.log',
         'event_prefix': '*** ',
         'event_filename': None,
         'separator': '  ',
@@ -125,10 +127,13 @@ def file_write(m):
     if stopped: return
     args = {
         'target': m.get('target'), 
-        'network': m.get('network') 
+        'network': m.get('network'), 
+        'logdir': cfg.get('logdir')
     }
-    if args['target'][0] in "#-": args['channel_name'] = args['target'][1:]
-    else: args['channel_name'] = args['target']
+    #if args['target'][0] in "#":
+    #    args['target'] = u"-" + args['target'][1:]
+    args['channel_name'] = args['target'] 
+    #else: args['channel_name'] = args['target']
     f = time.strftime(format_opt('filename')) % args
     if m['type'] != 'comment':
         event_filename = format_opt('event_filename')
@@ -167,7 +172,7 @@ def formatevent(bot, ievent):
         'event_prefix': format_opt('event_prefix'),
         'network': bot.networkname,
         'nick': ievent.nick,
-        'target': ievent.channel,
+        'target': stripname(ievent.channel),
     }
     m = LazyDict(m)
 
