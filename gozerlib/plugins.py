@@ -86,6 +86,7 @@ class Plugins(LazyDict):
 
     def load(self, modname, force=False, showerror=True):
         """ load a plugin. """
+        if not modname: raise NoSuchPlugin(modname)
         if self.has_key(modname):
             try:
                 logging.info("plugins - %s already loaded" % modname)                
@@ -123,6 +124,7 @@ class Plugins(LazyDict):
 
     def reload(self, modname, force=True, showerror=True):
         """ reload a plugin. just load for now. """ 
+        modname = modname.replace("..", ".")
         if self.has_key(modname): self.unload(modname)
         try: return self.load(modname, force=force, showerror=showerror)
         except Exception, ex:

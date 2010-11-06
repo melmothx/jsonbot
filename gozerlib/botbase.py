@@ -19,7 +19,7 @@ from config import Config
 from utils.pdod import Pdod
 from channelbase import ChannelBase
 from less import Less, outcache
-from boot import boot
+from boot import boot, getcmndperms
 from utils.locking import lockdec
 from exit import globalshutdown
 from utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt
@@ -121,7 +121,7 @@ class BotBase(LazyDict):
         self.outqueues = [Queue.Queue() for i in range(10)]
         self.tickqueue = Queue.Queue()
         self.encoding = self.cfg.encoding or "utf-8"
-        self.cmndperms = Config(self.fleetdir+ os.sep + "cmndperms")
+        self.cmndperms = getcmndperms()
         fleet = getfleet(datadir)
         if not fleet.byname(self.name): fleet.bots.append(self) ; 
         if not self.isgae:
@@ -430,12 +430,12 @@ class BotBase(LazyDict):
         #logging.debug("botbase - checking for reload of %s (%s)" % (target, event.userhost))
         try:
             from boot import getcallbacktable   
-            plugins = getcallbacktable()[target]
+            p = getcallbacktable()[target]
         except KeyError:
             logging.debug("botbase - can't find plugin to reload for %s" % event.cmnd)
             return
         from plugins import plugs
-        for name in plugins: 
+        for name in p: 
             if name in plugs:
                 logging.debug("botbase - %s already loaded" % name)
                 continue

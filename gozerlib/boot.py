@@ -202,3 +202,6 @@ def whatcommands(plug):
         if plug in mod:
             result.append(cmnd)
     return result
+
+def getcmndperms():
+    return cmndperms

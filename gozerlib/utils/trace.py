@@ -11,7 +11,7 @@ import os
 
 ## defines
 
-stopmarkers = ['gozerlib', 'commonplugs', 'waveplugs', 'socketplugs', 'waveapi', 'jsonbot', 'gozerdata', 'python2.5', 'python2.6']
+stopmarkers = ['gozerlib', 'commonplugs', 'waveplugs', 'socketplugs', 'waveapi', 'jsonbot', 'myplugs', 'python2.5', 'python2.6']
 
 ## calledfrom function
 
