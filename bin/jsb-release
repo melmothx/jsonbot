@@ -49,7 +49,7 @@ else:
 
 
 if os.path.isdir(release + '.old'):
-    backup = (opts.datadir or getdatadir()) + 'releases' + os.sep + gethighest('releases', targetin + '.old')
+    backup = (opts.datadir or getdatadir()) + os.sep + 'releases' + os.sep + gethighest('releases', targetin + '.old')
 else:
     backup = release + '.old'
 

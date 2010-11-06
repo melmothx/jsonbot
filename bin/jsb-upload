@@ -26,7 +26,7 @@ target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
 
 for item in target:
     print "UPLOADING %s" % item
-    execlist = ['./bin/jsb-release', item]
+    execlist = ['jsb-release', item]
     print execlist
     proc = Popen(execlist)
     proc.wait()
