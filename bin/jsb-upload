@@ -6,6 +6,9 @@
 
 ## gozerlib imports
 
+import os, sys
+sys.path.append(os.getcwd())
+
 from gozerlib.utils.popen import gozerpopen
 from gozerlib.utils.opts import makeopts
 from gozerlib.datadir import getdatadir
@@ -14,6 +17,7 @@ from gozerlib.datadir import getdatadir
 from subprocess import Popen, PIPE
 import os
 import sys
+
 
 ## options parser
 
