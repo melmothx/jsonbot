@@ -83,6 +83,12 @@ def init():
             beledig.append(i.strip())
     return 1
 
+## functions
+
+def do(bot, ievent, txt):
+    if not bot.isgae: bot.action(ievent.channel, txt)
+    else: bot.action(ievent.channel, txt)
+
 ## commands
 
 def handle_koffie(bot, ievent):
@@ -93,7 +99,7 @@ def handle_koffie(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,koffie[rand] + " " + nick)
+    do(bot, ievent, koffie[rand] + " " + nick)
 
 def handle_thee(bot, ievent):
     """ get a thee """
@@ -103,7 +109,7 @@ def handle_thee(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,thee[rand] + " " + nick)
+    do(bot, ievent, thee[rand] + " " + nick)
 
 def handle_bier(bot, ievent):
     """ get a beer  """
@@ -113,7 +119,7 @@ def handle_bier(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,bier[rand] + " " + nick)
+    do(bot, ievent, bier[rand] + " " + nick)
 
 def handle_wijn(bot, ievent):
     """ get a wine  """
@@ -123,7 +129,7 @@ def handle_wijn(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,wijn[rand] + " " + nick)
+    do(bot, ievent, wijn[rand] + " " + nick)
 
 def handle_fris(bot, ievent):
     """ get a fris  """
@@ -133,7 +139,7 @@ def handle_fris(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,fris[rand] + " " + nick)
+    do(bot, ievent, fris[rand] + " " + nick)
 
 def handle_taart(bot, ievent):
     """ get a taart  """
@@ -143,7 +149,7 @@ def handle_taart(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,taart[rand] + " " + nick)
+    do(bot, ievent, taart[rand] + " " + nick)
 
 def handle_koek(bot, ievent):
     """ get a koek  """
@@ -153,7 +159,7 @@ def handle_koek(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,koek[rand] + " " + nick)
+    do(bot, ievent, koek[rand] + " " + nick)
 
 def handle_chips(bot, ievent):
     """ get a chips  """
@@ -163,7 +169,7 @@ def handle_chips(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,chips[rand] + " " + nick)
+    do(bot, ievent, chips[rand] + " " + nick)
 
 def handle_soep(bot, ievent):
     """ get a soep  """
@@ -173,17 +179,17 @@ def handle_soep(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,soep[rand] + " " + nick)
+    do(bot, ievent, soep[rand] + " " + nick)
     
 def handle_sex(bot, ievent):
     """ get a sex  """
     rand = random.randint(0,len(sex)-1)
-    bot.say(ievent.channel,sex[rand])
+    do(bot, ievent, sex[rand] + " " + nick)
 
 def handle_roken(bot, ievent):
     """ get a roken  """
     rand = random.randint(0,len(roken)-1)
-    bot.say(ievent.channel,roken[rand])
+    do(bot, ievent, roken[rand] + " " + nick)
 
 def handle_beledig(bot, ievent):
     """ get/give an belediging  """
@@ -193,7 +199,7 @@ def handle_beledig(bot, ievent):
         nick = '%s' % input
     except:
         if len('%s') >= 0: nick = ievent.nick
-    bot.action(ievent.channel,beledig[rand] + " " + nick)
+    do(bot, ievent, beledig[rand] + " " + nick)
 
 cmnds.add('koffie', handle_koffie, 'USER')
 examples.add('koffie', 'get a koffie quote', 'koffie')
