@@ -33,8 +33,8 @@ import time
 import sys
 
 ## defines
-if sys.argc > 2: boot(sys.argv[2])
-else: boot()
+try: boot(sys.argv[2])
+except IndexError: boot()
 donot = ['stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get']
 bot = BotBase()
 bot.allowall = True
@@ -276,8 +276,8 @@ def domods(dir):
 
 if __name__ == '__main__':
     threads = []
-    if sys.argc > 2: boot(sys.arv[2])
-    else: boot()
+    try: boot(sys.argv[2])
+    except IndexError: boot()
     import shutil
     from gozerlib.socklib.utils.generic import touch
     try:
