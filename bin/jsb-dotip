@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+#
+#
+
+""" upload all instances in ~/jsonreg/ """
+
+## gozerlib imports
+
+from gozerlib.utils.popen import gozerpopen
+from gozerlib.utils.opts import makeopts
+from gozerlib.datadir import getdatadir
+
+## basic imports
+
+from subprocess import Popen, PIPE
+import os
+import sys
+
+os.environ['PATH'] += ":" + os.getcwd() + os.sep + 'bin'
+
+## do the thing
+
+opts = makeopts()
+ddir = opts.datadir or getdatadir()
+homedir = os.path.expanduser("~")
+try: target = opts.args[0] or ddir
+except: target = ddir
+target = target + os.sep + "TIP"
+execstring = "jsb-tip"
+proc = gozerpopen(execstring.split())
+tip = proc.fromchild.read().strip()
+print tip
+f = open(target, 'w')
+f.write(tip)
+f.close()
+proc.close()
