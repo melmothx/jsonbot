@@ -34,6 +34,7 @@ opts, args = parser.parse_args()
 opts.args = args
 
 if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
+if not os.path.isdir(getdatadir()): os.mkdir(getdatadir())
 
 if len(sys.argv) > 1:
      ddir = opts.datadir or getdatadir()
