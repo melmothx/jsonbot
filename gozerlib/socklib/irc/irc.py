@@ -80,6 +80,7 @@ class Irc(BotBase):
         self.lastoutput = 0
         if self.cfg and self.cfg.ipv6: self.ipv6 = True
         else: self.ipv6 = False
+        self.splitted = []
 
     def _raw(self, txt):
         """ send raw text to the server. """
