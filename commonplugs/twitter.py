@@ -15,6 +15,8 @@ from gozerlib.utils.textutils import html_unescape
 from gozerlib.utils.generic import waitforqueue, strippedtxt, splittxt
 from gozerlib.persist import PlugPersist
 from gozerlib.utils.twitter import twitterapi, twittertoken
+from gozerlib.datadir import getdatadir
+from gozerlib.jsbimport import _import
 
 ## tweppy imports
 
@@ -36,29 +38,32 @@ import logging
 
 ## credentials
 
-try:
-    from gozerdata.config.credentials import CONSUMER_KEY, CONSUMER_SECRET
-    go = True
-except ImportError:
-    logging.info("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples".upper())
-    go = False
+def getcreds(datadir):
+    try:
+        mod = _import("%s.config.credentials" % datadir)
+        from mod import CONSUMER_KEY, CONSUMER_SECRET
+    except ImportError:
+        logging.info("the twitter plugin needs the credentials.py file in the %s/config dir. see %s/examples" % (datadir, datadir))
+        return (None, None)
+    return CONSUMER_KEY, CONSUMER_SECRET
 
 ## defines
 
-if go:
-    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-else:
-    auth = None
+def getauth(datadir):
+    key, secret = getcreds(datadir)
+    auth = OAuthHandler(key, secret)
+    return auth
 
 ## functions
 
 def postmsg(username, txt):
     result = splittxt(txt, 139)
     twitteruser = TwitterUsers("users")
-    token = twittertoken(CONSUMER_KEY, CONSUMER_SECRET, twitteruser, username)
+    key, secret = getcreds(getdatadir())
+    token = twittertoken(key, secret, twitteruser, username)
     if not token:
         raise TweepError("Can't get twitter token")
-    twitter = twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token)
+    twitter = twitterapi(key, secret, token)
     for txt in result:
         status = twitter.update_status(txt)
     # BHJTW need to check status
@@ -129,8 +134,9 @@ def handle_twittercmnd(bot, ievent):
         if not token:
             ievent.reply("you are not logged in yet .. run the twitter-auth command.")
             return 
-        token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
-        twitter = twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token)
+        key, secret = getcreds(getdatadir())
+        token = oauth.OAuthToken(key, secret).from_string(token)
+        twitter = twitterapi(key, secret, token)
         cmndlist = dir(twitter)
         cmnds = []
         for cmnd in cmndlist:
@@ -179,7 +185,7 @@ examples.add('twitter-cmnd', 'do a cmnd on the twitter API', 'twitter-cmnd home_
 def handle_twitter_confirm(bot, ievent):
     """ confirm auth with PIN. """
     if not go:
-        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        ievent.reply("the twitter plugin needs the credentials.py file in the %s/config dir. see gozerdata/examples" % getdatadir())
         return
 
     pin = ievent.args[0]
@@ -187,11 +193,11 @@ def handle_twitter_confirm(bot, ievent):
         ievent.missing("<PIN> .. see the twitter-auth command.")
         return
     try:
-        access_token = auth.get_access_token(pin)
-    except (TweeprError, urllib2.HTTPError), e:
+        access_token = getauth(getdatadir()).get_access_token(pin)
+    except (TweepError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
         return
-    twitteruser = TwitterUser("users")
+    twitteruser = TwitterUsers("users")
     twitteruser.add(ievent.user.data.name, access_token.to_string())
     ievent.reply("access token saved.")
 
@@ -205,7 +211,7 @@ def handle_twitter_auth(bot, ievent):
         return
 
     try:
-        auth_url = auth.get_authorization_url()
+        auth_url = getauth(getdatadir()).get_authorization_url()
     except (TweepError, urllib2.HTTPError), e:
         ievent.reply('twitter failed: %s' % (str(e),))
         return
@@ -226,13 +232,14 @@ def handle_twitterfriends(bot, ievent):
         return
 
     try:
-        twitteruser = TwitterUser("users")
+        twitteruser = TwitterUsers("users")
         token = twitteruser.data.get(ievent.user.data.name)
         if not token:
             ievent.reply("you are not logged in yet .. run the twitter-auth command.")
             return 
-        token = oauth.OAuthToken(CONSUMER_KEY, CONSUMER_SECRET).from_string(token)
-        twitter = twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token)
+        key , secret = getcreds(getdatadir())
+        token = oauth.OAuthToken(key, secret).from_string(token)
+        twitter = twitterapi(key, secret, token)
         method = getattr(twitter, "friends_timeline")
 
         # do the thing

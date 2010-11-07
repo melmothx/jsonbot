@@ -38,7 +38,13 @@ target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
 ## upload all instances in ~/jsonregs/
 
 for item in target:
+    print "DOING RELEASE %s" % item
+    execstring = 'jsb-release %s' % item
+    print execstring
+    proc = Popen(execstring.split())
+    proc.wait()
     print "UPLOADING %s" % item
     execstring = '%s/google_appengine/appcfg.py update %s%sreleases%s%s' % (homedir, ddir, os.sep, os.sep, item)
+    print execstring
     proc = Popen(execstring.split())
     proc.wait()

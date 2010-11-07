@@ -215,7 +215,7 @@ def waitforqueue(queue, timeout=10, maxitems=None):
         except Queue.Empty:
             time.sleep(0.1)
             counter += 1
-            if counter > timeout*10: break
+            if counter > timeout: break
             continue
         if not res: break 
         result.append(res)

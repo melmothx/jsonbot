@@ -4,7 +4,7 @@
 
 """ test plugin. """
 
-from gozerlib.utils.exception import exceptionmsg, handle_exception, exceptionevents
+from gozerlib.utils.exception import exceptionmsg, handle_exception, exceptionevents, exceptionlist
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.eventbase import EventBase
@@ -65,6 +65,7 @@ def dotest(bot, event):
         event.reply("there are %s errors .. " % len(errors))
         for cmnd, error in errors.iteritems(): event.reply("%s - %s" % (cmnd, error))
     for (event, msg) in exceptionevents: event.reply("EXCEPTION: %s - %s" % (event.txt,msg))
+    for msg in exceptionlist: event.reply("EXCEPTION: %s" % msg)
 
 ## test-plugs command
 

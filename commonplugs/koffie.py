@@ -184,11 +184,21 @@ def handle_soep(bot, ievent):
 def handle_sex(bot, ievent):
     """ get a sex  """
     rand = random.randint(0,len(sex)-1)
+    try:
+        input = ievent.args[0]
+        nick = '%s' % input
+    except:
+        if len('%s') >= 0: nick = ievent.nick
     do(bot, ievent, sex[rand] + " " + nick)
 
 def handle_roken(bot, ievent):
     """ get a roken  """
     rand = random.randint(0,len(roken)-1)
+    try:
+        input = ievent.args[0]
+        nick = '%s' % input
+    except:
+        if len('%s') >= 0: nick = ievent.nick
     do(bot, ievent, roken[rand] + " " + nick)
 
 def handle_beledig(bot, ievent):
