@@ -22,7 +22,7 @@ def getversion(txt=""):
     """ return a version string. """
     try: tip = open(getdatadir() + os.sep + "TIP", 'r').read()
     except: tip = None
-    global version
-    if tip: version += " " + tip
-    if txt: return "JSONBOT %s %s" % (version, txt)
-    else: return "JSONBOT %s" % version
+    if tip: version2 = version + " " + tip
+    else: version2 = version
+    if txt: return "JSONBOT %s %s" % (version2, txt)
+    else: return "JSONBOT %s" % version2
