@@ -160,7 +160,7 @@ class Config(LazyDict):
                 curitem = keyword
                 configtmp.write('%s = %s\n' % (keyword, dumps(value)))
             configtmp.close()
-            os.rename(filename + '.tmp', self.cfile)
+            os.rename(filename + '.tmp', filename)
             return teller
 
         except Exception, ex:
