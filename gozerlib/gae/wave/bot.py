@@ -16,7 +16,7 @@ from gozerlib.config import Config
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.exception import handle_exception
 from gozerlib.jsbimport import _import_byfile
-from gozerlib.datadir import getdatadir()
+from gozerlib.datadir import getdatadir
 
 ## gaelib imports
 
