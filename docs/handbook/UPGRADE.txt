@@ -1,0 +1,29 @@
+UPGRADE
+=======
+
+from 0.4 to 0.5 a number of changes went into JSONBOT.
+
+first i needed to change the stripname() function to make used filename
+compatible with appengine. this means that most json data lives under a
+different filename. to fix this i made a !chan-upgrade command which tries
+to find the old filename and merge the data of that into the new file.
+
+second: i needed to make the bot debian compatible so we needed to be able
+to start the bot from a different datadir (currently the local gozerdata
+dir). this was a big rewrite as access to the datadir var in
+gozerlib/datadir needed to be moved from import time to runtime as it can be
+set in the using program now .. use the -d option to set a different datadir
+as opposed to the default which is ~/.jsonbot now
+
+third: forwarding was a bit too open so i added a allowwatch attribute that
+determines to what channel a forwarded event can be send. this way the
+sending side can control to whom the events may go. use !chan-allowwatch to
+add remote channel to the allowlist.
+
+to recap:
+
+1) move your data dir into ~/.jsonbot or use -d gozerdata 
+2) run !chan-upgrade to update you channel data
+3) use !chan-allowwatch to enable channels on the receiving side if you use
+forwarding
+
