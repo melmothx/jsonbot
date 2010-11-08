@@ -117,7 +117,7 @@ def handle_forwardadd(bot, event):
     if "@" in event.rest:
         forward.data.outs[event.rest] = event.user.data.name
         forward.save()
-        if not event.rest in event.chan.forwards: event.chan.forwards.append(event.rest)
+        if not event.rest in event.chan.data.forwards: event.chan.data.forwards.append(event.rest)
     if event.rest:
         event.chan.save()
         event.done()

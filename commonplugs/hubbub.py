@@ -52,7 +52,7 @@ def subscribe(url):
         'hub.verify_token': str(uuid.uuid4()),
     }
     headers = {}
-    _import_byfile("credentials", getdatadir() + os.sep + "config" + os.sep + "credentials.py")
+    credentials = _import_byfile("credentials", getdatadir() + os.sep + "config" + os.sep + "credentials.py")
     if credentials.HUB_CREDENTIALS:
       auth_string = "Basic " + base64.b64encode("%s:%s" % tuple(credentials.HUB_CREDENTIALS))
       headers['Authorization'] = auth_string

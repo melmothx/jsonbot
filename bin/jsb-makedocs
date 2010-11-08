@@ -24,6 +24,7 @@ from gozerlib.commands import cmnds
 from gozerlib.threads import start_new_thread
 from gozerlib.boot import boot
 from gozerlib.botbase import BotBase
+from gozerlib.utils.exception import exceptionlist
 
 ## basic imports
 
@@ -150,9 +151,10 @@ def gendoc(mod, f, output):
                 out = None
                 try:
                     print "\nDOING %s\n" % i.strip()
+                    if 'deadline' in i: continue
                     out = bot.docmnd("test@test", "#test", i.strip(), wait=5.0)
                     if not out: continue
-                    res = waitforqueue(out.outqueue, 4)
+                    #res = waitforqueue(out.outqueue, 4)
                     print out.result
                     if not out.result:
                         output.write("        <output> none" + '\n')
@@ -283,7 +285,7 @@ if __name__ == '__main__':
     from gozerlib.socklib.utils.generic import touch
     try:
         shutil.copyfile(os.path.expanduser("~") + os.sep + 'jsonregs' + os.sep + 'jsonbot' + os.sep + 'credentials.py', os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + 'credentials.py')
-        touch(os.getcwd() + 'gozerdata' + os.sep + 'config' + os.sep + '__init__.py')
+        touch(os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + '__init__.py')
     except:
         print "CAN'T COPY OVER ~/jsonregs/jsonbot/credentials.py"
         handle_exception()
@@ -361,3 +363,6 @@ if __name__ == '__main__':
     except:
         print "CAN'T COPY OVER ~/jsonregs/jsonbot/credentials.py"
         handle_exception()
+
+    for ex in exceptionlist:
+        print ex
