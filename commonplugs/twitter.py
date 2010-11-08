@@ -63,7 +63,6 @@ def postmsg(username, txt):
     result = splittxt(txt, 139)
     twitteruser = TwitterUsers("users")
     key, secret = getcreds(getdatadir())
-    print key, secret
     token = twittertoken(key, secret, twitteruser, username)
     if not token:
         raise TweepError("Can't get twitter token")
