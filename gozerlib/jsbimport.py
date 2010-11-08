@@ -35,3 +35,6 @@ def force_import(name):
     except KeyError: pass
     plug = _import(name)
     return plug
+
+def _import_byfile(modname, filename):
+    return imp.load_source(modname, filename)

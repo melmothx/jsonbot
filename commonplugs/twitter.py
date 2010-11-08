@@ -16,7 +16,7 @@ from gozerlib.utils.generic import waitforqueue, strippedtxt, splittxt
 from gozerlib.persist import PlugPersist
 from gozerlib.utils.twitter import twitterapi, twittertoken
 from gozerlib.datadir import getdatadir
-from gozerlib.jsbimport import _import
+from gozerlib.jsbimport import _import_byfile
 
 ## tweppy imports
 
@@ -40,16 +40,19 @@ import logging
 
 def getcreds(datadir):
     try:
-        mod = _import("%s.config.credentials" % datadir)
-        from mod import CONSUMER_KEY, CONSUMER_SECRET
+        mod = _import_byfile("credentials", datadir + os.sep + "config" + os.sep + "credentials.py")
     except ImportError:
         logging.info("the twitter plugin needs the credentials.py file in the %s/config dir. see %s/examples" % (datadir, datadir))
         return (None, None)
-    return CONSUMER_KEY, CONSUMER_SECRET
+    return mod.CONSUMER_KEY, mod.CONSUMER_SECRET
 
 ## defines
 
+auth = None
+
 def getauth(datadir):
+    global auth
+    if auth: return auth
     key, secret = getcreds(datadir)
     auth = OAuthHandler(key, secret)
     return auth
@@ -60,6 +63,7 @@ def postmsg(username, txt):
     result = splittxt(txt, 139)
     twitteruser = TwitterUsers("users")
     key, secret = getcreds(getdatadir())
+    print key, secret
     token = twittertoken(key, secret, twitteruser, username)
     if not token:
         raise TweepError("Can't get twitter token")
@@ -108,9 +112,8 @@ def handle_twitter(bot, ievent):
         try:
              nritems = postmsg(ievent.user.data.name, ievent.rest)
              ievent.reply("%s tweet posted" % nritems)
-        except KeyError:
-            #handle_exception()
-            ievent.reply('you are not logged in yet. see the twitter-auth command.')
+        except TweepError, ex:
+             if "token" in str(ex): ievent.reply("you are not registered yet.. use !twitter-auth")
         except (TweepError, urllib2.HTTPError), e:
             ievent.reply('twitter failed: %s' % (str(e),))
  

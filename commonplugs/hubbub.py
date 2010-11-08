@@ -28,6 +28,7 @@ from gozerlib.errors import NoSuchBotType
 from gozerlib.gae.wave.waves import Wave
 from gozerlib.threads import start_new_thread
 from gozerlib.datadir import getdatadir
+from gozerlib.jsbimport import _import_byfile
 
 ## basic imports
 
@@ -51,7 +52,7 @@ def subscribe(url):
         'hub.verify_token': str(uuid.uuid4()),
     }
     headers = {}
-    import gozerdata.config.credentials as credentials
+    _import_byfile("credentials", getdatadir() + os.sep + "config" + os.sep + "credentials.py")
     if credentials.HUB_CREDENTIALS:
       auth_string = "Basic " + base64.b64encode("%s:%s" % tuple(credentials.HUB_CREDENTIALS))
       headers['Authorization'] = auth_string

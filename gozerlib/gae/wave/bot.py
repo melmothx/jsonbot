@@ -15,6 +15,8 @@ from gozerlib.outputcache import add
 from gozerlib.config import Config
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.exception import handle_exception
+from gozerlib.jsbimport import _import_byfile
+from gozerlib.datadir import getdatadir()
 
 ## gaelib imports
 
@@ -70,6 +72,7 @@ class WaveBot(BotBase, robot.Robot):
         self.type = 'wave'
         self.nick = name or sname
         robot.Robot.__init__(self, name=sname, image_url=image_url, profile_url=profile_url)
+        _import_byfile("credentials", getdatadir() + os.sep + "config" + os.sep + "credentials.py")
         self.set_verification_token_info(credentials.verification_token[self.domain], credentials.verification_secret[self.domain])
         self.setup_oauth(credentials.Consumer_Key[self.domain], credentials.Consumer_Secret[self.domain],
                              server_rpc_base=credentials.RPC_BASE[self.domain])
