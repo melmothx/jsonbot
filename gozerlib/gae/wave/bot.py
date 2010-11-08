@@ -15,6 +15,7 @@ from gozerlib.outputcache import add
 from gozerlib.config import Config
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.exception import handle_exception
+from gozerlib.utils.generic import strippedtxt
 from gozerlib.jsbimport import _import_byfile
 from gozerlib.datadir import getdatadir
 
@@ -186,3 +187,22 @@ class WaveBot(BotBase, robot.Robot):
     def run(self):
         """ start the bot on the runner. """
         appengine_robot_runner.run(self, debug=True, extra_handlers=[])
+
+    def normalize(self, what):
+        """ convert markup to IRC bold. """
+        txt = strippedtxt(what)
+        txt = txt.replace("<b>", "")
+        txt = txt.replace("</b>", "")
+        txt = txt.replace("<i>", "")
+        txt = txt.replace("</i>", "")
+        txt = txt.replace("&lt;b&gt;", "")
+        txt = txt.replace("&lt;/b&gt;", "")
+        txt = txt.replace("&lt;i&gt;", "")
+        txt = txt.replace("&lt;/i&gt;", "")
+        txt = txt.replace("&lt;h2&gt;", "")
+        txt = txt.replace("&lt;/h2&gt;", "")
+        txt = txt.replace("&lt;h3&gt;", "")
+        txt = txt.replace("&lt;/h3&gt;", "")
+        txt = txt.replace("&lt;li&gt;", "")
+        txt = txt.replace("&lt;/li&gt;", "")
+        return txt

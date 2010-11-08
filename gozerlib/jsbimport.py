@@ -37,4 +37,6 @@ def force_import(name):
     return plug
 
 def _import_byfile(modname, filename):
-    return imp.load_source(modname, filename)
+    try: return imp.load_source(modname, filename)
+    except NotImplementedError: return _import(filename[:-3].replace(os.sep, "."))
+
