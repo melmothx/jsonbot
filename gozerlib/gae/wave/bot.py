@@ -16,6 +16,7 @@ from gozerlib.config import Config
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.generic import strippedtxt
+from gozerlib.utils.trace import calledfrom
 from gozerlib.jsbimport import _import_byfile
 from gozerlib.datadir import getdatadir
 
@@ -44,10 +45,7 @@ import os
 import time
 import thread
 import simplejson
-
-## credentials
-
-import gozerdata.config.credentials as credentials
+import sys
 
 ## defines
 
@@ -73,7 +71,7 @@ class WaveBot(BotBase, robot.Robot):
         self.type = 'wave'
         self.nick = name or sname
         robot.Robot.__init__(self, name=sname, image_url=image_url, profile_url=profile_url)
-        _import_byfile("credentials", getdatadir() + os.sep + "config" + os.sep + "credentials.py")
+        credentials = _import_byfile("credentials", getdatadir() + os.sep + "config" + os.sep + "credentials.py")
         self.set_verification_token_info(credentials.verification_token[self.domain], credentials.verification_secret[self.domain])
         self.setup_oauth(credentials.Consumer_Key[self.domain], credentials.Consumer_Secret[self.domain],
                              server_rpc_base=credentials.RPC_BASE[self.domain])
@@ -87,7 +85,6 @@ class WaveBot(BotBase, robot.Robot):
         """ invoked when any participants have been added/removed. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-        wevent.bind(self)
         whitelist = wevent.chan.data.whitelist
         if not whitelist: whitelist = wevent.chan.data.whitelist = []
         participants = event.participants_added
@@ -104,7 +101,6 @@ class WaveBot(BotBase, robot.Robot):
         logging.warn('wave - joined "%s" (%s) wave' % (wavelet._wave_id, wavelet._title))
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-        wevent.bind(self)
         logging.debug("wave - owner is %s" % wevent.chan.data.owner)
         wevent.chan.data.json_data = wavelet.serialize()
         wevent.chan.save()
@@ -115,10 +111,9 @@ class WaveBot(BotBase, robot.Robot):
         """ new blip added. here is where the command dispatching takes place. """
         wevent = WaveEvent()
         wevent.parse(self, event, wavelet)
-        wevent.bind(self)
         wevent.auth = wevent.userhost
         wave = wevent.chan
-        wave.data.seenblips += 1
+        #wave.data.seenblips += 1
         wave.data.lastedited = time.time()
         self.doevent(wevent)
 
@@ -127,11 +122,11 @@ class WaveBot(BotBase, robot.Robot):
         assert event.chan
         if not event.chan: logging.error("%s - event.chan is not set" % self.name) ; return
         if event.chan.data.json_data: wavelet = self.blind_wavelet(event.chan.data.json_data)
-        else: logging.info("did not join channel %s" % event.id) ; return
+        else: logging.warn("did not join channel %s" % event.chan.data.id) ; return
         if not wavelet: logging.error("cant get wavelet") ; return
         txt = self.normalize(txt)
         txt = unicode(txt.strip())
-        logging.debug("%s - wave - out - %s" % (self.name, txt))             
+        logging.warn("%s - wave - out - %s" % (self.name, txt))             
         try:
             annotations = []
             for url in txt.split():
@@ -158,16 +153,14 @@ class WaveBot(BotBase, robot.Robot):
     def outnocb(self, waveid, txt, result=[], event=None, origin="", dot=", ", *args, **kwargs):
         """ output to the root id. """
         if not self.domain in self._server_rpc_base:
+            credentials = _import_byfile("credentials", getdatadir() + os.sep + "config" + os.sep + "credentials.py")
             rpc_base = credentials.RPC_BASE[waveid.split("!")[0]]
             self._server_rpc_base = rpc_base
             logging.warn("%s - %s - server_rpc_base is %s" % (self.name, waveid, self._server_rpc_base))
-        if not event:
-            event = WaveEvent()
-            event.channel = event.printto = waveid
-            event.txt = event.origtxt = txt
-            event.auth = event.userhost = origin or self.me
-            event.bind(self)
-        self._raw(txt, event)
+        if not event: logging.error("wave - event not set - %s" % calledfrom(sys._getframe(0)))
+        logging.warn("wave - creating new event.")
+        wave = Wave(waveid)
+        wave.say(self, txt)
 
     def toppost(self, waveid, txt):
         """ output to the root id. """

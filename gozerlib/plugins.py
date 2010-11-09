@@ -89,7 +89,7 @@ class Plugins(LazyDict):
         if not modname: raise NoSuchPlugin(modname)
         if self.has_key(modname):
             try:
-                logging.info("plugins - %s already loaded" % modname)                
+                #logging.info("plugins - %s already loaded" % modname)                
                 if not force: return self[modname]
                 self[modname] = reload(self[modname])
                 try: init = getattr(self[modname], 'init')
@@ -185,7 +185,7 @@ class Plugins(LazyDict):
             logging.debug("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return
         if plugin in self:
-            logging.debug("plugins - %s already loaded" % plugin)
+            #logging.debug("plugins - %s already loaded" % plugin)
             return False
         logging.info("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
         plugloaded = self.reload(plugin)

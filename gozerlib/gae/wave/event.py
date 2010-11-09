@@ -48,8 +48,6 @@ class WaveEvent(EventBase):
         self.waveid = self.wavelet._wave_id
         self.blipid = self.eventin.blip_id
         self.blip = self.eventin.blip
-        self.chan = Wave(self.waveid)
-        self.chan.parse(self.eventin, self.wavelet)
         if not self.blip:
             logging.warn("can't get blip id: %s" % self.blipid)
             self.contributors = []
@@ -92,6 +90,9 @@ class WaveEvent(EventBase):
             self.url = "https://wave.google.com/a/wavesandbox.com/#restored:wave:%s" % self.waveid.replace('w+','w%252B')
         else:
             self.url = "https://wave.google.com/wave/#restored:wave:%s" % self.waveid.replace('w+','w%252B')
+        #self.chan = Wave(self.waveid)
+        #self.chan.parse(self.eventin, self.wavelet)
+        self.bind(self.bot)
         self.makeargs()        
         logging.debug(u'wave - in - %s - %s - %s' % (self.title, self.userhost, self.txt))
 

@@ -47,6 +47,7 @@ class EventBase(LazyDict):
         self.ttl = 1
         self.how = "normal"
         self.chantag = None
+        self.forwarded = False
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """

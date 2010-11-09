@@ -15,6 +15,7 @@ from gozerlib.datadir import getdatadir
 from subprocess import Popen, PIPE
 import os
 import sys
+sys.path.insert(0, os.getcwd())
 
 os.environ['PATH'] += ":" + os.getcwd() + os.sep + 'bin'
 

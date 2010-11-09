@@ -127,7 +127,8 @@ class Wave(ChannelBase):
         if not wavelet:
             logging.error("cant get wavelet")
             return
-        txt = unicode(strippedtxt(txt.strip()))
+        txt = bot.normalize(txt)
+        txt = unicode(txt.strip())
         logging.debug(u'wave - out - %s - %s' % (self.data.title, txt))
         try:
             annotations = []
@@ -153,7 +154,7 @@ class Wave(ChannelBase):
         except google.appengine.api.urlfetch_errors.DownloadError: handle_exception()
         self.data.seenblips += 1
         self.data.lastedited = time.time()
-        self.save()
+        #self.save()
 
     saynocb = say
 

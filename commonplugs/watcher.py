@@ -14,6 +14,7 @@ from gozerlib.utils.exception import handle_exception
 from gozerlib.examples import examples
 from gozerlib.gae.wave.waves import Wave
 from gozerlib.utils.locking import locked
+from gozerlib.eventbase import EventBase
 
 ## plugin imports
 
@@ -21,6 +22,7 @@ from commonplugs.chatlog import formatevent
 
 ## basic imports
 
+from simplejson import loads
 import copy
 import logging
 
@@ -122,10 +124,12 @@ watched = Watched('channels')
 
 ## functions
 
-def writeout(botname, type, channel, txt):
+def writeout(botname, type, channel, txt, eventjson):
+    event = EventBase().load(eventjson)
     watchbot = getfleet().byname(botname)
     if not watchbot: watchbot = getfleet().makebot(type, botname)
-    if watchbot: watchbot.outnocb(channel, txt)
+    if watchbot:
+         watchbot.outnocb(channel, txt, event=event)
 
 ## callbacks
 
@@ -153,10 +157,11 @@ def watchcallback(bot, event):
         if m.nick == bot.nick or event.cbtype not in ['PRIVMSG', 'DISPATCH', 'MESSAGE', 'BLIP_SUBMITTED']: txt = u"[!] %s" % m.txt
         else: txt = u"[%s] %s" % (m.nick or event.nick or event.auth, m.txt)
         if txt.count('] [') > 2: logging.debug("watcher - %s - skipping %s" % (type, txt)) ; continue
+        logging.warn("watcher - forwarding to %s" % channel)
         if bot.isgae:
             from google.appengine.ext.deferred import defer
-            defer(writeout, botname, type, channel, txt)
-        else: writeout(botname, type, channel, txt)
+            defer(writeout, botname, type, channel, txt, event.tojson())
+        else: writeout(botname, type, channel, txt, event.tojson())
 
 first_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
 first_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)
@@ -174,7 +179,7 @@ first_callbacks.add('DISPATCH', watchcallback, prewatchcallback)
 
 def handle_watcherstart(bot, event):
     """ [<channel>] .. start watching a target (channel/wave). """
-    target = event.rest or event.origin or event.channel
+    target = event.rest or event.channel
 
     watched.subscribe(bot.name, bot.type, target, event.channel)
     if not target in event.chan.data.watched:

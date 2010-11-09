@@ -130,7 +130,7 @@ def handle_testunicode(bot, ievent):
     """ send unicode test down the output paths. """
     outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ"
     ievent.reply(outtxt)
-    bot.say(ievent.channel, outtxt)
+    bot.say(ievent.channel, outtxt, event=ievent)
 
 cmnds.add('test-unicode', handle_testunicode, 'OPER')
 examples.add('test-unicode', 'test if unicode output path is clear', 'test-unicode')

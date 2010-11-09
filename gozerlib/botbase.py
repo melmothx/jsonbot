@@ -71,6 +71,7 @@ class BotBase(LazyDict):
         if cfg: self.update(cfg)
         self.cfg = cfg or Config(self.fleetdir + os.sep + u'config')
         LazyDict.__init__(self)
+        self.curevent = None
         self.inqueue = Queue.Queue()
         self.outqueue = Queue.Queue()
         self.reconnectcount = 0
@@ -316,7 +317,7 @@ class BotBase(LazyDict):
         return res1
 
     def out(self, printto, txt, how="msg", event=None, origin=None, html=False, *args, **kwargs):
-        self.outnocb(printto, txt, how, event, origin=origin, html=html, *args, **kwargs)
+        self.outnocb(printto, txt, how, event=event, origin=origin, html=html, *args, **kwargs)
         self.outmonitor(origin, printto, txt)
 
     write = out
@@ -328,7 +329,7 @@ class BotBase(LazyDict):
 
     def say(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        if txt: self.out(channel, txt, how, event, origin=channel, *args, **kwargs)
+        if txt: self.out(channel, txt, how, event=event, origin=channel, *args, **kwargs)
         
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
@@ -437,7 +438,7 @@ class BotBase(LazyDict):
         from plugins import plugs
         for name in p: 
             if name in plugs:
-                logging.debug("botbase - %s already loaded" % name)
+                #logging.debug("botbase - %s already loaded" % name)
                 continue
             else:
                 logging.warn("botbase - on demand reloading of %s" % name)

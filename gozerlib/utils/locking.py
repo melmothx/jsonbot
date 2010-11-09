@@ -61,7 +61,6 @@ def locked(func):
         try:
             rlockmanager.acquire(where)
             res = func(*args, **kwargs)
-        except Exception, ex: handle_exception()
         finally: rlockmanager.release(where)
         return res
     return lockedfunc
