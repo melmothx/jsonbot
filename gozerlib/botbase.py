@@ -318,7 +318,7 @@ class BotBase(LazyDict):
 
     def out(self, printto, txt, how="msg", event=None, origin=None, html=False, *args, **kwargs):
         self.outnocb(printto, txt, how, event=event, origin=origin, html=html, *args, **kwargs)
-        self.outmonitor(origin, printto, txt)
+        self.outmonitor(origin, printto, txt, event=event)
 
     write = out
 
@@ -494,8 +494,8 @@ class BotBase(LazyDict):
 
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """
-        e = EventBase()
-        if event: e.copyin(event)
+        if event: e = cpy(event)
+        else: e = EventBase()
         if e.status == "done":
             logging.debug("%s - outmonitor - event is done .. ignoring" % self.name)
             return
@@ -510,7 +510,7 @@ class BotBase(LazyDict):
         e.botoutput = True
         e.ttl = 1
         e.nick = self.nick or self.botname
-        e.prepare()
+        e.bind(self)
         first_callbacks.check(self, e)
 
     def docmnd(self, origin, channel, txt, event=None, wait=0):
