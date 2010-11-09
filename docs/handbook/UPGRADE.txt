@@ -22,8 +22,6 @@ add remote channel to the allowlist.
 
 to recap:
 
-1) move your data dir into ~/.jsonbot or use -d gozerdata 
-2) run !chan-upgrade to update you channel data
-3) use !chan-allowwatch to enable channels on the receiving side if you use
-forwarding
-
+    1) move your data dir into ~/.jsonbot or use -d gozerdata 
+    2) run !chan-upgrade to update you channel data
+    3) use !chan-allowwatch on the sending side to allow channels on the receiving side if you use forwarding

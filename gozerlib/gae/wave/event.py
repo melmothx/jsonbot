@@ -92,7 +92,7 @@ class WaveEvent(EventBase):
             self.url = "https://wave.google.com/wave/#restored:wave:%s" % self.waveid.replace('w+','w%252B')
         #self.chan = Wave(self.waveid)
         #self.chan.parse(self.eventin, self.wavelet)
-        self.bind(self.bot)
+        self.bind(self.bot, chan=Wave(self.channel))
         self.makeargs()        
         logging.debug(u'wave - in - %s - %s - %s' % (self.title, self.userhost, self.txt))
 
