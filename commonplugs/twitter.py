@@ -41,7 +41,7 @@ import logging
 def getcreds(datadir):
     try:
         mod = _import_byfile("credentials", datadir + os.sep + "config" + os.sep + "credentials.py")
-    except ImportError:
+    except (IOError, ImportError):
         logging.info("the twitter plugin needs the credentials.py file in the %s/config dir. see %s/examples" % (datadir, datadir))
         return (None, None)
     return mod.CONSUMER_KEY, mod.CONSUMER_SECRET
