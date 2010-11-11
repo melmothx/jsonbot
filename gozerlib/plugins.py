@@ -16,6 +16,8 @@ from boot import cmndtable, plugin_packages
 from errors import NoSuchPlugin
 from utils.locking import locked
 from jsbimport import force_import, _import
+from config import Config
+from boot import plugin_packages
 
 ## basic imports
 
@@ -36,8 +38,13 @@ class Plugins(LazyDict):
     """ the plugins object contains all the plugins. """
 
     def exit(self):
-        for plugname in self:
-            self.unload(plugname)         
+        for modname in self.keys():
+            try:
+                self[modname].shutdown()
+                logging.warn('plugins - called %s shutdown' % modname)
+            except (KeyError, AttributeError):
+                logging.debug("plugins - no %s module found" % modname) 
+                return False
 
     def loadall(self, paths=[], force=False):
         """
@@ -50,7 +57,6 @@ class Plugins(LazyDict):
         for module in paths:
             try: imp = _import(module)
             except ImportError:
-                #handle_exception()
                 logging.info("plugins - no %s plugin package found" % module)
                 continue
             except Exception, ex: handle_exception()
@@ -61,6 +67,28 @@ class Plugins(LazyDict):
                     except KeyError: logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex: handle_exception()
             except AttributeError: logging.error("no plugins in %s .. define __plugs__ in __init__.py" % module)
+
+    def whichmodule(self, plugname):
+        for module in plugin_packages:
+            try: imp = _import(module)
+            except ImportError:
+                logging.info("plugins - no %s plugin package found" % module)
+                continue
+            except Exception, ex: handle_exception()
+            if plugname in imp.__plugs__: return "%s.%s" % (module, plugname)
+
+    def enable(self, modname):
+        cfg = Config()
+        try: cfg.blacklist.remove(modname)
+        except ValueError: pass        
+        if cfg.allowlist and modname not in cfg.allowlist: cfg.allowlist.append(modname)
+        cfg.save()
+
+    def disable(self, modname):
+        cfg = Config()
+        if modname not in cfg.blacklist:  cfg.blacklist.append(modname)
+        if cfg.allowlist and modname in cfg.allowlist: cfg.allowlist.remove(modname)
+        cfg.save()
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
@@ -82,11 +110,15 @@ class Plugins(LazyDict):
         except KeyError: pass
         try: remote_callbacks.unload(modname)
         except KeyError: pass
+        del self[modname]
         return True
 
     def load(self, modname, force=False, showerror=False):
         """ load a plugin. """
         if not modname: raise NoSuchPlugin(modname)
+        cfg = Config()
+        if modname in cfg.blacklist: logging.warn("plugins - blacklist - not loading %s" % modname) ; return
+        if cfg.loadlist and modname not in cfg.loadlist: logging.debug("plugins - loadlist - not loading %s" % modname) ; return 
         if self.has_key(modname):
             try:
                 #logging.info("plugins - %s already loaded" % modname)                

@@ -46,6 +46,7 @@ class Command(LazyDict):
         self.plugin = self.plugname
         self.threaded = threaded
         self.wait = wait
+        self.enable = True
 
 class Commands(LazyDict):
 
@@ -116,6 +117,7 @@ class Commands(LazyDict):
 
     def doit(self, bot, event, target, wait=0):
         """ do the dispatching. """
+        if not target.enable: return
         if target.plugname in event.chan.data.denyplug:
              logging.warn("commands - %s is denied in channel %s - %s" % (target.plugname, event.channel, event.userhost))
              return
@@ -149,7 +151,7 @@ class Commands(LazyDict):
         for name, cmnd in self.iteritems():
             if not cmnd: continue
             if cmnd.modname == modname: delete.append(cmnd)
-        for cmnd in delete: del cmnd
+        for cmnd in delete: cmnd.enable = False
         return self
 
     def apropos(self, search):

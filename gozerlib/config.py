@@ -185,12 +185,12 @@ class Config(LazyDict):
             self.setdefault("blacklist", [])
             self.setdefault('owner', [])
             self.setdefault('loglist',  [])
+            self.setdefault('loadlist', [])
             self.setdefault('quitmsg', "http://jsonbot.googlecode.com")
             self.setdefault('dotchars',  ", ")
             self.setdefault('floodallow', 0)
             self.setdefault('auto_register', 0)
             self.setdefault('ondemand', 1)
-            self['version'] = "JSONBOT 0.5 RELEASE"
         self['createdfrom'] = whichmodule()
 
     def reload(self):

@@ -43,7 +43,6 @@ def handle_reload(bot, ievent):
                     logging.debug('reload - %s - %s' % (modname, str(ex)))
                     continue
                 errors.append(exceptionmsg())
-        
     if reloaded: ievent.reply('reloaded: ', reloaded)
     if errors: ievent.reply('errors: ', errors)
 
@@ -62,6 +61,7 @@ def handle_unload(bot, ievent):
         ievent.reply('there is no %s module' % what)
         return
     got = bot.plugs.unload(what)
+    bot.plugs.disable(what)
     ievent.reply("unloaded and disabled: ", got)
 
 cmnds.add('unload', handle_unload, 'OPER')

@@ -37,6 +37,7 @@ class Callback(object):
         self.threaded = copy.deepcopy(threaded) # run callback in thread
         self.speed = copy.deepcopy(speed) # speed to execute callback with
         self.activate = False
+        self.enable = True
 
 ## Callbacks class (holds multiple callbacks)
 
