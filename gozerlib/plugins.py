@@ -12,7 +12,7 @@ from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
-from boot import cmndtable, plugin_packages
+from boot import cmndtable, plugin_packages, default_plugins
 from errors import NoSuchPlugin
 from utils.locking import locked
 from jsbimport import force_import, _import
@@ -54,6 +54,8 @@ class Plugins(LazyDict):
         """
         if not paths: paths = plugin_packages
         imp = None
+        cfg = Config()
+        #for modname in default_plugins: self.load(modname, force=force)
         for module in paths:
             try: imp = _import(module)
             except ImportError:
@@ -63,7 +65,9 @@ class Plugins(LazyDict):
             logging.debug("plugins - got plugin package %s" % module)
             try:
                 for plug in imp.__plugs__:
-                    try: self.reload("%s.%s" % (module,plug))
+                    modname = "%s.%s" % (module, plug)
+                    if cfg.loadlist and modname not in cfg.loadlist and not modname in default_plugins: continue
+                    try: self.load("%s.%s" % (module,plug))
                     except KeyError: logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex: handle_exception()
             except AttributeError: logging.error("no plugins in %s .. define __plugs__ in __init__.py" % module)
@@ -118,7 +122,7 @@ class Plugins(LazyDict):
         if not modname: raise NoSuchPlugin(modname)
         cfg = Config()
         if modname in cfg.blacklist: logging.warn("plugins - blacklist - not loading %s" % modname) ; return
-        if cfg.loadlist and modname not in cfg.loadlist: logging.debug("plugins - loadlist - not loading %s" % modname) ; return 
+        if cfg.loadlist and modname not in cfg.loadlist and modname not in default_plugins: logging.debug("plugins - loadlist - not loading %s" % modname) ; return 
         if self.has_key(modname):
             try:
                 #logging.info("plugins - %s already loaded" % modname)                

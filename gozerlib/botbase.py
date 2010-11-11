@@ -19,7 +19,7 @@ from config import Config
 from utils.pdod import Pdod
 from channelbase import ChannelBase
 from less import Less, outcache
-from boot import boot, getcmndperms
+from boot import boot, getcmndperms, default_plugins
 from utils.locking import lockdec
 from exit import globalshutdown
 from utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt
@@ -435,15 +435,16 @@ class BotBase(LazyDict):
         except KeyError:
             logging.debug("botbase - can't find plugin to reload for %s" % event.cmnd)
             return
+        cfg = Config()
         from plugins import plugs
-        for name in p: 
-            if name in plugs:
-                #logging.debug("botbase - %s already loaded" % name)
-                continue
+        logging.warn("%s - checking %s" % (self.name, unicode(p)))
+        for name in p:
+            if name in plugs or name in cfg.blacklist or (cfg.loadlist and name not in cfg.loadlist and name not in default_plugins): continue 
             else:
                 logging.warn("botbase - on demand reloading of %s" % name)
                 try:
-                    plugloaded.append(plugs.reload(name, showerror=True))
+                    mod = plugs.reload(name, showerror=True)
+                    if mod: plugloaded.append(mod) ; break
                 except Exception, ex: handle_exception(event)
         return plugloaded
 

@@ -151,7 +151,7 @@ def savecallbacktable(modname=None):
             for c in cbs:
                 if modname and c.modname != modname: continue
                 if not callbacktable.data.has_key(type): callbacktable.data[type] = []
-                callbacktable.data[type].append(c.modname)
+                if not c.modname in callbacktable.data[type]: callbacktable.data[type].append(c.modname)
     logging.warn("saving callback table")
     assert callbacktable
     callbacktable.save()
