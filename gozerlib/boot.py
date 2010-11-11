@@ -85,15 +85,18 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     if not cmndperms: cmndperms = Config(rundir + os.sep + 'cmndperms')
     from gozerlib.plugins import plugs
     if not cmndtable.data or force:
+        cmndtable.data = {}
         plugs.loadall(plugin_packages, force=True)
         loaded = True
         savecmndtable(saveperms=saveperms)
     if not pluginlist.data or force:
+        pluginlist.data = []
         if not loaded:
             plugs.loadall(plugin_packages, force=True)
             loaded = True
         savepluginlist()
     if not callbacktable.data or force:
+        callbacktable.data = {}
         if not loaded:
             plugs.loadall(plugin_packages, force=True)
             loaded = True

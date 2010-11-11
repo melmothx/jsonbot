@@ -85,7 +85,7 @@ class Plugins(LazyDict):
         cfg = Config()
         try: cfg.blacklist.remove(modname)
         except ValueError: pass        
-        if cfg.allowlist and modname not in cfg.allowlist: cfg.allowlist.append(modname)
+        if cfg.loadlist and modname not in cfg.loadlist: cfg.loadlist.append(modname)
         cfg.save()
 
     def disable(self, modname):
@@ -120,9 +120,6 @@ class Plugins(LazyDict):
     def load(self, modname, force=False, showerror=False):
         """ load a plugin. """
         if not modname: raise NoSuchPlugin(modname)
-        cfg = Config()
-        if modname in cfg.blacklist: logging.warn("plugins - blacklist - not loading %s" % modname) ; return
-        if cfg.loadlist and modname not in cfg.loadlist and modname not in default_plugins: logging.debug("plugins - loadlist - not loading %s" % modname) ; return 
         if self.has_key(modname):
             try:
                 #logging.info("plugins - %s already loaded" % modname)                
@@ -161,6 +158,9 @@ class Plugins(LazyDict):
     def reload(self, modname, force=True, showerror=False):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
+        cfg = Config()
+        if modname in cfg.blacklist: logging.warn("plugins - blacklist - not loading %s" % modname) ; return
+        if cfg.loadlist and modname not in cfg.loadlist and modname not in default_plugins: logging.debug("plugins - loadlist - not loading %s" % modname) ; return 
         if self.has_key(modname): self.unload(modname)
         try: return self.load(modname, force=force, showerror=showerror)
         except Exception, ex:

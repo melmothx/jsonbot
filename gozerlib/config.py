@@ -12,6 +12,7 @@ from utils.exception import handle_exception
 from utils.name import stripname
 from datadir import getdatadir
 from errors import CantSaveConfig, NoSuchFile
+from utils.locking import lockdec
 
 ## simplejson imports
 
@@ -24,6 +25,12 @@ import types
 import thread
 import logging
 import uuid
+import thread
+
+## locks
+
+savelock = thread.allocate_lock()
+savelocked = lockdec(savelock)
 
 ## classes
 
@@ -42,6 +49,7 @@ class Config(LazyDict):
         self.dir = datadir + os.sep + 'config'
         if datadir not in self.filename: self.cfile = self.dir + os.sep + self.filename
         else: self.cfile = self.filename
+        logging.debug("config - filename is %s" % self.cfile)
         self.jsondb = None
         try:
             try: self.fromfile(self.cfile)
@@ -88,6 +96,7 @@ class Config(LazyDict):
         self.jsondb.data = cp
         self.jsondb.save()
 
+    @savelocked
     def fromfile(self, filename):
         """ read config object from filename. """
         curline = ""
@@ -105,6 +114,7 @@ class Config(LazyDict):
                 except ValueError: logging.warn("config - skipping line - unable to parse: %s" % line)
         return
 
+    @savelocked
     def tofile(self, filename=None):
         """ save config object to file. """
         if not filename: filename = self.cfile
@@ -112,6 +122,7 @@ class Config(LazyDict):
         except ImportError:
             logging.debug("can't save %s to file .. os.mkdir() not suported" % filename)
             return
+        logging.debug("config - saving %s" % filename)
         if filename.startswith(os.sep): d = [os.sep,]
         else: d = []
         for p in filename.split(os.sep)[:-1]:
