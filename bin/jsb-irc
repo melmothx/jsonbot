@@ -10,9 +10,6 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.version import getversion
-print getversion('IRC')
-
 ## gozerlib imports
 
 from gozerlib.utils.exception import handle_exception
@@ -40,6 +37,10 @@ import os
 ## options parser
 
 opts = makeopts()
+
+from gozerlib.version import getversion
+print getversion('IRC')
+
 boot(opts.datadir)
 
 cfg = makeconfig('irc', opts)

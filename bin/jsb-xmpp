@@ -10,8 +10,6 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.version import getversion
-print getversion('SXMPP')
 
 ## gozerlib impors
 
@@ -35,6 +33,10 @@ import os
 ## options parser
 
 opts = makeopts()
+
+from gozerlib.version import getversion
+print getversion('SXMPP')
+
 boot(opts.datadir)
 
 cfg = makeconfig('sxmpp', opts)

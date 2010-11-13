@@ -25,7 +25,7 @@ def globalshutdown():
     defaultrunner.stop()
     cmndrunner.stop()
     sys.stdout.write("\n")
-    logging.warn('shutting down'.upper())
+    logging.info('shutting down'.upper())
     try:os.remove('gozerlib.pid')
     except: pass
     from fleet import getfleet

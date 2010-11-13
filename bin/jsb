@@ -16,8 +16,6 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.utils.log import setloglevel
 setloglevel("error")
 
-from gozerlib.version import getversion
-print getversion('CONSOLE')
 
 ## make config from cmndline options
 
@@ -31,6 +29,9 @@ boot(opts.datadir)
 
 #forwardcfg = makeconfig('sxmpp', forwardopts, 'forwardbot') # sxmpp for the forward bot
 cfg = makeconsoleconfig('console', opts) # sxmpp for the forward bot
+
+from gozerlib.version import getversion
+print getversion('CONSOLE')
 
 ## set loglevel
 

@@ -16,10 +16,11 @@ sys.path.insert(0, os.getcwd())
 
 import gozerlib
 from gozerlib.config import Config
+from gozerlib.version import getversion
 
 from optparse import OptionParser
 
-parser = OptionParser(usage='usage: %prog [options]', version='%prog' + gozerlib.__version__)
+parser = OptionParser(usage='usage: %prog [options]', version=getversion("UDP"))
 
 parser.add_option('-p', '--printto', type='string', default=False, dest='printto',
                   metavar='PATH', 

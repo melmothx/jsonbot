@@ -32,7 +32,7 @@ class EventOptionParser(optparse.OptionParser):
 
 def makeopts(txt=""):
     """ create commandline parser options. """
-    parser = optparse.OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser = optparse.OptionParser(usage='usage: %prog [options]', version=getversion())
     parser.add_option('', '-r', type='string', default=False, dest='doresume',  metavar='PATH', 
                   help="resume the bot from the folder specified")
     parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir',  help="datadir of the bot")
@@ -53,7 +53,7 @@ def makeopts(txt=""):
     parser.add_option('-t', '--type', type='string', default="console", dest='type', help="define type of the bot")
     parser.add_option('-z', '--forward', action='store_true', default=False, dest='forward', help="enable forwarding bot")
     parser.add_option('-6', '--ipv6', action='store_true', default=False, dest='ipv6', help="enable ipv6 bot")
-    if txt: opts, args = parser.parse_args(txt.pslit())
+    if txt: opts, args = parser.parse_args(txt.split())
     else: opts, args = parser.parse_args()
     opts.args = args
     return opts
@@ -62,7 +62,7 @@ def makeopts(txt=""):
 
 def makeconsoleopts():
     """ create option parser for events. """
-    parser = optparse.OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser = optparse.OptionParser(usage='usage: %prog [options]', version=getversion("CONSOLE"))
     parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir',  help="datadir of the bot")
     parser.add_option('-l', '--loglevel', type='string', default="", dest='loglevel',  help="loglevel of the bot")
     parser.add_option('', '--name', type='string', default=False, dest='name', help="bot's name")
@@ -77,7 +77,7 @@ def makeconsoleopts():
 
 def makefleetopts():
     """ create option parser for events. """
-    parser = optparse.OptionParser(usage='usage: %prog [options] [list of bot names]', version='%prog ' + getversion())
+    parser = optparse.OptionParser(usage='usage: %prog [options] [list of bot names]', version=getversion("FLEET"))
     parser.add_option('-a', '--all', action='store_true', default=False, dest='all', help="show available fleet bots")
     parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir',  help="datadir of the bot")
     parser.add_option('-l', '--loglevel', type='string', default="", dest='loglevel',  help="loglevel of the bot")
