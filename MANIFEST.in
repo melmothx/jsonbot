@@ -5,3 +5,5 @@ recursive-include gozerdata/myplugs *
 recursive-include tests *
 recursive-include simplejson *
 recursive-include tweepy *
+include TIP
+include Changelog
