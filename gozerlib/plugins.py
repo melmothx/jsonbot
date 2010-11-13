@@ -18,6 +18,7 @@ from utils.locking import locked
 from jsbimport import force_import, _import
 from config import Config
 from boot import plugin_packages
+from threads import start_new_thread
 
 ## basic imports
 
@@ -30,6 +31,9 @@ import sys
 ## defines
 
 cpy = copy.deepcopy
+
+try: from google.appengine.ext.deferred import defer ; ongae = True
+except: ongae = False
 
 ## Plugins class
 
@@ -56,6 +60,7 @@ class Plugins(LazyDict):
         imp = None
         cfg = Config()
         #for modname in default_plugins: self.load(modname, force=force)
+        threads = []
         for module in paths:
             try: imp = _import(module)
             except ImportError:
@@ -67,10 +72,15 @@ class Plugins(LazyDict):
                 for plug in imp.__plugs__:
                     modname = "%s.%s" % (module, plug)
                     if cfg.loadlist and modname not in cfg.loadlist and not modname in default_plugins: continue
-                    try: self.load("%s.%s" % (module,plug))
+                    try:
+                        #if not ongae: threads.append(start_new_thread(self.load, ("%s.%s" % (module,plug))))
+                        #else: defer(self.load, ("%s.%s" % (module,plug)))
+                        self.load("%s.%s" % (module,plug))
                     except KeyError: logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex: handle_exception()
             except AttributeError: logging.error("no plugins in %s .. define __plugs__ in __init__.py" % module)
+        #for t in threads:
+        #    t.join()
 
     def whichmodule(self, plugname):
         for module in plugin_packages:

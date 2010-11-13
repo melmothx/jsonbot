@@ -8,7 +8,7 @@
 
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.boot import default_plugins, plugin_packages, update_mod
+from gozerlib.boot import default_plugins, plugin_packages, remove_plugin, update_mod
 
 ## plug-enable command
 
@@ -35,7 +35,7 @@ def handle_plugdisable(bot, event):
     event.reply("unloading and disabling %s" % mod)
     bot.plugs.unload(mod)
     bot.plugs.disable(mod)
-    update_mod(mod)
+    remove_plugin(mod)
     event.done()
 
 cmnds.add("plug-disable", handle_plugdisable, ["OPER", ])

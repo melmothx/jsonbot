@@ -33,7 +33,7 @@ try:
     ongae = True
 except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'socketplugs', 'myplugs']
 
-default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core']
+default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core', 'gozerlib.plugs.user']
 
 # these are set in gozerlib/boot.py
 
@@ -105,8 +105,6 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
             plugs.reload(plug, showerror=True)
-    
-
     logging.warn("boot - done")
 
 ## commands related commands
@@ -135,6 +133,16 @@ def savecmndtable(modname=None, saveperms=True):
         logging.warn("saving command perms")
         cmndperms.save()
 
+def removecmnds(modname):
+    """ remove commands belonging to modname form cmndtable. """
+    global cmndtable
+    assert cmndtable
+    from gozerlib.commands import cmnds
+    assert cmnds
+    for cmndname, c in cmnds.iteritems():
+        if c.modname == modname: del cmndtable.data[cmndname]
+    cmndtable.save()
+
 def getcmndtable():
     """ save command -> plugin list to db backend. """
     global cmndtable
@@ -159,6 +167,21 @@ def savecallbacktable(modname=None):
     assert callbacktable
     callbacktable.save()
 
+def removecallbacks(modname):
+    """ remove callbacks belonging to modname form cmndtable. """
+    global callbacktable
+    assert callbacktable
+    from gozerlib.callbacks import first_callbacks, callbacks, last_callbacks, remote_callbacks
+    for cb in [first_callbacks, callbacks, last_callbacks, remote_callbacks]:
+        for type, cbs in cb.cbs.iteritems():
+            for c in cbs:
+                if not c.modname == modname: continue
+                if not callbacktable.data.has_key(type): callbacktable.data[type] = []
+                if c.modname in callbacktable.data[type]: callbacktable.data[type].remove(c.modname)
+    logging.warn("saving callback table")
+    assert callbacktable
+    callbacktable.save()
+
 def getcallbacktable():
     """ save command -> plugin list to db backend. """
     global callbacktable
@@ -175,14 +198,18 @@ def savepluginlist(modname=None):
     assert cmnds
     for cmndname, c in cmnds.iteritems():
         if modname and c.modname != modname: continue
-        if c and not c.plugname:
-            logging.info("boot - not adding %s to pluginlist" % cmndname)
-            continue
+        if c and not c.plugname: logging.info("boot - not adding %s to pluginlist" % cmndname) ; continue
         if c and c.plugname not in pluginlist.data: pluginlist.data.append(c.plugname)
     pluginlist.data.sort()
     logging.warn("saving plugin list")
     assert pluginlist
     pluginlist.save()
+
+def remove_plugin(modname):
+    removecmnds(modname)
+    removecallbacks(modname)
+    try: pluginlist.data.remove(modname.split(".")[-1]) ; pluginlist.save()
+    except: pass
 
 def getpluginlist():
     """ get the plugin list. """
