@@ -81,7 +81,7 @@ class BotBase(LazyDict):
         self.gatekeeper.allow(self.user or self.jid or self.server or self.botname)
         self.closed = False
         try:
-            import waveapi
+            import google
             self.isgae = True
             logging.debug("botbase - bot is a GAE bot (%s)" % self.botname)
         except ImportError:
