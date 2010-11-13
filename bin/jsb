@@ -4,27 +4,33 @@
 
 """ Console Bot. """
 
-## bootstrap
 
 import warnings
 warnings.simplefilter("ignore")
 
+## bootstrap
+
 import os, sys
 sys.path.insert(0, os.getcwd())
+
+from gozerlib.utils.log import setloglevel
+setloglevel("error")
+
+## make config from cmndline options
+
+from gozerlib.utils.opts import makeconsoleopts, makeopts, makeconsoleconfig
+opts = makeconsoleopts()
 
 from gozerlib.version import getversion
 print getversion('CONSOLE')
 
-## make config from cmndline options
-
-from gozerlib.utils.opts import makeopts, makeconfig
-opts = makeopts()
+#forwardopts = makeopts(" ".join(opts.args))
 
 from gozerlib.boot import boot
 boot(opts.datadir)
 
-forwardcfg = makeconfig('sxmpp', opts, 'forwardbot') # sxmpp for the forward bot
-cfg = makeconfig('console', opts) # sxmpp for the forward bot
+#forwardcfg = makeconfig('sxmpp', forwardopts, 'forwardbot') # sxmpp for the forward bot
+cfg = makeconsoleconfig('console', opts) # sxmpp for the forward bot
 
 ## set loglevel
 
@@ -75,11 +81,11 @@ if opts.command:
         print "command done. ltrs"
     else: print "can't execute %s" % opts.command    
     os._exit(0)
-elif opts.forward:
-    fleet = getfleet(opts.datadir)
-    fleet.addbot(bot)
-    print "starting forward bot (%s)" % str(cfg)
-    forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
-    forwardbot.start()
+#elif opts.forward:
+#    fleet = getfleet(opts.datadir)
+#    fleet.addbot(bot)
+#    print "starting forward bot (%s)" % str(cfg)
+#    forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
+#    forwardbot.start()
 
 bot.start()

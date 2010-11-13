@@ -30,7 +30,7 @@ class EventOptionParser(optparse.OptionParser):
 
 ## makeopts function
 
-def makeopts():
+def makeopts(txt=""):
     """ create commandline parser options. """
     parser = optparse.OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
     parser.add_option('', '-r', type='string', default=False, dest='doresume',  metavar='PATH', 
@@ -53,12 +53,41 @@ def makeopts():
     parser.add_option('-t', '--type', type='string', default="console", dest='type', help="define type of the bot")
     parser.add_option('-z', '--forward', action='store_true', default=False, dest='forward', help="enable forwarding bot")
     parser.add_option('-6', '--ipv6', action='store_true', default=False, dest='ipv6', help="enable ipv6 bot")
-    opts, args = parser.parse_args()
+    if txt: opts, args = parser.parse_args(txt.pslit())
+    else: opts, args = parser.parse_args()
     opts.args = args
     return opts
 
-## makeeventopts() function
+## makeconsoleopts
 
+def makeconsoleopts():
+    """ create option parser for events. """
+    parser = optparse.OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir',  help="datadir of the bot")
+    parser.add_option('-l', '--loglevel', type='string', default="", dest='loglevel',  help="loglevel of the bot")
+    parser.add_option('', '--name', type='string', default=False, dest='name', help="bot's name")
+    parser.add_option('-x', '--exec', type='string', default="", dest='command', help="give a command to execute")
+#    parser.add_option('-z', '--forward', action='store_true', default=False, dest='forward', help="enable forwarding bot")
+    try: opts, args = parser.parse_args()
+    except Exception, ex: logging.warn("opts - can't parse %s" % txt) ; return
+    opts.args = args
+    return opts
+
+## makefleetopts function
+
+def makefleetopts():
+    """ create option parser for events. """
+    parser = optparse.OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
+    parser.add_option('-a', '--all', action='store_true', default=False, dest='all', help="show available fleet bots")
+    parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir',  help="datadir of the bot")
+    parser.add_option('-l', '--loglevel', type='string', default="", dest='loglevel',  help="loglevel of the bot")
+    parser.add_option('-o', '--owner', type='string', default=False, dest='owner',  help="owner of the bot")
+    try: opts, args = parser.parse_args()
+    except Exception, ex: logging.warn("opts - can't parse %s" % txt) ; return
+    opts.args = args
+    return opts
+
+## makeeventopts function
 
 def makeeventopts(txt):
     """ create option parser for events. """
@@ -71,6 +100,17 @@ def makeeventopts(txt):
     return opts
 
 ## makeconfig function
+
+def makeconsoleconfig(type, opts, botname=None):
+    """ make config file based on options. """
+    if not botname: botname = opts.name or "default-%s" % str(type)
+    botname = stripname(botname)
+    cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
+    cfg.type = type
+    cfg.botname = botname
+    if opts.loglevel: cfg.loglevel = opts.loglevel
+    else: cfg.loglevel = cfg.loglevel or "error"
+    return cfg
 
 def makeconfig(type, opts, botname=None):
     """ make config file based on options. """
@@ -98,6 +138,6 @@ def makeconfig(type, opts, botname=None):
     if not cfg.owner: cfg.owner = []
     if opts.owner and opts.owner not in cfg.owner: cfg.owner.append(opts.owner)
     if opts.loglevel: cfg.loglevel = opts.loglevel
-    else: cfg.loglevel = cfg.loglevel or "warning"
+    else: cfg.loglevel = cfg.loglevel or "warn"
     if opts.ipv6: cfg.ipv6 = opts.ipv6
     return cfg
