@@ -12,7 +12,9 @@ warnings.simplefilter("ignore")
 import os, sys, logging
 sys.path.insert(0, os.getcwd())
 
+from gozerlib.utils.log import setloglevel
 from gozerlib.version import getversion
+setloglevel("error")
 print getversion('FLEET')
 
 ## gozerlib imports
@@ -21,7 +23,7 @@ from gozerlib.datadir import makedirs
 from gozerlib.boot import boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.utils.mainloop import mainloop
-from gozerlib.utils.opts import makeopts, makeconfig
+from gozerlib.utils.opts import makefleetopts
 from gozerlib.users import users_boot
 import gozerlib
 
@@ -32,13 +34,11 @@ import time
 
 ## options parser
 
-opts = makeopts()
+opts = makefleetopts()
 
-if opts.loglevel:
-    setloglevel(opts.loglevel)
-else:
-    setloglevel("warning")
+## loglevel
 
+if opts.loglevel: setloglevel(opts.loglevel)
 
 ## start the fleet
 

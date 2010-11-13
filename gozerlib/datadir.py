@@ -19,8 +19,8 @@ except: homedir = os.getcwd()
 
 isgae = False
 
-try: getattr(os, "mkdir") ; logging.warn("datadir - shell detected") ; datadir = homedir + os.sep + ".jsonbot"
-except AttributeError: logging.warn("datadir - skipping makedirs") ; datadir = "gozerdata" ; isgae = True
+try: getattr(os, "mkdir") ; logging.info("datadir - shell detected") ; datadir = homedir + os.sep + ".jsonbot"
+except AttributeError: logging.info("datadir - skipping makedirs") ; datadir = "gozerdata" ; isgae = True
 
 ## functions
 

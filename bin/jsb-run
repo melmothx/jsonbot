@@ -5,13 +5,13 @@
 """ upload all instances in ~/jsonreg/ """
 
 import sys, os
-sys.path.append(os.getcwd())
+sys.path.insert(0, os.getcwd())
 
 ## gozerlib imports
 
 from gozerlib.utils.popen import gozerpopen
-from gozerlib.utils.opts import makeopts
 from gozerlib.datadir import getdatadir
+from gozerlib.version import getversion
 
 ## basic imports
 
@@ -19,9 +19,14 @@ from subprocess import Popen, PIPE
 import os
 import sys
 
-## options parser
+print getversion("RUN")
 
-opts = makeopts()
+## options
+
+from optparse import OptionParser
+parser = OptionParser(usage='usage: %prog [options] <projectid>', version='%prog ' + getversion())
+parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
+opts, args = parser.parse_args()
 
 ddir = opts.datadir or getdatadir()
 homedir = os.path.expanduser("~")

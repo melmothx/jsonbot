@@ -7,7 +7,6 @@
 ## gozerlib imports
 
 from gozerlib.utils.popen import gozerpopen
-from gozerlib.utils.opts import makeopts
 from gozerlib.datadir import getdatadir
 
 ## basic imports
@@ -21,10 +20,9 @@ os.environ['PATH'] += ":" + os.getcwd() + os.sep + 'bin'
 
 ## do the thing
 
-opts = makeopts()
-ddir = opts.datadir or getdatadir()
+ddir = getdatadir()
 homedir = os.path.expanduser("~")
-try: target = opts.args[0] or ddir
+try: target = sys.argv[2]
 except: target = ddir
 target = target + os.sep + "TIP"
 execstring = "jsb-tip"

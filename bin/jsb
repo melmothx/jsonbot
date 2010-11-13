@@ -16,13 +16,13 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.utils.log import setloglevel
 setloglevel("error")
 
+from gozerlib.version import getversion
+print getversion('CONSOLE')
+
 ## make config from cmndline options
 
 from gozerlib.utils.opts import makeconsoleopts, makeopts, makeconsoleconfig
 opts = makeconsoleopts()
-
-from gozerlib.version import getversion
-print getversion('CONSOLE')
 
 #forwardopts = makeopts(" ".join(opts.args))
 

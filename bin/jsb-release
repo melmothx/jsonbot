@@ -9,6 +9,9 @@
 import warnings
 warnings.simplefilter("ignore")
 
+from gozerlib.utils.log import setloglevel
+setloglevel("error")
+
 ## imports
 
 import sys
@@ -24,11 +27,13 @@ from gozerlib.utils.generic import gethighest, dosed
 from gozerlib.version import getversion
 from gozerlib.datadir import getdatadir
 
+print getversion("RELEASE")
+
 ## options
 
 from optparse import OptionParser
 parser = OptionParser(usage='usage: %prog [options]', version='%prog ' + getversion())
-parser.add_option('-b', '--backup', action='store_true', default=False, dest='backup', help="remove backup dir")
+parser.add_option('-b', '--backup', action='store_true', default=False, dest='backup', help="keep backup dir")
 parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
 opts, args = parser.parse_args()
 opts.args = args

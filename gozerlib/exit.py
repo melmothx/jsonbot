@@ -36,7 +36,7 @@ def globalshutdown():
     logging.info('shutting down plugins')
     plugs.exit()
     logging.info('done')
-    print "ltrs!"
+    #print "ltrs!"
     os._exit(0)
 
 try: import google

@@ -20,23 +20,16 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.version import getversion
 print getversion('EDIT')
 
-## make config from opts
-
-from gozerlib.utils.opts import makeopts, makeconfig
-opts = makeopts()
-
-## set loglevel
-
 from gozerlib.utils.log import setloglevel
-setloglevel(opts.loglevel)
+setloglevel("error")
 
-if len(opts.args) < 1:
+if len(sys.argv) < 3:
     print "jsb-edit <filename> [<attribute> <json evaluated string>]"
     os._exit(1)
 
 ## edit the config file
 
-filename = opts.args[0]
+filename = sys.argv[2]
 configfile = "gozerdata" + os.sep + "config" + os.sep + filename
 if os.path.isdir(configfile):
     print "available - %s" % os.listdir(configfile)
@@ -48,23 +41,15 @@ except Exception, ex:
     print "can't make config from file %s - %s" % (filename, str(ex))
     os._exit(1)
 try:
-    attr = opts.args[1]
-    value = opts.args[2]
+    attr = sys.argv[3]
+    value = sys.argv[4]
     cfg[attr] = loads(value)
 except IndexError, ex: print "no values to set"
-except TypeError, ex: print u"can't parse %s - %s" % (unicode(value), unicode(ex))
+except TypeError, ex:
+    print u"can't parse %s - %s" % (unicode(value), unicode(ex))
     os._exit(1)
 else:
     cfg.save()
     print "%s of %s set to %s" % (attr, filename, value)
-if opts.fleet:
-    print "enabling fleet on %s" % configfile
-    if not cfg.type and not opts.type:
-        print "bot type not defined .. use -t option"
-        os._exit(1)        
-    cfg.type = opts.type or cfg.type
-    botcfg = makeconfig(cfg.type, cfg)
-    from gozerlib.fleet import getfleet
-    getfleet().enable(botcfg)
 
 print cfg.dump()

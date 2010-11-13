@@ -4,24 +4,35 @@
 
 """ upload all instances in ~/jsonreg/ """
 
+
+from gozerlib.utils.log import setloglevel
+setloglevel("error")
+
 ## gozerlib imports
 
+from gozerlib.version import getversion
 from gozerlib.utils.popen import gozerpopen
-from gozerlib.utils.opts import makeopts
 from gozerlib.datadir import getdatadir
+
 ## basic imports
 
 from subprocess import Popen, PIPE
 import os
 import sys
 
-## options parser
+print getversion("ROLLBACK")
 
-opts = makeopts()
+## options
+
+from optparse import OptionParser
+parser = OptionParser(usage='usage: %prog [options] <projectid>', version='%prog ' + getversion())
+parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
+opts, args = parser.parse_args()
 
 ddir = opts.datadir or getdatadir()
 homedir = os.path.expanduser("~")
 target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
+
 ## upload all instances in ~/jsonregs/
 
 for item in target:
