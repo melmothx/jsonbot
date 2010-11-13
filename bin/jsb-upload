@@ -26,7 +26,7 @@ import sys
 ## options parser
 
 from optparse import OptionParser
-parser = OptionParser(usage='usage: %prog [options] [list of projectids]', version='%prog ' + getversion())
+parser = OptionParser(usage='usage: %prog [options] [list of appids]', version='%prog ' + getversion())
 parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
 opts, args = parser.parse_args()
 opts.args = args

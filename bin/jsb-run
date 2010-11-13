@@ -24,7 +24,7 @@ print getversion("RUN")
 ## options
 
 from optparse import OptionParser
-parser = OptionParser(usage='usage: %prog [options] <projectid>', version='%prog ' + getversion())
+parser = OptionParser(usage='usage: %prog [options] <appid>', version='%prog ' + getversion())
 parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
 opts, args = parser.parse_args()
 
