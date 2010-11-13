@@ -20,7 +20,7 @@ import logging
 def handle_outputcache(bot, event):
     """ forward the output cache to the user. """
     res = get(event.channel)
-    logging.warn("outputcache - %s - %s" % (bot.type, len(res)))
+    logging.debug("outputcache - %s - %s" % (bot.type, len(res)))
     if res:
         for result in res:
             if result:

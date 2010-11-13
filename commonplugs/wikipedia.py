@@ -68,7 +68,7 @@ def getwikidata(url):
     txt = ""
     for i in res:
         try:
-            logging.warn(unicode(i))
+            logging.debug(unicode(i))
             txt = i['text']
             break
         except:

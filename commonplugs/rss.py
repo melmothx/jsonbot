@@ -95,7 +95,7 @@ def checkfordate(data, date):
 
 def find_self_url(links):
     for link in links:
-        logging.warn("rss - trying link: %s" % (link))
+        logging.debug("rss - trying link: %s" % (link))
         if link.rel == 'self': return link.href
     return None
 
@@ -179,13 +179,13 @@ sleeptime=15*60, running=0):
     def fetchdata(self):
         """ get data of rss feed. """
         url = self.data['url']
-        logging.warn("rss - fetching %s" % url)
+        logging.debug("rss - fetching %s" % url)
         result = feedparser.parse(url, agent=useragent())
         logging.debug("rss - got result from %s" % url)
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
         try:
             status = result.status
-            logging.warn("rss - status is %s" % status)
+            logging.info("rss - status is %s" % status)
         except AttributeError: status = 200
         if status != 200 and status != 301 and status != 302: raise RssStatus(status)
         return result.entries
@@ -193,9 +193,9 @@ sleeptime=15*60, running=0):
     def sync(self):
         """ refresh cached data of a feed. """
         if not self.data.running:
-            logging.warn("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
+            logging.info("rss - %s not enabled .. %s not syncing " % (self.data.name, self.data.url))
             return False
-        logging.warn("rss - syncing %s - %s" % (self.data.name, self.data.url))
+        logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
         set(self.data.url, result, namespace='rss')
         return True
@@ -205,7 +205,7 @@ sleeptime=15*60, running=0):
         name = item[2]
         try: lastpeeked = float(self.lastpeek.data[str(item)])
         except (KeyError, ValueError): lastpeeked = 0 ; logging.debug("last peek of %s is initialised" % str(name))
-        logging.warn("rss - %s feed - using lastpeeked: %s for %s" % (self.data.name, time.ctime(lastpeeked), str(item)))
+        logging.debug("rss - %s feed - using lastpeeked: %s for %s" % (self.data.name, time.ctime(lastpeeked), str(item)))
         got = False
         tobereturned = []
         if data == None: result = self.getdata()
@@ -224,7 +224,7 @@ sleeptime=15*60, running=0):
                     tobereturned.append(LazyDict(res))
                     r = dtt
                     self.lastpeek.data[str(item)] = dtt
-                    logging.warn('lastpeek of %s set to %s' % (str(item), time.ctime(self.lastpeek.data[str(item)])))
+                    logging.debug('lastpeek of %s set to %s' % (str(item), time.ctime(self.lastpeek.data[str(item)])))
                     got = True
             if got and save: self.lastpeek.save()
         return tobereturned
@@ -264,7 +264,7 @@ class Rssdict(PlugPersist):
         #self.startwatchers()
 
     def savelastpeek(self, feedname):
-        logging.warn("rss - %s - saving lastpeek." % feedname)
+        logging.debug("rss - %s - saving lastpeek." % feedname)
         feed = Feed(feedname)
         try: feed.lastpeek.save()
         except Exception, ex: handle_exception()
@@ -343,7 +343,7 @@ class Rssdict(PlugPersist):
         #lastpoll.save()
         sleeptime.data[name] = sleepsec
         sleeptime.save()
-        logging.warn('rss - started %s rss watch' % name)
+        logging.info('rss - started %s rss watch' % name)
 
 class Rsswatcher(Rssdict):
 
@@ -375,15 +375,15 @@ class Rsswatcher(Rssdict):
             result = feedparser.parse(data.content, etag=etag)
             try: status = data.status_code
             except AttributeError: status = None
-            logging.warn("rss - status returned of %s feed is %s" % (name, status))
+            logging.info("rss - status returned of %s feed is %s" % (name, status))
             if status and status != 200: return
-            try: etag = etags.data[name] = data.headers.get('etag') ; logging.warn("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
+            try: etag = etags.data[name] = data.headers.get('etag') ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
             except KeyError: etag = None
             if name: rssitem = self.byname(name)
             else: url = find_self_url(result.feed.links) ; rssitem = self.byurl(url)
             if rssitem: name = rssitem.data.name
             else: logging.warn("rss - can't find %s item" % url) ; del data ; return
-            logging.warn("rss - etag of %s feed is %s" % (name, etag))
+            logging.info("rss - etag of %s feed is %s" % (name, etag))
             if not name in urls.data: urls.data[name] = url ; urls.save()
             self.peek(name, data=result.entries, save=True)
         except Exception, ex: handle_exception(txt=name)
@@ -730,7 +730,7 @@ callbacks.add('START', dummycb)
 def dosync(feedname):
     """ main level function to be deferred by periodical. """
     try:
-       logging.warn("rss - doing sync of %s" % feedname)
+       logging.info("rss - doing sync of %s" % feedname)
        localwatcher = Rsswatcher('rss', feedname)
        if localwatcher.sync(feedname): localwatcher.peek(feedname, save=True)
     except RssException, ex: logging.error("rss - %s - error: %s" % (feedname, str(ex)))
@@ -758,7 +758,7 @@ def rssfetchcb(rpc):
     name = rpc.feedname
     logging.debug("rss - headers of %s: %s" % (name, unicode(data.headers)))
     if data.status_code == 200:
-        logging.warn("rss - defered %s feed" % rpc.feedname)
+        logging.info("rss - defered %s feed" % rpc.feedname)
         from google.appengine.ext.deferred import defer
         defer(dodata, data, rpc.feedname)
     else: logging.warn("rss - fetch returned status code %s - %s" % (data.status_code, rpc.feedurl))
@@ -777,7 +777,7 @@ def doperiodicalGAE(*args, **kwargs):
     for feed in watcher.runners():
         if not shouldpoll(feed, curtime): continue
         feedstofetch.append(feed)
-    logging.warn("rss - feeds to fetch: %s" % str(feedstofetch))
+    logging.info("rss - feeds to fetch: %s" % str(feedstofetch))
     got = False
     for f in feedstofetch:
         if not f: continue
@@ -790,7 +790,7 @@ def doperiodicalGAE(*args, **kwargs):
         rpc.feedurl = url
         try: etag = etags.data[f]
         except KeyError: etag = ""
-        logging.warn("rss - %s - sending request - %s" % (f, etag))
+        logging.info("rss - %s - sending request - %s" % (f, etag))
         try: urlfetch.make_fetch_call(rpc, url, headers={"If-None-Match": etag}) ; rpcs.append(rpc)
         except Exception, ex: handle_exception()
     for rpc in rpcs: 
