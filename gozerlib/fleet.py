@@ -56,9 +56,8 @@ class Fleet(Persist):
         if not target: logging.error("fleet - no bots in fleet")
         else: logging.warning("fleet - loading %s" % ", ".join(target))
         for name in target:
-            if not name:
-                logging.debug("fleet - name is not set")
-                continue
+            if not name: logging.debug("fleet - name is not set") ; continue
+            if self.data.types[name] == "console": logging.warn("fleet- skipping console bot %s" % name) ; continue
             try: self.makebot(self.data.types[name], name)
             except BotNotEnabled: pass
             except KeyError: logging.error("no type know for %s bot" % name)

@@ -33,7 +33,7 @@ try:
     ongae = True
 except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'socketplugs', 'myplugs']
 
-default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug']
+default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core']
 
 # these are set in gozerlib/boot.py
 

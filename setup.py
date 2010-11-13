@@ -42,7 +42,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.5rc1',
+    version='0.5rc2',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
@@ -102,6 +102,10 @@ setup(
                ('tests', uploadlist('tests')),
                ('simplejson', uploadlist('simplejson')),
                ('tweepy', uploadlist('tweepy')),
+               ('debian', uploadfiles('debian')),
+               ('debian' + os.sep + 'default', uploadlist('debian' + os.sep + 'default')),
+               ('debian' + os.sep + 'init.d', uploadlist('debian' + os.sep + 'init.d')),
+               ('debian' + os.sep + 'man', uploadlist('debian' + os.sep + 'man')),
                ('gaeupload', uploadfiles('gaeupload')),
                ('gaeupload' + os.sep + 'webapp2', uploadlist('gaeupload' + os.sep + 'webapp2')),
                ('gaeupload' + os.sep + 'assets', uploadlist('gaeupload' + os.sep + 'assets')),
