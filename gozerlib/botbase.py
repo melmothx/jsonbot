@@ -531,6 +531,6 @@ class BotBase(LazyDict):
         if wait: e.direct = True
         e.bind(self)
         try:
-            event = self.plugs.dispatch(self, e, wait=wait)
-            return event
+            result = self.plugs.dispatch(self, e, wait=wait)
+            return result
         except NoSuchCommand: e.reply("no such command: %s" % e.usercmnd)

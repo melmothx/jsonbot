@@ -10,7 +10,7 @@ from gozerlib.examples import examples
 from gozerlib.eventbase import EventBase
 from gozerlib.users import users
 from gozerlib.threads import start_new_thread
-from gozerlib.socklib.utils.generic import waitforqueue
+from gozerlib.utils.generic import waitforqueue
 from gozerlib.runner import cmndrunner, defaultrunner
 
 ## basic imports
@@ -24,7 +24,7 @@ import logging
 
 cpy = copy.deepcopy
 
-donot = ['deadline', 'twitter', 'stop', 'admin', 'quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
+donot = ['privmsg', 'notice', 'disable', 'deadline', 'twitter', 'stop', 'admin', 'quit', 'reboot', 'shutdown', 'exit', 'delete', 'halt', 'upgrade', \
 'install', 'reconnect', 'wiki', 'weather', 'sc', 'jump', 'disable', 'dict', \
 'snarf', 'validate', 'popcon', 'twitter', 'tinyurl', 'whois', 'rblcheck', \
 'wowwiki', 'wikipedia', 'tr', 'translate', 'serie', 'sc', 'shoutcast', 'mash', \
@@ -59,7 +59,8 @@ def dotest(bot, event):
             try:
                 msg.txt = "!" + example
                 msg.bind(bot)
-                bot.docmnd(event.auth or event.userhost, event.channel, example, msg)
+                e = bot.docmnd(event.auth or event.userhost, event.channel, example, msg)
+                if e: waitforqueue(e.outqueue)
             except Exception, ex: errors[example] = exceptionmsg()
     if errors:
         event.reply("there are %s errors .. " % len(errors))

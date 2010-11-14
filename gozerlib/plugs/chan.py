@@ -152,10 +152,8 @@ def handle_chanwithprivmsg(bot, ievent):
         if ievent.cmnd == 'DCC': return
         channel = ievent.channel
     ievent.reply('setting privmsg in %s' % ievent.channel)
-    try: bot.channels[channel]['notice'] = 0
-    except (KeyError, TypeError):
-        ievent.reply("no %s channel in database" % channel)
-        return 
+    ievent.chan.data.how = "msg"
+    ievent.chan.save()
     ievent.done()
 
 cmnds.add('chan-withprivmsg', handle_chanwithprivmsg, 'OPER')
@@ -173,7 +171,7 @@ def handle_channelmode(bot, ievent):
     if not chan in bot.state['joinedchannels']:
         ievent.reply("i'm not on channel %s" % chan)
         return
-    ievent.reply('channel mode of %s is %s' % (chan, bot.channels.get(chan, 'mode')))
+    ievent.reply('channel mode of %s is %s' % (chan, event.chan.data.mode))
 
 cmnds.add('chan-mode', handle_channelmode, 'OPER')
 examples.add('chan-mode', 'show mode of channel', '1) chan-mode 2) chan-mode #test')

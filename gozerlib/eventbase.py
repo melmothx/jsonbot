@@ -24,6 +24,7 @@ import logging
 import Queue
 import types
 import socket
+import threading
 
 ## defines
 
@@ -40,6 +41,7 @@ class EventBase(LazyDict):
         if bot: self.bot = bot
         if input: self.copyin(input)
         self.result = []
+        self.queues = []
         self.inqueue = Queue.Queue()
         self.outqueue = Queue.Queue()
         self.bottype = "botbase"
@@ -47,6 +49,7 @@ class EventBase(LazyDict):
         self.ttl = 1
         self.how = "normal"
         self.chantag = None
+        self.resqueue = Queue.Queue()
         self.forwarded = False
 
     def __deepcopy__(self, a):
@@ -104,7 +107,7 @@ class EventBase(LazyDict):
         if eventin.has_key("user"): self.user = eventin['user']
         if eventin.has_key('queues'):
             if eventin['queues']: self.queues = eventin['queues']
-        if eventin.has_key("outqueue"): self.inqueue = eventin['outqueue']
+        if eventin.has_key("outqueue"): self.outqueue = eventin['outqueue']
         return self
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):

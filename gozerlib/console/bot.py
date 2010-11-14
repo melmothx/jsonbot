@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.datadir import getdatadir
-from gozerlib.socklib.utils.generic import waitforqueue
+from gozerlib.utils.generic import waitforqueue
 from gozerlib.errors import NoSuchCommand, NoInput
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
@@ -94,7 +94,9 @@ class ConsoleBot(BotBase):
                     result = self.doevent(event)
                     if not result: continue
                     logging.debug("console - waiting for %s to finish" % event.usercmnd)
-                    #waitforqueue(result.outqueue, 3)
+                    res = waitforqueue(event.outqueue)
+                    time.sleep(1)
+                    logging.warn("console - %s" % res)
                 except NoSuchCommand: print "no such command: %s" % event.usercmnd
             except NoInput: continue
             except (KeyboardInterrupt, EOFError): break
