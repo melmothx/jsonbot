@@ -48,21 +48,3 @@ def handle_reload(bot, ievent):
 
 cmnds.add('reload', handle_reload, 'OPER')
 examples.add('reload', 'reload <plugin>', 'reload core')
-
-## unload command
-
-def handle_unload(bot, ievent):
-    """ unload a plugin. """
-    try: what = ievent.args[0].lower()
-    except IndexError:
-        ievent.missing('<plugin>')
-        return
-    if not what in bot.plugs:
-        ievent.reply('there is no %s module' % what)
-        return
-    got = bot.plugs.unload(what)
-    bot.plugs.disable(what)
-    ievent.reply("unloaded and disabled: ", got)
-
-cmnds.add('unload', handle_unload, 'OPER')
-examples.add('unload', 'unload <plugin>', 'unload relay')
