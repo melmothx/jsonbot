@@ -118,7 +118,7 @@ class Commands(LazyDict):
     def doit(self, bot, event, target, wait=0):
         """ do the dispatching. """
         if not target.enable: return
-        if target.plugname in event.chan.data.denyplug:
+        if target.modname in event.chan.data.denyplug:
              logging.warn("commands - %s is denied in channel %s - %s" % (target.plugname, event.channel, event.userhost))
              return
         id = event.auth or event.userhost

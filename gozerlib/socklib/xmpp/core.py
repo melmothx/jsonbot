@@ -176,9 +176,11 @@ class XMLStream(NodeBuilder):
                 break
         logging.info('%s - stopping readloop .. %s' % (self.name, self.error or 'error not set'))
 
+    @outlocked
     def _raw(self, stanza):
         """ output a xml stanza to the socket. """
         if not self.connection: return
+        time.sleep(0.01)
         try:
             stanza = stanza.strip()
             if not stanza:
@@ -198,7 +200,6 @@ class XMLStream(NodeBuilder):
         except socket.error, ex:
             if 'Broken pipe' in str(ex):
                 logging.debug('%s - core - broken pipe .. ignoring' % self.name)
-                time.sleep(0.01)
                 return
             self.error = str(ex)
             handle_exception()

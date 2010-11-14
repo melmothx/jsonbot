@@ -102,11 +102,13 @@ class EventBase(LazyDict):
             logging.error("no event given in copyin")
             return self
         self.update(eventin)
+        self.result = []
         if eventin.has_key("sock"): self.sock = eventin['sock']
         if eventin.has_key("chan") and eventin['chan']: self.chan = eventin['chan']
         if eventin.has_key("user"): self.user = eventin['user']
         if eventin.has_key('queues'):
             if eventin['queues']: self.queues = eventin['queues']
+        if eventin.has_key("inqueue"): self.inqueue = eventin['inqueue']
         if eventin.has_key("outqueue"): self.outqueue = eventin['outqueue']
         return self
 
@@ -119,7 +121,6 @@ class EventBase(LazyDict):
         elif self.isdcc: self.bot.say(self.sock, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         else: self.bot.say(self.channel, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         self.result.append(txt)
-        self.outqueue.put_nowait(txt)
         return self
 
     def missing(self, txt):

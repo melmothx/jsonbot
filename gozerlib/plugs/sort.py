@@ -81,7 +81,7 @@ def handle_sort(bot, ievent):
             ievent.reply(str(e))
             return
     if not result:
-        ievent.reply('no data to sort')
+        ievent.reply('no data to sort: %s' % ievent.dump())
         return
     if options.unique: result = list(set(result))
     if options.numeric: result.sort(numeric_compare)
@@ -90,5 +90,5 @@ def handle_sort(bot, ievent):
     if options.reverse: result.reverse()
     ievent.reply("results: ", result)
 
-cmnds.add('sort', handle_sort, ['USER', 'GUEST'])
+cmnds.add('sort', handle_sort, ['USER', 'GUEST'], threaded=True)
 examples.add('sort', 'sort the output of a command', 'list | sort')

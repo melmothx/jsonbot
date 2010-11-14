@@ -29,7 +29,7 @@ donot = ['privmsg', 'notice', 'disable', 'deadline', 'twitter', 'stop', 'admin',
 'snarf', 'validate', 'popcon', 'twitter', 'tinyurl', 'whois', 'rblcheck', \
 'wowwiki', 'wikipedia', 'tr', 'translate', 'serie', 'sc', 'shoutcast', 'mash', \
 'gcalc', 'identi', 'mail', 'part', 'cycle', 'exception', 'fleet', 'ln', 'markov-learn', 'pit', 'bugtracker', 'tu', 'banner', 'test', 'cloud', 'dispatch', 'lns', 'loglevel', \
-'cloneurl', 'clone', 'hb', 'rss-get', 'rss-sync', 'rss-add', 'rss-register', 'rss-cloneurl', 'rss-scan']
+'cloneurl', 'clone', 'hb', 'rss-all', 'rss-get', 'rss-sync', 'rss-add', 'rss-register', 'rss-cloneurl', 'rss-scan']
 
 errors = {}
 teller = 0
@@ -43,7 +43,7 @@ def dotest(bot, event):
     global teller
     global errors
     match = ""
-    msg = cpy(event)
+    queues = []
     if True:
         examplez = examples.getexamples()
         random.shuffle(examplez)
@@ -57,11 +57,13 @@ def dotest(bot, event):
             teller += 1
             event.reply('command: ' + example)
             try:
+                msg = cpy(event)
                 msg.txt = "!" + example
-                msg.bind(bot)
-                e = bot.docmnd(event.auth or event.userhost, event.channel, example, msg)
-                if e: waitforqueue(e.outqueue)
+                e = bot.docmnd(event.auth or event.userhost, event.channel, example, event=msg)
+                if e: queues.append(e.outqueue)
+                else: logging.warn("no result back - %s" % example)
             except Exception, ex: errors[example] = exceptionmsg()
+    for q in queues: waitforqueue(q)
     if errors:
         event.reply("there are %s errors .. " % len(errors))
         for cmnd, error in errors.iteritems(): event.reply("%s - %s" % (cmnd, error))
@@ -140,7 +142,7 @@ examples.add('test-unicode', 'test if unicode output path is clear', 'test-unico
 
 def handle_testdocmnd(bot, ievent):
     """ call bot.docmnd(). """
-    if ievent.rest: bot.docmnd(ievent.origin or ievent.userhost, ievent.channel, ievent.rest)
+    if ievent.rest: bot.docmnd(ievent.origin or ievent.userhost, ievent.channel, ievent.rest, event=ievent)
     else: ievent.missing("<cmnd>")
 
 cmnds.add('test-docmnd', handle_testdocmnd, 'OPER')

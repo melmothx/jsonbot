@@ -330,6 +330,7 @@ class BotBase(LazyDict):
     def say(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
         if txt: self.out(channel, txt, how, event=event, origin=channel, *args, **kwargs)
+        if event: event.outqueue.put_nowait(txt)
         
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
@@ -514,19 +515,22 @@ class BotBase(LazyDict):
         e.bind(self)
         first_callbacks.check(self, e)
 
-    def docmnd(self, origin, channel, txt, event=None, wait=0):
+    def docmnd(self, origin, channel, txt, event, wait=0):
         """ do a command. """
-        e = EventBase()
-        if event: e.copyin(event)
+        e = cpy(event)
         e.bot = self
         e.origin = origin
         e.ruserhost = origin
         e.auth = origin
         e.userhost = origin
         e.channel = channel
-        e.txt = txt
+        e.txt = unicode(txt)
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
+        e.iscmnd = True
+        e.iscallback = False
+        e.allowqueues = True
+        e.onlyqueues = False
         e.closequeue = True
         if wait: e.direct = True
         e.bind(self)

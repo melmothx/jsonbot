@@ -111,11 +111,15 @@ class ConsoleBot(BotBase):
     def _raw(self, txt):
         """ do raw output to the console. """
         logging.info("%s - out - %s" % (self.name, txt))             
-        sys.stdout.write("\n")
+        #sys.stdout.write("\n")
         sys.stdout.write(txt)
         sys.stdout.write('\n')
 
     def action(self, channel, txt):
+        txt = self.normalize(txt)
+        self._raw(txt)
+
+    def notice(self, channel, txt):
         txt = self.normalize(txt)
         self._raw(txt)
 

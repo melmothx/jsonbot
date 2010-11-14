@@ -140,7 +140,7 @@ class IRCBot(Irc):
                 partyline.del_party(nick)
                 return
             try:
-                res = strippedtxt(res.strip())
+                res = self.normalize(res)
                 ievent = IrcEvent()
                 ievent.printto = sock
                 ievent.bottype = "irc"

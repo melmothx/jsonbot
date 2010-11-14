@@ -82,7 +82,7 @@ class BotEventRunner(Runner):
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
             if self.elapsed > 3:
-                logging.debug('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
+                logging.warn('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
         except Exception, ex:
             if ievent.showexception: handle_exception(ievent)
             else: handle_exception()
@@ -116,7 +116,6 @@ class Runners(object):
  
     def put(self, *data):
         """ put a job on a free runner. """
-        logging.debug("runner sizes: %s" % str(self.runnersizes()))
         for runner in self.runners:
             if not runner.queue.qsize():
                 runner.put(*data)
@@ -145,16 +144,18 @@ class Runners(object):
 
     def cleanup(self):
         """ clean up idle runners. """
+        if not len(self.runners): logging.warn("nothing to clean")
         for index in range(len(self.runners)-1, -1, -1):
             runner = self.runners[index]
             logging.debug("runner - cleanup %s" % runner.name)
             if not runner.queue.qsize(): runner.stop() ; del self.runners[index]
-
+            else: logging.warn("runners: %s" % runner.nowrunning)
 ## global runners
 
 cmndrunner = defaultrunner = longrunner = Runners(10, BotEventRunner)
 
 def runnercleanup(bot, event):
+    logging.warn("runner sizes: %s" % str(cmndrunner.runnersizes()))
     cmndrunner.cleanup()
 
 callbacks.add("TICK", runnercleanup)

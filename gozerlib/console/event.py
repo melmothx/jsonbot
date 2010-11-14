@@ -40,4 +40,4 @@ class ConsoleEvent(EventBase):
         self.channel = self.userhost
         #self.chan = ChannelBase(self.channel)
         self.cbtype = self.cmnd = unicode("CONSOLE")
-        self.makeargs()
+        self.bind(bot)
