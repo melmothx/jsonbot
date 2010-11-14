@@ -12,22 +12,18 @@ you need an account on the Google Application Engine. see http://appengine.googl
 you also need to enable openid authentication (federated login) on your app, it's in
 Applcation Settings in your admin console.
 
-1) run jsb-release <yourbotname> - this will create a uploadable dir 
-2) run jsb-upload <yourbotname>
+1) run jsb-upload <yourbotname> - this will create a uploadable dir and upload it to the
+   GAE, enabling web and xmpp. For wave you need to do the following:
 
-this enables web and xmpp, for wave you need to do the following:
-
-3) go to https://wave.google.com/wave/robot/register and register your bot
-4) edit ~/regs/<yourbotname>/ dir and copy the verification token and secret to the credentials.py file
-5) run jsb-release <yourbotname>
-6) run jsb-upload <yourbotname>
-7) once its uploaded click the "verify" button
-8) copy the consumer key and secret to the credentials.py file en run jsb-upload again
-9) done !
+2) go to https://wave.google.com/wave/robot/register and register your bot
+3) edit ~/regs/<yourbotname>/ dir and copy the verification token and secret to the credentials.py file
+4) run jsb-upload <yourbotname>
+5) once its uploaded click the "verify" button
+6) copy the consumer key and secret to the credentials.py file en run jsb-upload again
+7) done !
 
 now you should be able to do the following:
 
 1) visit the website at http://<yourbotname>.appspot.com
 2) add the bot as Jabber buddy at <yourbotname>@appspot.com
 3) the same as wave bot
-
