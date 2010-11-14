@@ -59,7 +59,7 @@ class Plugins(LazyDict):
         if not paths: paths = plugin_packages
         imp = None
         cfg = Config()
-        #for modname in default_plugins: self.load(modname, force=force)
+        for modname in default_plugins: self.load(modname, force=True)
         threads = []
         for module in paths:
             try: imp = _import(module)

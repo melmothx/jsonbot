@@ -11,6 +11,7 @@ from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
 from gozerlib.datadir import makedirs
 from gozerlib.config import Config
+from gozerlib.jsbimport import _import
 #import gozerlib.plugs
 
 ## basic imports
@@ -29,15 +30,20 @@ sys.path.insert(0, os.getcwd() + os.sep + '..')
 
 ongae = False
 try:
-    import google
+    import waveapi
     plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'myplugs']
     ongae = True
 except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'socketplugs', 'myplugs']
 
 default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core', 'gozerlib.plugs.user']
-#default_plugins = []
-#for plug in gozerlib.plugs.__plugs__:
-#    default_plugins.append("gozerlib.plugs.%s" % plug)
+
+plugs = _import("gozerlib.plugs")
+if plugs:
+    for plug in plugs.__plugs__:
+        mod = "gozerlib.plugs.%s" % plug
+        if mod not in default_plugins: default_plugins.append("gozerlib.plugs.%s" % plug)
+
+logging.warn("boot - default plugins are %s" % str(default_plugins))
 
 # these are set in gozerlib/boot.py
 

@@ -73,12 +73,12 @@ try:
                 tmp = get(self.fn) ; cachetype = "mem"
                 if tmp: self.data = tmp ; logging.debug("persist - %s - loaded %s" % (cachetype, self.fn)) ; return
             jsontxt =  mc.get(self.fn) ; cachetype = "cache"
-            if type(default) == types.DictType:
-                default2 = LazyDict()
-                default2.update(default)
-            else: default2 = copy.deepcopy(default)
             if jsontxt is None:
                 logging.debug("persist - %s - loading from db" % self.logname) 
+                if type(default) == types.DictType:
+                    default2 = LazyDict()
+                    default2.update(default)
+                else: default2 = copy.deepcopy(default)
                 try:
                     try: self.obj = JSONindb.get_by_key_name(self.fn)
                     except Timeout: self.obj = JSONindb.get_by_key_name(self.fn)
@@ -124,7 +124,7 @@ try:
             logging.warn("persist - syncing %s" % self.fn)
             data = dumps(self.data)
             mc.set(self.fn, data)
-            delete(self.fn, self.data)
+            set(self.fn, self.data)
             return data
      
         def save(self):
@@ -139,7 +139,7 @@ try:
             key = db.run_in_transaction(self.obj.put)
             logging.debug("persist - transaction returned %s" % key)
             mc.set(self.fn, bla)
-            delete(self.fn, self.data)
+            set(self.fn, self.data)
             cfrom = whichmodule(0)
             if 'gozerlib' in cfrom: 
                 cfrom = whichmodule(2)

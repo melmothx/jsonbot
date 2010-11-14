@@ -36,9 +36,9 @@ except IndexError:
     print "jsb-run <botname>"
     os._exit(1)
 
-execlist = ['jsb-release', target]
-print execlist
-proc = Popen(execlist)
+execstring = 'jsb-release %s -d%s' % (target, ddir)
+print execstring
+proc = Popen(execstring.split())
 proc.wait()
 print "STARTING %s" % target
 execstring = '%s/google_appengine/dev_appserver.py %s%sreleases%s%s' % (homedir, ddir, os.sep, os.sep, target)

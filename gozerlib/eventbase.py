@@ -83,7 +83,7 @@ class EventBase(LazyDict):
             if chan: self.chan = chan
             elif self.channel: self.chan = ChannelBase(self.channel, bot.botname)
             elif self.userhost: self.chan = ChannelBase(self.userhost, bot.botname)
-        if not self.user: self.nodispatch = True
+        if not self.user: logging.warn("eventbase - setting nodispatch") ; self.nodispatch = True
         self.prepare(bot)
         return self
 
