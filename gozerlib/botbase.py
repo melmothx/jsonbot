@@ -437,7 +437,7 @@ class BotBase(LazyDict):
             return
         cfg = Config()
         from plugins import plugs
-        logging.warn("%s - checking %s" % (self.name, unicode(p)))
+        logging.debug("%s - checking %s" % (self.name, unicode(p)))
         for name in p:
             if name in plugs or name in cfg.blacklist or (cfg.loadlist and name not in cfg.loadlist and name not in default_plugins): continue 
             else:
