@@ -5,6 +5,11 @@
 """ upload all instances in ~/jsonreg/ """
 
 
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
 from gozerlib.utils.log import setloglevel
 setloglevel("error")
 
