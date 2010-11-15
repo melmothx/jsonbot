@@ -9,17 +9,19 @@
 import warnings
 warnings.simplefilter("ignore")
 
-from gozerlib.utils.log import setloglevel
-setloglevel("warn")
-
 ## imports
 
 import sys
 import os
 import pkg_resources
 import shutil
+import time
 
 sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.getcwd() + os.sep + "..")
+
+from gozerlib.utils.log import setloglevel
+setloglevel("warn")
 
 ## gozerlib imports
 
@@ -98,22 +100,32 @@ def sed(source, target):
 ## doit
 
 source = pkg_resources.resource_filename("gaeupload", '')
+print source
 copyover(source, release)
 source = pkg_resources.resource_filename("gozerdata", '')
+print source
 copyover(source, release + os.sep + "gozerdata")
+print source
 source = pkg_resources.resource_filename("tests", '')
+print source
 copyover(source, release + os.sep + 'tests')
 source = pkg_resources.resource_filename('gozerlib', '')
+print source
 copyover(source, release + os.sep + 'gozerlib')
 source = pkg_resources.resource_filename('commonplugs', '')
+print source
 copyover(source, release + os.sep + 'commonplugs')
 source = pkg_resources.resource_filename('socketplugs', '')
+print source
 copyover(source, release + os.sep + 'socketplugs')
 source = pkg_resources.resource_filename('waveplugs', '')
+print source
 copyover(source, release + os.sep + 'waveplugs')
 source = pkg_resources.resource_filename('simplejson', '')
+print source
 copyover(source, release + os.sep + 'simplejson')
 source = pkg_resources.resource_filename('tweepy', '')
+print source
 copyover(source, release + os.sep + 'tweepy')
 
 homedir = os.path.expanduser("~")
@@ -141,7 +153,6 @@ except (OSError, IOError), ex:
     except OSError, ex:
         print "ERROR: can't copy files to ~/jsonregs %s" % str(ex)
         os._exit(1)
-
 
 if os.path.isdir('docs'):
     copyover('docs', release + os.sep + 'docs')

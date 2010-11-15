@@ -51,6 +51,9 @@ class Config(LazyDict):
         else: self.cfile = self.filename
         logging.debug("config - filename is %s" % self.cfile)
         self.jsondb = None
+        try: import waveapi ; self.isdb = True
+        except ImportError: self.isdb = False
+        logging.warn("config - isdb is set to %s" % self.isdb)
         try:
             try: self.fromfile(self.cfile)
             except IOError:
