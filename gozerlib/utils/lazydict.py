@@ -21,11 +21,11 @@ import copy
 import logging
 import uuid
 import types
-import thread
+import threading
 
 ## locks
 
-lock = thread.allocate_lock()
+lock = threading.RLock()
 locked = lockdec(lock)
 
 ## defines
@@ -45,6 +45,7 @@ def checkignore(name, ignore):
             return True
     return False
 
+@locked
 def dumpelement(element, prev={}, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
     try: new = dict(prev)
@@ -91,12 +92,14 @@ class LazyDict(dict):
 
     def tojson(self, withtypes=False):
         """ dump the lazydict object to json. """
-        return dumps(dumpelement(self, withtypes))
-
+        try: return dumps(dumpelement(self, withtypes))
+        except RuntimeError, ex: handle_exception()
+           
     def dump(self, withtypes=False):
         """ just dunp the lazydict object. DON'T convert to json. """
         logging.debug("lazydict - dumping - %s" %  type(self))
-        return dumpelement(cpy(self), withtypes)
+        try: return dumpelement(cpy(self), withtypes)
+        except RuntimeError, ex: handle_exception()
 
     def load(self, input):
         """ load from json string. """  
