@@ -155,7 +155,7 @@ class Runners(object):
 cmndrunner = defaultrunner = longrunner = Runners(10, BotEventRunner)
 
 def runnercleanup(bot, event):
-    logging.warn("runner sizes: %s" % str(cmndrunner.runnersizes()))
+    logging.info("runner sizes: %s" % str(cmndrunner.runnersizes()))
     cmndrunner.cleanup()
 
 callbacks.add("TICK", runnercleanup)
