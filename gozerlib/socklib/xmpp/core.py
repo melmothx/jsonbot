@@ -131,6 +131,7 @@ class XMLStream(NodeBuilder):
         self.buffer = ""
         return result
 
+    @inlocked
     def loop_one(self, data):
         """ handle one xml stanza. """
         self.parse_one(data)

@@ -10,7 +10,7 @@ from gozerlib.eventhandler import mainhandler
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.persist import Persist
-from gozerlib.boot import savecmndtable, savepluginlist, boot, plugin_packages
+from gozerlib.boot import savecmndtable, savepluginlist, boot, plugin_packages, clear_tables, getcmndtable, getcallbacktable
 from gozerlib.plugins import plugs
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
@@ -24,7 +24,7 @@ from simplejson import dump
 def handle_adminboot(bot, ievent):
     """ boot the bot .. do some initialisation. """
     if 'saveperms' in ievent.rest:
-        boot(force=True)
+        boot(force=True, saveperms=True)
     else:
         boot(force=True, saveperms=False)
     ievent.done()
@@ -32,6 +32,17 @@ def handle_adminboot(bot, ievent):
 cmnds.add('admin-boot', handle_adminboot, 'OPER')
 cmnds.add('admin-init', handle_adminboot, 'OPER')
 examples.add('admin-boot', 'initialize the bot .. cmndtable and pluginlist', 'admin-boot')
+
+## admin-loadall command
+
+def handle_admintables(bot, ievent):
+    """ load all available plugins. """
+    if ievent.rest == "cmnd": ievent.reply(getcmndtable())
+    else: ievent.reply(getcallbacktable())
+    ievent.done()
+
+cmnds.add('admin-tables', handle_admintables, 'OPER')
+examples.add('admin-tables', 'show runtime tables', 'admin-tables')
 
 ## admin-loadall command
 

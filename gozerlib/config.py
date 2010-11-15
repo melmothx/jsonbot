@@ -53,7 +53,7 @@ class Config(LazyDict):
         self.jsondb = None
         try: import waveapi ; self.isdb = True
         except ImportError: self.isdb = False
-        logging.warn("config - isdb is set to %s" % self.isdb)
+        logging.debug("config - isdb is set to %s" % self.isdb)
         try:
             try: self.fromfile(self.cfile)
             except IOError:

@@ -35,13 +35,14 @@ try:
     ongae = True
 except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'socketplugs', 'myplugs']
 
-default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core', 'gozerlib.plugs.user']
+#default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core', 'gozerlib.plugs.user']
+default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug']
 
-plugs = _import("gozerlib.plugs")
-if plugs:
-    for plug in plugs.__plugs__:
-        mod = "gozerlib.plugs.%s" % plug
-        if mod not in default_plugins: default_plugins.append("gozerlib.plugs.%s" % plug)
+#plugs = _import("gozerlib.plugs")
+#if plugs:
+#    for plug in plugs.__plugs__:
+#        mod = "gozerlib.plugs.%s" % plug
+#        if mod not in default_plugins: default_plugins.append("gozerlib.plugs.%s" % plug)
 
 logging.warn("boot - default plugins are %s" % str(default_plugins))
 
@@ -95,18 +96,15 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     if not cmndperms: cmndperms = Config(rundir + os.sep + 'cmndperms')
     from gozerlib.plugins import plugs
     if not cmndtable.data or force:
-        cmndtable.data = {}
         plugs.loadall(plugin_packages, force=True)
         loaded = True
         savecmndtable(saveperms=saveperms)
     if not pluginlist.data or force:
-        pluginlist.data = []
         if not loaded:
             plugs.loadall(plugin_packages, force=True)
             loaded = True
         savepluginlist()
     if not callbacktable.data or force:
-        callbacktable.data = {}
         if not loaded:
             plugs.loadall(plugin_packages, force=True)
             loaded = True
@@ -114,7 +112,7 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     if not loaded:
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
-            plugs.reload(plug, showerror=True)
+            plugs.reload(plug, showerror=True, force=True)
     logging.warn("boot - done")
 
 ## commands related commands
@@ -218,8 +216,17 @@ def savepluginlist(modname=None):
 def remove_plugin(modname):
     removecmnds(modname)
     removecallbacks(modname)
+    global pluginlist
     try: pluginlist.data.remove(modname.split(".")[-1]) ; pluginlist.save()
     except: pass
+
+def clear_tables():
+    global cmndtable
+    global callbacktable
+    global pluginlist
+    cmndtable.data = {} ; cmndtable.save()
+    callbacktable.data = {} ; callbacktable.save()
+    pluginlist.data = [] ; pluginlist.save()
 
 def getpluginlist():
     """ get the plugin list. """
@@ -245,3 +252,4 @@ def whatcommands(plug):
 
 def getcmndperms():
     return cmndperms
+

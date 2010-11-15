@@ -12,13 +12,10 @@ from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
-from boot import cmndtable, plugin_packages, default_plugins
+from boot import cmndtable, plugin_packages
 from errors import NoSuchPlugin
 from utils.locking import locked
 from jsbimport import force_import, _import
-from config import Config
-from boot import plugin_packages
-from threads import start_new_thread
 
 ## basic imports
 
@@ -32,9 +29,6 @@ import sys
 
 cpy = copy.deepcopy
 
-try: from google.appengine.ext.deferred import defer ; ongae = True
-except: ongae = False
-
 ## Plugins class
 
 class Plugins(LazyDict):
@@ -42,13 +36,8 @@ class Plugins(LazyDict):
     """ the plugins object contains all the plugins. """
 
     def exit(self):
-        for modname in self.keys():
-            try:
-                self[modname].shutdown()
-                logging.warn('plugins - called %s shutdown' % modname)
-            except (KeyError, AttributeError):
-                logging.debug("plugins - no %s module found" % modname) 
-                return False
+        for plugname in self:
+            self.unload(plugname)         
 
     def loadall(self, paths=[], force=False):
         """
@@ -58,51 +47,20 @@ class Plugins(LazyDict):
         """
         if not paths: paths = plugin_packages
         imp = None
-        cfg = Config()
-        for modname in default_plugins: self.load(modname, force=True)
-        threads = []
         for module in paths:
             try: imp = _import(module)
             except ImportError:
+                #handle_exception()
                 logging.info("plugins - no %s plugin package found" % module)
                 continue
             except Exception, ex: handle_exception()
             logging.debug("plugins - got plugin package %s" % module)
             try:
                 for plug in imp.__plugs__:
-                    modname = "%s.%s" % (module, plug)
-                    if cfg.loadlist and modname not in cfg.loadlist and not modname in default_plugins: continue
-                    try:
-                        #if not ongae: threads.append(start_new_thread(self.load, ("%s.%s" % (module,plug))))
-                        #else: defer(self.load, ("%s.%s" % (module,plug)))
-                        self.load("%s.%s" % (module,plug))
+                    try: self.reload("%s.%s" % (module,plug))
                     except KeyError: logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex: handle_exception()
             except AttributeError: logging.error("no plugins in %s .. define __plugs__ in __init__.py" % module)
-        #for t in threads:
-        #    t.join()
-
-    def whichmodule(self, plugname):
-        for module in plugin_packages:
-            try: imp = _import(module)
-            except ImportError:
-                logging.info("plugins - no %s plugin package found" % module)
-                continue
-            except Exception, ex: handle_exception()
-            if plugname in imp.__plugs__: return "%s.%s" % (module, plugname)
-
-    def enable(self, modname):
-        cfg = Config()
-        try: cfg.blacklist.remove(modname)
-        except ValueError: pass        
-        if cfg.loadlist and modname not in cfg.loadlist: cfg.loadlist.append(modname)
-        cfg.save()
-
-    def disable(self, modname):
-        cfg = Config()
-        if modname not in cfg.blacklist:  cfg.blacklist.append(modname)
-        if cfg.allowlist and modname in cfg.allowlist: cfg.allowlist.remove(modname)
-        cfg.save()
 
     def unload(self, modname):
         """ unload plugin .. remove related commands from cmnds object. """
@@ -124,7 +82,6 @@ class Plugins(LazyDict):
         except KeyError: pass
         try: remote_callbacks.unload(modname)
         except KeyError: pass
-        del self[modname]
         return True
 
     def load(self, modname, force=False, showerror=False):
@@ -132,7 +89,7 @@ class Plugins(LazyDict):
         if not modname: raise NoSuchPlugin(modname)
         if self.has_key(modname):
             try:
-                #logging.info("plugins - %s already loaded" % modname)                
+                logging.info("plugins - %s already loaded" % modname)                
                 if not force: return self[modname]
                 self[modname] = reload(self[modname])
                 try: init = getattr(self[modname], 'init')
@@ -168,9 +125,6 @@ class Plugins(LazyDict):
     def reload(self, modname, force=True, showerror=False):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
-        cfg = Config()
-        if modname in cfg.blacklist: logging.warn("plugins - blacklist - not loading %s" % modname) ; return
-        if cfg.loadlist and modname not in cfg.loadlist and modname not in default_plugins: logging.debug("plugins - loadlist - not loading %s" % modname) ; return 
         if self.has_key(modname): self.unload(modname)
         try: return self.load(modname, force=force, showerror=showerror)
         except Exception, ex:
@@ -231,7 +185,7 @@ class Plugins(LazyDict):
             logging.debug("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return
         if plugin in self:
-            #logging.debug("plugins - %s already loaded" % plugin)
+            logging.debug("plugins - %s already loaded" % plugin)
             return False
         logging.info("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
         plugloaded = self.reload(plugin)

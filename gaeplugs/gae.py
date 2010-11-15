@@ -23,7 +23,7 @@ def handle_gaeflushcache(bot, ievent):
     ievent.done()
 
 cmnds.add('gae-flushcache', handle_gaeflushcache, 'OPER')
-examples.add('gae-flushcache', 'flush the bots cache', 'admin-flushcache')
+examples.add('gae-flushcache', 'flush the bots cache', 'gae-flushcache')
 
 def handle_gaeadminstats(bot, ievent):
     """ show bot stats. """
@@ -31,4 +31,4 @@ def handle_gaeadminstats(bot, ievent):
     ievent.reply("cache: %s" % str(get_stats()))
 
 cmnds.add('gae-stats', handle_gaeadminstats, 'OPER')
-examples.add('gae-stats', 'show bots stats', 'admin-stats')
+examples.add('gae-stats', 'show bots stats', 'gae-stats')

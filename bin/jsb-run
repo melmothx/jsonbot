@@ -5,6 +5,8 @@
 """ upload all instances in ~/jsonreg/ """
 
 import sys, os
+
+os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 sys.path.insert(0, os.getcwd())
 
 ## gozerlib imports
