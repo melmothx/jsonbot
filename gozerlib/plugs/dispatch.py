@@ -56,7 +56,7 @@ def dispatch(bot, event):
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))
             result =  []
     except NoSuchCommand:
-        if not event.forwarded: event.reply("no such command: %s" % execstr)
+        #if not event.forwarded: event.reply("no such command: %s" % execstr)
         logging.info("no such command: %s" % event.usercmnd)
         result = []
     return result
