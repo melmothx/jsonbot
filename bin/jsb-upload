@@ -9,7 +9,7 @@
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-os.environ['PATH'] += ":" + os.getcwd() + os.sep + 'bin'
+os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 
 from gozerlib.utils.popen import gozerpopen
 from gozerlib.utils.opts import makeopts

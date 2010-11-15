@@ -10,7 +10,7 @@ import warnings
 warnings.simplefilter("ignore")
 
 from gozerlib.utils.log import setloglevel
-setloglevel("error")
+setloglevel("warn")
 
 ## imports
 
@@ -39,16 +39,16 @@ opts, args = parser.parse_args()
 opts.args = args
 
 if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
-elif not os.path.isdir(getdatadir()): os.mkdir(getdatadir())
+if not os.path.isdir(getdatadir()): os.mkdir(getdatadir())
 
-if len(opts.args) > 0:
+if opts.args:
      ddir = opts.datadir or getdatadir()
      if not os.path.isdir(ddir + os.sep + 'releases'):
          os.mkdir(ddir + os.sep + 'releases')
-     release = ddir + os.sep + 'releases' + os.sep + sys.argv[1]
+     release = ddir + os.sep + 'releases' + os.sep + opts.args[0]
      if not os.path.isdir(release):
          os.mkdir(release)
-     targetin = sys.argv[1]
+     targetin = opts.args[0]
 else:
      release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsonbot'
      targetin = 'jsonbot'
