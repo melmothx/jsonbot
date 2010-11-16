@@ -183,6 +183,7 @@ class EventBase(LazyDict):
 
     def iscmnd(self):
         """ check if event is a command. """
+        if not self.txt: return
         if self.isremote(): logging.warn("eventbase - event is remote") ; return
         logging.debug("eventbase - trying to match %s" % self.txt)
         cc = "!"
