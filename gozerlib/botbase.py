@@ -299,7 +299,6 @@ class BotBase(LazyDict):
         self.stopped = True   
         self.stopreadloop = True  
         self.connected = False
-        self.connectok.clear()
         self.put(None)
         self.tickqueue.put_nowait('go')
         self.outqueue.put_nowait(None)
@@ -437,15 +436,16 @@ class BotBase(LazyDict):
         except KeyError:
             logging.debug("botbase - can't find plugin to reload for %s" % event.cmnd)
             return
-        cfg = Config()
-        from plugins import plugs
+        #cfg = Config()
+        #from plugins import plugs
         logging.debug("%s - checking %s" % (self.name, unicode(p)))
         for name in p:
-            if name in plugs or name in cfg.blacklist or (cfg.loadlist and name not in cfg.loadlist and name not in default_plugins): continue 
+            #if name in plugs or name in cfg.blacklist or (cfg.loadlist and name not in cfg.loadlist and name not in default_plugins): continue 
+            if name in self.plugs: continue
             else:
                 logging.warn("botbase - on demand reloading of %s" % name)
                 try:
-                    mod = plugs.reload(name, showerror=True)
+                    mod = self.plugs.reload(name, force=True, showerror=True)
                     if mod: plugloaded.append(mod) ; break
                 except Exception, ex: handle_exception(event)
         return plugloaded
