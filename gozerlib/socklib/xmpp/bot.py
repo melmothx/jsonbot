@@ -559,3 +559,16 @@ class SXMPPBot(XMLStream, BotBase):
         what = what.replace("&lt;i&gt;", "")
         what = what.replace("&lt;/i&gt;", "")
         return what
+
+    def doreconnect(self):
+        """ reconnect to the server. """
+        botjid = self.jid
+        newbot = getfleet().makebot('sxmpp', self.name, cfg=self.cfg)
+        newbot.reconnectcount = self.reconnectcount
+        self.exit()
+        if newbot.start():
+            self.jid += '.old'
+            #newbot.joinchannels()
+            if fleet.replace(botjid, newbot): return True
+        return False
+

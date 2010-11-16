@@ -345,15 +345,3 @@ class XMLStream(NodeBuilder):
         """ handler called on disconnect. """
         self.stopped = True
         logging.warn('%s - disconnected: %s' % (self.name, str(ex)))
-
-    def doreconnect(self):
-        """ reconnect to the server. """
-        botjid = self.jid
-        newbot = getfleet().makebot('sxmpp', self.name, self)
-        newbot.reconnectcount = self.reconnectcount
-        self.exit()
-        if newbot.start():
-            self.jid += '.old'
-            #newbot.joinchannels()
-            if fleet.replace(botjid, newbot): return True
-        return False
