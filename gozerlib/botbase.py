@@ -233,6 +233,7 @@ class BotBase(LazyDict):
     def doremote(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
+        logging.warn("======== start handling REMOTE event ========")
         event.prepare(self)
         self.status = "callback"
         starttime = time.time()
@@ -256,6 +257,7 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         if event.isremote(): self.doremote(event) ; return
+        logging.warn("======== start handling local event ========")
         event.prepare(self)
         self.status = "callback"
         starttime = time.time()
@@ -266,7 +268,7 @@ class BotBase(LazyDict):
             except ValueError:
                 if event.cbtype in ['PING', 'PRESENCE'] or event.how == "background": logging.debug(msg)
                 else: logging.warn(msg)
-        logging.debug("%s - %s" % (self.name, event.tojson()))
+        #logging.debug("%s - %s" % (self.name, event.tojson()))
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":

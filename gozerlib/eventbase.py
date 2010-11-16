@@ -1,3 +1,7 @@
+
+
+
+
 # gozerlib/eventbase.py
 #
 #
@@ -11,6 +15,7 @@ from utils.lazydict import LazyDict
 from utils.generic import splittxt, stripped
 from errors import NoSuchUser
 from utils.opts import makeeventopts
+from gozerlib.config import Config
 
 ## simplejson imports
 
@@ -75,7 +80,8 @@ class EventBase(LazyDict):
         assert bot
         logging.debug("eventbase - binding user - %s" % str(self.user))
         if not self.user and target:
-            if bot.cfg.auto_register: 
+            cfg = Config()
+            if cfg.auto_register: 
                 bot.users.addguest(target)
             self.user = user or bot.users.getuser(target)
         logging.debug("eventbase - binding channel - %s" % str(self.chan))

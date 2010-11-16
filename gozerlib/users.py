@@ -13,6 +13,7 @@ from persist import Persist
 from utils.lazydict import LazyDict
 from datadir import getdatadir
 from errors import NoSuchUser
+from config import Config
 
 ## basic imports
 

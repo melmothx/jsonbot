@@ -79,7 +79,7 @@ class Commands(LazyDict):
         event.bind(bot)
         if event.groupchat: id = event.auth = event.userhost
         else: id = event.auth
-        if bot.cfg.auto_register: bot.users.addguest(id)
+        #if bot.cfg.auto_register: bot.users.addguest(id)
         if not event.user:
             event.user = bot.users.getuser(id)
             if event.user: event.userstate = UserState(event.user.data.name)

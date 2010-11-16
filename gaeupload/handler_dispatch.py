@@ -17,7 +17,7 @@ from gozerlib.utils.xmpp import stripped
 from gozerlib.utils.url import getpostdata, useragent
 from gozerlib.plugins import plugs
 from gozerlib.persist import Persist
-from gozerlib.utils.exception import handle_exception
+from gozerlib.utils.exception import handle_exception, exceptionmsg
 from gozerlib.fleet import fleet
 from gozerlib.errors import NoSuchCommand
 from gozerlib.gae.utils.web import loginurl
@@ -89,7 +89,7 @@ class Dispatch_Handler(RequestHandler):
         except google.appengine.runtime.DeadlineExceededError, ex:
             self.response.out.write("the command took too long to finish: %s" % str(time.time()-starttime))
         except Exception, ex:
-            self.response.out.write("the command had an eror: %s" % str(ex))
+            self.response.out.write("the command had an eror: %s" % exceptionmsg())
             handle_exception()
 
     get = post
