@@ -277,12 +277,12 @@ class BotBase(LazyDict):
         e1 = cpy(event)
         #e2 = cpy(event)
         #e3 = cpy(event)
-        callbacks.check(self, e1)
-        #if not event.forwarded:
-        #    e2 = cpy(event)
-        #    callbacks.check(self, e2)
-        #    e3 = cpy(event)
-        #    last_callbacks.check(self, e3)
+        first_callbacks.check(self, e1)
+        if not event.forwarded:
+            e2 = cpy(event)
+            callbacks.check(self, e2)
+            e3 = cpy(event)
+            last_callbacks.check(self, e3)
         event.callbackdone = True
         return event
 

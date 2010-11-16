@@ -155,5 +155,7 @@ class Callbacks(object):
 
 ## global callbacks
 
-first_callbacks = callbacks = last_callbacks = Callbacks()
+first_callbacks = Callbacks() 
+callbacks = Callbacks()
+last_callbacks = Callbacks()
 remote_callbacks = Callbacks()

@@ -28,19 +28,19 @@ except: pass
 
 format = "%(asctime)s - %(levelname)s - %(message)s - <%(threadName)s+%(module)s-%(funcName)s:%(lineno)s>"
 
-filehandler = logging.handlers.TimedRotatingFileHandler(LOGDIR + os.sep + "jsonbot.log", 'midnight')
-formatter = logging.Formatter(format)
-filehandler.setFormatter(formatter)  
 
 ## setloglevel function
 
 def setloglevel(level_name):
     """ set loglevel to level_name. """
     level = LEVELS.get(level_name, logging.NOTSET)
-    root = logging.getLogger('')
+    root = logging.getLogger("")
     if root.handlers:
         for handler in root.handlers: root.removeHandler(handler)
     logging.basicConfig(level=level, format=format)
-    root.addHandler(filehandler)
+    #filehandler = logging.handlers.TimedRotatingFileHandler(LOGDIR + os.sep + "jsonbot.log", 'midnight')
+    #formatter = logging.Formatter(format)
+    #filehandler.setFormatter(formatter)  
+    #root.addHandler(filehandler)
     root.setLevel(level)
     logging.info("loglevel is %s (%s)" % (str(level), level_name))

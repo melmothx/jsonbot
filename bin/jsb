@@ -13,9 +13,6 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.utils.log import setloglevel
-#setloglevel("error")
-
 from gozerlib.version import getversion
 print getversion('CONSOLE')
 
