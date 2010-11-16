@@ -18,6 +18,7 @@ from gozerlib.threads import start_new_thread
 from gozerlib.botbase import BotBase
 from gozerlib.exit import globalshutdown
 from gozerlib.channelbase import ChannelBase
+from gozerlib.fleet import getfleet
 
 ## gozerlib.socket imports
 
