@@ -37,10 +37,10 @@ filehandler.setFormatter(formatter)
 def setloglevel(level_name):
     """ set loglevel to level_name. """
     level = LEVELS.get(level_name, logging.NOTSET)
-    logging.basicConfig(level=level, format=format)
     root = logging.getLogger('')
-    #if root.handlers:
-    #    for handler in root.handlers: root.removeHandler(handler)
+    if root.handlers:
+        for handler in root.handlers: root.removeHandler(handler)
+    logging.basicConfig(level=level, format=format)
     root.addHandler(filehandler)
     root.setLevel(level)
     logging.info("loglevel is %s (%s)" % (str(level), level_name))

@@ -14,13 +14,18 @@ import os, sys
 sys.path.insert(0, os.getcwd())
 
 from gozerlib.utils.log import setloglevel
-setloglevel("error")
+#setloglevel("error")
 
+from gozerlib.version import getversion
+print getversion('CONSOLE')
 
 ## make config from cmndline options
 
 from gozerlib.utils.opts import makeconsoleopts, makeopts, makeconsoleconfig
 opts = makeconsoleopts()
+
+from gozerlib.utils.log import setloglevel
+setloglevel(opts.loglevel or "error")
 
 #forwardopts = makeopts(" ".join(opts.args))
 
@@ -30,14 +35,7 @@ boot(opts.datadir)
 #forwardcfg = makeconfig('sxmpp', forwardopts, 'forwardbot') # sxmpp for the forward bot
 cfg = makeconsoleconfig('console', opts) # sxmpp for the forward bot
 
-from gozerlib.version import getversion
-print getversion('CONSOLE')
 
-## set loglevel
-
-from gozerlib.utils.log import setloglevel
-setloglevel(opts.loglevel or "error")
- 
 # gozerlib imports
 
 from gozerlib.utils.generic import waitforqueue
