@@ -159,7 +159,8 @@ class Config(LazyDict):
                     configtmp.write(line)
                     continue
                 if self.has_key(keyword):  
-                    configtmp.write('%s = %s\n' % (keyword, dumps(self[keyword])))
+                    try: configtmp.write('%s = %s\n' % (keyword, dumps(self[keyword])))
+                    except TypeError: logging.error("config - %s - can't serialize %s" % (filename, keyword)) ; continue
                     written.append(keyword)
                 else: configtmp.write(line)
             keywords = self.keys()
@@ -172,7 +173,8 @@ class Config(LazyDict):
                 if keyword == 'optionslist': continue
                 if keyword == 'gatekeeper': continue
                 curitem = keyword
-                configtmp.write('%s = %s\n' % (keyword, dumps(value)))
+                try: configtmp.write('%s = %s\n' % (keyword, dumps(value)))
+                except TypeError: logging.error("config - %s - can't serialize %s" % (filename, keyword)) ; continue
             configtmp.close()
             os.rename(filename + '.tmp', filename)
             return teller
