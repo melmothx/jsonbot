@@ -7,7 +7,7 @@
 ## gozerlib imports
 
 from gozerlib.commands import cmnds
-from gozerlib.callbacks import callbacks
+from gozerlib.callbacks import first_callbacks
 from gozerlib.persist import PlugPersist
 from gozerlib.examples import examples
 from gozerlib.fleet import getfleet
@@ -83,12 +83,12 @@ def relaycallback(bot, event):
 # EXEC is for the gadget handling, WEB for the website, BLIP_SUBMITTED for
 # wave and OUTPUT for the outputcache (both used in wave and web).
 
-callbacks.add('MESSAGE', relaycallback, relayprecondition)
-callbacks.add('EXEC', relaycallback, relayprecondition)
-callbacks.add('WEB', relaycallback, relayprecondition)
-callbacks.add('BLIP_SUBMITTED', relaycallback, relayprecondition)
-callbacks.add('OUTPUT', relaycallback, relayprecondition)
-callbacks.add('PRIVMSG', relaycallback, relayprecondition)
+first_callbacks.add('MESSAGE', relaycallback, relayprecondition)
+first_callbacks.add('EXEC', relaycallback, relayprecondition)
+first_callbacks.add('WEB', relaycallback, relayprecondition)
+first_callbacks.add('BLIP_SUBMITTED', relaycallback, relayprecondition)
+first_callbacks.add('OUTPUT', relaycallback, relayprecondition)
+first_callbacks.add('PRIVMSG', relaycallback, relayprecondition)
 
 # COMMANDS
 # this is where the commands for the relay plugin are defined, Arguments to a
