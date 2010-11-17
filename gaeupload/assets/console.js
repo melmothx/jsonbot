@@ -6,7 +6,7 @@
       var interval_id;
       var lastpolled = new Date();
       var lpdate = lastpolled.getTime();
-      var sleeptime = 60000;
+      var sleeptime = 180000;
       var host = "";
       var viewer = "";
       var hostid = "";
@@ -50,7 +50,7 @@
           update();
           setTimeout("doCmnd('!welcome', response, 'background');", 50);
           //setTimeout("update();", 10);
-          setInterval("loop();", 60000);
+          setInterval("loop();", 180000);
       }
 
 

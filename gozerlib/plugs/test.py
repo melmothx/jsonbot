@@ -195,3 +195,9 @@ def handle_testhtml(bot, ievent):
 
 cmnds.add('test-html', handle_testhtml, 'OPER')
 examples.add('test-html', 'test html output', '1) test-html 2) test-html <h1><YOO</h1>')
+
+def handle_testuuid(bot, ievent):
+    import uuid
+    ievent.reply(uuid.uuid4())
+
+cmnds.add('test-uuid', handle_testuuid, 'OPER')
