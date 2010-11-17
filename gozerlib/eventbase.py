@@ -56,6 +56,7 @@ class EventBase(LazyDict):
         self.chantag = None
         self.resqueue = Queue.Queue()
         self.forwarded = False
+        self.stop = False
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
@@ -142,6 +143,7 @@ class EventBase(LazyDict):
     def leave(self):
         self.ttl -= 1
         if self.ttl <= 0 : self.status = "done"
+        logging.warn("======== STOP handling event ========")
 
     def makeoptions(self):
         self.options = makeeventopts(self.txt)

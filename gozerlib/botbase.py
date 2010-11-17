@@ -250,6 +250,7 @@ class BotBase(LazyDict):
         e0 = cpy(event)
         e0.speed = 1
         remote_callbacks.check(self, e0)
+        logging.warn("======== STOP handling local event ========")
         return
 
     #@locked
@@ -257,18 +258,21 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         if event.isremote(): self.doremote(event) ; return
-        logging.warn("======== start handling local event ========")
-        event.prepare(self)
-        self.status = "callback"
-        starttime = time.time()
         msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)
         if event.cbtype in ['NOTICE']: logging.warn("%s - %s - %s" % (self.name, event.nick, event.txt))
         else:
-            try: int(event.cbtype) ; logging.debug(msg)
+            try:
+                int(event.cbtype)
+                logging.debug("======== start handling local event ========")
+                logging.debug(msg)
             except ValueError:
-                if event.cbtype in ['PING', 'PRESENCE'] or event.how == "background": logging.debug(msg)
-                else: logging.warn(msg)
-        #logging.debug("%s - %s" % (self.name, event.tojson()))
+                if event.cbtype in ['PING', 'PRESENCE'] or event.how == "background": 
+                    logging.debug("======== start handling local event ========")
+                    logging.debug(msg)
+                else: logging.warn("======== start handling local event ========") ; logging.warn(msg)
+        event.prepare(self)
+        self.status = "callback"
+        starttime = time.time()
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
         if event.status == "done":
@@ -277,14 +281,10 @@ class BotBase(LazyDict):
         self.reloadcheck(event)
         if event.msg or event.isdcc: event.speed = 2
         e1 = cpy(event)
-        #e2 = cpy(event)
-        #e3 = cpy(event)
         first_callbacks.check(self, e1)
-        if not event.forwarded:
-            e2 = cpy(event)
-            callbacks.check(self, e2)
-            e3 = cpy(event)
-            last_callbacks.check(self, e3)
+        if not e1.stop: 
+            callbacks.check(self, e1)
+            if not e1.stop: last_callbacks.check(self, e1)
         event.callbackdone = True
         return event
 
@@ -448,7 +448,7 @@ class BotBase(LazyDict):
                 logging.warn("botbase - on demand reloading of %s" % name)
                 try:
                     mod = self.plugs.reload(name, force=True, showerror=True)
-                    if mod: plugloaded.append(mod) ; break
+                    if mod: plugloaded.append(mod) ; continue
                 except Exception, ex: handle_exception(event)
         return plugloaded
 

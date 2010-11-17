@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from utils.trace import whichmodule
+from utils.trace import whichmodule, calledfrom
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
 from utils.name import stripname
@@ -20,6 +20,7 @@ from simplejson import loads, dumps
 
 ## basic imports
 
+import sys
 import os
 import types
 import thread
@@ -53,7 +54,6 @@ class Config(LazyDict):
         self.jsondb = None
         try: import waveapi ; self.isdb = True
         except ImportError: self.isdb = False
-        logging.debug("config - isdb is set to %s" % self.isdb)
         try:
             try: self.fromfile(self.cfile)
             except IOError:
@@ -69,9 +69,7 @@ class Config(LazyDict):
             self.isdb = False
         self.init()
         if not self.owner: self.owner = []
-        if not self.uuid:
-            self.uuid = str(uuid.uuid4())
-            self.save()
+        if not self.uuid: self.uuid = str(uuid.uuid4())
 
     def __getitem__(self, item):
         """ accessor function. """
@@ -185,6 +183,7 @@ class Config(LazyDict):
 
     def save(self):
         """ save the config. """
+        logging.warn("config - save called from %s" % calledfrom(sys._getframe(1)))
         if self.isdb: self.todb()
         else: self.tofile()
      
