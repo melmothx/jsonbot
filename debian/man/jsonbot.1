@@ -1,6 +1,6 @@
 .TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsonbot manual"
 .SH NAME
-jsonbot \- The JSON everywhere bot!
+JSONBOT \- The JSON everywhere bot!
 .SH SYNOPSIS
 JSONBOT is a remote event-driven framework for building bots that talk JSON
 to each other over XMPP. This manual page documents briefly the
@@ -13,7 +13,7 @@ distribution..
 This distribution provides bots built on this framework for console, IRC,
 XMPP for the shell and WWW and XMPP for the Google Application engine.
 
-JSONBOT is all of the following:
+jsonbot is all of the following:
 
     * a shell console bot
     * a shell IRC bot
@@ -26,32 +26,26 @@ JSONBOT is all of the following:
     * event driven framework by the use of callbacks
 
 .B
-see http://jsonbot.googlecode.com
+See http://jsonbot.googlecode.com
 .PP
 .SH USAGE
-jsonbot uses command line options to configure a bot. see the --help option to get more help on a command
+JSONBOT uses command line options to configure a bot. See the --help option to get more help on a command
+options or see the corresponding man page.
 .PP
 
-jsonbot provides the following programs:
+JSONBOT provides the following programs:
 
-    * jsb - console version of jsonbot
-    * jsb-irc - IRC version of jsonbot (socket)
-    * jsb-xmpp - XMPP version of jsonbot (socket)
-    * jsb-fleet - mix IRC and XMPP bots
-    * jsb-release - create a new release directory
-    * jsb-rollback - rollback a release
+    * jsb - console version of jsonbot (shell)
+    * jsb-irc - IRC version of jsonbot (shell)
+    * jsb-xmpp - XMPP version of jsonbot (shell)
+    * jsb-fleet - mix IRC and XMPP bots (shell)
+    * jsb-release - create a new release directory (appengine)
+    * jsb-rollback - rollback a release (appengine)
     * jsb-run - run a release in the GAE dev_appserver
-    * jsb-stop - stop a running bot
+    * jsb-stop - stop a running bot (shell)
     * jsb-upload - upload a release to the GAE
 .P
-for appengine related commands you need google_appengine installed in your
-home dir
-.P
-To perform further configuration, message your jsonbot on the IRC server or Jabber service to which it has connected, using the name specified
-with the -n option (by default, jsonbot).  To summon jsonbot to an IRC channel, you will need to
-.B
-/msg jsonbot join #channel.
-
+For appengine related commands you need google_appengine installed in your home dir
 .SH "SEE ALSO"
 The program is documented fully on http://jsonbot.appspot.com/docs
 .SH AUTHOR
