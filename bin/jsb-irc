@@ -10,10 +10,10 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.utils.opts import makeconfig, makeopts
+from gozerlib.utils.opts import makeircconfig, makeircopts
 ## options parser
 
-opts = makeopts()
+opts = makeircopts()
 
 from gozerlib.version import getversion
 print getversion('IRC')
@@ -45,7 +45,7 @@ import os
 
 boot(opts.datadir)
 
-cfg = makeconfig('irc', opts)
+cfg = makeircconfig('irc', opts)
 cfg.type = "irc"
 if opts.nick: cfg.nick = opts.nick
 cfg.save()
@@ -74,16 +74,13 @@ else:
     if opts.channel and not opts.channel in bot.state['joinedchannels']:
         bot.state['joinedchannels'].append(opts.channel)
         bot.state.save()
-    if opts.all:
-        print "available fleet bots: %s" % fleet.avail()
-        os._exit(0)
     fleet = getfleet(opts.datadir)
     fleet.addbot(bot)
-    if opts.forward:
-        print "starting forward bot (%s)" % str(cfg)
-        forwardcfg = makeconfig('sxmpp', opts, 'forwardbot') # sxmpp for the forward bo
-        forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
-        start_new_thread(forwardbot.start, ())
+    #if opts.forward:
+    #    print "starting forward bot (%s)" % str(cfg)
+    #    forwardcfg = makeconfig('sxmpp', opts, 'forwardbot') # sxmpp for the forward bo
+    #    forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
+    #    start_new_thread(forwardbot.start, ())
     start_new_thread(bot.start, ())
 
 

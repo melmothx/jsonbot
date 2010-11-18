@@ -20,7 +20,7 @@ from gozerlib.config import Config
 from gozerlib.errors import NoOwnerSet
 from gozerlib.fleet import getfleet
 from gozerlib.utils.mainloop import mainloop
-from gozerlib.utils.opts import makeopts, makeconfig
+from gozerlib.utils.opts import makexmppopts, makexmppconfig
 import gozerlib.users as users
 import gozerlib
 
@@ -32,14 +32,14 @@ import os
 
 ## options parser
 
-opts = makeopts()
+opts = makexmppopts()
 
 from gozerlib.version import getversion
 print getversion('SXMPP')
 
 boot(opts.datadir)
 
-cfg = makeconfig('sxmpp', opts)
+cfg = makexmppconfig('sxmpp', opts)
 if opts.nick: cfg.nick = opts.nick
 cfg.save()
 
@@ -47,10 +47,8 @@ cfg.save()
 
 setloglevel(cfg.loglevel)
 
-#from gozerlib.plugins import plugs
-#plugs.loadall()
-
 ## start bot
+
 try:
     bot = SXMPPBot(cfg)
     bot.nick = cfg.nick or 'jsonbot'
@@ -63,10 +61,6 @@ if opts.channel and not opts.channel in bot.state['joinedchannels']:
     bot.state.save()
 
 fleet = getfleet(opts.datadir, new=True)
-
-if opts.all:
-    print "available fleet bots: %s" % fleet.avail()
-
 fleet.addbot(bot)
 bot.start()
 mainloop()
