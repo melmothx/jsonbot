@@ -12,7 +12,7 @@ from eventbase import EventBase
 from persist import Persist
 from utils.lazydict import LazyDict
 from utils.exception import handle_exception
-from boot import cmndtable, plugin_packages
+from boot import cmndtable, plugin_packages, default_plugins
 from errors import NoSuchPlugin
 from utils.locking import locked
 from jsbimport import force_import, _import
@@ -184,12 +184,25 @@ class Plugins(LazyDict):
         except KeyError:
             logging.debug("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return
-        if plugin in self:
-            logging.debug("plugins - %s already loaded" % plugin)
-            return False
+        if plugin in self: return plugloaded
+        if  plugin in default_plugins: pass
+        elif bot.cfg.blacklist and plugin in bot.cfg.blacklist: return plugloaded
+        elif bot.cfg.loadlist and plugin not in bot.cfg.loadlist: return plugloaded
         logging.info("plugins - loaded %s on demand (%s)" % (plugin, event.usercmnd))
         plugloaded = self.reload(plugin)
         return plugloaded
+
+    def getmodule(self, plugname):
+        for module in plugin_packages:
+            try: imp = _import(module)
+            except ImportError:
+                logging.info("plugins - no %s plugin package found" % module)
+                continue
+            except Exception, ex: handle_exception()
+            if plugname in imp.__plugs__: return "%s.%s" % (module, plugname)
+
+
+
 
 ## global plugins object
 

@@ -129,6 +129,17 @@ class BotBase(LazyDict):
             defaultrunner.start()
             tickloop.start(self)
 
+    def enable(self, modname):
+        try: self.cfg.blacklist and self.cfg.blacklist.remove(modname)
+        except ValueError: pass           
+        if self.cfg.loadlist and modname not in self.cfg.loadlist: self.cfg.loadlist.append(modname)
+        self.cfg.save()
+
+    def disable(self, modname):
+        if self.cfg.blacklist and modname not in self.cfg.blacklist: self.cfg.blacklist.append(modname)
+        if self.cfg.loadlist and modname in self.cfg.loadlist: self.cfg.loadlist.remove(modname)
+        self.cfg.save()
+
     def put(self, event):
         self.inqueue.put_nowait(event)
 
@@ -431,25 +442,23 @@ class BotBase(LazyDict):
         """ check if plugin need to be reloaded for callback, """
         plugloaded = []
         target = event.cbtype or event.cmnd
-        #logging.debug("botbase - checking for reload of %s (%s)" % (target, event.userhost))
         try:
             from boot import getcallbacktable   
             p = getcallbacktable()[target]
         except KeyError:
             logging.debug("botbase - can't find plugin to reload for %s" % event.cmnd)
             return
-        #cfg = Config()
-        #from plugins import plugs
         logging.debug("%s - checking %s" % (self.name, unicode(p)))
         for name in p:
-            #if name in plugs or name in cfg.blacklist or (cfg.loadlist and name not in cfg.loadlist and name not in default_plugins): continue 
             if name in self.plugs: continue
-            else:
-                logging.warn("botbase - on demand reloading of %s" % name)
-                try:
-                    mod = self.plugs.reload(name, force=True, showerror=True)
-                    if mod: plugloaded.append(mod) ; continue
-                except Exception, ex: handle_exception(event)
+            if name in default_plugins: pass
+            elif self.cfg.blacklist and name in self.cfg.blacklist: continue
+            elif self.cfg.loadlist and name not in self.cfg.loadlist: continue
+            logging.warn("botbase - on demand reloading of %s" % name)
+            try:
+                mod = self.plugs.reload(name, force=True, showerror=True)
+                if mod: plugloaded.append(mod) ; continue
+            except Exception, ex: handle_exception(event)
         return plugloaded
 
     def send(self, *args, **kwargs):
