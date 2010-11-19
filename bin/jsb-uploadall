@@ -16,7 +16,7 @@ from gozerlib.utils.popen import gozerpopen
 from gozerlib.datadir import getdatadir
 from gozerlib.version import getversion
 
-print getversion("UPLOAD")
+print getversion("UPLOADALL")
 
 ## basic imports
 
@@ -37,13 +37,18 @@ if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 ddir = opts.datadir or getdatadir()
 homedir = os.path.expanduser("~")
-try: target = opts.args[0]
-except IndexError: print "jsb-upload <appid>" ; os._exit(1)
+target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
 
 ## upload all instances in ~/jsonregs/
 
-print "UPLOADING %s" % target
-execstring = '%s/google_appengine/appcfg.py update %s%sreleases%s%s' % (homedir, ddir, os.sep, os.sep, target)
-print execstring
-proc = Popen(execstring.split())
-proc.wait()
+for item in target:
+    print "DOING RELEASE %s" % item
+    execstring = 'jsb-release -d%s %s' % (ddir, item)
+    print execstring
+    proc = Popen(execstring.split())
+    proc.wait()
+    print "UPLOADING %s" % item
+    execstring = '%s/google_appengine/appcfg.py update %s%sreleases%s%s' % (homedir, ddir, os.sep, os.sep, item)
+    print execstring
+    proc = Popen(execstring.split())
+    proc.wait()
