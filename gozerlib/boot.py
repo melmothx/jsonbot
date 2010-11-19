@@ -33,7 +33,7 @@ try:
     import waveapi
     plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'myplugs']
     ongae = True
-except ImportError: plugin_packages = ['gozerlib.plugs', 'gaeplugs', 'commonplugs', 'waveplugs', 'socketplugs', 'myplugs']
+except ImportError: plugin_packages = ['gozerlib.plugs', 'commonplugs', 'socketplugs', 'myplugs']
 
 #default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core', 'gozerlib.plugs.user']
 default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug']
