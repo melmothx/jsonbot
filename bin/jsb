@@ -67,6 +67,7 @@ import getpass
 ## start the bot
 name = opts.name or "default-console"
 cfg = Config("fleet" + os.sep + name + os.sep + 'config')
+cfg.botname = name
 userid = getpass.getuser() + '@' + cfg.uuid
 
 if userid not in cfg.owner: cfg.owner.append(userid)
