@@ -16,24 +16,29 @@ sys.path.insert(0, os.getcwd())
 from gozerlib.version import getversion
 print getversion('CONSOLE')
 
-## make config from cmndline options
+## command line parsing
 
-from gozerlib.utils.opts import makeconsoleopts, makeopts, makeconsoleconfig
-opts = makeconsoleopts()
+from optparse import OptionParser
+parser = OptionParser(usage='usage: %prog [options] <appid>', version='%prog ' + getversion())
+parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
+parser.add_option('-x', '--execute', type='string', default=False, dest='command', help="command to execute")
+parser.add_option('-c', '--channel', type='string', default=False, dest='channel', help="channel to operate on")
+parser.add_option('-n', '--name', type='string', default=False, dest='name', help="name of the console bot")
+parser.add_option('-l', '--loglevel', type='string', default=False, dest='loglevel', help="logging level")
+opts, args = parser.parse_args()
+opts.args = args
+
+if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
+
+## make config from cmndline options
 
 from gozerlib.utils.log import setloglevel
 setloglevel(opts.loglevel or "error")
 
-#forwardopts = makeopts(" ".join(opts.args))
-
 from gozerlib.boot import boot
 boot(opts.datadir)
 
-#forwardcfg = makeconfig('sxmpp', forwardopts, 'forwardbot') # sxmpp for the forward bot
-cfg = makeconsoleconfig('console', opts) # sxmpp for the forward bot
-
-
-# gozerlib imports
+## gozerlib imports
 
 from gozerlib.utils.generic import waitforqueue
 from gozerlib.utils.mainloop import mainloop
@@ -46,7 +51,6 @@ from gozerlib.datadir import makedirs
 from gozerlib.users import Users, users
 from gozerlib.errors import NoOwnerSet
 from gozerlib.threads import start_new_thread
-from gozerlib.utils.opts import makeconfig, makeopts
 from gozerlib.fleet import getfleet
 
 ## basic imports
@@ -58,9 +62,11 @@ import code
 import readline
 import atexit
 import os
+import getpass
 
 ## start the bot
-
+name = opts.name or "default-console"
+cfg = Config("fleet" + os.sep + name + os.sep + 'config')
 userid = getpass.getuser() + '@' + cfg.uuid
 
 if userid not in cfg.owner: cfg.owner.append(userid)
@@ -70,6 +76,8 @@ except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
 
+## check for -x option
+
 if opts.command:
     result = bot.docmnd(userid, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
     if result:
@@ -77,11 +85,5 @@ if opts.command:
         print "command done. ltrs"
     else: print "can't execute %s" % opts.command    
     os._exit(0)
-#elif opts.forward:
-#    fleet = getfleet(opts.datadir)
-#    fleet.addbot(bot)
-#    print "starting forward bot (%s)" % str(cfg)
-#    forwardbot = fleet.makebot('sxmpp', 'forwardbot', cfg=forwardcfg)
-#    forwardbot.start()
 
 bot.start()

@@ -21,18 +21,20 @@ for that.
 .PP
 .SH USAGE
 .P
-.B Usage: jsb [options]
+.B Usage: jsb [options] <appid>
 
 Options:
   --version             show program's version number and exit
   -h, --help            show this help message and exit
   -d DATADIR, --datadir=DATADIR
-                        datadir of the bot
+                        datadir to use
+  -x COMMAND, --execute=COMMAND
+                        command to execute
+  -c CHANNEL, --channel=CHANNEL
+                        channel to operate on
+  -n NAME, --name=NAME  name of the console bot
   -l LOGLEVEL, --loglevel=LOGLEVEL
-                        loglevel of the bot
-  --name=NAME           bot's name
-  -x COMMAND, --exec=COMMAND
-                        give a command to execute
+                        logging level
 
 .SH "SEE ALSO"
 The program is documented fully on http://jsonbot.appspot.com/docs

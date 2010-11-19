@@ -58,7 +58,7 @@ class Config(LazyDict):
             try: self.fromfile(self.cfile)
             except IOError:
                 logging.warn("can't read config from %s" % self.cfile) 
-                import waveapi
+                #import waveapi
                 from persist import Persist
                 self.jsondb = Persist(self.cfile)
                 self.update(self.jsondb.data)
