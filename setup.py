@@ -4,6 +4,42 @@
 
 from distutils.core import setup
 
+import os
+
+upload = []
+
+def uploadfiles(dir):
+    upl = []
+
+    for file in os.listdir(dir):
+        if not file or file.startswith('.'):
+            continue
+        d = dir + os.sep + file
+        if not os.path.isdir(d):
+            if file.endswith(".pyc"):
+                continue
+            upl.append(d)
+
+    return upl
+
+def uploadlist(dir):
+    upl = []
+
+    for file in os.listdir(dir):
+        if not file or file.startswith('.'):
+            continue
+        d = dir + os.sep + file
+        if os.path.isdir(d):
+            upl.extend(uploadlist(d))
+        else:
+            if file.endswith(".pyc"):
+                continue
+            upl.append(d)
+
+    return upl
+
+upload = uploadlist('gaeupload')
+
 setup(
     name='jsonbot',
     version='0.5rc3',
@@ -43,19 +79,8 @@ setup(
               'commonplugs',
               'socketplugs', 
               'gaeplugs',
-              'tweepy',
-              'gozerdata',
-              'gozerdata.examples',
-              'gozerdata.myplugs',
-              'gaeupload',
-              'gaeupload.webapp2',
-              'gaeupload.assets',
-              'gaeupload.templates',
-              'gaeupload.waveapi',
-              'gaeupload.waveapi.oauth',
-              'gaeupload.waveapi.simplejson',
-              'gaeupload.gadgets'],
-    package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs', 'gozerdata', 'gaeupload', 'tweepy']},
+              'tweepy'],
+    package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs', 'tweepy']},
     long_description = """ JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. IRC/Console/XMPP (shell) Wave/Web/XMPP (GAE) implementations provided. """,
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -67,6 +92,18 @@ setup(
         'Operating System :: Other OS',
         'Programming Language :: Python',
         'Topic :: Communications :: Chat',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-    ],
+        'Topic :: Software Development :: Libraries :: Python Modules'],
+    data_files=[('gozerdata', uploadlist('gozerdata')),
+                ('gozerdata' + os.sep + 'examples', uploadlist('gozerdata' + os.sep + 'examples')),
+                ('gozerdata' + os.sep + 'myplugs', uploadlist('gozerdata' + os.sep + 'myplugs')),
+                ('simplejson', uploadlist('simplejson')),
+                ('tweepy', uploadlist('tweepy')),
+                ('gaeupload', uploadfiles('gaeupload')),
+                ('gaeupload' + os.sep + 'webapp2', uploadlist('gaeupload' + os.sep + 'webapp2')),
+                ('gaeupload' + os.sep + 'assets', uploadlist('gaeupload' + os.sep + 'assets')),
+                ('gaeupload' + os.sep + 'templates', uploadlist('gaeupload' + os.sep +'templates')),
+                ('gaeupload' + os.sep + 'waveapi', uploadlist('gaeupload' + os.sep + 'waveapi')),
+                ('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth')),
+                ('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson')),
+                ('gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets'))],  
 )
