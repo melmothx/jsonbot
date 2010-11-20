@@ -248,7 +248,7 @@ class BotBase(LazyDict):
         event.prepare(self)
         self.status = "callback"
         starttime = time.time()
-        msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)
+        msg = "%s - %s - %s - %s" % (self.name, event.auth, event.how, event.cbtype)
         if event.how == "background": logging.debug(msg)
         else: logging.warn(msg)
         logging.debug("botbase - remote - %s" % event.dump())
@@ -269,7 +269,7 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         if event.isremote(): self.doremote(event) ; return
-        msg = "%s - %s - %s - %s" % (self.name.upper(), event.cbtype, event.auth, event.how)
+        msg = "%s - %s - %s - %s" % (self.name, event.auth, event.how, event.cbtype)
         if event.cbtype in ['NOTICE']: logging.warn("%s - %s - %s" % (self.name, event.nick, event.txt))
         else:
             try:
@@ -280,7 +280,8 @@ class BotBase(LazyDict):
                 if event.cbtype in ['PING', 'PRESENCE'] or event.how == "background": 
                     logging.debug("======== start handling local event ========")
                     logging.debug(msg)
-                else: logging.warn("======== start handling local event ========") ; logging.warn(msg)
+                else: logging.warn("======== start handling local event ========") ; logging.info(msg)
+        logging.info(event.dump())
         event.prepare(self)
         self.status = "callback"
         starttime = time.time()

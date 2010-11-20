@@ -72,7 +72,7 @@ class EventBase(LazyDict):
         self.origin = self.channel
         self.origtxt = self.txt
         self.makeargs()
-        logging.debug("%s - prepared event - %s" % (self.cbtype, self.dump()))
+        logging.debug("%s - prepared event - %s" % (self.auth, self.cbtype))
 
     def bind(self, bot=None, user=None, chan=None):
         """ bind event.bot event.user and event.chan to execute a command on it. """
