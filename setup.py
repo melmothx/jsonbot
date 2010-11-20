@@ -94,7 +94,7 @@ setup(
         'Topic :: Communications :: Chat',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     data_files=[('gozerdata', uploadlist('gozerdata')),
-                ('gozerdata' + os.sep + 'examples', uploadlist('gozerdata' + os.sep + 'examples')),
+                ('gozerdata' + os.sep + 'examples', uploadfiles('gozerdata' + os.sep + 'examples')),
                 ('gozerdata' + os.sep + 'myplugs', uploadlist('gozerdata' + os.sep + 'myplugs')),
                 ('simplejson', uploadlist('simplejson')),
                 ('tweepy', uploadlist('tweepy')),

@@ -99,16 +99,15 @@ def sed(source, target):
 
 ## doit
 
-source = pkg_resources.resource_filename("gaeupload", '')
+try: source = pkg_resources.resource_filename("gaeupload", '')
+except ImportError: source = "/usr/local/gaeupload"
 print source
 copyover(source, release)
-source = pkg_resources.resource_filename("gozerdata", '')
+try: source = pkg_resources.resource_filename("gozerdata", '')
+except ImportError: source = "/usr/local/gozerdata"
 print source
 copyover(source, release + os.sep + "gozerdata")
 print source
-#source = pkg_resources.resource_filename("tests", '')
-#print source
-#copyover(source, release + os.sep + 'tests')
 source = pkg_resources.resource_filename('gozerlib', '')
 print source
 copyover(source, release + os.sep + 'gozerlib')
@@ -151,8 +150,13 @@ except (OSError, IOError), ex:
         print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
         os._exit(1)
     except OSError, ex:
-        print "ERROR: can't copy files to ~/jsonregs %s" % str(ex)
-        os._exit(1)
+        try:
+            copyover('/usr/local/gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
+            print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
+            os._exit(1)
+        except OSError, ex:
+            print "ERROR: can't copy files to ~/jsonregs %s" % str(ex)
+            os._exit(1)
 
 if os.path.isdir('docs'):
     copyover('docs', release + os.sep + 'docs')
