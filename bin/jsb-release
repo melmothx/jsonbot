@@ -106,9 +106,9 @@ source = pkg_resources.resource_filename("gozerdata", '')
 print source
 copyover(source, release + os.sep + "gozerdata")
 print source
-source = pkg_resources.resource_filename("tests", '')
-print source
-copyover(source, release + os.sep + 'tests')
+#source = pkg_resources.resource_filename("tests", '')
+#print source
+#copyover(source, release + os.sep + 'tests')
 source = pkg_resources.resource_filename('gozerlib', '')
 print source
 copyover(source, release + os.sep + 'gozerlib')

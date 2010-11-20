@@ -2,43 +2,7 @@
 #
 #
 
-from setuptools import setup
-import glob
-import os
-
-upload = []
-
-def uploadfiles(dir):
-    upl = []
-    
-    for file in os.listdir(dir):
-        if not file or file.startswith('.'):
-            continue
-        d = dir + os.sep + file
-        if not os.path.isdir(d):
-            if file.endswith(".pyc"):
-                continue
-            upl.append(d)   
-
-    return upl
-
-def uploadlist(dir):
-    upl = []
-    
-    for file in os.listdir(dir):
-        if not file or file.startswith('.'):
-            continue
-        d = dir + os.sep + file
-        if os.path.isdir(d):
-            upl.extend(uploadlist(d))
-        else:
-            if file.endswith(".pyc"):
-                continue
-            upl.append(d)   
-
-    return upl
-
-upload = uploadlist('gaeupload')
+from distutils.core import setup
 
 setup(
     name='jsonbot',
@@ -78,10 +42,21 @@ setup(
               'waveplugs',
               'commonplugs',
               'socketplugs', 
-              'gaeplugs'],
-    package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs']},
+              'gaeplugs',
+              'tweepy',
+              'gozerdata',
+              'gozerdata.examples',
+              'gozerdata.myplugs',
+              'gaeupload',
+              'gaeupload.webapp2',
+              'gaeupload.assets',
+              'gaeupload.templates',
+              'gaeupload.waveapi',
+              'gaeupload.waveapi.oauth',
+              'gaeupload.waveapi.simplejson',
+              'gaeupload.gadgets'],
+    package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs', 'gozerdata', 'gaeupload', 'tweepy']},
     long_description = """ JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. IRC/Console/XMPP (shell) Wave/Web/XMPP (GAE) implementations provided. """,
-    install_requires = ['simplejson>1.0'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
@@ -94,19 +69,4 @@ setup(
         'Topic :: Communications :: Chat',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-   zip_safe=False, 
-   test_suite = 'nose.collector',
-   data_files=[('gozerdata', uploadlist('gozerdata')),
-               ('gozerdata' + os.sep + 'examples', uploadlist('gozerdata' + os.sep + 'examples')),
-               ('gozerdata' + os.sep + 'myplugs', uploadlist('gozerdata' + os.sep + 'myplugs')),
-               ('simplejson', uploadlist('simplejson')),
-               ('tweepy', uploadlist('tweepy')),
-               ('gaeupload', uploadfiles('gaeupload')),
-               ('gaeupload' + os.sep + 'webapp2', uploadlist('gaeupload' + os.sep + 'webapp2')),
-               ('gaeupload' + os.sep + 'assets', uploadlist('gaeupload' + os.sep + 'assets')),
-               ('gaeupload' + os.sep + 'templates', uploadlist('gaeupload' + os.sep +'templates')),
-               ('gaeupload' + os.sep + 'waveapi', uploadlist('gaeupload' + os.sep + 'waveapi')),
-               ('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth')),
-               ('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson')),
-               ('gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets'))],
 )
