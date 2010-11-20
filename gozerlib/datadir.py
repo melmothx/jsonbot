@@ -43,25 +43,41 @@ def makedirs(ddir=None):
             import pkg_resources
             source = pkg_resources.resource_filename('gozerdata', '')
             shutil.copytree(source, ddir)
-        except ImportError: logging.error("datadir - failed to copy gozerdata")
+        except ImportError: 
+            try:
+                source = "/usr/local/gozerdata"
+                shutil.copytree(source, ddir)
+            except: logging.error("datadir - failed to copy gozerdata")
     if not os.path.isdir(ddir + os.sep + 'myplugs'):
         try:
             import pkg_resources
             source = pkg_resources.resource_filename('gozerdata', 'myplugs')
             shutil.copytree(source, ddir + os.sep + 'myplugs')
-        except ImportError: logging.error("datadir - failed to copy gozerdata/myplugs")
+        except ImportError: 
+            try:
+                source = "/usr/local/gozerdata/myplugs"
+                shutil.copytree(source, ddir + os.sep + "myplugs")
+            except: logging.error("datadir - failed to copy gozerdata/myplugs")
     if not os.path.isdir(ddir + os.sep + 'examples'):
         try:
             import pkg_resources
             source = pkg_resources.resource_filename('gozerdata', 'examples')
             shutil.copytree(source, ddir + os.sep + 'examples')
-        except ImportError: logging.error("datadir - failed to copy gozerdata/examples")
+        except ImportError: 
+            try:
+                source = "/usr/local/gozerdata/examples"
+                shutil.copytree(source, ddir + os.sep + "examples")
+            except: logging.error("datadir - failed to copy gozerdata/examples")
     if not os.path.isdir(ddir + os.sep + 'config'):
         try:
             import pkg_resources
             source = pkg_resources.resource_filename('gozerdata', 'examples')
             shutil.copytree(source, ddir + os.sep + 'config')
-        except ImportError: logging.error("datadir - failed to copy gozerdata/examples")
+        except ImportError: 
+            try:
+                source = "/usr/local/gozerdata/examples"
+                shutil.copytree(source, ddir + os.sep + "config")
+            except: logging.error("datadir - failed to copy gozerdata/myplugs")
     try:
         import pkg_resources
         source = pkg_resources.resource_filename('commonplugs', '')
