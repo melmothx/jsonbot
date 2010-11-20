@@ -35,18 +35,9 @@ try:
     ongae = True
 except ImportError: plugin_packages = ['gozerlib.plugs', 'commonplugs', 'socketplugs', 'myplugs']
 
-#default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug', 'gozerlib.plugs.core', 'gozerlib.plugs.user']
 default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug']
 
-#plugs = _import("gozerlib.plugs")
-#if plugs:
-#    for plug in plugs.__plugs__:
-#        mod = "gozerlib.plugs.%s" % plug
-#        if mod not in default_plugins: default_plugins.append("gozerlib.plugs.%s" % plug)
-
 logging.warn("boot - default plugins are %s" % str(default_plugins))
-
-# these are set in gozerlib/boot.py
 
 loaded = False
 cmndtable = None 
