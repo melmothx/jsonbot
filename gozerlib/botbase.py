@@ -129,21 +129,29 @@ class BotBase(LazyDict):
             defaultrunner.start()
             tickloop.start(self)
 
+    def _resumedata(self):
+       """ overload this. """ 
+       pass
+
     def enable(self, modname):
+        """ enable plugin given its modulename. """
         try: self.cfg.blacklist and self.cfg.blacklist.remove(modname)
         except ValueError: pass           
         if self.cfg.loadlist and modname not in self.cfg.loadlist: self.cfg.loadlist.append(modname)
         self.cfg.save()
 
     def disable(self, modname):
+        """ disable plugin given its modulename. """
         if self.cfg.blacklist and modname not in self.cfg.blacklist: self.cfg.blacklist.append(modname)
         if self.cfg.loadlist and modname in self.cfg.loadlist: self.cfg.loadlist.remove(modname)
         self.cfg.save()
 
     def put(self, event):
+        """ put an event on the worker queue. """
         self.inqueue.put_nowait(event)
 
     def broadcast(self, txt):
+        """ broadcast txt to all joined channels. """
         for chan in self.state['joinedchannels']:
             self.say(chan, txt)
 
@@ -306,13 +314,14 @@ class BotBase(LazyDict):
             if userhost in self.cfg.owner: return True
         return False
 
-    def exit(self):
+    def exit(self, stop=True):
         """ exit the bot. """ 
         logging.warn("%s - exit" % self.name)
         if not self.stopped: self.quit()
-        self.stopped = True   
-        self.stopreadloop = True  
-        self.connected = False
+        if stop:
+            self.stopped = True   
+            self.stopreadloop = True  
+            self.connected = False
         self.put(None)
         self.tickqueue.put_nowait('go')
         self.outqueue.put_nowait(None)

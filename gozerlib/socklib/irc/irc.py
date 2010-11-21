@@ -302,6 +302,7 @@ class Irc(BotBase):
                 return 1
         except KeyError:
             pass
+        self.stopped = False
         try:
             logging.info("%s - resume - file descriptor is %s" % (self.name, data['fd']))
             fd = int(data['fd'])
