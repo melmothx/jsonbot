@@ -82,7 +82,8 @@ setup(
               'commonplugs',
               'socketplugs', 
               'gaeplugs',
-              'tweepy'],
+              'tweepy',
+              'simplejson'],
     package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs', 'tweepy']},
     long_description = """ JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. IRC/Console/XMPP (shell) Wave/Web/XMPP (GAE) implementations provided. """,
     classifiers=[
@@ -108,6 +109,5 @@ setup(
                 ('gaeupload' + os.sep + 'waveapi', uploadlist('gaeupload' + os.sep + 'waveapi')),
                 ('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth')),
                 ('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson')),
-                ('gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets')),  
-                ('', 'Changelog')],
+                ('gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets'))],  
 )
