@@ -108,5 +108,6 @@ setup(
                 ('gaeupload' + os.sep + 'waveapi', uploadlist('gaeupload' + os.sep + 'waveapi')),
                 ('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth')),
                 ('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson')),
-                ('gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets'))],  
+                ('gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets')),  
+                ('', 'Changelog')],
 )
