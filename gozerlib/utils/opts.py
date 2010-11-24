@@ -130,13 +130,24 @@ def makeconsoleconfig(type, opts, botname=None):
     else: cfg.loglevel = cfg.loglevel or "error"
     return cfg
 
-def makeircconfig(type, opts, botname=None):
+def makeircconfig(type=None, opts=None, botname=None):
     """ make config file based on options. """
-    if not botname: botname = opts.name or "default-%s" % str(type)
+    if not opts: botname = botname or "default-irc"
+    else:
+        if not botname: botname = opts.name or "default-irc"
     botname = stripname(botname)
     cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
-    cfg.type = type
+    cfg.type = 'irc'
     cfg.botname = botname
+    if not opts:
+        cfg.password = ""
+        cfg.ssl = False
+        cfg.port = 6667
+        cfg.server = "localhost"
+        cfg.owner = []
+        cfg.loglevel = "warn"
+        cfg.ipv6 = False
+        return cfg          
     if opts.password: cfg.password = opts.password
     if opts.ssl: cfg.ssl = True
     if opts.nossl: cfg.ssl = False
@@ -151,13 +162,24 @@ def makeircconfig(type, opts, botname=None):
     if opts.ipv6: cfg.ipv6 = opts.ipv6
     return cfg
 
-def makexmppconfig(type, opts, botname=None):
+def makexmppconfig(type, opts=None, botname=None):
     """ make config file based on options. """
-    if not botname: botname = opts.name or "default-%s" % str(type)
+    if not opts: botname = botname or "default-sxmpp"
+    else:
+        if not botname: botname = opts.name or "default-sxmpp"
     botname = stripname(botname)
     cfg = Config('fleet' + os.sep + botname + os.sep + 'config')
-    cfg.type = type
+    cfg.type = "sxmpp"
     cfg.botname = botname
+    if not opts:
+        cfg.user = ""
+        cfg.host = ""
+        cfg.password = ""
+        cfg.server = ""
+        cfg.jid = ""
+        cfg.owner = []
+        cfg.loglevel = "warn" 
+        return cfg        
     if opts.user: cfg.user = opts.user
     else: cfg.user = cfg.user or "%s@jsonbot.org" % cfg.uuid
     if opts.user:
