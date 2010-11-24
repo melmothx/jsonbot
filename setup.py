@@ -58,6 +58,7 @@ setup(
     description='The JSON everywhere bot!',
     license='MIT',
     scripts = ['bin/jsb',
+               'bin/jsb-init',
                'bin/jsb-irc', 
                'bin/jsb-fleet', 
                'bin/jsb-xmpp', 

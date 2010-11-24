@@ -53,6 +53,7 @@ start()
         then
         	su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>&1 1>/dev/null &"
 	else
+                jsb-init -d $DATADIR
         	rm -rf /etc/jsonbot/config
 		ln -s /var/lib/jsonbot/config /etc/jsonbot/config
 		su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>&1 1>/dev/null &"
