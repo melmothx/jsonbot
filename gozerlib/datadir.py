@@ -28,7 +28,7 @@ except AttributeError: logging.info("datadir - skipping makedirs") ; datadir = "
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     global datadir
-    if 'debian' in os.uname()[1] and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsonbot"
+    if not ddir and 'debian' in os.uname()[1] and getpass.getuser() == 'jsonbot': ddir = "/var/lib/jsonbot"
     else:
         ddir = ddir or datadir
     datadir = ddir

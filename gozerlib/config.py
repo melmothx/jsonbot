@@ -47,8 +47,8 @@ class Config(LazyDict):
     def __init__(self, filename=None, verbose=False, input={}, ddir=None, *args, **kw):
         LazyDict.__init__(self, input, *args, **kw)
         self.filename = filename or 'mainconfig'
-        if 'debian' in os.uname()[1] and getpass.getuser() == 'jsonbot':
-            ddir = "/etc/jsonbot"
+        #if 'debian' in os.uname()[1] and getpass.getuser() == 'jsonbot':
+        #    ddir = "/etc/jsonbot"
         datadir = ddir or getdatadir()
         self.dir = datadir + os.sep + 'config'
         if datadir not in self.filename: self.cfile = self.dir + os.sep + self.filename

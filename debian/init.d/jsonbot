@@ -11,9 +11,9 @@
 ### END INIT INFO
 
 NAME=jsb-fleet
-DESC="The JSON everywhere bot!"
+DESC="JSONBOT"
 DATADIR=/var/lib/jsonbot
-PIDFILE=$DATADIR/run/jsonbot.pid
+PIDFILE=/var/run/jsonbot.pid
 LOGFILE=/var/log/jsonbot.log
 
 PID=`cat $PIDFILE` 2>/dev/null
@@ -49,14 +49,14 @@ stop()
 start()
 {
 	status && exit 1 # already running
-        if [ -e $DATADIR ]
+        if [ -f "/etc/jsonbot/config" ]		
         then
-          cd $DATADIR
-        else
-          mkdir -p $DATADIR
-          cd $DATADIR
-        fi
-        su $RUNUSER -c "$NAME $ARGSTRING >> /var/log/jsonbot.log 2>&1 &"
+        	su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>&1 1>/dev/null &"
+	else
+        	rm -rf /etc/jsonbot/config
+		ln -s /var/lib/jsonbot/config /etc/jsonbot/config
+		su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>&1 1>/dev/null &"
+	fi
 }
 
 case "$1" in
