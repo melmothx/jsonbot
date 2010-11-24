@@ -20,8 +20,7 @@ LEVELS = {'debug': logging.DEBUG,
           'error': logging.ERROR,
           'critical': logging.CRITICAL}
 
-if not os.path.isdir("/var/log/jsonbot"): LOGDIR = os.getcwd() + os.sep + "jsonbot.logs"
-else: LOGDIR = "/var/log/jsonbot" + os.sep + getpass.getuser()
+LOGDIR = os.path.expanduser("~") + os.sep + ".jsonbot" + os.sep + "botlogs"
 
 try:
     if not os.path.isdir(LOGDIR): os.mkdir(LOGDIR)
