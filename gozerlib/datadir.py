@@ -11,6 +11,7 @@ import os
 import shutil
 import logging
 import os
+import getpass
 
 ## the global datadir
 
@@ -27,7 +28,9 @@ except AttributeError: logging.info("datadir - skipping makedirs") ; datadir = "
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     global datadir
-    ddir = ddir or datadir
+    if 'debian' in os.uname()[1] and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsonbot"
+    else:
+        ddir = ddir or datadir
     datadir = ddir
     logging.warn("datadir - %s" % datadir)
     if isgae: return
@@ -45,7 +48,7 @@ def makedirs(ddir=None):
             shutil.copytree(source, ddir)
         except ImportError: 
             try:
-                source = "/usr/local/gozerdata"
+                source = "/usr/local/jsonbot/gozerdata"
                 shutil.copytree(source, ddir)
             except: logging.error("datadir - failed to copy gozerdata")
     if not os.path.isdir(ddir + os.sep + 'myplugs'):
@@ -89,8 +92,6 @@ def makedirs(ddir=None):
         source = pkg_resources.resource_filename('commonplugs', '')
         shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
     except ImportError: pass
-    if not os.path.isdir('/var/log/jsonbot') and not os.path.isdir(os.getcwd() + os.sep + 'jsonbot.logs'): 
-        os.mkdir(os.getcwd() + os.sep + 'jsonbot.logs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/examples/'): os.mkdir(ddir + '/examples/')

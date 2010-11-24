@@ -15,6 +15,7 @@ os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 from gozerlib.utils.popen import gozerpopen
 from gozerlib.datadir import getdatadir
 from gozerlib.version import getversion
+from gozerlib.config import getmainconfig
 
 print getversion("UPLOAD")
 
@@ -36,7 +37,8 @@ opts.args = args
 if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 ddir = opts.datadir or getdatadir()
-homedir = os.path.expanduser("~")
+if getmainconfig().debian: homedir = "/var/spool/jsonbot"
+else: homedir = os.path.expanduser("~")
 try: target = opts.args[0]
 except IndexError: print "jsb-upload <appid>" ; os._exit(1)
 

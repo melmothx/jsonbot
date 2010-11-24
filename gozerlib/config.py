@@ -27,6 +27,7 @@ import thread
 import logging
 import uuid
 import thread
+import getpass
 
 ## locks
 
@@ -43,10 +44,12 @@ class Config(LazyDict):
 
     """
 
-    def __init__(self, filename=None, verbose=False, input={}, *args, **kw):
+    def __init__(self, filename=None, verbose=False, input={}, ddir=None, *args, **kw):
         LazyDict.__init__(self, input, *args, **kw)
         self.filename = filename or 'mainconfig'
-        datadir = getdatadir()
+        if 'debian' in os.uname()[1] and getpass.getuser() == 'jsonbot':
+            ddir = "/etc/jsonbot"
+        datadir = ddir or getdatadir()
         self.dir = datadir + os.sep + 'config'
         if datadir not in self.filename: self.cfile = self.dir + os.sep + self.filename
         else: self.cfile = self.filename
@@ -206,6 +209,7 @@ class Config(LazyDict):
             self.setdefault('floodallow', 0)
             self.setdefault('auto_register', 0)
             self.setdefault('ondemand', 1)
+            self.setdefault('debian', 0)
         self['createdfrom'] = whichmodule()
 
     def reload(self):
@@ -217,3 +221,10 @@ def ownercheck(userhost):
     if not userhost: return False
     if userhost in cfg['owner']: return True
     return False
+
+mainconfig = None
+
+def getmainconfig():
+    global mainconfig
+    if not mainconfig: mainconfig = Config()
+    return mainconfig
