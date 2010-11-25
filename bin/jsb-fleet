@@ -21,6 +21,8 @@ import time
 
 ## options parser
 
+from gozerlib.utils.opts import makefleetopts
+
 opts = makefleetopts()
 
 ## loglevel
@@ -35,7 +37,6 @@ from gozerlib.datadir import makedirs
 from gozerlib.boot import boot
 from gozerlib.utils.log import setloglevel
 from gozerlib.utils.mainloop import mainloop
-from gozerlib.utils.opts import makefleetopts
 from gozerlib.users import users_boot
 import gozerlib
 
