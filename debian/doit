@@ -1,0 +1,14 @@
+#!/bin/sh
+
+echo "making dirs"
+if [ -n /etc/jsonbot ] ; then mkdir /etc/jsonbot fi
+if [ -n /var/log/jsonbot ] ; then mkdir /var/log/jsonbot fi
+echo "running setup.py"
+python setup-debian.py install
+echo "copying files"
+cp debian/init.d/jsonbot /etc/init.d/
+cp debian/default/jsonbot /etc/default/
+cd debian/man
+gzip *.1
+cp *.gz /usr/share/man/man1
+echo "done"
