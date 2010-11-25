@@ -12,8 +12,6 @@ sys.path.insert(0, os.getcwd())
 
 from gozerlib.version import getversion
 
-print getversion("INIT")
-
 from optparse import OptionParser
 parser = OptionParser(usage='usage: %prog [options', version=getversion("INIT"))
 parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir')
@@ -24,8 +22,10 @@ opts.args = args
 from gozerlib.utils.log import setloglevel
 setloglevel(opts.loglevel or "error")
 
-from gozerlib.datadir import makedirs
+import logging
+logging.warn(getversion("INIT"))
 
+from gozerlib.datadir import makedirs
 makedirs(opts.datadir)
 
 from gozerlib.utils.opts import makeircconfig, makexmppconfig

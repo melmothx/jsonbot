@@ -12,7 +12,7 @@
 
 NAME=jsb-fleet
 DESC="JSONBOT"
-DATADIR=/var/lib/jsonbot
+DATADIR=/var/cache/jsonbot
 PIDFILE=/var/run/jsonbot.pid
 
 PID=`cat $PIDFILE` 2>/dev/null
@@ -48,14 +48,14 @@ stop()
 start()
 {
 	status && exit 1 # already running
-        if [ -f "/etc/jsonbot/config" ]		
+        if [ -f "/var/cache/jsonbot/config/mainconfig" ]		
         then
-        	su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>&1 1>/dev/null &"
+        	su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>/dev/null &"
 	else
                 su $RUNUSER -c "jsb-init -d $DATADIR"
         	rm -rf /etc/jsonbot/config
-		ln -s /var/lib/jsonbot/config /etc/jsonbot/config
-		su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>&1 1>/dev/null &"
+		ln -s /var/cache/jsonbot/config /etc/jsonbot/config
+		su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>/dev/null &"
 	fi
 }
 

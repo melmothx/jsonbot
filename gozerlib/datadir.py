@@ -28,7 +28,7 @@ except AttributeError: logging.info("datadir - skipping makedirs") ; datadir = "
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     global datadir
-    if not ddir and 'debian' in os.uname()[1] and getpass.getuser() == 'jsonbot': ddir = "/var/lib/jsonbot"
+    if not ddir and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsonbot"
     else:
         ddir = ddir or datadir
     datadir = ddir
@@ -48,7 +48,7 @@ def makedirs(ddir=None):
             shutil.copytree(source, ddir)
         except ImportError: 
             try:
-                source = "/usr/local/jsonbot/gozerdata"
+                source = "/var/lib/jsonbot/gozerdata"
                 shutil.copytree(source, ddir)
             except: logging.error("datadir - failed to copy gozerdata")
     if not os.path.isdir(ddir + os.sep + 'myplugs'):
@@ -58,7 +58,7 @@ def makedirs(ddir=None):
             shutil.copytree(source, ddir + os.sep + 'myplugs')
         except ImportError: 
             try:
-                source = "/usr/local/gozerdata/myplugs"
+                source = "/var/lib/jsonbot/gozerdata/myplugs"
                 shutil.copytree(source, ddir + os.sep + "myplugs")
             except: logging.error("datadir - failed to copy gozerdata/myplugs")
     if not os.path.isdir(ddir + os.sep + 'examples'):
@@ -68,7 +68,7 @@ def makedirs(ddir=None):
             shutil.copytree(source, ddir + os.sep + 'examples')
         except ImportError: 
             try:
-                source = "/usr/local/gozerdata/examples"
+                source = "/var/lib/jsonbot/gozerdata/examples"
                 shutil.copytree(source, ddir + os.sep + "examples")
             except: logging.error("datadir - failed to copy gozerdata/examples")
     if not os.path.isdir(ddir + os.sep + 'config'):
@@ -78,7 +78,7 @@ def makedirs(ddir=None):
             shutil.copytree(source, ddir + os.sep + 'config')
         except ImportError: 
             try:
-                source = "/usr/local/gozerdata/examples"
+                source = "/var/lib/jsonbot/gozerdata/examples"
                 shutil.copytree(source, ddir + os.sep + "config")
             except: logging.error("datadir - failed to copy gozerdata/myplugs")
     try:
@@ -92,6 +92,7 @@ def makedirs(ddir=None):
         source = pkg_resources.resource_filename('commonplugs', '')
         shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
     except ImportError: pass
+    if not os.path.isdir(homedir + os.sep + '.jsonbot' + os.sep +'botlogs'): os.mkdir(homedir + os.sep + '.jsonbot' + os.sep + 'botlogs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/examples/'): os.mkdir(ddir + '/examples/')
