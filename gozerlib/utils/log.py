@@ -19,7 +19,8 @@ LEVELS = {'debug': logging.DEBUG,
           'warn': logging.WARNING,
           'error': logging.ERROR,
           'critical': logging.CRITICAL}
-if 'debian' in os.uname()[1] and getpass.getuser() == "jsonbot": LOGDIR = "/var/log/jsonbot"
+
+if getpass.getuser() == "jsonbot": LOGDIR = "/var/log/jsonbot"
 else: LOGDIR = os.path.expanduser("~") + os.sep + ".jsonbot" + os.sep + "botlogs"
 
 try:

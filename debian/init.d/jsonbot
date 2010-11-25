@@ -14,7 +14,6 @@ NAME=jsb-fleet
 DESC="JSONBOT"
 DATADIR=/var/lib/jsonbot
 PIDFILE=/var/run/jsonbot.pid
-LOGFILE=/var/log/jsonbot.log
 
 PID=`cat $PIDFILE` 2>/dev/null
 
