@@ -126,7 +126,7 @@ class Commands(LazyDict):
         logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
             if bot.isgae or wait:
-                if bot.isgae and not event.isremote and (target.threaded or event.threaded):
+                if bot.isgae and not event.notask and (target.threaded or event.threaded):
                     logging.warn("commands - LAUNCHING AS TASK")
                     from gozerlib.threads import start_botevent
                     start_botevent(bot, event)
