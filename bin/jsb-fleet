@@ -14,18 +14,6 @@ sys.path.insert(0, os.getcwd())
 
 from gozerlib.version import getversion
 
-print getversion('FLEET')
-
-## gozerlib imports
-
-from gozerlib.datadir import makedirs
-from gozerlib.boot import boot
-from gozerlib.utils.log import setloglevel
-from gozerlib.utils.mainloop import mainloop
-from gozerlib.utils.opts import makefleetopts
-from gozerlib.users import users_boot
-import gozerlib
-
 ## basic imports
 
 import logging
@@ -33,12 +21,24 @@ import time
 
 ## options parser
 
+from gozerlib.utils.opts import makefleetopts
+
 opts = makefleetopts()
 
 ## loglevel
 
 from gozerlib.utils.log import setloglevel
 setloglevel(opts.loglevel or "warning")
+logging.warn(getversion('FLEET'))
+
+## gozerlib imports
+
+from gozerlib.datadir import makedirs
+from gozerlib.boot import boot
+from gozerlib.utils.log import setloglevel
+from gozerlib.utils.mainloop import mainloop
+from gozerlib.users import users_boot
+import gozerlib
 
 ## start the fleet
 

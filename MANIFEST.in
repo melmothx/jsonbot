@@ -2,3 +2,5 @@ recursive-include debian *
 recursive-include gaeupload *
 recursive-include gozerdata/examples *
 recursive-include gozerdata/myplugs *
+include           Changelog
+include           setup-debian.py

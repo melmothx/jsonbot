@@ -9,7 +9,7 @@ except ImportError:
 
 import os
 
-target = "/usr/local/jsonbot"
+target = "/var/lib/jsonbot"
 
 upload = []
 
@@ -47,7 +47,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.6b1',
+    version='0.5rc4',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
@@ -85,8 +85,7 @@ setup(
               'commonplugs',
               'socketplugs', 
               'gaeplugs',
-              'tweepy',
-              'simplejson'],
+              'tweepy'],
     package_dir={'jsonbot': ['gozerlib', 'waveplugs', 'commonplugs', 'socketplugs', 'tweepy']},
     long_description = """ JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. IRC/Console/XMPP (shell) Wave/Web/XMPP (GAE) implementations provided. """,
     classifiers=[
@@ -103,7 +102,6 @@ setup(
     data_files=[(target + os.sep + 'gozerdata', uploadlist('gozerdata')),
                 (target + os.sep + 'gozerdata' + os.sep + 'examples', uploadfiles('gozerdata' + os.sep + 'examples')),
                 (target + os.sep + 'gozerdata' + os.sep + 'myplugs', uploadlist('gozerdata' + os.sep + 'myplugs')),
-                (target + os.sep + 'simplejson', uploadlist('simplejson')),
                 (target + os.sep + 'tweepy', uploadlist('tweepy')),
                 (target + os.sep + 'gaeupload', uploadfiles('gaeupload')),
                 (target + os.sep + 'gaeupload' + os.sep + 'webapp2', uploadlist('gaeupload' + os.sep + 'webapp2')),
