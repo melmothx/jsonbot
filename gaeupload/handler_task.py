@@ -27,8 +27,8 @@ import logging
 
 ## vars
 
-periodicals =  ['commonplugs.rss', ]
-mountpoints = ['rss', ]
+periodicals =  ['commonplugs.rss', 'gozerlib.plugs.botevent']
+mountpoints = ['rss', 'botevent']
 
 ##
 
@@ -56,7 +56,7 @@ class TaskHandler(webapp.RequestHandler):
                 if not 'wsgi' in name:
                     inputdict[name] = value
 
-            taskmanager.dispatch(taskname, inputdict)
+            taskmanager.dispatch(taskname, inputdict, self.request, self.response)
 
         except Exception, ex:
             handle_exception()
@@ -78,7 +78,7 @@ class TaskHandler(webapp.RequestHandler):
                 if not 'wsgi' in name:
                     inputdict[name] = value
 
-            taskmanager.dispatch(taskname, inputdict)
+            taskmanager.dispatch(taskname, inputdict, self.request, self.response)
 
         except Exception, ex:
             handle_exception()

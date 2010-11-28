@@ -68,8 +68,9 @@ class BotBase(LazyDict):
         else: self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
         logging.warn("botbase - name is %s" % self.botname)
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
-        if cfg: self.update(cfg)
-        self.cfg = cfg or Config(self.fleetdir + os.sep + u'config')
+        if cfg: self.cfg = Config(self.fleetdir + os.sep + u'config', input=cfg)
+        else: self.cfg = Config(self.fleetdir + os.sep + u'config')
+        self.update(self.cfg)
         LazyDict.__init__(self)
         self.curevent = None
         self.inqueue = Queue.Queue()

@@ -201,3 +201,8 @@ def handle_testuuid(bot, ievent):
     ievent.reply(uuid.uuid4())
 
 cmnds.add('test-uuid', handle_testuuid, 'OPER')
+
+def handle_testthreaded(bot, ievent):
+    ievent.reply("yoooo!")
+
+cmnds.add("test-threaded", handle_testthreaded, "OPER", threaded=True)

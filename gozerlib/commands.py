@@ -126,11 +126,16 @@ class Commands(LazyDict):
         logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
             if bot.isgae or wait:
-                target.func(bot, event)
-                if event.closequeue and event.queues:
-                    for q in event.queues:
-                        q.put_nowait(None)
-                    event.outqueue.put_nowait(None)
+                if bot.isgae and (target.threaded or event.threaded):
+                    logging.warn("commands - LAUNCHING AS TASK")
+                    from gozerlib.threads import start_botevent
+                    start_botevent(bot, event)
+                else:
+                    target.func(bot, event)
+                    if event.closequeue and event.queues:
+                        for q in event.queues:
+                            q.put_nowait(None)
+                        event.outqueue.put_nowait(None)
             else:
                 if target.threaded:
                     logging.warning("commands - launching thread for %s" % event.usercmnd)

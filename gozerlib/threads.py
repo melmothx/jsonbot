@@ -15,6 +15,7 @@ import re
 import time
 import thread
 import logging
+import uuid
 
 ## defines
 
@@ -32,6 +33,29 @@ def task(func):
     except ImportError: pass
     return task
 
+## BotEvent class
+
+try: 
+    from google.appengine.api.labs.taskqueue import Task
+    from simplejson import dumps
+
+    class BotEvent(Task):
+        pass
+
+    def start_botevent(bot, event):
+        """ start a new botevent task. """
+        try:
+            name = event.usercmnd + "-" + str(uuid.uuid4())
+            payload = dumps({ 'bot': bot.tojson(),
+                        'event': event.tojson()
+                      })
+            be = BotEvent(name=name, payload=payload, url="/tasks/botevent")
+            be.add()
+        except Exception, ex:
+            handle_exception()
+except ImportError: logging.info("No BotEvent defined.")
+except Exception, ex: handle_exception()
+
 ## Botcommand class
 
 class Botcommand(threading.Thread):
@@ -46,6 +70,7 @@ class Botcommand(threading.Thread):
 
     def run(self):
         """ run the bot command. """
+        
         try:
             result = threading.Thread.run(self)
             if self.ievent.closequeue:
@@ -127,6 +152,7 @@ def start_bot_command(func, arglist, kwargs={}):
     except:
         handle_exception()
         time.sleep(1)
+
 
 def threaded(func):
     """ threading decorator. """
