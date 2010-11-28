@@ -56,10 +56,14 @@ class EventBase(LazyDict):
         self.chantag = None
         self.resqueue = Queue.Queue()
         self.forwarded = False
+        self.iscommand = False
         self.stop = False
+        self.usercmnd = ""
+        self.botevent = False
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
+        logging.warn("eventbase - cpy - %s" % type(self))
         e = EventBase()
         e.copyin(self)
         return e
@@ -192,6 +196,7 @@ class EventBase(LazyDict):
     def iscmnd(self):
         """ check if event is a command. """
         if not self.txt: return
+        if self.iscommand: return self.txt
         if self.isremote(): logging.warn("eventbase - event is remote") ; return
         logging.debug("eventbase - trying to match %s" % self.txt)
         cc = "!"

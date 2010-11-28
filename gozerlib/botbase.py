@@ -70,8 +70,8 @@ class BotBase(LazyDict):
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
         if cfg: self.cfg = Config(self.fleetdir + os.sep + u'config', input=cfg)
         else: self.cfg = Config(self.fleetdir + os.sep + u'config')
-        self.update(self.cfg)
         LazyDict.__init__(self)
+        self.update(self.cfg)
         self.curevent = None
         self.inqueue = Queue.Queue()
         self.outqueue = Queue.Queue()
@@ -129,6 +129,9 @@ class BotBase(LazyDict):
         if not self.isgae:
             defaultrunner.start()
             tickloop.start(self)
+
+    def copyin(self, data):
+        self.update(data)
 
     def _resumedata(self):
        """ overload this. """ 
