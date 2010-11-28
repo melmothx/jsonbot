@@ -105,7 +105,7 @@ class Commands(LazyDict):
                 raise NoSuchCommand(cmnd)
 
         ## core business
-        if bot.cmndperms[c.cmnd]: perms = bot.cmndperms[c.cmnd]
+        if bot.cmndperms and bot.cmndperms[c.cmnd]: perms = bot.cmndperms[c.cmnd]
         else: perms = c.perms
         if bot.allowall: return self.doit(bot, event, c, wait=wait)
         elif event.chan and event.chan.data.allowcommands and event.usercmnd in event.chan.data.allowcommands: 
