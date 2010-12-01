@@ -150,7 +150,6 @@ sleeptime=15*60, running=0):
             self.data['running'] = self.data.running or running
             self.itemslists = Pdol(filebase + '-itemslists')
             self.markup = Pdod(filebase + '-markup')
-            self.lastpeek = Persist(filebase + '-lastpeek')
         else: raise NameNotSet()
 
     def checkseen(self, data):
@@ -175,7 +174,6 @@ sleeptime=15*60, running=0):
         if not coreonly:
             self.itemslists.save()
             self.markup.save()
-            self.lastpeek.save()
 
     def getdata(self):
         """ return data from cache or run fetchdata() to retrieve them. """
@@ -215,13 +213,12 @@ sleeptime=15*60, running=0):
             except KeyError: etag = None
         logging.info("rss - etag of %s feed is %s" % (name, etag))
         if not name in urls.data: urls.data[name] = self.data.url ; urls.save()
-        logging.debug("rss - got result from %s" % url)
+        logging.debug("rss - got result from %s" % self.data.url)
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
         try:
             status = result.status
             logging.info("rss - status is %s" % status)
         except AttributeError: status = 200
-        if status != 200 and status != 301 and status != 302: raise RssStatus(status)
         return result.entries
 
     def sync(self):
@@ -235,34 +232,27 @@ sleeptime=15*60, running=0):
         return result
 
     def check(self, item, save=True, entries=None):
-        """ get items for user originating the event since lastpeeked. """
         name = item[2]
-        try: lastpeeked = float(self.lastpeek.data[str(item)])
-        except (KeyError, ValueError): lastpeeked = 0 ; logging.debug("last peek of %s is initialised" % str(name))
-        logging.debug("rss - %s feed - using lastpeeked: %s for %s" % (self.data.name, time.ctime(lastpeeked), str(item)))
         got = False
         tobereturned = []
         if entries == None: entries = self.getdata()
         if entries:
-            r = lastpeeked
             for res in entries[::-1]:
                 if self.checkseen(res): continue 
                 dt = feedparser._parse_date(res.updated)
                 dtt = time.mktime(dt)
                 tobereturned.append(LazyDict(res))
-                self.lastpeek.data[str(item)] = dtt
-                logging.debug('lastpeek of %s set to %s' % (str(item), time.ctime(self.lastpeek.data[str(item)])))
                 got = True
                 self.setseen(res)
-            if got and save: self.lastpeek.save() ; self.save()
-            logging.debug("got %s rss items for %s" % (len(tobereturned), str(item)))
+            if got and save: self.save()
+            logging.debug("rss - %s - got %s rss items" % (self.data.name, len(tobereturned)))
         return tobereturned
 
     def deliver(self, datalist, save=True):
         name = self.data.name
         try:
             loopover = self.data.watchchannels
-            logging.debug("loopover in %s peek is: %s" % (self.data.name, loopover))
+            logging.debug("loopover in %s deliver is: %s" % (self.data.name, loopover))
             for item in loopover:
                 if not item: continue
                 try:
@@ -361,12 +351,6 @@ class Rssdict(PlugPersist):
             if not feedname: pass
             else: self.feeds[feedname] = Feed(feedname)
         #self.startwatchers()
-
-    def savelastpeek(self, feedname):
-        logging.debug("rss - %s - saving lastpeek." % feedname)
-        feed = Feed(feedname)
-        try: feed.lastpeek.save()
-        except Exception, ex: handle_exception()
 
     def save(self, namein=None):
         """ save all feeds or provide a feedname to save. """
@@ -473,9 +457,11 @@ class Rsswatcher(Rssdict):
             if rssitem: name = rssitem.data.name
             else: logging.warn("rss - can't find %s item" % url) ; del data ; return
             if not name in urls.data: urls.data[name] = url ; urls.save()
-            result = rssitem.fetch_data(data)
-            res = rssitem.check(result.entries)
+            result = rssitem.fetchdata(data)
+            logging.warn("rss - %s - got %s items" % (name, len(result)))
+            res = rssitem.check(result)
             if res: rssitem.deliver(res, save=True)
+            else: logging.warn("rss - %s - no items to deliver" % name)
         except Exception, ex: handle_exception(txt=name)
         del data
         return True
@@ -489,7 +475,7 @@ class Rsswatcher(Rssdict):
             rssitem = self.byurl(url)
             if rssitem: loopover = rssitem.data.watchchannels ; name = rssitem.data.name
             else: logging.debug("rss - can't find %s item" % url) ; return
-            logging.debug("loopover in %s peek is: %s" % (rssitem.data.name, loopover))
+            logging.debug("loopover in %s is: %s" % (rssitem.data.name, loopover))
             for item in loopover:
                 try: (botname, type, channel) = item
                 except: logging.debug('rss - %s is not in the format (botname,channel)' % str(item))
@@ -623,48 +609,6 @@ class Rsswatcher(Rssdict):
             if resultstr: result += u"%s %s " % (resultstr, sep)
         return result[:-(len(sep)+2)]
 
-    def peek(self, name, event=None, data=None, save=True, *args, **kwargs):
-        """ poll a feed. display not yet shown items. """
-        rssitem = self.byname(name)
-        got = False
-        if not rssitem: logging.debug("rss - skipping peek of %s" % name) ; return got
-        try:
-            loopover = rssitem.data.watchchannels
-            logging.debug("loopover in %s peek is: %s" % (rssitem.data.name, loopover))
-            for item in loopover:
-                if not item: continue
-                try:
-                    (botname, type, channel) = item
-                except ValueError:
-                    logging.debug('rss - %s is not in the format (botname, type, channel)' % str(item))
-                    continue
-                if not botname: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
-                if not type: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
-                try:
-                    bot = getfleet().byname(botname)
-                    if not bot: bot = getfleet().makebot(type, botname)
-                except NoSuchBotType, ex: logging.warn("rss - can't make bot - %s" % str(ex)) ; continue
-                if not bot: logging.error("rss - can't find %s bot in fleet" % botname) ; continue
-                res2 = self.check(name, item, save=save, entries=data)
-                if not res2: logging.debug("rss - no updates for %s (%s) feed available" % (rssitem.data.name, channel)) ; continue
-                got = True
-                if type == "irc" and not '#' in channel: nick = getwho(bot, channel)
-                else: nick = None                        
-                if rssitem.markup.get(jsonstring([name, type, channel]), 'reverse-order'): res2 = res2[::-1]
-                if rssitem.markup.get(jsonstring([name, type, channel]), 'all-lines'):
-                    for i in res2: 
-                        response = self.makeresponse(name, type, [i, ], channel)
-                        try: bot.say(nick or channel, response)
-                        except Exception, ex: handle_exception()
-                else:
-                    sep =  rssitem.markup.get(jsonstring([name, type, channel]), 'separator')
-                    if sep: response = self.makeresponse(name, type, res2, channel, sep=sep)
-                    else: response = self.makeresponse(name, type, res2, channel)
-                    try: bot.say(nick or channel, response)
-                    except Exception, ex: handle_exception()
-            return got
-        except Exception, ex: handle_exception(txt=name) ; return False
-
     def stopwatch(self, name, save=True):
         """ stop watcher thread. """
         try:
@@ -759,12 +703,6 @@ class Rsswatcher(Rssdict):
             if txt: res.append(txt)
         return res
 
-    def peekall(self, event=None):
-        """ peek all feeds. """
-        for name in self.data['names']:
-            z = self.byname(name)
-            if z.data.running: self.peek(z.data.name, event)
-
     def startwatchers(self):
         """ start watcher threads """
         for name in self.data['names']:
@@ -778,7 +716,6 @@ class Rsswatcher(Rssdict):
         target = channel
         if not jsonstring([botname, bottype, target]) in rssitem.data.watchchannels and not [botname, bottype, target] in rssitem.data.watchchannels:
             rssitem.data.watchchannels.append([botname, bottype, target])
-        #rssitem.lastpeek.data[target] = time.mktime(time.localtime())
         rssitem.itemslists[jsonstring([name, bottype, target])] = ['title', 'link']
         rssitem.markup.set(jsonstring([name, bottype, target]), 'tinyurl', 1)
         rssitem.data.running = 1
@@ -1536,25 +1473,6 @@ def handle_rsssearch(bot, ievent):
 
 cmnds.add('rss-search', handle_rsssearch, ['RSS', 'USER'])
 examples.add('rss-search', "search titles of all current feeds", 'rss-search goz')
-
-## rss-peek command
-
-def handle_rsspeek(bot, ievent):
-    """ run a peek of a feed. """
-    if not ievent.rest: ievent.missing('<feedname>') ; return
-    if not watcher.peek(ievent.rest, ievent): ievent.reply("no new entries for feed %s" % ievent.rest)
-    else: ievent.done()
-
-cmnds.add('rss-peek', handle_rsspeek, ['USER', ])
-
-## rss=peekall command
-
-def handle_rsspeekall(bot, ievent):
-    """ peek all feeds. """
-    watcher.peekall(ievent)
-    ievent.done()
-
-cmnds.add('rss-peekall', handle_rsspeekall, ['OPER', ])
 
 def handle_rssimport(bot, ievent):
     """ import feeds uses OPML. """
