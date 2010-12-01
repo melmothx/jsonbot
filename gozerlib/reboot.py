@@ -41,4 +41,7 @@ def reboot_stateful(bot, ievent, fleet, partyline):
     dump(session, open(sessionfile, 'w'))
     #getfleet().save()
     args = []
-    os.execl(sys.argv[0], sys.argv[1], '-r', sessionfile, *sys.argv[1:])
+    if len(sys,argv) > 1:
+        os.execl(sys.argv[0], sys.argv[1], '-r', sessionfile, *sys.argv[1:])
+    else:
+        os.execl(sys.argv[0], '-r', sessionfile)

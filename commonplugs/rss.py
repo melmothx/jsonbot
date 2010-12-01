@@ -66,6 +66,7 @@ import socket
 import xml
 import logging
 import datetime
+import hashlib
 
 ## define
 
@@ -144,12 +145,23 @@ sleeptime=15*60, running=0):
             self.data['url'] = self.data.url or unicode(url)
             self.data['owner'] = self.data.owner or unicode(owner)
             self.data['result'] = []
+            self.data['seen'] = self.data.seen or []
             self.data['watchchannels'] = self.data.watchchannels or list(watchchannels)
             self.data['running'] = self.data.running or running
             self.itemslists = Pdol(filebase + '-itemslists')
             self.markup = Pdod(filebase + '-markup')
             self.lastpeek = Persist(filebase + '-lastpeek')
         else: raise NameNotSet()
+
+    def checkseen(self, data):
+        digest = hashlib.md5(unicode(data)).hexdigest()
+        return digest in self.data.seen
+
+    def setseen(self, data):
+        digest = hashlib.md5(unicode(data)).hexdigest()
+        self.data.seen.insert(0, digest)
+        if len(self.data.seen) > 100: self.data.seen = self.data.seen[:100]
+        return self.data.seen
 
     def ownercheck(self, userhost):
         """ check is userhost is the owner of the feed. """
@@ -176,11 +188,33 @@ sleeptime=15*60, running=0):
         else: logging.debug("rss - got result from %s *cached*" % url)
         return result
 
-    def fetchdata(self):
+    def fetchdata(self, data=None):
         """ get data of rss feed. """
-        url = self.data['url']
-        logging.debug("rss - fetching %s" % url)
-        result = feedparser.parse(url, agent=useragent())
+
+        name = self.data.name
+        global etags
+        if name and etags.data.has_key(name): etag = etags.data[name]
+        else: etag = None
+        if data:
+            result = feedparser.parse(data.content, etag=etag)
+            try: status = data.status_code
+            except AttributeError: status = None
+        else:
+            url = self.data['url']
+            logging.debug("rss - fetching %s" % url)
+            result = feedparser.parse(url, agent=useragent(), etag=etag)
+            try: status = result.status
+            except AttributeError: status = None
+        logging.info("rss - status returned of %s feed is %s" % (name, status))
+        if status and status != 200: return []
+        if data:
+            try: etag = etags.data[name] = data.headers.get('etag') ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
+            except KeyError: etag = None
+        else:
+            try: etag = etags.data[name] = result.etag ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
+            except KeyError: etag = None
+        logging.info("rss - etag of %s feed is %s" % (name, etag))
+        if not name in urls.data: urls.data[name] = self.data.url ; urls.save()
         logging.debug("rss - got result from %s" % url)
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
         try:
@@ -197,10 +231,10 @@ sleeptime=15*60, running=0):
             return False
         logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
-        set(self.data.url, result, namespace='rss')
-        return True
+        if result: set(self.data.url, result, namespace='rss')
+        return result
 
-    def check(self, item, save=True, data=None):
+    def check(self, item, save=True, entries=None):
         """ get items for user originating the event since lastpeeked. """
         name = item[2]
         try: lastpeeked = float(self.lastpeek.data[str(item)])
@@ -208,26 +242,91 @@ sleeptime=15*60, running=0):
         logging.debug("rss - %s feed - using lastpeeked: %s for %s" % (self.data.name, time.ctime(lastpeeked), str(item)))
         got = False
         tobereturned = []
-        if data == None: result = self.getdata()
-        else: result = data
-        logging.debug("got %s rss items for %s" % (len(result), str(item)))
-        if result:
+        if entries == None: entries = self.getdata()
+        if entries:
             r = lastpeeked
-            for res in result[::-1]:
-                res = LazyDict(res)
+            for res in entries[::-1]:
+                if self.checkseen(res): continue 
                 dt = feedparser._parse_date(res.updated)
-                if not dt:
-                    logging.warn("rss - %s feed .. can't determine time out of string %s" % (self.data.name, res.updated))
-                    continue
                 dtt = time.mktime(dt)
-                if dtt > r:
-                    tobereturned.append(LazyDict(res))
-                    r = dtt
-                    self.lastpeek.data[str(item)] = dtt
-                    logging.debug('lastpeek of %s set to %s' % (str(item), time.ctime(self.lastpeek.data[str(item)])))
-                    got = True
-            if got and save: self.lastpeek.save()
+                tobereturned.append(LazyDict(res))
+                self.lastpeek.data[str(item)] = dtt
+                logging.debug('lastpeek of %s set to %s' % (str(item), time.ctime(self.lastpeek.data[str(item)])))
+                got = True
+                self.setseen(res)
+            if got and save: self.lastpeek.save() ; self.save()
+            logging.debug("got %s rss items for %s" % (len(tobereturned), str(item)))
         return tobereturned
+
+    def deliver(self, datalist, save=True):
+        name = self.data.name
+        try:
+            loopover = self.data.watchchannels
+            logging.debug("loopover in %s peek is: %s" % (self.data.name, loopover))
+            for item in loopover:
+                if not item: continue
+                try:
+                    (botname, type, channel) = item
+                except ValueError:
+                    logging.debug('rss - %s is not in the format (botname, type, channel)' % str(item))
+                    continue
+                if not botname: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
+                if not type: logging.error("rss - %s - %s is not correct" % (name, str(item))) ; continue
+                try:
+                    bot = getfleet().byname(botname)
+                    if not bot: bot = getfleet().makebot(type, botname)
+                except NoSuchBotType, ex: logging.warn("rss - can't make bot - %s" % str(ex)) ; continue
+                if not bot: logging.error("rss - can't find %s bot in fleet" % botname) ; continue
+                res2 = datalist
+                if type == "irc" and not '#' in channel: nick = getwho(bot, channel)
+                else: nick = None                        
+                if self.markup.get(jsonstring([name, type, channel]), 'reverse-order'): res2 = res2[::-1]
+                if self.markup.get(jsonstring([name, type, channel]), 'all-lines'):
+                    for i in res2: 
+                        response = self.makeresponse(name, type, [i, ], channel)
+                        try: bot.say(nick or channel, response)
+                        except Exception, ex: handle_exception()
+                else:
+                    sep =  self.markup.get(jsonstring([name, type, channel]), 'separator')
+                    if sep: response = self.makeresponse(name, type, res2, channel, sep=sep)
+                    else: response = self.makeresponse(name, type, res2, channel)
+                    try: bot.say(nick or channel, response)
+                    except Exception, ex: handle_exception()
+            return True
+        except Exception, ex: handle_exception(txt=name) ; return False
+
+    def makeresponse(self, name, type, res, channel, sep=" .. "):
+        """ loop over result to make a response. """
+        if self.markup.get(jsonstring([name, type, channel]), 'nofeedname'): result = u""
+        else: result = u"<b>[%s]</b> - " % name 
+        try: itemslist = self.itemslists.data[jsonstring([name, type, channel])]
+        except KeyError:
+            itemslist = self.itemslists.data[jsonstring([name, type, channel])] = ['title', 'link']
+            self.itemslists.save()
+        for j in res:
+            if self.markup.get(jsonstring([name, type, channel]), 'skipmerge') and 'Merge branch' in j['title']: continue
+            resultstr = u""
+            for i in itemslist:
+                try:
+                    item = getattr(j, i)
+                    if not item: continue
+                    item = unicode(item)
+                    if item.startswith('http://'):
+                        if self.markup.get(jsonstring([name, type, channel]), 'tinyurl'):
+                            try:
+                                tinyurl = get_tinyurl(item)
+                                logging.debug('rss - tinyurl is: %s' % str(tinyurl))
+                                if not tinyurl: resultstr += u"%s - " % item
+                                else: resultstr += u"%s - " % tinyurl[0]
+                            except Exception, ex:
+                                handle_exception()
+                                resultstr += u"%s - " % item
+                        else: resultstr += u"%s - " % item
+                    else: resultstr += u"%s - " % item.strip()
+                except (KeyError, AttributeError, TypeError), ex: logging.warn('rss - %s - %s' % (name, str(ex))) ; continue
+            resultstr = resultstr[:-3]
+            if resultstr: result += u"%s %s " % (resultstr, sep)
+        return result[:-(len(sep)+2)]
 
     def all(self):
         """ get all entries of the feed. """
@@ -369,23 +468,14 @@ class Rsswatcher(Rssdict):
     def handle_data(self, data, name=None):
         """ handle data received in callback. """
         try:
-            global etags
-            if name and etags.data.has_key(name): etag = etags.data[name]
-            else: etag = None
-            result = feedparser.parse(data.content, etag=etag)
-            try: status = data.status_code
-            except AttributeError: status = None
-            logging.info("rss - status returned of %s feed is %s" % (name, status))
-            if status and status != 200: return
-            try: etag = etags.data[name] = data.headers.get('etag') ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
-            except KeyError: etag = None
             if name: rssitem = self.byname(name)
             else: url = find_self_url(result.feed.links) ; rssitem = self.byurl(url)
             if rssitem: name = rssitem.data.name
             else: logging.warn("rss - can't find %s item" % url) ; del data ; return
-            logging.info("rss - etag of %s feed is %s" % (name, etag))
             if not name in urls.data: urls.data[name] = url ; urls.save()
-            self.peek(name, data=result.entries, save=True)
+            result = rssitem.fetch_data(data)
+            res = rssitem.check(result.entries)
+            if res: rssitem.deliver(res, save=True)
         except Exception, ex: handle_exception(txt=name)
         del data
         return True
@@ -439,14 +529,18 @@ class Rsswatcher(Rssdict):
         """ get entries for a user. """
         return self.byname(name).get(userhost, save)
 
-    def check(self, name, item, save=True, data=None):
+    def check(self, name, item, save=True, entries=None):
         """ check for updates. """
-        return self.byname(name).check(item, save=save, data=data)
+        return self.byname(name).check(item, save=save, entries=entries)
 
     def sync(self, name):
         """ sync a feed. """
         feed = self.byname(name)
-        if feed: return feed.sync()
+        if feed:
+            result = feed.sync()
+            if result:
+                res2 = self.check(name, result)
+                if res2: feed.deliver(res2)
 
     def ownercheck(self, name, userhost):
         """ check if userhost is the owner of feed. """
@@ -551,7 +645,7 @@ class Rsswatcher(Rssdict):
                     if not bot: bot = getfleet().makebot(type, botname)
                 except NoSuchBotType, ex: logging.warn("rss - can't make bot - %s" % str(ex)) ; continue
                 if not bot: logging.error("rss - can't find %s bot in fleet" % botname) ; continue
-                res2 = self.check(name, item, save=save, data=data)
+                res2 = self.check(name, item, save=save, entries=data)
                 if not res2: logging.debug("rss - no updates for %s (%s) feed available" % (rssitem.data.name, channel)) ; continue
                 got = True
                 if type == "irc" and not '#' in channel: nick = getwho(bot, channel)
@@ -732,7 +826,7 @@ def dosync(feedname):
     try:
        logging.info("rss - doing sync of %s" % feedname)
        localwatcher = Rsswatcher('rss', feedname)
-       if localwatcher.sync(feedname): localwatcher.peek(feedname, save=True)
+       localwatcher.sync(feedname)
     except RssException, ex: logging.error("rss - %s - error: %s" % (feedname, str(ex)))
 
 ## shouldpoll function
