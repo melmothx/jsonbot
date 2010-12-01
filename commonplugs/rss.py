@@ -181,7 +181,7 @@ sleeptime=15*60, running=0):
         result = get(url, namespace='rss')
         if result == None:
             result = self.fetchdata()
-            set(url, result, namespace='rss')
+            #set(url, result, namespace='rss')
             logging.debug("rss - got result from %s" % url)
         else: logging.debug("rss - got result from %s *cached*" % url)
         return result
@@ -219,6 +219,7 @@ sleeptime=15*60, running=0):
             status = result.status
             logging.info("rss - status is %s" % status)
         except AttributeError: status = 200
+        if result: set(self.data.url, result, namespace='rss')
         return result.entries
 
     def sync(self):
@@ -228,14 +229,12 @@ sleeptime=15*60, running=0):
             return False
         logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
-        if result: set(self.data.url, result, namespace='rss')
         return result
 
-    def check(self, item, save=True, entries=None):
-        name = item[2]
+    def check(self, entries=None, save=True):
         got = False
         tobereturned = []
-        if entries == None: entries = self.getdata()
+        if entries == None: entries = self.fetchdata()
         if entries:
             for res in entries[::-1]:
                 if self.checkseen(res): continue 
@@ -515,9 +514,9 @@ class Rsswatcher(Rssdict):
         """ get entries for a user. """
         return self.byname(name).get(userhost, save)
 
-    def check(self, name, item, save=True, entries=None):
+    def check(self, name, entries=None, save=True):
         """ check for updates. """
-        return self.byname(name).check(item, save=save, entries=entries)
+        return self.byname(name).check(entries=entries, save=save)
 
     def sync(self, name):
         """ sync a feed. """
