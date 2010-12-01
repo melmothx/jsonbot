@@ -35,7 +35,6 @@ class XMPPBot(BotBase):
     def out(self, jids, txt, how="msg", event=None, origin=None, groupchat=None, *args, **kwargs):
         """ output xmpp message. """
         if type(jids) != types.ListType: jids = [jids, ]
-        logging.warn("%s - OUT - %s" % (self.name, jids))
         self.outnocb(jids, txt)
         for jid in jids:
             self.outmonitor(self.nick, jid, txt)
@@ -46,7 +45,7 @@ class XMPPBot(BotBase):
         if not message_type: message_type = xmpp.MESSAGE_TYPE_CHAT
         if type(jids) != types.ListType: jids = [jids, ]
         txt = self.normalize(txt)
-        logging.debug(u"%s - xmpp - out - %s" % (self.name, txt))             
+        logging.debug(u"%s - xmpp - out - %s - %s" % (self.name, unicode(jids), txt))             
         xmpp.send_message(jids, txt, from_jid=from_jid, message_type=message_type, raw_xml=raw_xml)
 
     def invite(self, jid):

@@ -57,7 +57,7 @@ class Users(Persist):
     def all(self):
         """ get all users. """
         result = []
-        for name in self.data['names'].values(): result.append(JsonUser(name))
+        for name in self.data['names'].values(): result.append(JsonUser(name).lower())
         return result
 
     ## Misc. Functions
@@ -96,7 +96,7 @@ class Users(Persist):
         """ search for users with a userhost like the one specified """
         result = []
         for u, name in self.data.names.iteritems():
-            if userhost in u: result.append((name, u))
+            if userhost in u: result.append((name.lower(), u))
         return result
 
     def getuser(self, userhost):
@@ -176,7 +176,7 @@ class Users(Persist):
             try: return self.data.names[userhost]
             except KeyError:
                 user = self.getuser(userhost)
-                if user: return user.data.name
+                if user: return user.data.name.lower()
 
     def gethosts(self, userhost):
         """ return the userhosts of the user associated with the specified userhost """
@@ -242,8 +242,8 @@ class Users(Persist):
         """ return all users that have the specified status. """
         result = []
         for name in self.data.names:
-            user = JsonUser(name)
-            if status in user.data.status: result.append(user.data.name)
+            user = JsonUser(name.lower())
+            if status in user.data.status: result.append(user.data.name.lower())
         return result
 
     ## Set Functions
@@ -310,6 +310,7 @@ class Users(Persist):
 
     def adduserhost(self, name, userhost):
         """ add userhost. """
+        name = name.lower()
         user = self.byname(name)
         if not user: user = self.users[name] = JsonUser(name=name)
         user.data.userhosts.append(userhost)
@@ -353,7 +354,7 @@ class Users(Persist):
     def addpermall(self, perm): 
         """ add permission to all users. """
         for name in self.data.names:
-            user = JsonUser(name)
+            user = JsonUser(name.lower())
             user.data.perms.append(perm.upper())
             user.save()
 
