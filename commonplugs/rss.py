@@ -181,7 +181,7 @@ sleeptime=15*60, running=0):
         result = get(url, namespace='rss')
         if result == None:
             result = self.fetchdata()
-            #set(url, result, namespace='rss')
+            set(url, result, namespace='rss')
             logging.debug("rss - got result from %s" % url)
         else: logging.debug("rss - got result from %s *cached*" % url)
         return result
@@ -204,10 +204,7 @@ sleeptime=15*60, running=0):
             try: status = result.status
             except AttributeError: status = None
         logging.info("rss - status returned of %s feed is %s" % (name, status))
-        if status == 301:
-            cached = get(self.data.url, namespace="rss")
-            if cached: return cached.entries
-            else: return []
+        if status == 301: return []
         if result: set(self.data.url, result, namespace='rss')
         if data:
             try: etag = etags.data[name] = data.headers.get('etag') ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
@@ -232,6 +229,7 @@ sleeptime=15*60, running=0):
             return False
         logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
+        if not result: cached = get(self.data.url, namespace="rss") ; result = cached.entries
         return result
 
     def check(self, entries=None, save=True):
@@ -673,7 +671,7 @@ class Rsswatcher(Rssdict):
         #except RssException, ex: logging.error('rss - scan - %s error: %s' % (name, str(ex))) ; return
         #if not result: return
         keys = []
-        items = self.byname(name).fetchdata()
+        items = self.byname(name).getdata()
         for item in items:
             for key in item:
                 if key in allowedtokens: keys.append(key)            
