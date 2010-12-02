@@ -418,6 +418,7 @@ class Rssdict(PlugPersist):
         if not rssitem.data.running:
             rssitem.data.running = 1
             rssitem.data.stoprunning = 0
+            rssitem.check(rssitem.sync())
             rssitem.save()
         runners.data[name] = "bla"
         runners.save()
