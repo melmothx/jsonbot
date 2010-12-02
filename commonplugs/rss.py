@@ -204,7 +204,11 @@ sleeptime=15*60, running=0):
             try: status = result.status
             except AttributeError: status = None
         logging.info("rss - status returned of %s feed is %s" % (name, status))
-        if status and status != 200: return []
+        if status == 301:
+            cached = get(self.data.url, namespace="rss")
+            if cached: return cached.entries
+            else: return []
+        if result: set(self.data.url, result, namespace='rss')
         if data:
             try: etag = etags.data[name] = data.headers.get('etag') ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
             except KeyError: etag = None
@@ -219,7 +223,6 @@ sleeptime=15*60, running=0):
             status = result.status
             logging.info("rss - status is %s" % status)
         except AttributeError: status = 200
-        if result: set(self.data.url, result, namespace='rss')
         return result.entries
 
     def sync(self):
@@ -666,9 +669,9 @@ class Rsswatcher(Rssdict):
 
     def scan(self, name):
         """ scan a rss url for tokens. """
-        try: result = self.getdata(name)
-        except RssException, ex: logging.error('rss - scan - %s error: %s' % (name, str(ex))) ; return
-        if not result: return
+        #try: result = self.getdata(name)
+        #except RssException, ex: logging.error('rss - scan - %s error: %s' % (name, str(ex))) ; return
+        #if not result: return
         keys = []
         items = self.byname(name).fetchdata()
         for item in items:
