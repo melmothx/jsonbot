@@ -11,6 +11,11 @@ default_expiration: "1s"
 
 handlers:
 
+- url: /
+  script: handler_web.py
+  login: required
+  secure: always
+
 - url: /_ah/login.*
   script: handler_openid.py
 
@@ -18,19 +23,19 @@ handlers:
   script: $PYTHON_LIB/google/appengine/ext/deferred/deferred.py
   login: admin
 
+- url: /stats.*
+  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
+  login: admin
+
 - url: /tasks.*
   script: handler_task.py
   login: admin
-
-- url: /_ah/assets/(.*)
-  static_files: assets/\1
-  upload: assets/(.*)
 
 - url: /assets/(.*)
   static_files: assets/\1
   upload: assets/(.*)
 
-- url: /_wave/.*
+- url: /_wave.*
   script: handler_wave.py
 
 - url: /_ah/xmpp/.*
@@ -44,17 +49,22 @@ handlers:
 
 - url: /dispatch.*
   script: handler_dispatch.py
+  login: required
+  secure: always
 
 - url: /feeds.*
   script: handler_web.py
 
-- url: /(.*\.xml)  
-  static_files: gadgets/\1
-  upload: gadgets/(.*\.xml)
-
 - url: /docs/html/(.*)
   static_files: docs/html/\1
   upload: docs/html/(.*)
+
+- url: /docs.*
+  script: handler_docs.py
+
+- url: /(.*\.xml)  
+  static_files: gadgets/\1
+  upload: gadgets/(.*\.xml)
 
 - url: /_static/(.*)
   static_files: assets/\1
@@ -64,13 +74,9 @@ handlers:
   static_files: assets/favicon.ico
   upload: assets/favivon.ico
 
-- url: /
-  script: handler_web.py
-
 inbound_services:
 
 - xmpp_message   
 
 derived_file_type:
 - python_precompiled
-
