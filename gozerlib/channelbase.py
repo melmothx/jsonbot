@@ -80,5 +80,6 @@ class ChannelBase(Persist):
     def gae_create(self):
         try: from google.appengine.api import channel
         except ImportError: return False
-        self.data.token = channel.create_channel(self.id + str(uuid.uuid4()))
-        return self.token
+        self.data.token = channel.create_channel(self.id)
+        self.save()
+        return True

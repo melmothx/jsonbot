@@ -22,6 +22,7 @@ from gozerlib.gae.utils.web import start, closer, loginurl, logouturl, login
 
 from webapp2 import RequestHandler, Route, WSGIApplication
 from google.appengine.ext.webapp import template
+from google.appengine.api import channel
 
 ## simplejson import
 
@@ -60,7 +61,8 @@ class HomePageHandler(RequestHandler):
                 login(self.response, {'appname': 'JSONBOT' , 'who': 'not logged in yet', 'loginurl': 'not logged in', 'logouturl': 'JSONBOT', 'onload': 'consoleinit();'})
             else:
                 logout = logouturl(self.request, self.response)
-                start(self.response, {'appname': 'JSONBOT' , 'who': user, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();'})
+                token = channel.create_channel(user)
+                start(self.response, {'appname': 'JSONBOT' , 'who': user, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();', "token": token})
         except google.appengine.runtime.DeadlineExceededError:
             self.response.out.write("DeadLineExceededError .. this request took too long to finish.")
         except Exception, ex:
