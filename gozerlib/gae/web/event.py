@@ -52,6 +52,7 @@ class WebEvent(EventBase):
             except KeyError: pass
         self.how = how
         if self.how == "undefined": self.how = "normal"
+        self.webchan = request.get('webchan')
         input = request.get('content') or request.get('cmnd')
         if not input:
             try: input = request.params.getone('content') or request.params.getone('cmnd')
@@ -87,7 +88,7 @@ class WebEvent(EventBase):
         txt = self.bot.makeoutput(self.channel, txt, result, origin=origin, nr=nr, extend=extend, *args, **kwargs)
         if not txt: return
         if self.how == "background": self.bot.outnocb(self.channel, txt, response=self.response)
-        else: self.bot.out(self.channel, txt, response=self.response)
+        else: self.bot.out(self.channel, txt, response=self.response, event=self)
         self.result.append(txt)
         self.outqueue.put_nowait(txt)
         return self

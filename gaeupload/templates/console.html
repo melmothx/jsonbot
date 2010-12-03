@@ -16,7 +16,7 @@
       var viewer = "";
       var hostid = "";
       var viewerid = "";
-      var parameters = ""
+      var parameters = "";
       var identtime = new Date();
       var token = "{{ token }}";
       var consoletxt = '<br><form><b>&lt;-</b><input length="100" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form><div class="body" background-color="pink" align="center" id="content_div"><i>Welcome to JSONBOT</i></div>';
@@ -25,8 +25,7 @@
       // channel stuff
 
       onOpened = function() {
-        //newState = JSON.parse(m.data);
-        topper("opened");
+        bottom("channel opened");
       }
 
       onMessage = function(m) {
@@ -37,12 +36,9 @@
 
       openChannel = function() {
         var token = "{{ token }}";
-        output(token.toString());
         var channel = new goog.appengine.Channel(token);
         statusadd(" - channel created");
-        statusadd(" - on open");
         var socket = channel.open();
-        // statusadd(" - done");
         socket.onopen = onOpened;
         socket.onmessage = onMessage;
         socket.onerror = function() { output("bork"); }
@@ -64,7 +60,7 @@
       function stateUpdated() {
         hostid = wave.getHost().getId();
         viewerid = wave.getViewer().getId();
-        topper(hostid + ' ' + viewerid)
+        topper(hostid + ' ' + viewerid);
       }
 
       // mainloop
@@ -183,7 +179,7 @@
       function output(text) {
         var html = "<br>" + text;
         var element = document.getElementById("content_div");  
-        element.innerHTML = html;
+        element.innerHTML += html;
       }
 
       function down(text) {
@@ -255,12 +251,11 @@
       }
 
       function bottom(text) {
-        var html = "<p>";
+        var html = "<br>";
         html += text;
-        html += "</p>";
 
         var element = document.getElementById("bottom_div");  
-        element.innerHTML = html;
+        element.innerHTML += html;
       }
 
       function doscreen(screentxt) {
@@ -350,7 +345,6 @@
 
           request.cmnd = cmnd;
           request.how = how;
-
           request.onreadystatechange = function () {
               resp(request);
           }
@@ -363,7 +357,8 @@
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
           request.setRequestHeader("Cache-Control", "no-cache");
-          parameters="content="+encodeURIComponent(cmnd) + "&how=" + encodeURIComponent(how);
+          webchan = "{{ webchan }}";
+          parameters="content="+encodeURIComponent(cmnd) + "&how=" + encodeURIComponent(how) + "&webchan=" + encodeURIComponent(webchan);
           starttime = new Date();
           request.send(parameters);
           return true;
@@ -388,7 +383,7 @@
     <div class="footer" id="info_div"></div>
     <div align="center">
     <div class="body"><h1><b>{{ appname }}</b></h1><div><br>
-    <div id="topper_div"></div><br>
+    <div id="topper_div">{{ version }}</div><br>
     <div style="position: relative; width: 90%; height: 80px; background-color: {{ color }};" id="screen_div"></div>
     </div></div>
     <br><br>

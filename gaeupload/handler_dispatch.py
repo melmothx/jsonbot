@@ -74,7 +74,7 @@ class Dispatch_Handler(RequestHandler):
             logging.warn("DISPATCH incoming: %s - %s" % (self.request.get('content'), self.request.remote_addr))
             if not gusers.get_current_user():
                 logging.warn("denied access for %s - %s" % (self.request.remote_addr, self.request.get('content')))
-                self.response.out.write("acess denied .. plz loging")
+                self.response.out.write("acess denied .. plz login")
                 self.response.set_status(400)
                 return
             event = WebEvent(bot=bot).parse(self.response, self.request)

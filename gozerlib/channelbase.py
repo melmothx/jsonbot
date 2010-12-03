@@ -47,7 +47,8 @@ class ChannelBase(Persist):
         self.data.denyplug = self.data.denyplug or []
         self.data.createdfrom = whichmodule()
         self.data.cacheindex = 0
-        self.data.token = self.data.token or ""
+        self.data.tokens = self.data.tokens or []
+        self.data.webchannels = self.data.webchannels or []
         logging.debug("channelbase - created channel %s" % id)
 
     def setpass(self, type, key):
@@ -79,7 +80,11 @@ class ChannelBase(Persist):
 
     def gae_create(self):
         try: from google.appengine.api import channel
-        except ImportError: return False
-        self.data.token = channel.create_channel(self.id)
+        except ImportError: return (None, None)
+        webchan = self.id + "-" + str(time.time())
+        token = channel.create_channel(webchan)
+        if token and token not in self.data.tokens:
+            self.data.tokens.append(token)
+        if webchan not in self.data.webchannels: self.data.webchannels.append(webchan)
         self.save()
-        return True
+        return (webchan, token)

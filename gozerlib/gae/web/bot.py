@@ -33,12 +33,10 @@ class WebBot(BotBase):
 
     def _raw(self, txt, response=None, end=u"<br>", chan=None):
         """  put txt to the client. """
-        if not txt or not response: return 
+        if not txt: return 
         logging.debug("%s - web - out - %s" % (self.name, txt))
         if chan:
             from google.appengine.api import channel
-            #chan = ChannelBase(chan, botname=self.name)
-            #logging.warn("%s - using token %s" % (self.name, chan.data.token))
             logging.warn("%s - sending to channel %s" % (self.name, chan))
             channel.send_message(chan, txt)
         else:
@@ -55,7 +53,7 @@ class WebBot(BotBase):
                      url = u'<a href="%s" onclick="window.open(\'%s\'); return false;"><b>%s</b></a>' % (item, item, item)
                      try: txt = re.sub(item, url, txt)
                      except ValueError:  logging.error("web - invalid url - %s" % url)
-            self._raw(txt, response, chan=channel)
+            if event: self._raw(txt, chan=event.webchan)
 
     def normalize(self, txt):
         #txt = cgi.escape(txt)
@@ -74,3 +72,9 @@ class WebBot(BotBase):
         #txt = txt.replace("&gt;", ">")
         txt = strippedtxt(txt)
         return txt
+
+    def update_web(self, channel, txt):
+        chan = ChannelBase(channel)
+        logging.warn("%s - webchannels are %s" % (self.name, chan.data.webchannels))
+        for c in chan.data.webchannels:
+            self._raw(txt, chan=c)

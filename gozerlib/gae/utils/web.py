@@ -58,9 +58,7 @@ def start(response, input={}):
     except AttributeError:
          if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
          else: host = os.environ['SERVER_NAME']
-    user = finduser()
-    chan = ChannelBase(finduser(), botname="gae-web")
-    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#FDFA43", 'token': chan.data.token}
+    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#FDFA43"}
     if input: inputdict.update(input)
     temp = os.path.join(os.getcwd(), 'templates/console.html')
     from google.appengine.ext.webapp import template
