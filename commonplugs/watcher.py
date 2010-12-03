@@ -129,7 +129,7 @@ def writeout(botname, type, channel, txt, eventjson):
     watchbot = getfleet().byname(botname)
     if not watchbot: watchbot = getfleet().makebot(type, botname)
     if watchbot:
-         watchbot.outnocb(channel, txt, event=event)
+         watchbot.outnocb(channel, txt)
 
 ## callbacks
 
@@ -158,10 +158,7 @@ def watchcallback(bot, event):
         else: txt = u"[%s] %s" % (m.nick or event.nick or event.auth, m.txt)
         if txt.count('] [') > 2: logging.debug("watcher - %s - skipping %s" % (type, txt)) ; continue
         logging.warn("watcher - forwarding to %s" % channel)
-        if bot.isgae:
-            from google.appengine.ext.deferred import defer
-            defer(writeout, botname, type, channel, txt, event.tojson())
-        else: writeout(botname, type, channel, txt, event.tojson())
+        writeout(botname, type, channel, txt, event.tojson())
 
 first_callbacks.add('BLIP_SUBMITTED', watchcallback, prewatchcallback)
 first_callbacks.add('PRIVMSG', watchcallback, prewatchcallback)

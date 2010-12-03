@@ -39,8 +39,7 @@ class WebBot(BotBase):
             from google.appengine.api import channel
             logging.warn("%s - sending to channel %s" % (self.name, chan))
             channel.send_message(chan, txt)
-        else:
-            response.out.write(toenc(txt + end))
+        if response: response.out.write(toenc(txt + end))
 
     def outnocb(self, channel, txt, how="msg", event=None, origin=None, response=None, *args, **kwargs):
         txt = self.normalize(txt)
@@ -54,6 +53,7 @@ class WebBot(BotBase):
                      try: txt = re.sub(item, url, txt)
                      except ValueError:  logging.error("web - invalid url - %s" % url)
             if event: self._raw(txt, chan=event.webchan)
+            else: self.update_web(channel, txt)
 
     def normalize(self, txt):
         #txt = cgi.escape(txt)
@@ -74,7 +74,7 @@ class WebBot(BotBase):
         return txt
 
     def update_web(self, channel, txt):
-        chan = ChannelBase(channel)
+        chan = ChannelBase(channel, botname="gae-web")
         logging.warn("%s - webchannels are %s" % (self.name, chan.data.webchannels))
         for c in chan.data.webchannels:
             self._raw(txt, chan=c)

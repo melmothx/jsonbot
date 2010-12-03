@@ -29,7 +29,6 @@
       }
 
       onMessage = function(m) {
-        topper("on message");
         // newState = JSON.parse(m.data);
         output(m.data);
       }
@@ -179,7 +178,7 @@
       function output(text) {
         var html = "<br>" + text;
         var element = document.getElementById("content_div");  
-        element.innerHTML += html;
+        element.innerHTML = html;
       }
 
       function down(text) {
