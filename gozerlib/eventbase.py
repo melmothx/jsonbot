@@ -94,6 +94,7 @@ class EventBase(LazyDict):
             if chan: self.chan = chan
             elif self.channel: self.chan = ChannelBase(self.channel, bot.botname)
             elif self.userhost: self.chan = ChannelBase(self.userhost, bot.botname)
+            if bot.isgae and bot.type == "web" and not self.chan.data.token: self.chan.gae_create()
         if not self.user: logging.warn("eventbase - setting nodispatch") ; self.nodispatch = True
         self.prepare(bot)
         return self

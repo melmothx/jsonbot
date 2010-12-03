@@ -16,6 +16,28 @@
       var consoletxt = '<br><form><b>&lt;-</b><input length="100" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form><div class="body" background-color="pink" align="center" id="content_div"><i>Welcome to JSONBOT</i></div>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
 
+      // channel stuff
+
+      onMessage = function(m) {
+        newState = JSON.parse(m.data);
+        output(newState.toString())
+      }
+
+
+      openChannel = function() {
+        var token = '{{ token }}';
+        var channel = new goog.appengine.Channel(token);
+        var handler = {
+          'onopen': onOpened,
+          'onmessage': onMessage,
+          'onerror': function() {},
+          'onclose': function() {}
+        };
+        var socket = channel.open(handler);
+        socket.onopen = onOpened;
+        socket.onmessage = onMessage;
+      }
+
       // utils functions
 
       function elapsed() {

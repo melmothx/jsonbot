@@ -3,7 +3,7 @@
 #
 
 application: jsonbot
-version: 1
+version: 5
 runtime: python
 api_version: 1
 
@@ -11,9 +11,11 @@ default_expiration: "1s"
 
 handlers:
 
+- url: /_ah/warmup
+  script: handler_warmup.py
+
 - url: /
   script: handler_web.py
-  login: required
   secure: always
 
 - url: /_ah/login.*
@@ -29,7 +31,8 @@ handlers:
 
 - url: /tasks.*
   script: handler_task.py
-  login: admin
+  login: required
+  secure: always
 
 - url: /assets/(.*)
   static_files: assets/\1
@@ -74,9 +77,11 @@ handlers:
   static_files: assets/favicon.ico
   upload: assets/favivon.ico
 
-inbound_services:
 
+inbound_services:
+- warmup
 - xmpp_message   
 
 derived_file_type:
 - python_precompiled
+

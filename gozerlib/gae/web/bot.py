@@ -30,11 +30,15 @@ class WebBot(BotBase):
         self.isgae = True
         self.type = u"web"
 
-    def _raw(self, txt, response=None, end=u"<br>"):
+    def _raw(self, txt, response=None, end=u"<br>", chan=None):
         """  put txt to the client. """
         if not txt or not response: return 
         logging.debug("%s - web - out - %s" % (self.name, txt))
-        response.out.write(toenc(txt + end))
+        if chan:
+            from google.appengine.api import channel
+            channel.send_message(chan, txt)
+        else:
+            response.out.write(toenc(txt + end))
 
     def outnocb(self, channel, txt, how="msg", event=None, origin=None, response=None, *args, **kwargs):
         txt = self.normalize(txt)
@@ -47,7 +51,7 @@ class WebBot(BotBase):
                      url = u'<a href="%s" onclick="window.open(\'%s\'); return false;"><b>%s</b></a>' % (item, item, item)
                      try: txt = re.sub(item, url, txt)
                      except ValueError:  logging.error("web - invalid url - %s" % url)
-            self._raw(txt, response)
+            self._raw(channel, txt, response)
 
     def normalize(self, txt):
         #txt = cgi.escape(txt)

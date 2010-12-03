@@ -18,6 +18,7 @@ from gozerlib.errors import NoChannelProvided, NoChannelSet
 import time
 import os
 import logging
+import uuid
 
 ## classes
 
@@ -46,6 +47,7 @@ class ChannelBase(Persist):
         self.data.denyplug = self.data.denyplug or []
         self.data.createdfrom = whichmodule()
         self.data.cacheindex = 0
+        self.data.token = self.data.token or ""
         logging.debug("channelbase - created channel %s" % id)
 
     def setpass(self, type, key):
@@ -74,3 +76,9 @@ class ChannelBase(Persist):
 
         """
         pass
+
+    def gae_create(self):
+        try: from google.appengine.api import channel
+        except ImportError: return False
+        self.data.token = channel.create_channel(self.id + str(uuid.uuid4()))
+        return self.token
