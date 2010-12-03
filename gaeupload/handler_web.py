@@ -11,7 +11,7 @@ import logging
 
 from gozerlib.version import getversion
 from gozerlib.utils.exception import handle_exception
-
+from gozerlib.channelbase import ChannelBase
 
 ## gaelib import
 
@@ -62,6 +62,8 @@ class HomePageHandler(RequestHandler):
             else:
                 logout = logouturl(self.request, self.response)
                 token = channel.create_channel(user)
+                chan = ChannelBase(user)
+                if not chan.data.token: chan.data.token = token ; chan.save()
                 start(self.response, {'appname': 'JSONBOT' , 'who': user, 'loginurl': 'logged in', 'logouturl': logout, 'onload': 'consoleinit();', "token": token})
         except google.appengine.runtime.DeadlineExceededError:
             self.response.out.write("DeadLineExceededError .. this request took too long to finish.")

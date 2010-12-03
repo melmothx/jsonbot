@@ -39,6 +39,7 @@ class WebBot(BotBase):
             from google.appengine.api import channel
             #chan = ChannelBase(chan, botname=self.name)
             #logging.warn("%s - using token %s" % (self.name, chan.data.token))
+            logging.warn("%s - sending to channel %s" % (self.name, chan))
             channel.send_message(chan, txt)
         else:
             response.out.write(toenc(txt + end))
