@@ -212,7 +212,7 @@ def formatevent(bot, ievent):
     elif ievent.cmnd == 'JOIN':
         m.update({
             'type': 'join',
-            'txt': '%s (%s) has joined'%(ievent.nick, ievent.userhost),
+            'txt': '%s (%s) has joined %s'%(ievent.nick, ievent.userhost, ievent.channel),
         })
     elif ievent.cmnd == 'KICK':
         m.update({
