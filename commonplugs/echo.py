@@ -8,23 +8,10 @@
 
 from gozerlib.commands import cmnds
 from gozerlib.examples import examples
-from gozerlib.callbacks import callbacks
 
 ## basic imports
 
 import logging
-
-## echo callback
-
-def echopre(bot, event):
-    if event.cbtype == "OUTPUT" and bot.type == "WEB": return True
-    return bot.type == "web" and not event.how == "background"
-
-def echocb(bot, event):
-    bot.outnocb(event.channel, event.txt, event=event, dotime=True)
-
-callbacks.add("OUTPUT", echocb, echopre)
-callbacks.add("DISPATCH", echocb, echopre)
 
 ## echo command
 
