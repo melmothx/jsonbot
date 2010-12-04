@@ -22,7 +22,9 @@ def echopre(bot, event):
     return False
 
 def echocb(bot, event):
-    if not event.isdcc: bot.outnocb(event.channel, u"[%s] %s" % (event.nick, event.txt), dotime=True)
+    if not event.isdcc:
+        if event.cbtype == "OUTPUT": bot.outnocb(event.channel, u"[!] %s" % event.txt, event=event, dotime=True)
+        else: bot.outnocb(event.channel, u"[%s] %s" % (event.nick, event.txt), event=event, dotime=True)
 
 callbacks.add("DISPATCH", echocb, echopre, nr=100)
 first_callbacks.add("OUTPUT", echocb, echopre, nr=100)
