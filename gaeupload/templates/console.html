@@ -30,7 +30,7 @@
 
       onMessage = function(m) {
         // newState = JSON.parse(m.data);
-        output(m.data);
+        bottom(m.data);
       }
 
       openChannel = function() {
@@ -271,13 +271,13 @@
           if (obj.readyState==4){
               statusadd(" - status: " + obj.status + " - ")
               if (obj.status==200) {
-                   //output(obj.responseText);
+                   output(obj.responseText);
                    statusadd(elapsed() + " msec - OK");
               }
               else {
                    statusadd(elapsed() + " msec - NOT OK");
                    topper("status is " + obj.status)
-                   // output(obj.responseText);
+                   output(obj.responseText);
               }
           }
       }
