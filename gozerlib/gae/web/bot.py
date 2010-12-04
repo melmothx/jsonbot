@@ -10,6 +10,7 @@ from gozerlib.botbase import BotBase
 from gozerlib.outputcache import add
 from gozerlib.utils.generic import toenc, fromenc, strippedtxt
 from gozerlib.utils.url import re_url_match
+from gozerlib.utils.timeutils import hourmin
 from gozerlib.channelbase import ChannelBase
 
 ## basic imports
@@ -18,6 +19,7 @@ import logging
 import re
 import cgi
 import urllib
+import time
 
 ## WebBot class
 
@@ -52,6 +54,7 @@ class WebBot(BotBase):
                      url = u'<a href="%s" onclick="window.open(\'%s\'); return false;"><b>%s</b></a>' % (item, item, item)
                      try: txt = re.sub(item, url, txt)
                      except ValueError:  logging.error("web - invalid url - %s" % url)
+            txt = "[%s] %s" % (hourmin(time.time()), txt)
             if response: self._raw(txt, response)
             elif event: self._raw(txt, chan=event.webchan)
             else: self.update_web(channel, txt)
