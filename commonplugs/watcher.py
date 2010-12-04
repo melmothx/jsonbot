@@ -129,7 +129,7 @@ def writeout(botname, type, channel, txt, eventjson):
     watchbot = getfleet().byname(botname)
     if not watchbot: watchbot = getfleet().makebot(type, botname)
     if watchbot:
-         watchbot.outnocb(channel, txt)
+         watchbot.outnocb(channel, txt, event=event, dotime=True)
 
 ## callbacks
 

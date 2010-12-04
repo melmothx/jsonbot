@@ -79,6 +79,7 @@
           openChannel();
           // update();
           setTimeout("doCmnd('!welcome', response, 'background');", 50);
+          setTimeout("doCmnd('!outputcache', dobottom, 'background');", 500);
           //setTimeout("update();", 10);
           //setInterval("loop();", 180000);
       }
@@ -104,9 +105,8 @@
         }
         else {
             setTimeout('doCmnd("!statusline", dotop, "background");', 5000);
-            doCmnd('!outputcache', dobottom, "background");
             doCmnd('!topper', doinfo, "background");
-            setTimeout('doCmnd("!uptime", dotop, "background");', 100);
+            //setTimeout('doCmnd("!uptime", dotop, "background");', 100);
         }
       }
 
@@ -250,11 +250,12 @@
       }
 
       function bottom(text) {
-        var html = "<br>";
+        var html = "";
         html += text;
-
+        html += "<br>";
         var element = document.getElementById("bottom_div");  
-        element.innerHTML += html;
+        html += element.innerHTML
+        element.innerHTML = html;
       }
 
       function doscreen(screentxt) {
@@ -279,6 +280,7 @@
                    topper("status is " + obj.status)
                    output(obj.responseText);
               }
+              update();
           }
       }
 

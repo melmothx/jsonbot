@@ -43,10 +43,11 @@ class WebBot(BotBase):
             logging.warn("%s - sending to channel %s" % (self.name, chan))
             channel.send_message(chan, txt)
 
-    def outnocb(self, channel, txt, how="msg", event=None, origin=None, response=None, *args, **kwargs):
+    def outnocb(self, channel, txt, how="cache", event=None, origin=None, response=None, dotime=False, *args, **kwargs):
         txt = self.normalize(txt)
-        if event and not event.how == "background": logging.warn("%s - out - %s" % (self.name, txt))             
-        if how == 'cache': add(channel, [txt, ])
+        if event and not event.how == "background": 
+            logging.warn("%s - out - %s" % (self.name, txt))             
+            if how == "cache": add(channel, [txt, ])
         if True:
             if "http://" in txt:
                  for item in re_url_match.findall(txt):
@@ -54,9 +55,8 @@ class WebBot(BotBase):
                      url = u'<a href="%s" onclick="window.open(\'%s\'); return false;"><b>%s</b></a>' % (item, item, item)
                      try: txt = re.sub(item, url, txt)
                      except ValueError:  logging.error("web - invalid url - %s" % url)
-            txt = "[%s] %s" % (hourmin(time.time()), txt)
+            if dotime: txt = "[%s] %s" % (hourmin(time.time()), txt)
             if response: self._raw(txt, response)
-            elif event: self._raw(txt, chan=event.webchan)
             else: self.update_web(channel, txt)
 
     def normalize(self, txt):

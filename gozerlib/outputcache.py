@@ -45,12 +45,9 @@ def add(target, txtlist):
 
 def set(target, txtlist):
     """ set target entry to list. """
-    t = []
-    for item in txtlist:
-        t.append("[%s] %s" % (hourmin(time.time()), item))
     cache = Persist(getdatadir() + os.sep + 'run' + os.sep + 'outputcache' + os.sep + stripname(target))
     if not cache.data.has_key('msg'): cache.data['msg'] = []
-    cache.data['msg'] = t
+    cache.data['msg'] = txtlist
     cache.save()
 
 ## get function
