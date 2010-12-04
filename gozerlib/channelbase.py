@@ -86,6 +86,8 @@ class ChannelBase(Persist):
         if token and token not in self.data.tokens:
             self.data.tokens.insert(0, token)
             self.data.tokens = self.data.tokens[:10]
-        if webchan not in self.data.webchannels: self.data.webchannels.append(webchan)
+        if webchan not in self.data.webchannels:
+            self.data.webchannels.insert(0, webchan)
+            self.data.webchannels = self.data.webchannels[:10]
         self.save()
         return (webchan, token)

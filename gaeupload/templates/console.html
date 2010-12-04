@@ -30,6 +30,13 @@
         bottom("channel opened on " + contime.toUTCString());
       }
 
+      onClose = function() {
+        contime = new Date();
+        topper("channel closed on " + contime.toUTCString());
+        bottom("channel closed on " + contime.toUTCString());
+        setTimeout("doCmnd('!chan-newtoken', openChannel);", 1000); 
+      }
+
       onMessage = function(m) {
         // newState = JSON.parse(m.data);
         bottom(m.data);
@@ -39,16 +46,21 @@
         // newState = JSON.parse(m.data);
       }
 
-      openChannel = function() {
-        topper("connecting")
+      openChannel = function(t) {
+        topper("connecting");
         var token = "{{ token }}";
-        var channel = new goog.appengine.Channel(token);
+        if (token) {
+            var channel = new goog.appengine.Channel(token);
+        }
+        else {
+            var channel = new goog.appengine.Channel(t);
+        }
         statusadd(" - channel created");
         var socket = channel.open();
         socket.onopen = onOpened;
         socket.onmessage = onMessage;
         socket.onerror = onError;
-        socket.onclose = function() { topper("closed"); }
+        socket.onclose = onClose;
         statusadd(" - socket set");
       }
 
@@ -86,7 +98,7 @@
           openChannel();
           // update();
           setTimeout("doCmnd('!welcome', response, 'background');", 50);
-          setTimeout("doCmnd('!outputcache', dobottom, 'background');", 500);
+          setTimeout("doCmnd('!outputcache', dobottom, 'background');", 50);
           //setTimeout("update();", 10);
           //setInterval("loop();", 180000);
       }
@@ -358,7 +370,7 @@
           }
 
           if (how != "background") {
-              status("sending command " + cmnd);
+              status("sending command - ");
           }
 
           request.open("POST", url, true);
