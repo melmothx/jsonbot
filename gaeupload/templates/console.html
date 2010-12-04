@@ -25,7 +25,9 @@
       // channel stuff
 
       onOpened = function() {
-        bottom("channel opened");
+        contime = new Date();
+        topper("channel opened on " + contime.toUTCString());
+        bottom("channel opened on " + contime.toUTCString());
       }
 
       onMessage = function(m) {
@@ -33,15 +35,21 @@
         bottom(m.data);
       }
 
+      onError = function(m) {
+        // newState = JSON.parse(m.data);
+        start();
+      }
+
       openChannel = function() {
+        topper("connecting")
         var token = "{{ token }}";
         var channel = new goog.appengine.Channel(token);
         statusadd(" - channel created");
         var socket = channel.open();
         socket.onopen = onOpened;
         socket.onmessage = onMessage;
-        socket.onerror = function() { output("bork"); }
-        socket.onclose = function() { topper("done"); }
+        socket.onerror = onError;
+        socket.onclose = function() { topper("closed"); }
         statusadd(" - socket set");
       }
 
@@ -104,7 +112,7 @@
             doCmnd('!rss-feeds', doinfo, "background");
         }
         else {
-            setTimeout('doCmnd("!statusline", dotop, "background");', 5000);
+            setTimeout('doCmnd("!statusline", dotop, "background");', 10000);
             doCmnd('!topper', doinfo, "background");
             //setTimeout('doCmnd("!uptime", dotop, "background");', 100);
         }
