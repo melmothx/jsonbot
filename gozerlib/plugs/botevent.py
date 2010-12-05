@@ -12,6 +12,7 @@ from gozerlib.botbase import BotBase
 from gozerlib.eventbase import EventBase
 from gozerlib.utils.lazydict import LazyDict
 from gozerlib.factory import BotFactory
+from gozerlib.callbacks import first_callbacks, callbacks, last_callbacks
 
 ## simplejson imports
 
@@ -48,3 +49,32 @@ def boteventcb(inputdict, request, response):
     except Exception, ex: handle_exception()
 
 taskmanager.add('botevent', boteventcb)
+
+def botcallbackcb(inputdict, request, response):
+    logging.warn(inputdict)
+    logging.warn(dir(request))
+    logging.warn(dir(response))
+    body = request.body
+    logging.warn(body)
+    payload = loads(body)
+    try:
+        botjson = payload['bot']
+        logging.warn(botjson)
+        cfg = LazyDict(loads(botjson))
+        logging.warn(str(cfg))
+        bot = BotFactory().create(cfg.type, cfg)
+        logging.warn("botevent - created bot: %s" % bot.dump())
+        eventjson = payload['event']
+        logging.warn(eventjson)
+        event = EventBase()
+        event.update(LazyDict(loads(eventjson)))
+        logging.warn("botevent - created event: %s" % event.dump())
+        event.isremote = True
+        event.notask = True
+        event.iscommand = False
+        event.bind(bot)
+        for cbs in [first_callbacks, callbacks, last_callbacks]:
+            cbs.check(bot, event)
+    except Exception, ex: handle_exception()
+
+taskmanager.add('botcallback', botcallbackcb)

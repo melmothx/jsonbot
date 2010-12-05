@@ -29,8 +29,8 @@ def handle_adminboot(bot, ievent):
         boot(force=True, saveperms=False)
     ievent.done()
 
-cmnds.add('admin-boot', handle_adminboot, 'OPER')
-cmnds.add('admin-init', handle_adminboot, 'OPER')
+cmnds.add('admin-boot', handle_adminboot, 'OPER', threaded=True)
+cmnds.add('admin-init', handle_adminboot, 'OPER', threaded=True)
 examples.add('admin-boot', 'initialize the bot .. cmndtable and pluginlist', 'admin-boot')
 
 ## admin-loadall command
@@ -51,7 +51,7 @@ def handle_loadall(bot, ievent):
     plugs.loadall(plugin_packages)
     ievent.done()
 
-cmnds.add('admin-loadall', handle_loadall, 'OPER')
+cmnds.add('admin-loadall', handle_loadall, 'OPER', threaded=True)
 examples.add('admin-loadall', 'load all plugins', 'admin-loadall')
 
 ## admin-makebot command

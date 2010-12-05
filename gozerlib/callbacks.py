@@ -148,8 +148,8 @@ class Callbacks(object):
             else:
                 if bot.isgae and not event.notask and (cb.threaded or event.threaded):
                     logging.warn("callbacks - LAUNCHING AS TASK")   
-                    from gozerlib.threads import start_botevent
-                    start_botevent(bot, event)
+                    from gozerlib.threads import start_botcallback
+                    start_botcallback(bot, event)
                 elif bot.isgae: cb.func(bot, event)
                 else:
                     from runner import defaultrunner

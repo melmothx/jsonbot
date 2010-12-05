@@ -43,7 +43,7 @@ def dispatch(bot, event):
     go = False
     execstr = event.iscmnd()
     try:
-        if execstr:
+        if execstr and not event.notask:
             event.iscommand = True
             e = cpy(event)
             e.usercmnd = execstr.split()[0]

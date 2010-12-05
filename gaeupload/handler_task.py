@@ -28,7 +28,7 @@ import logging
 ## vars
 
 periodicals =  ['commonplugs.rss', 'gozerlib.plugs.botevent']
-mountpoints = ['rss', 'botevent']
+mountpoints = ['rss', 'botevent', 'botcallback']
 
 ##
 

@@ -42,6 +42,9 @@ try:
     class BotEvent(Task):
         pass
 
+    class BotCallback(Task):
+        pass
+
     def start_botevent(bot, event):
         """ start a new botevent task. """
         try:
@@ -54,6 +57,20 @@ try:
             be.add()
         except Exception, ex:
             handle_exception()
+
+    def start_botcallback(bot, event):
+        """ start a new botevent task. """
+        try:
+            event.botcallback = True
+            name = event.usercmnd[1:] + "-" + str(uuid.uuid4())
+            payload = dumps({ 'bot': bot.tojson(),
+                        'event': event.tojson()
+                      })
+            be = BotCallback(name=name, payload=payload, url="/tasks/botcallback")
+            be.add()
+        except Exception, ex:
+            handle_exception()
+
 except ImportError: logging.info("No BotEvent defined.")
 except Exception, ex: handle_exception()
 
