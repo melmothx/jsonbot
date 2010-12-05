@@ -18,7 +18,7 @@ import logging
 
 def echopre(bot, event):
     logging.warn("%s - echo pre %s" % (bot.name, event.cbtype))
-    if event.how != "background": return True
+    if bot.type == "web" and event.how != "background": return True
     return False
 
 def echocb(bot, event):
@@ -26,8 +26,7 @@ def echocb(bot, event):
         if event.cbtype == "OUTPUT": bot.outnocb(event.channel, u"[!] %s" % event.txt, event=event, dotime=True)
         else: bot.outnocb(event.channel, u"[%s] %s" % (event.nick, event.txt), event=event, dotime=True)
 
-callbacks.add("DISPATCH", echocb, echopre, nr=100)
-first_callbacks.add("OUTPUT", echocb, echopre, nr=100)
+callbacks.add("DISPATCH", echocb, echopre, threaded=True)
 
 ## echo command
 

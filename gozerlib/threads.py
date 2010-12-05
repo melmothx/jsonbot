@@ -46,7 +46,7 @@ try:
         """ start a new botevent task. """
         try:
             event.botevent = True
-            name = event.usercmnd + "-" + str(uuid.uuid4())
+            name = event.usercmnd[1:] + "-" + str(uuid.uuid4())
             payload = dumps({ 'bot': bot.tojson(),
                         'event': event.tojson()
                       })

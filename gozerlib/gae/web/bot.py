@@ -56,8 +56,8 @@ class WebBot(BotBase):
                      try: txt = re.sub(item, url, txt)
                      except ValueError:  logging.error("web - invalid url - %s" % url)
             if dotime: txt = "[%s] %s" % (hourmin(time.time()), txt)
-            if response: self._raw(txt, response)
-            else: self.update_web(channel, txt)
+            if not response: self.update_web(channel, txt)
+            else: self._raw(txt, response)
 
     def normalize(self, txt):
         #txt = cgi.escape(txt)
