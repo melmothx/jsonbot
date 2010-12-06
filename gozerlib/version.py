@@ -14,7 +14,7 @@ import os
 
 ## defines
 
-version = "0.6 DEVELOPMENT"
+version = "0.5 RELEASE"
 
 ## getversion function
 
