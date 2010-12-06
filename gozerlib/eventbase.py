@@ -63,7 +63,7 @@ class EventBase(LazyDict):
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
-        logging.warn("eventbase - cpy - %s" % type(self))
+        logging.debug("eventbase - cpy - %s" % type(self))
         e = EventBase()
         e.copyin(self)
         return e

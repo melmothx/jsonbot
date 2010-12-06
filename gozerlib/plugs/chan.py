@@ -284,8 +284,3 @@ def handle_chandelwatch(bot, event):
 
 cmnds.add("chan-delwatch", handle_chandelwatch, "OPER")
 examples.add("chan-delwatch", "deny channel events to be watched when forwarded", "chan-delwatch bthate@gmail.com")
-
-def handle_channewtoken(bot, event):
-    return event.chan.gae_create()
-
-cmnds.add("chan-newtoken", handle_channewtoken, ["USER", "GUEST"])
