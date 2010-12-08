@@ -470,7 +470,7 @@ class BotBase(LazyDict):
             elif self.cfg.loadlist and name not in self.cfg.loadlist: continue
             logging.warn("botbase - on demand reloading of %s" % name)
             try:
-                mod = self.plugs.reload(name, force=True, showerror=True)
+                mod = self.plugs.reload(name, force=True, showerror=False)
                 if mod: plugloaded.append(mod) ; continue
             except Exception, ex: handle_exception(event)
         return plugloaded
