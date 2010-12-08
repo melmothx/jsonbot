@@ -1096,7 +1096,7 @@ examples.add('rss-addchannel', 'add a channel to watchchannels of a feed', '1) r
 def handle_rsssetitems(bot, ievent):
     """ set items of a rss feed. """
     try: (name, items) = ievent.args[0], ievent.args[1:]
-    except ValueError: ievent.missing('<name> <items>') ; return
+    except (ValueError, IndexError): ievent.missing('<name> <items>') ; return
     target = ievent.channel
     rssitem = watcher.byname(name)
     if not rssitem: ievent.reply("we don't have a %s feed" % name) ; return
