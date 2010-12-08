@@ -239,8 +239,8 @@ sleeptime=15*60, running=0):
         if entries:
             for res in entries[::-1]:
                 if self.checkseen(res): continue 
-                dt = feedparser._parse_date(res.updated)
-                dtt = time.mktime(dt)
+                #dt = feedparser._parse_date(res.updated)
+                #dtt = time.mktime(dt)
                 tobereturned.append(LazyDict(res))
                 got = True
                 self.setseen(res)
