@@ -421,15 +421,12 @@ class Rssdict(PlugPersist):
         logging.debug('trying %s rss feed watcher' % name)
         rssitem = self.byname(name)
         if rssitem == None: raise RssNoItem()
-        if not rssitem.data.running:
-            rssitem.data.running = 1
-            rssitem.data.stoprunning = 0
+        rssitem.data.running = 1
+        rssitem.data.stoprunning = 0
         rssitem.check(rssitem.sync())
         rssitem.save()
         runners.data[name] = "bla"
         runners.save()
-        #lastpoll.data[name] = time.time()
-        #lastpoll.save()
         sleeptime.data[name] = sleepsec
         sleeptime.save()
         logging.info('rss - started %s rss watch' % name)
@@ -981,14 +978,10 @@ def handle_rsswatch(bot, ievent):
     for feed in target:
         rssitem = watcher.byname(feed)
         if rssitem == None: continue
-        if not rssitem.data.running or rssitem.data.stoprunning:
-            if not sleeptime.data.has_key(name): sleeptime.data[feed] = sleepsec ; sleeptime.save()
-            rssitem.data.running = 1
-            rssitem.data.stoprunning = 0
-            watcher.save(feed)
-            try: watcher.watch(feed, sleepsec)
-            except Exception, ex: ievent.reply('rss - %s - %s' % (feed, str(ex))) ; continue
-            got.append(feed)
+        if not sleeptime.data.has_key(name): sleeptime.data[feed] = sleepsec ; sleeptime.save()
+        try: watcher.watch(feed, sleepsec)
+        except Exception, ex: ievent.reply('rss - %s - %s' % (feed, str(ex))) ; continue
+        got.append(feed)
     if got: ievent.reply('watcher started ', got)
     else: ievent.reply('already watching ', target)
 
