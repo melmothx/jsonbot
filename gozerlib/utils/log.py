@@ -28,7 +28,7 @@ except ImportError:
 
 try:
     ddir = os.sep.join(LOGDIR.split(os.sep)[:-1])
-    if not os.path.isdir(ddir): os,.mkdir(ddir)
+    if not os.path.isdir(ddir): os.mkdir(ddir)
 except: pass
 
 try:
