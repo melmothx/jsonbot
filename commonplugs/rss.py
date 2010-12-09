@@ -424,8 +424,8 @@ class Rssdict(PlugPersist):
         if not rssitem.data.running:
             rssitem.data.running = 1
             rssitem.data.stoprunning = 0
-            rssitem.check(rssitem.sync())
-            rssitem.save()
+        rssitem.check(rssitem.sync())
+        rssitem.save()
         runners.data[name] = "bla"
         runners.save()
         #lastpoll.data[name] = time.time()
@@ -525,13 +525,13 @@ class Rsswatcher(Rssdict):
         """ check for updates. """
         return self.byname(name).check(entries=entries, save=save)
 
-    def sync(self, name):
+    def syncdeliver(self, name):
         """ sync a feed. """
         feed = self.byname(name)
         if feed:
             result = feed.sync()
             if result:
-                res2 = self.check(name, result)
+                res2 = feed.check(result)
                 if res2: feed.deliver(res2)
 
     def ownercheck(self, name, userhost):
@@ -771,7 +771,7 @@ def dosync(feedname):
     try:
        logging.info("rss - doing sync of %s" % feedname)
        localwatcher = Rsswatcher('rss', feedname)
-       localwatcher.sync(feedname)
+       localwatcher.syncdeliver(feedname)
     except RssException, ex: logging.error("rss - %s - error: %s" % (feedname, str(ex)))
 
 ## shouldpoll function
@@ -961,7 +961,7 @@ def handle_rsssync(bot, ievent):
     if name in watcher.data['names']: watcher.byname(name).sync() ; ievent.done()
     else: ievent.reply("no %s feed available" % name)
 
-cmnds.add('rss-sync', handle_rsssync, ['USER', ])
+cmnds.add('rss-sync', handle_rsssync, ['OPER', ])
 examples.add('rss-sync', 'rss-sync <name> .. sync <name> feed', 'rss-sync mekker')
 
 ## rss-watch command
@@ -1400,19 +1400,6 @@ def handle_rssscan(bot, ievent):
 
 cmnds.add('rss-scan', handle_rssscan, ['USER', ])
 examples.add('rss-scan', 'rss-scan <name> .. get possible items of <name> ', 'rss-scan jsonbot')
-
-## rss-sync command
-
-def handle_rsssync(bot, ievent):
-    """ sync rss item data. """
-    try: name = ievent.args[0]
-    except IndexError: ievent.missing('<name>') ; return
-    if not watcher.ownercheck(name, ievent.userhost): ievent.reply("you are not the owner of the %s feed" % name) ; return
-    result = watcher.sync(name)
-    ievent.reply('%s synced' % name)
-
-cmnds.add('rss-sync', handle_rsssync, ['USER', ], threaded=True)
-examples.add('rss-sync', 'rss-sync <name> .. sync data of <name>', 'rss-sync jsonbot')
 
 ## rss-feeds
 
