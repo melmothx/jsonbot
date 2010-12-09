@@ -205,7 +205,7 @@ sleeptime=15*60, running=0):
             except AttributeError: status = None
         logging.info("rss - status returned of %s feed is %s" % (name, status))
         if status == 301: return []
-        if result: set(self.data.url, result, namespace='rss')
+        if result: set(self.data.url, result.entries, namespace='rss')
         if data:
             try: etag = etags.data[name] = data.headers.get('etag') ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
             except KeyError: etag = None
