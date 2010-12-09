@@ -444,7 +444,7 @@ class Rsswatcher(Rssdict):
         logging.info("rss - fetch - got result from %s" % url)
         if result and result.has_key('bozo_exception'):
             event.reply('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
-            return False
+            return True
         try: status = result.status ; event.reply("rss - %s - status is %s" % (url, status))
         except AttributeError: status = 200
         if status != 200 and status != 301 and status != 302: return False
