@@ -371,7 +371,6 @@ class Rssdict(PlugPersist):
         """ add rss item. """
         logging.warn('rss - adding %s - %s - (%s)' % (name, url, owner))
         if name not in self.data['names']: self.data['names'].append(name)
-        else: raise FeedAlreadyExists("feed already exists: %s" % name)
         self.feeds[name] = Feed(name, url, owner, ['title', 'link'])
         self.data['urls'][url] = name
         self.feeds[name].save()
@@ -904,9 +903,6 @@ def handle_rssadd(bot, ievent):
     """ rss-add <name> <url> .. add a rss item. """
     try: (name, url) = ievent.args
     except ValueError: ievent.missing('<name> <url>') ; return
-    if watcher.byname(name):
-        ievent.reply('we already have a feed with %s name .. plz choose a different name' % name)
-        return
     if watcher.checkfeed(url, ievent): watcher.add(name, url, ievent.userhost) ; ievent.reply('rss item added')
     else: ievent.reply('%s is not valid' % url)
 
