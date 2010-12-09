@@ -677,7 +677,8 @@ class Rsswatcher(Rssdict):
         items = self.byname(name).getdata()
         for item in items:
             for key in item:
-                if key in allowedtokens: keys.append(key)            
+                #if key in allowedtokens: keys.append(key)
+                keys.append(key)         
         statdict = StatDict()
         for key in keys: statdict.upitem(key)
         return statdict.top()  
