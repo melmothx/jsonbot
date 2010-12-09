@@ -27,6 +27,11 @@ except ImportError:
     else: LOGDIR = os.path.expanduser("~") + os.sep + ".jsonbot" + os.sep + "botlogs"
 
 try:
+    ddir = os.sep.join(LOGDIR.split(os.sep)[:-1])
+    if not os.path.isdir(ddir): os,.mkdir(ddir)
+except: pass
+
+try:
     if not os.path.isdir(LOGDIR): os.mkdir(LOGDIR)
 except: pass
 
