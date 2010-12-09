@@ -387,6 +387,8 @@ class Rssdict(PlugPersist):
             target.save()
             try: del self.feeds[name]
             except KeyError: pass
+            try: self.data['names'].remove(name)
+            except ValueError: pass
             self.save()
 
     def byname(self, name):
