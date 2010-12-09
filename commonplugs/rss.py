@@ -229,7 +229,10 @@ sleeptime=15*60, running=0):
             return False
         logging.info("rss - syncing %s - %s" % (self.data.name, self.data.url))
         result = self.fetchdata()
-        if not result: cached = get(self.data.url, namespace="rss") ; result = cached.entries
+        if not result:
+            cached = get(self.data.url, namespace="rss")
+            if cached: result = cached.entries
+            else: result = []
         return result
 
     def check(self, entries=None, save=True):
