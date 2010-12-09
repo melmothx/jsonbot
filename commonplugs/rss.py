@@ -619,8 +619,10 @@ class Rsswatcher(Rssdict):
         """ stop watcher thread. """
         try:
             feed = self.byname(name)
-            if feed: feed.data.running = 0 ; feed.data.stoprunning = 1
-            if save: feed.save()
+            if feed:
+                feed.data.running = 0
+                feed.data.stoprunning = 1
+                if save: feed.save()
         except KeyError: pass
         try:
              del runners.data[name]
