@@ -23,9 +23,25 @@ import re
 import getopt
 import types
 import os
+import os.path
 import random
 import Queue 
 import logging
+
+## isdebian function
+
+def isdebian():
+    """ checks if we are on debian. """
+    return os.path.isfile("/etc/debian_version")
+
+## isjsonbotuser function
+
+def botuser():
+    """ checks if the user is jsonbot. """
+    try:
+        import getpass
+        return getpass.getuser() 
+    except ImportError: return ""
 
 ## checkpermission function
 

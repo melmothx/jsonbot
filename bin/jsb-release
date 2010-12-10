@@ -25,7 +25,7 @@ setloglevel("warn")
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import gethighest, dosed
+from gozerlib.utils.generic import gethighest, dosed, isdebian, botuser
 from gozerlib.version import getversion
 from gozerlib.datadir import getdatadir
 from gozerlib.config import getmainconfig
@@ -56,7 +56,7 @@ else:
      release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsonbot'
      targetin = 'jsonbot'
 
-if getmainconfig().debian: ddir = "var/spool/jsonbot"
+if isdebian() and botuser() == "jsonbot": ddir = "var/spool/jsonbot"
 else: ddir = opts.datadir or getdatadir()
 ddir = ddir + os.sep + "releases"
 
@@ -104,13 +104,13 @@ def sed(source, target):
 
 try: source = pkg_resources.resource_filename("gaeupload", '')
 except ImportError: 
-    if 'debian' in os.uname()[1]: source = "/var/lib/jsonbot/gaeupload"
+    if isdebian() and botuser() == "jsonbot": source = "/var/lib/jsonbot/gaeupload"
     else: source = "/usr/local/jsonbot/gaeupload"
 print source
 copyover(source, release)
 try: source = pkg_resources.resource_filename("gozerdata", '')
 except ImportError:
-    if 'debian' in os.uname()[1]: source = "/var/lib/jsonbot/gozerdata"
+    if isdebian() and botuser() == "jsonbot": source = "/var/lib/jsonbot/gozerdata"
     else: source = "/usr/local/jsonbot/gozerdata"
 print source
 copyover(source, release + os.sep + "gozerdata")

@@ -3,7 +3,7 @@
 #
 
 application: jsonbot
-version: 5
+version: 1
 runtime: python
 api_version: 1
 
@@ -81,7 +81,4 @@ handlers:
 inbound_services:
 - warmup
 - xmpp_message   
-
-derived_file_type:
-- python_precompiled
 
