@@ -128,9 +128,9 @@ class Commands(LazyDict):
             if bot.isgae or wait:
                 if bot.isgae and not event.notask and (target.threaded or event.threaded):
                     logging.warn("commands - LAUNCHING AS TASK")
-                    from gozerlib.threads import start_botevent
+                    from gozerlib.gae.tasks import start_botevent
                     event.txt = event.origtxt
-                    start_botevent(bot, event)
+                    start_botevent(bot, event, event.speed)
                 else:
                     target.func(bot, event)
                     if event.closequeue and event.queues:
