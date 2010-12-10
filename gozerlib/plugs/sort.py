@@ -90,5 +90,5 @@ def handle_sort(bot, ievent):
     if options.reverse: result.reverse()
     ievent.reply("results: ", result)
 
-cmnds.add('sort', handle_sort, ['USER', 'GUEST'], threaded=True)
+cmnds.add('sort', handle_sort, ['USER', 'GUEST'])
 examples.add('sort', 'sort the output of a command', 'list | sort')
