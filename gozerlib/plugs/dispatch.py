@@ -43,17 +43,17 @@ def dispatch(bot, event):
     go = False
     execstr = event.iscmnd()
     try:
-        if execstr and not event.notask:
+        if execstr:
             event.iscommand = True
             e = cpy(event)
             e.usercmnd = execstr.split()[0]
             e.txt = execstr
             e.showexception = True
             if not e.options: e.makeoptions()
-            else: e.prepare()
+            e.prepare()
             if e.usercmnd in event.chan.data.silentcommands: e.silent = True
             result = bot.plugs.dispatch(bot, e)
-            event.leave()
+            #event.leave()
         else:
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))
             result =  []
