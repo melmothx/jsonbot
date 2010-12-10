@@ -841,7 +841,6 @@ def doperiodical(*args, **kwargs):
     for feed in watcher.data.names:
         if not shouldpoll(feed, curtime): continue
         lastpoll.data[feed] = curtime
-        lastpoll.save()
         logging.debug("rss - periodical - launching %s" % feed)
         try:
             from google.appengine.ext.deferred import defer
@@ -849,6 +848,7 @@ def doperiodical(*args, **kwargs):
         except ImportError:
             try: start_new_thread(dosync, (feed, ))
             except Exception, ex: handle_exception() ; return
+    lastpoll.save()
 
 callbacks.add('TICK', doperiodical)
 
