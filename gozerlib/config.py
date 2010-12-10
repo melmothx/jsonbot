@@ -167,6 +167,7 @@ class Config(LazyDict):
             for keyword in keywords:
                 value = self[keyword]
                 if keyword in written: continue
+                if keyword == 'cfile': continue
                 if keyword == 'jsondb': continue
                 if keyword == 'isdb': continue
                 if keyword == 'optionslist': continue
@@ -208,6 +209,7 @@ class Config(LazyDict):
             self.setdefault('auto_register', 0)
             self.setdefault('ondemand', 1)
             self.setdefault('debian', 0)
+        self.cfile = self.dir + os.sep + self.filename
         self['createdfrom'] = whichmodule()
 
     def reload(self):
