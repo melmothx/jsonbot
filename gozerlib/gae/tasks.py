@@ -28,7 +28,7 @@ class BotEvent(Task):
 ## defines
 
 queues = []
-for i in range(10):
+for i in range(9):
     queues.append(Queue("queue" + str(i)))
 
 ## start_botevent function
