@@ -4,7 +4,7 @@
 
 """ gozerlib core package. """
 
-__version__ = "0.6"
+__version__ = "0.5.1"
 
 import warnings
 warnings.simplefilter('ignore')
