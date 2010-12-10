@@ -146,11 +146,7 @@ class Callbacks(object):
             logging.debug("callback - %s - trail - %s" % (getname(cb.func), callstack(sys._getframe())[::-1]))
             if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
             else:
-                if bot.isgae and not event.notask and (cb.threaded or event.threaded):
-                    logging.warn("callbacks - LAUNCHING AS TASK")   
-                    from gozerlib.threads import start_botcallback
-                    start_botcallback(bot, event)
-                elif bot.isgae: cb.func(bot, event)
+                if bot.isgae: cb.func(bot, event)
                 else:
                     from runner import defaultrunner
                     defaultrunner.put(cb.modname, cb.func, bot, event)
