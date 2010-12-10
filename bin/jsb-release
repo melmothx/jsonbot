@@ -150,6 +150,7 @@ try:
     copyover(homedir + os.sep + 'jsonregs' + os.sep + targetin, release + os.sep + 'gozerdata' + os.sep + 'config')
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
     shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'cron.yaml', release + os.sep + 'cron.yaml')
+    shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'queue.yaml', release + os.sep + 'queue.yaml')
 except (OSError, IOError), ex:
     print "TAKE NOTE: %s" % str(ex)
     try:
