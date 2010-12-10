@@ -19,8 +19,8 @@ import types
 
 def handle_reverse(bot, ievent):
     """ reverse string or pipelined list. """
-    if not ievent.rest: ievent.missing('<text to reverse>') ; return
-    if ievent.inqueue: result = waitforqueue(ievent.inqueue, 5)
+    if not ievent.rest and ievent.inqueue: result = waitforqueue(ievent.inqueue, 5)
+    elif not ievent.rest: ievent.missing('<text to reverse>') ; return
     else: result = ievent.rest
     if type(result) == types.ListType: ievent.reply("results: ", result[::-1])
     else: ievent.reply(result[::-1])

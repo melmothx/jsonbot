@@ -24,11 +24,12 @@ from waveapi.simplejson import loads
 
 import wsgiref.handlers
 import logging
+import google
 
 ## vars
 
 periodicals =  ['commonplugs.rss', 'gozerlib.plugs.botevent']
-mountpoints = ['rss', 'botevent', 'botcallback']
+mountpoints = ['rss', 'botevent']
 
 ##
 
@@ -58,6 +59,8 @@ class TaskHandler(webapp.RequestHandler):
 
             taskmanager.dispatch(taskname, inputdict, self.request, self.response)
 
+        except google.appengine.runtime.DeadlineExceededError:
+            return
         except Exception, ex:
             handle_exception()
             #self.send_error(500)
@@ -79,7 +82,8 @@ class TaskHandler(webapp.RequestHandler):
                     inputdict[name] = value
 
             taskmanager.dispatch(taskname, inputdict, self.request, self.response)
-
+        except google.appengine.runtime.DeadlineExceededError:
+            return
         except Exception, ex:
             handle_exception()
             #self.send_error(500)
