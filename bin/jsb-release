@@ -105,13 +105,13 @@ def sed(source, target):
 try: source = pkg_resources.resource_filename("gaeupload", '')
 except ImportError: 
     if isdebian() and botuser() == "jsonbot": source = "/var/lib/jsonbot/gaeupload"
-    else: source = "/usr/local/jsonbot/gaeupload"
+    else: source = "/usr/local/gaeupload"
 print source
 copyover(source, release)
 try: source = pkg_resources.resource_filename("gozerdata", '')
 except ImportError:
     if isdebian() and botuser() == "jsonbot": source = "/var/lib/jsonbot/gozerdata"
-    else: source = "/usr/local/jsonbot/gozerdata"
+    else: source = "/usr/local/gozerdata"
 print source
 copyover(source, release + os.sep + "gozerdata")
 print source

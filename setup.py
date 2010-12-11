@@ -9,8 +9,6 @@ except ImportError:
 
 import os
 
-target = "/usr/local/jsonbot"
-
 upload = []
 
 def uploadfiles(dir):
@@ -100,17 +98,17 @@ setup(
         'Programming Language :: Python',
         'Topic :: Communications :: Chat',
         'Topic :: Software Development :: Libraries :: Python Modules'],
-    data_files=[(target + os.sep + 'gozerdata', uploadlist('gozerdata')),
-                (target + os.sep + 'gozerdata' + os.sep + 'examples', uploadfiles('gozerdata' + os.sep + 'examples')),
-                (target + os.sep + 'gozerdata' + os.sep + 'myplugs', uploadlist('gozerdata' + os.sep + 'myplugs')),
-                (target + os.sep + 'simplejson', uploadlist('simplejson')),
-                (target + os.sep + 'tweepy', uploadlist('tweepy')),
-                (target + os.sep + 'gaeupload', uploadfiles('gaeupload')),
-                (target + os.sep + 'gaeupload' + os.sep + 'webapp2', uploadlist('gaeupload' + os.sep + 'webapp2')),
-                (target + os.sep + 'gaeupload' + os.sep + 'assets', uploadlist('gaeupload' + os.sep + 'assets')),
-                (target + os.sep + 'gaeupload' + os.sep + 'templates', uploadlist('gaeupload' + os.sep +'templates')),
-                (target + os.sep + 'gaeupload' + os.sep + 'waveapi', uploadlist('gaeupload' + os.sep + 'waveapi')),
-                (target + os.sep + 'gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth')),
-                (target + os.sep + 'gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson')),
-                (target + os.sep + 'gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets'))],  
+    data_files=[('gozerdata', uploadlist('gozerdata')),
+                ('gozerdata' + os.sep + 'examples', uploadfiles('gozerdata' + os.sep + 'examples')),
+                ('gozerdata' + os.sep + 'myplugs', uploadlist('gozerdata' + os.sep + 'myplugs')),
+                ('simplejson', uploadlist('simplejson')),
+                ('tweepy', uploadlist('tweepy')),
+                ('gaeupload', uploadfiles('gaeupload')),
+                ('gaeupload' + os.sep + 'webapp2', uploadlist('gaeupload' + os.sep + 'webapp2')),
+                ('gaeupload' + os.sep + 'assets', uploadlist('gaeupload' + os.sep + 'assets')),
+                ('gaeupload' + os.sep + 'templates', uploadlist('gaeupload' + os.sep +'templates')),
+                ('gaeupload' + os.sep + 'waveapi', uploadlist('gaeupload' + os.sep + 'waveapi')),
+                ('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'oauth')),
+                ('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson', uploadlist('gaeupload' + os.sep + 'waveapi' + os.sep + 'simplejson')),
+                ('gaeupload' + os.sep + 'gadgets', uploadlist('gaeupload' + os.sep + 'gadgets'))],  
 )
