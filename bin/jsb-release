@@ -104,14 +104,14 @@ def sed(source, target):
 
 try: source = pkg_resources.resource_filename("gaeupload", '')
 except ImportError: 
-    if isdebian() and botuser() == "jsonbot": source = "/var/lib/jsonbot/gaeupload"
-    else: source = "/usr/local/gaeupload"
+    if isdebian(): source = "/var/lib/jsonbot/gaeupload"
+    else: source = "/usr/local/jsonbot/gaeupload"
 print source
 copyover(source, release)
 try: source = pkg_resources.resource_filename("gozerdata", '')
 except ImportError:
-    if isdebian() and botuser() == "jsonbot": source = "/var/lib/jsonbot/gozerdata"
-    else: source = "/usr/local/gozerdata"
+    if isdebian(): source = "/var/lib/jsonbot/gozerdata"
+    else: source = "/usr/local/jsonbot/gozerdata"
 print source
 copyover(source, release + os.sep + "gozerdata")
 print source
@@ -159,7 +159,7 @@ except (OSError, IOError), ex:
         os._exit(1)
     except OSError, ex:
         try:
-            copyover('/usr/local/gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
+            copyover('/usr/local/jsonbot/gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
             print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
             os._exit(1)
         except OSError, ex:
