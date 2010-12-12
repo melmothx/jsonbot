@@ -101,7 +101,7 @@ setup(
                 ('gozerdata' + os.sep + 'examples', uploadfiles('gozerdata' + os.sep + 'examples')),
                 ('gozerdata' + os.sep + 'myplugs', uploadlist('gozerdata' + os.sep + 'myplugs')),
                 ('tweepy', uploadlist('tweepy')),
-                ('simplejson', uploadfiles('simplejson')),
+                ('simplejson', uploadlist('simplejson')),
                 ('gaeupload', uploadfiles('gaeupload')),
                 ('gaeupload' + os.sep + 'webapp2', uploadlist('gaeupload' + os.sep + 'webapp2')),
                 ('gaeupload' + os.sep + 'assets', uploadlist('gaeupload' + os.sep + 'assets')),

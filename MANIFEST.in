@@ -1,4 +1,5 @@
 recursive-include debian *
+recursive-include simplejson *
 recursive-include gaeupload *
 recursive-include gozerdata/examples *
 recursive-include gozerdata/myplugs *
