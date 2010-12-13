@@ -84,7 +84,7 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     if not cmndtable: cmndtable = Persist(rundir + os.sep + 'cmndtable')
     if not pluginlist: pluginlist = Persist(rundir + os.sep + 'pluginlist')
     if not callbacktable: callbacktable = Persist(rundir + os.sep + 'callbacktable')
-    if not cmndperms: cmndperms = Config(rundir + os.sep + 'cmndperms')
+    if not cmndperms: cmndperms = Config('cmndperms', ddir=ddir)
     from gozerlib.plugins import plugs
     if not cmndtable.data or force:
         plugs.loadall(plugin_packages, force=True)

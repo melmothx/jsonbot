@@ -90,7 +90,7 @@ def makedirs(ddir=None):
             shutil.copytree(source, ddir + os.sep + 'config')
         except ImportError: 
             try:
-                source = "/var/lib/jsonbot/gozerdata/examples"
+                source = "gozerdata/examples"
                 shutil.copytree(source, ddir + os.sep + "config")
             except OSError: 
                 try:
@@ -101,13 +101,21 @@ def makedirs(ddir=None):
         import pkg_resources
         source = pkg_resources.resource_filename('commonplugs', '')
         shutil.copyfile(source + os.sep + "__init__.py", ddir + os.sep + '__init__.py')
-    except ImportError: pass
+    except ImportError:
+        try:
+            source = "commonplugs"
+            shutil.copyfile(source + os.sep + "__init__.py", ddir + os.sep + '__init__.py')
+        except OSError: pass 
     if not os.path.isdir(ddir + os.sep + 'myplugs'): os.mkdir(ddir + os.sep + 'myplugs')
     try:
         import pkg_resources
         source = pkg_resources.resource_filename('commonplugs', '')
         shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
-    except ImportError: pass
+    except ImportError:
+        try:
+            source = "commonplugs"
+            shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
+        except OSError: pass
     if not os.path.isdir(homedir + os.sep + '.jsonbot' + os.sep +'botlogs'): os.mkdir(homedir + os.sep + '.jsonbot' + os.sep + 'botlogs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
