@@ -1,0 +1,5 @@
+rm -fR /var/run/jsonbot
+rm -fR /var/log/jsonbot
+rm -fR /var/lib/jsonbot
+rm -fR /var/cache/jsonbot
+rm -fR /etc/jsonbot

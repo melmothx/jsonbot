@@ -13,7 +13,7 @@
 NAME=jsb-fleet
 DESC="JSONBOT"
 DATADIR=/var/cache/jsonbot
-PIDFILE=/var/run/jsonbot.pid
+PIDFILE=/var/run/jsonbot/jsonbot.pid
 
 PID=`cat $PIDFILE` 2>/dev/null
 
@@ -33,7 +33,7 @@ fi
 
 status()
 {
-	test -n "$PID" && ps auxw | grep -v grep | grep jsonbot | grep -q -s " $PID " && return 0
+	test -n "$PID" && ps auxw | grep -v grep | grep jsb-fleet | grep -q -s " $PID " && return 0
         return 1
 }
 
@@ -41,14 +41,14 @@ stop()
 {
 	if status
 	then
-		kill -KILL $PID
+		kill -TERM $PID
 	fi
 }
 
 start()
 {
 	status && exit 1 # already running
-        if [ -f "/var/cache/jsonbot/config/mainconfig" ]		
+        if [ -f "/etc/jsonbot/config/mainconfig" ]		
         then
         	su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>/dev/null &"
 	else
@@ -57,6 +57,7 @@ start()
 		ln -s /var/cache/jsonbot/config /etc/jsonbot/config
 		su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>/dev/null &"
 	fi
+      
 }
 
 case "$1" in

@@ -7,4 +7,4 @@ RUN=yes
 RUNUSER=jsonbot
 
 # arguments to jsb-fleet
-ARGSTRING="-d /var/lib/jsonbot"
+ARGSTRING="-s"

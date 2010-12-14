@@ -6,7 +6,7 @@
 
 ## gozerlib imports
 
-from gozerlib.utils.generic import checkpermissions
+from gozerlib.utils.generic import checkpermissions, isdebian, botuser
 from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
 from gozerlib.datadir import makedirs
@@ -55,7 +55,8 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     if ddir: makedirs(ddir)
     else: makedirs() 
     if not ddir in sys.path: sys.path.append(ddir)
-    rundir = ddir + os.sep + "run"
+    if isdebian() and botuser() == "jsonbot": rundir = "/var/run/jsonbot"
+    else: rundir = ddir + os.sep + "run"
     try:
         if os.getuid() == 0:
             print "don't run the bot as root"

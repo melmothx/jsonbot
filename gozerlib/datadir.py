@@ -10,7 +10,7 @@ import re
 import os
 import shutil
 import logging
-import os
+import os.path
 import getpass
 
 ## the global datadir
@@ -28,7 +28,7 @@ except AttributeError: logging.info("datadir - skipping makedirs") ; datadir = "
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     global datadir
-    if not ddir and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsonbot"
+    if os.path.exists("/etc/debian_version") and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsonbot"
     else:
         ddir = ddir or datadir
     datadir = ddir
@@ -36,8 +36,8 @@ def makedirs(ddir=None):
     if isgae: return
     if not os.path.isdir(ddir):
         try: os.mkdir(ddir)
-        except: logging.warn("can't make %s dir" % ddir)
-        logging.warn("making dirs in %s" % ddir)
+        except: logging.warn("can't make %s dir" % ddir) ; os._exit(1)
+    logging.warn("making dirs in %s" % ddir)
     try: os.chmod(ddir, 0700)
     except: pass
     last = datadir.split(os.sep)[-1]
@@ -117,7 +117,7 @@ def makedirs(ddir=None):
             source = "commonplugs"
             shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
         except (OSError, IOError): pass
-    if not os.path.isdir(homedir + os.sep + '.jsonbot' + os.sep +'botlogs'): os.mkdir(homedir + os.sep + '.jsonbot' + os.sep + 'botlogs')
+    if not os.path.isdir(ddir + os.sep +'botlogs'): os.mkdir(ddir + os.sep + 'botlogs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/examples/'): os.mkdir(ddir + '/examples/')
     if not os.path.isdir(ddir + '/users/'): os.mkdir(ddir + '/users/')

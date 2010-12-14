@@ -4,8 +4,12 @@ echo "making dirs"
 mkdir /etc/jsonbot
 mkdir /var/log/jsonbot
 chown jsonbot:jsonbot /var/log/jsonbot
+mkdir /var/run/jsonbot
+chown jsonbot:jsonbot /var/run/jsonbot
 mkdir /var/cache/jsonbot
 chown jsonbot:jsonbot /var/cache/jsonbot
+mkdir /var/lib/jsonbot
+chown jsonbot:jsonbot /var/lib/jsonbot
 echo "running setup.py"
 python setup-debian.py install
 echo "copying files"

@@ -95,6 +95,7 @@ def makefleetopts():
     """ create option parser for events. """
     parser = optparse.OptionParser(usage='usage: %prog [options] [list of bot names]', version=getversion("FLEET"))
     parser.add_option('-a', '--all', action='store_true', default=False, dest='all', help="show available fleet bots")
+    parser.add_option('-s', '--show', action='store_true', default=False, dest='show', help="print available fleet bots")
     parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir',  help="datadir of the bot")
     parser.add_option('-l', '--loglevel', type='string', default="", dest='loglevel',  help="loglevel of the bot")
     parser.add_option('-o', '--owner', type='string', default=False, dest='owner',  help="owner of the bot")

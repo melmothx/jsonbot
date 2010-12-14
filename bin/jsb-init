@@ -10,6 +10,7 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
+from gozerlib.utils.generic import isdebian, botuser
 from gozerlib.version import getversion
 
 from optparse import OptionParser
@@ -26,7 +27,8 @@ import logging
 logging.warn(getversion("INIT"))
 
 from gozerlib.datadir import makedirs
-makedirs(opts.datadir)
+if isdebian() and botuser == "jsonbot": makedirs("/var/cache/jsonbot")
+else: makedirs(opts.datadir)
 
 from gozerlib.utils.opts import makeircconfig, makexmppconfig
 irccfg = makeircconfig('irc') ; irccfg.save()
