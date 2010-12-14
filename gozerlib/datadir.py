@@ -50,7 +50,7 @@ def makedirs(ddir=None):
             try:
                 source = "gozerdata"
                 shutil.copytree(source, ddir)
-            except IOError: 
+            except (OSError, IOError): 
                 try:
                     source = "/var/lib/jsonbot/gozerdata"
                     shutil.copytree(source, ddir)
@@ -64,7 +64,7 @@ def makedirs(ddir=None):
             try:
                 source = "gozerdata" + os.sep + "myplugs"
                 shutil.copytree(source, ddir + os.sep + "myplugs")
-            except IOError: 
+            except (OSError, IOError): 
                 try:
                     source = "/var/lib/jsonbot/gozerdata/myplugs"
                     shutil.copytree(source, ddir + os.sep + "myplugs")
@@ -78,7 +78,7 @@ def makedirs(ddir=None):
             try:
                 source = "gozerdata" + os.sep + "examples"
                 shutil.copytree(source, ddir + os.sep + "examples")
-            except OStError: 
+            except (OSError, IOError): 
                 try:
                     source = "/var/lib/jsonbot/gozerdata/examples"
                     shutil.copytree(source, ddir + os.sep + "examples")
@@ -93,7 +93,7 @@ def makedirs(ddir=None):
             try:
                 source = "gozerdata" + os.sep + "examples"
                 shutil.copy(source + os.sep + 'mainconfig.example', ddir + os.sep + 'config' + os.sep + 'mainconfig')
-            except IOError: 
+            except (OSError, IOError): 
                 try:
                     source = "/var/lib/jsonbot/gozerdata/examples"
                     shutil.copy(source + os.sep + 'mainconfig.example', ddir + os.sep + 'config' + os.sep + 'mainconfig')
@@ -106,7 +106,7 @@ def makedirs(ddir=None):
         try:
             source = "commonplugs"
             shutil.copyfile(source + os.sep + "__init__.py", ddir + os.sep + '__init__.py')
-        except IOError: pass 
+        except (OSError, IOError): pass 
     if not os.path.isdir(ddir + os.sep + 'myplugs'): os.mkdir(ddir + os.sep + 'myplugs')
     try:
         import pkg_resources
@@ -116,7 +116,7 @@ def makedirs(ddir=None):
         try:
             source = "commonplugs"
             shutil.copyfile(source + os.sep + "__init__.py", os.path.join(ddir,'myplugs', '__init__.py'))
-        except IOError: pass
+        except (OSError, IOError): pass
     if not os.path.isdir(homedir + os.sep + '.jsonbot' + os.sep +'botlogs'): os.mkdir(homedir + os.sep + '.jsonbot' + os.sep + 'botlogs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/examples/'): os.mkdir(ddir + '/examples/')
