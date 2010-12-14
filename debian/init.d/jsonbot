@@ -14,7 +14,6 @@ NAME=jsb-fleet
 DESC="JSONBOT"
 DATADIR=/var/cache/jsonbot
 PIDFILE=/var/run/jsonbot/jsonbot.pid
-
 PID=`cat $PIDFILE` 2>/dev/null
 
 # Include gozerbot defaults if available
@@ -57,12 +56,12 @@ start()
 		ln -s /var/cache/jsonbot/config /etc/jsonbot/config
 		su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>/dev/null &"
 	fi
-      
+	su $RUNUSER -c "$NAME -d $DATADIR -a 2>/dev/null"
 }
 
 case "$1" in
 start)
-	echo -n "Starting $DESC: $NAME"
+	echo -n "Starting $DESC: $NAME "
 	start
 	case "$?" in
 		0) echo "." ; exit 0 ;;
