@@ -57,6 +57,8 @@ try:
         def __init__(self, filename, default={}, type="cache"):
             self.plugname = calledfrom(sys._getframe())
             if 'lib' in self.plugname: self.plugname = calledfrom(sys._getframe(1))
+            try: del self.fn
+            except: pass 
             self.fn = unicode(filename.strip()) # filename to save to
             self.logname = os.sep.join(self.fn.split(os.sep)[-2:])
             self.type = type

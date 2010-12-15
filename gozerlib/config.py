@@ -46,9 +46,15 @@ class Config(LazyDict):
 
     def __init__(self, filename=None, verbose=False, input={}, ddir=None, *args, **kw):
         LazyDict.__init__(self, input, *args, **kw)
+        try: del self.filename
+        except: pass
         self.filename = filename or 'mainconfig'
         datadir = ddir or getdatadir()
+        try: del self.dir
+        except: pass
         self.dir = datadir + os.sep + 'config'
+        try: del self.cfile
+        except: pass
         if datadir not in self.filename: self.cfile = self.dir + os.sep + self.filename
         else: self.cfile = self.filename
         logging.debug("config - filename is %s" % self.cfile)
