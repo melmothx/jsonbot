@@ -13,7 +13,7 @@ from gozerlib.utils.generic import strippedtxt, toenc, fromenc
 
 ## simplejson imports
 
-from gozerlib.auth.simplejson import dumps
+from gozerlib.contrib.simplejson import dumps
 
 ## basic imports
 

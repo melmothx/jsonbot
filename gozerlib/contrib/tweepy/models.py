@@ -2,10 +2,8 @@
 # Copyright 2009-2010 Joshua Roesslein
 # See LICENSE for details.
 
-from tweepy.error import TweepError
-from tweepy.utils import parse_datetime, parse_html_value, parse_a_href, \
-        parse_search_datetime, unescape_html
-
+from error import TweepError
+from utils import parse_datetime, parse_html_value, parse_a_href, parse_search_datetime, unescape_html
 
 class ResultSet(list):
     """A list like object that holds results from a Twitter API query."""
