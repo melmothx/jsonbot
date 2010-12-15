@@ -12,7 +12,9 @@ from gozerlib.errors import PropertyIgnored
 
 ## simplejson imports
 
-from simplejson import loads, dumps
+try:
+    from simplejson import loads, dumps
+except ImportError: from gozerlib.contrib.simplejson import loads, dumps
 
 ## basic imports
 

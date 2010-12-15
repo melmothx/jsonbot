@@ -20,12 +20,12 @@ from gozerlib.jsbimport import _import_byfile
 
 ## tweppy imports
 
-from tweepy.auth import OAuthHandler
-from tweepy.api import API
-from tweepy import oauth
-from tweepy.error import TweepError
-from tweepy.models import Status, User
-import tweepy
+from gozerlib.contrib.tweepy.auth import OAuthHandler
+from gozerlib.contrib.tweepy.api import API
+from gozerlib.contrib.tweepy import oauth
+from gozerlib.contrib.tweepy.error import TweepError
+from gozerlib.contrib.tweepy.models import Status, User
+from gozerlib.contrib import tweepy
 
 go = True
 
