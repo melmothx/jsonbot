@@ -43,7 +43,8 @@ target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
 
 for item in target:
     print "DOING RELEASE %s" % item
-    execstring = 'jsb-release -d%s %s' % (ddir, item)
+    if os.path.isfile('jsb-release'): execstring = './jsb-release -d%s %s' % (ddir, item)
+    else: execstring = 'jsb-release -d%s %s' % (ddir, item)
     print execstring
     proc = Popen(execstring.split())
     proc.wait()
