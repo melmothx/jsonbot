@@ -47,7 +47,7 @@ upload = uploadlist('gaeupload')
 
 setup(
     name='jsonbot',
-    version='0.5.2',
+    version='0.5.3',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
@@ -80,6 +80,8 @@ setup(
               'gozerlib.socklib.utils',
               'gozerlib.socklib.rest',
               'gozerlib.contrib',
+              'gozerlib.contrib.simplejson',
+              'gozerlib.contrib.tweepy',
               'gozerlib.plugs',
               'waveplugs',
               'commonplugs',

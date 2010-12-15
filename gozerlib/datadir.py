@@ -41,7 +41,16 @@ def getsource(mod):
         thedir = mod.replace(".", os.sep)
         if os.path.isdir(thedir): source = thedir
         elif os.path.isdir("/var/lib/jsonbot" + os.sep + thedir): source = "/var/lib/jsonbot" + os.sep + thedir
+    logging.warn("datadir - source is %s" % source)
     return source
+
+def doit(ddir, mod):
+    source = getsource(mod)
+    if not source: raise Exception("can't find %s package" % mod)
+    try:
+        shutil.copytree(source, ddir + os.sep + mod.replace(".", os.sep))
+    except (OSError, IOError), ex: logging.error("datadir - failed to copy %s: %s" % (mod, str(ex)))
+
 
 ## makedir function
 
@@ -62,31 +71,19 @@ def makedirs(ddir=None):
     except: pass
     last = datadir.split(os.sep)[-1]
     if not os.path.isdir(ddir):
-        source = getsource("gozerdata")
-        if not source: raise Exception("can't find gozerdata package")
-        try:
-            shutil.copytree(source, ddir)
-        except (OSError, IOError), ex: logging.error("datadir - failed to copy gozerdata: %s" % str(ex))
+        doit(ddir, "gozerdata")
     if not os.path.isdir(ddir + os.sep + 'myplugs'):
-        source = getsource("gozerdata.myplugs")
-        if not source: raise Exception("can't find gozerdata.myplugs package")
-        try:
-            shutil.copytree(source, ddir + os.sep + "myplugs")
-        except (OSError, IOError), ex: logging.error("datadir - failed to copy gozerdata.myplugs: %s" % str(ex))
+        doit(ddir, "gozerdata.myplugs")
     if not os.path.isdir(ddir + os.sep + 'examples'):
-        source = getsource("gozerdata.examples")
-        if not source: raise Exception("can't find gozerdata.examples package")
-        try:
-            shutil.copytree(source, ddir + os.sep + "examples")
-        except (OSError, IOError), ex: logging.error("datadir - failed to copy gozerdata.examples: %s" % str(ex))
-    if not os.path.isdir(ddir + os.sep + 'config'):
-        source = getsource("gozerdata.config")
-        if not source: raise Exception("can't find gozerdata.config package")
-        try:
-            shutil.copytree(source, ddir + os.sep + "config")
-        except (OSError, IOError), ex: logging.error("datadir - failed to copy gozerdata.config: %s" % str(ex))
+        doit(ddir, "gozerdata.examples")
     try: touch(ddir + os.sep + "__init__.py")
     except: pass
+    if not os.path.isdir(ddir + os.sep + "config"): os.mkdir(ddir + os.sep + "config")
+    if not os.path.isfile(ddir + os.sep + 'config' + os.sep + "mainconfig"):
+        source = getsource("gozerdata.examples")
+        if not source: raise Exception("can't find gozerdate.examples package")
+        try: shutil.copy(source + os.sep + 'mainconfig.example', ddir + os.sep + 'config' + os.sep + 'mainconfig')
+        except (OSError, IOError), ex: logging.error("datadir - failed to copy gozerdata.config: %s" % str(ex))
     try: touch(ddir + os.sep + "config" + os.sep + "__init__.py")
     except: pass
     if not os.path.isdir(ddir + os.sep + 'myplugs'): os.mkdir(ddir + os.sep + 'myplugs')
