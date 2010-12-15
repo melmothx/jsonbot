@@ -9,7 +9,7 @@ __version__ = "1"
 ## gozerlib imports
 
 from gozerlib.gozerevent import GozerEvent
-from simplejson import dumps
+from gozerlib.contrib.simplejson import dumps
 
 ## xmpp import
 

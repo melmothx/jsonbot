@@ -16,7 +16,7 @@ __version__ = "0.2"
 
 from gozerlib.contrib.twitter import Api, User
 
-import simplejson
+import gozerlib.contrib.simplejson
 
 try:
     import gozerlib.contrib.oauth as oauth
