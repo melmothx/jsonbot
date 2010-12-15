@@ -17,7 +17,7 @@ from gozerlib.exit import globalshutdown
 
 ## simplejson imports
 
-from simplejson import dump
+from gozerlib.contrib.simplejson import dump
 
 ## admin-boot command
 

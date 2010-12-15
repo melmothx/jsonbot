@@ -19,7 +19,7 @@ from utils.name import stripname
 
 ## simplejson imports
 
-from simplejson import load
+from gozerlib.contrib.simplejson import load
 
 ## basic imports
 

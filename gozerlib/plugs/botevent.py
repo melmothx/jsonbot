@@ -16,7 +16,7 @@ from gozerlib.callbacks import first_callbacks, callbacks, last_callbacks
 
 ## simplejson imports
 
-from simplejson import loads
+from gozerlib.contrib.simplejson import loads
 
 ## basic imports
 

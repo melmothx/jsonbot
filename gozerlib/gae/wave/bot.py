@@ -19,6 +19,7 @@ from gozerlib.utils.generic import strippedtxt
 from gozerlib.utils.trace import calledfrom
 from gozerlib.jsbimport import _import_byfile
 from gozerlib.datadir import getdatadir
+import gozerlib.contrib.simplejson as simplejson
 
 ## gaelib imports
 
@@ -44,7 +45,6 @@ import cgi
 import os
 import time
 import thread
-import simplejson
 import sys
 
 ## defines

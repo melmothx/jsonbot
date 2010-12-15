@@ -26,7 +26,7 @@ from google.appengine.api import channel
 
 ## simplejson import
 
-from simplejson import loads
+from gozerlib.contrib.simplejson import loads
 
 ## basic imports
 

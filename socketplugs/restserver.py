@@ -15,7 +15,7 @@ from gozerlib.examples import examples
 
 ## simplejson imports
 
-from simplejson import dumps
+from gozerlib.contrib.simplejson import dumps
 
 ## basic imports
 

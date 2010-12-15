@@ -19,7 +19,7 @@ from gozerlib.config import Config
 
 ## simplejson imports
 
-from simplejson import dumps, loads
+from gozerlib.contrib.simplejson import dumps, loads
 
 ## basic imports
 

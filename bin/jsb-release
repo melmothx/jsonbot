@@ -127,12 +127,6 @@ copyover(source, release + os.sep + 'socketplugs')
 source = pkg_resources.resource_filename('waveplugs', '')
 print source
 copyover(source, release + os.sep + 'waveplugs')
-source = pkg_resources.resource_filename('simplejson', '')
-print source
-copyover(source, release + os.sep + 'simplejson')
-source = pkg_resources.resource_filename('tweepy', '')
-print source
-copyover(source, release + os.sep + 'tweepy')
 
 homedir = os.path.expanduser("~")
 try:

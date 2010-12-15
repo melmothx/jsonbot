@@ -16,7 +16,7 @@ from utils.locking import lockdec
 
 ## simplejson imports
 
-from simplejson import loads, dumps
+from gozerlib.contrib.simplejson import loads, dumps
 
 ## basic imports
 

@@ -39,7 +39,7 @@ import hashlib
 
 ## simpljejson imports
 
-from simplejson import loads, dumps
+from gozerlib.contrib.simplejson import loads, dumps
 
 ## defines
 

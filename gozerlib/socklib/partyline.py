@@ -13,10 +13,7 @@ __author__ = 'Aim'
 from gozerlib.fleet import getfleet
 from gozerlib.utils.exception import handle_exception
 from gozerlib.threads import start_new_thread
-
-## simplejson import
-
-from simplejson import load
+from gozerlib.contrib.simplejson import load
 
 ## basic imports
 

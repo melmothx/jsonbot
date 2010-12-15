@@ -54,7 +54,7 @@ except ImportError:
 
 ## simplejson import
 
-from simplejson import loads
+from gozerlib.contrib.simplejson import loads
 
 ## basic imports
 

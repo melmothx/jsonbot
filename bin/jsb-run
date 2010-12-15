@@ -38,7 +38,8 @@ except IndexError:
     print "jsb-run <botname>"
     os._exit(1)
 
-execstring = 'jsb-release %s -d%s' % (target, ddir)
+if os.path.isfile('jsb-release'): execstring = './jsb-release %s -d%s' % (target, ddir)
+else: execstring = 'jsb-release %s -d%s' % (target, ddir)
 print execstring
 proc = Popen(execstring.split())
 proc.wait()

@@ -11,10 +11,7 @@ from gozerlib.persist import Persist
 from gozerlib.utils.exception import handle_exception
 from gozerlib.utils.trace import calledfrom
 from gozerlib.utils.lazydict import LazyDict
-
-## simplejson
-
-from simplejson import dumps
+from gozerlib.contrib.simplejson import dumps
 
 ## generic imports
 

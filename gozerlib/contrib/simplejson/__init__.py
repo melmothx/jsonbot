@@ -402,9 +402,9 @@ def loads(s, encoding=None, cls=None, object_hook=None, parse_float=None,
 
 
 def _toggle_speedups(enabled):
-    import simplejson.decoder as dec
-    import simplejson.encoder as enc
-    import simplejson.scanner as scan
+    import decoder as dec
+    import encoder as enc
+    import scanner as scan
     c_make_encoder = _import_c_make_encoder()
     if enabled:
         dec.scanstring = dec.c_scanstring or dec.py_scanstring

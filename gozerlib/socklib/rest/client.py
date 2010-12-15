@@ -11,10 +11,7 @@ from gozerlib.utils.generic import toenc
 from gozerlib.utils.exception import handle_exception, exceptionmsg
 from gozerlib.utils.locking import lockdec
 from gozerlib.utils.lazydict import LazyDict
-
-## simplejson import
-
-from simplejson import loads
+from gozerlib.contrib.simplejson import loads
 
 ## basic imports
 

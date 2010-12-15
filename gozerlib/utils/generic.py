@@ -9,10 +9,7 @@
 from exception import handle_exception
 from trace import calledfrom, whichmodule
 from lazydict import LazyDict
-
-## simplejson import
-
-from simplejson import dumps
+from gozerlib.contrib.simplejson import dumps
 
 ## generic imports
 

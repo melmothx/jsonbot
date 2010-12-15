@@ -30,7 +30,7 @@ plugcfg.define("url", 'http://tinyurl.com/create.php')
 
 ## simpljejson
 
-from simplejson import dumps, loads
+from gozerlib.contrib.simplejson import dumps, loads
 
 ## basic imports
 

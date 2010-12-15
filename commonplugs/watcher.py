@@ -22,7 +22,7 @@ from commonplugs.chatlog import formatevent
 
 ## basic imports
 
-from simplejson import loads
+from gozerlib.contrib.simplejson import loads
 import copy
 import logging
 

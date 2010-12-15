@@ -11,7 +11,7 @@ from gozerlib.commands import cmnds
 from gozerlib.examples import examples
 from gozerlib.utils.url import useragent
 
-from simplejson import loads
+from gozerlib.contrib.simplejson import loads
 
 ## basic imports
 

@@ -12,6 +12,7 @@ from gozerlib.utils.lazydict import LazyDict
 from gozerlib.utils.exception import handle_exception
 from gozerlib.plugins import plugs
 from gozerlib.boot import boot, plugin_packages
+from gozerlib.contrib.simplejson import loads
 
 ## gaelib imports
 
@@ -29,13 +30,15 @@ from google.appengine.api import users as gusers
 from google.appengine.ext import db
 from google.appengine.ext.webapp import xmpp_handlers
 
-from simplejson import loads
+## basic imports
 
 import wsgiref.handlers
 import sys
 import time
 import types
 import logging
+
+## boot
 
 logging.info(getversion('GAE XMPP'))
 

@@ -20,7 +20,7 @@ from cache import get, set, delete
 
 ## simplejson imports
 
-from simplejson import load, dump, loads, dumps
+from gozerlib.contrib.simplejson import load, dump, loads, dumps
 
 ## basic imports
 

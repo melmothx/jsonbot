@@ -78,6 +78,8 @@ setup(
               'gozerlib.socklib.utils',
               'gozerlib.socklib.rest',
               'gozerlib.contrib',
+              'gozerlib.contrib.tweepy',
+              'gozerlib.contrib.simplejson',
               'gozerlib.plugs',
               'waveplugs',
               'commonplugs',

@@ -14,7 +14,7 @@ from google.appengine.api.labs.taskqueue import Task, Queue
 
 ## simplejson imports
 
-from simplejson import dumps
+from gozerlib.contrib.simplejson import dumps
 
 ## basic imports
 

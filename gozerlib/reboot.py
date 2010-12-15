@@ -7,10 +7,10 @@
 ## gozerlib imports
 
 from gozerlib.fleet import getfleet
+from gozerlib.contrib.simplejson import dump
 
 ## basic imports
 
-from simplejson import dump
 import os
 import sys
 import pickle

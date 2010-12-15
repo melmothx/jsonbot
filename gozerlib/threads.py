@@ -37,7 +37,7 @@ def task(func):
 
 try: 
     from google.appengine.api.labs.taskqueue import Task
-    from simplejson import dumps
+    from gozerlib.contrib.simplejson import dumps
 
     class BotEvent(Task):
         pass
