@@ -37,7 +37,7 @@ import gozerlib
 
 ## basic imports
 
-from simplejson import load
+from gozerlib.contrib.simplejson import load
 import logging
 import time
 import os
