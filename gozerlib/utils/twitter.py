@@ -6,9 +6,9 @@
 
 ## tweepy imports
 
-from tweepy.auth import OAuthHandler
-from tweepy.api import API
-from tweepy import oauth  
+from gozerlib.contrib.tweepy.auth import OAuthHandler
+from gozerlib.contrib.tweepy.api import API
+from gozerlib.contrib.tweepy import oauth  
 
 ## basic imports
 
