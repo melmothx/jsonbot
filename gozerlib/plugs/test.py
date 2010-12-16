@@ -63,7 +63,8 @@ def dotest(bot, event):
                 if e: queues.append(e.outqueue)
                 else: logging.warn("no result back - %s" % example)
             except Exception, ex: errors[example] = exceptionmsg()
-    for q in queues: waitforqueue(q)
+    #if not bot.isgae:
+    #    for q in queues: waitforqueue(q)
     if errors:
         event.reply("there are %s errors .. " % len(errors))
         for cmnd, error in errors.iteritems(): event.reply("%s - %s" % (cmnd, error))

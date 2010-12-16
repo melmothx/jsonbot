@@ -143,7 +143,9 @@ def file_write(m):
     basepath = cfg.get('basepath')
     if basepath: f = path.join(basepath, f)
     dir = path.dirname(f)
-    if not path.exists(dir): os.makedirs(dir)
+    if not path.exists(dir):
+         try: os.makedir(dir)
+         except: pass
     timestamp = timestr(m['datetime'])
     line = '%(timestamp)s%(separator)s%(txt)s\n'%({
         'timestamp': timestamp, 
@@ -290,6 +292,7 @@ def log(bot, event):
 def prechatlogcb(bot, ievent):
     """Check if event should be logged.  QUIT and NICK are not channel
     specific, so we will check each channel in log()."""
+    if bot.isgae: return False
     if not cfg.channels:
         return False
     if not ievent.msg and [bot.name, ievent.channel] in cfg.get('channels'):

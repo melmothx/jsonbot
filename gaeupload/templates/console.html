@@ -4,9 +4,11 @@
     <script src='/_ah/channel/jsapi'></script>
     <script type="text/javascript">
       // vars
+      var host = "{{ host }}";
       var hostname = window.location.hostname;
       var port = window.location.port;
-      var url = "https://" + hostname + ":" + port + "/dispatch/";
+      var url = "http://" + hostname + ":" + port + "/dispatch/";
+      // var url = "https://" + hostname + ":" + port + "/dispatch/";
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
@@ -373,6 +375,7 @@
           if (how != "background") {
               status("sending command - ");
           }
+          // topper(host + " " + hostname);
 
           request.open("POST", url, true);
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
