@@ -37,7 +37,9 @@ def start_botevent(bot, event, speed=5):
     """ start a new botevent task. """
     try:
         event.botevent = True
-        name = event.usercmnd[1:] + "-" + str(uuid.uuid4())
+        if event.usercmnd[0] == "!": e = event.usercmnd[1:]
+        else: e = event.usercmnd
+        name = e + "-" + str(uuid.uuid4())
         payload = dumps({ 'bot': bot.tojson(),
                           'event': event.tojson()
                         })

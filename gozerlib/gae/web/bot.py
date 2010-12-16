@@ -42,7 +42,7 @@ class WebBot(BotBase):
             from google.appengine.api import channel
             logging.warn("%s - sending to channel %s" % (self.name, chan))
             channel.send_message(chan, txt)
-
+                
     def outnocb(self, channel, txt, how="cache", event=None, origin=None, response=None, dotime=False, *args, **kwargs):
         txt = self.normalize(txt)
         if event and not event.how == "background": 
@@ -78,7 +78,15 @@ class WebBot(BotBase):
         return txt
 
     def update_web(self, channel, txt):
+        import google
         chan = ChannelBase(channel, botname="gae-web")
         logging.warn("%s - webchannels are %s" % (self.name, chan.data.webchannels))
+        remove = []
         for c in chan.data.webchannels:
-            self._raw(txt, chan=c)
+            try:
+                self._raw(txt, chan=c)
+            except google.appengine.api.channel.channel.InvalidChannelClientIdError:
+                remove.append(c)
+        if remove:
+            for c in remove: chan.data.webchannels.remove(c)
+            chan.save()

@@ -4,9 +4,12 @@
     <script src='/_ah/channel/jsapi'></script>
     <script type="text/javascript">
       // vars
+      var host = "{{ host }}";
       var hostname = window.location.hostname;
       var port = window.location.port;
-      var url = "https://" + hostname + ":" + port + "/dispatch/";
+      var url2 = "https://" + hostname + ":" + port + "/dispatch/";
+      var url = "http://" + hostname + ":" + port + "/dispatch/";
+      var got = hostname.indexOf("localhost");
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
@@ -369,12 +372,18 @@
           request.onreadystatechange = function () {
               resp(request);
           }
-
-          if (how != "background") {
-              status("sending command - ");
+          var u = "";
+          if (got == -1) {
+              request.open("POST", url2, true);
+              u = url2;
           }
-
-          request.open("POST", url, true);
+          else {
+              request.open("POST", url, true);
+              u = url;
+          }
+          if (how != "background") {
+              status("sending command - " + u + " - ");
+          }
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
           request.setRequestHeader("Cache-Control", "no-cache");
