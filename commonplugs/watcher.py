@@ -144,7 +144,7 @@ def prewatchcallback(bot, event):
 @locked
 def watchcallback(bot, event):
     """ the watcher callback, see if channels are followed and if so send data. """
-    if not event.allowwatch: logging.warn("watch - allowwatch is not set - ignoring %s" % event.userhost) ; return
+    #if not event.allowwatch: logging.warn("watch - allowwatch is not set - ignoring %s" % event.userhost) ; return
     subscribers = watched.subscribers(event.channel)
     watched.data.descriptions[event.channel.lower()] = event.title
     logging.info("watcher - %s - %s" % (event.channel, str(subscribers)))
@@ -152,7 +152,8 @@ def watchcallback(bot, event):
         try:
             (botname, type, channel) = item
         except ValueError: continue
-        if channel not in event.allowwatch: logging.warn("watcher - allowwatch denied %s - %s" % (channel, event.allowwatch)) ; continue
+        if not event.allowatch: pass
+        elif channel not in event.allowwatch: logging.warn("watcher - allowwatch denied %s - %s" % (channel, event.allowwatch)) ; continue
         m = formatevent(bot, event)
         if event.cbtype in ['OUTPUT']: txt = u"[!] %s" % m.txt
         else: txt = u"[%s] %s" % (m.nick or event.nick or event.auth, m.txt)
