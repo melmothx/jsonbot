@@ -8,7 +8,8 @@
       var hostname = window.location.hostname;
       var port = window.location.port;
       var url = "http://" + hostname + ":" + port + "/dispatch/";
-      // var url = "https://" + hostname + ":" + port + "/dispatch/";
+      var url2 = "https://" + hostname + ":" + port + "/dispatch/";
+      var got = hostname.indexOf("localhost");
       var starttime = new Date();
       var interval_id;
       var lastpolled = new Date();
@@ -375,9 +376,13 @@
           if (how != "background") {
               status("sending command - ");
           }
-          // topper(host + " " + hostname);
-
-          request.open("POST", url, true);
+          // output(got.toString());
+          if (got == 0) {
+              request.open("POST", url, true);
+          }
+          else {
+              request.open("POST", url2, true);
+          }
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
           request.setRequestHeader("Cache-Control", "no-cache");
