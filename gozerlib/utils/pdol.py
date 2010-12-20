@@ -65,3 +65,8 @@ class Pdol(Persist):
             self.data[item].remove(what)
             return True
         except (ValueError, KeyError): return False
+
+    def insert(self, item, index, what):
+        """ insert in list. """
+        if not self.data.has_key(item): self.new(item)
+        self.data[item].insert(index, what)

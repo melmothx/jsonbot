@@ -66,7 +66,7 @@ class BotBase(LazyDict):
         if not botname and cfg and cfg.botname: botname = cfg.botname
         if botname: self.botname = botname
         else: self.botname = u"default-%s" % str(type(self)).split('.')[-1][:-2]
-        logging.warn("botbase - name is %s" % self.botname)
+        logging.info("botbase - name is %s" % self.botname)
         self.fleetdir = u'fleet' + os.sep + stripname(self.botname)
         if cfg: self.cfg = Config(self.fleetdir + os.sep + u'config', input=cfg)
         else: self.cfg = Config(self.fleetdir + os.sep + u'config')
@@ -107,7 +107,7 @@ class BotBase(LazyDict):
             logging.debug(u"owner is not set in %s - using mainconfig" % self.cfg.cfile)
             self.owner = Config().owner
         self.setusers(usersin)
-        logging.warn(u"botbase - owner is %s" % self.owner)
+        logging.info(u"botbase - owner is %s" % self.owner)
         self.users.make_owner(self.owner)
         self.outcache = outcache
         self.userhosts = {}
@@ -256,13 +256,13 @@ class BotBase(LazyDict):
     def doremote(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
-        logging.warn("======== start handling REMOTE event ========")
+        logging.info("======== start handling REMOTE event ========")
         event.prepare(self)
         self.status = "callback"
         starttime = time.time()
         msg = "%s - %s - %s - %s" % (self.name, event.auth, event.how, event.cbtype)
         if event.how == "background": logging.debug(msg)
-        else: logging.warn(msg)
+        else: logging.info(msg)
         logging.debug("botbase - remote - %s" % event.dump())
         if self.closed:
             if self.gatekeeper.isblocked(event.origin): return
@@ -273,7 +273,7 @@ class BotBase(LazyDict):
         e0 = cpy(event)
         e0.speed = 1
         remote_callbacks.check(self, e0)
-        logging.warn("======== STOP handling local event ========")
+        logging.info("======== start handling REMOTE event ========")
         return
 
     #@locked
@@ -292,8 +292,8 @@ class BotBase(LazyDict):
                 if event.cbtype in ['PING', 'PRESENCE'] or event.how == "background": 
                     logging.debug("======== start handling local event ========")
                     logging.debug(msg)
-                else: logging.warn("======== start handling local event ========") ; logging.info(msg)
-        logging.info(event.dump())
+                else: logging.info("======== start handling local event ========") ; logging.info(msg)
+        logging.debug(event.dump())
         event.prepare(self)
         self.status = "callback"
         starttime = time.time()
@@ -334,7 +334,7 @@ class BotBase(LazyDict):
 
     def _raw(self, txt, *args, **kwargs):
         """ override this. """ 
-        logging.warn(u"%s - out - %s" % (self.name, txt))
+        logging.debug(u"%s - out - %s" % (self.name, txt))
         print txt
 
     def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
@@ -376,7 +376,7 @@ class BotBase(LazyDict):
         res = txtlist[0]
         length = len(txtlist)
         if length > 1:
-            logging.warn("addding %s lines to %s outputcache" % (len(txtlist), printto))
+            logging.info("addding %s lines to %s outputcache" % (len(txtlist), printto))
             outcache.set(u"%s-%s" % (self.name, printto), txtlist[1:])
             res += "<b> - %s more</b>" % (length - 1) 
         return [res, length]
@@ -518,7 +518,7 @@ class BotBase(LazyDict):
         e.ttl = 1
         e.nick = self.nick or self.botname
         self.doevent(e)
-        logging.warn("%s - START event send to callbacks" % botname)
+        logging.debug("%s - START event send to callbacks" % botname)
 
     def outmonitor(self, origin, channel, txt, event=None):
         """ create an OUTPUT event with provided txt and send it to callbacks. """

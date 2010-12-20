@@ -5,4 +5,4 @@
 cron:
 - description: rss beat
   url: /tasks/rss
-  schedule: every 15 minutes
+  schedule: every 1 minutes

@@ -37,7 +37,7 @@ except ImportError: plugin_packages = ['gozerlib.plugs', 'commonplugs', 'socketp
 
 default_plugins = ['gozerlib.plugs.admin', 'gozerlib.plugs.dispatch', 'gozerlib.plugs.plug']
 
-logging.warn("boot - default plugins are %s" % str(default_plugins))
+logging.info("boot - default plugins are %s" % str(default_plugins))
 
 loaded = False
 cmndtable = None 
@@ -126,11 +126,11 @@ def savecmndtable(modname=None, saveperms=True):
         if cmndname and c:
             cmndtable.data[cmndname] = c.modname  
             cmndperms[cmndname] = c.perms
-    logging.warn("saving command table")
+    logging.info("saving command table")
     assert cmndtable
     cmndtable.save()
     if saveperms:
-        logging.warn("saving command perms")
+        logging.info("saving command perms")
         cmndperms.save()
 
 def removecmnds(modname):
@@ -163,7 +163,7 @@ def savecallbacktable(modname=None):
                 if modname and c.modname != modname: continue
                 if not callbacktable.data.has_key(type): callbacktable.data[type] = []
                 if not c.modname in callbacktable.data[type]: callbacktable.data[type].append(c.modname)
-    logging.warn("saving callback table")
+    logging.info("saving callback table")
     assert callbacktable
     callbacktable.save()
 
@@ -178,7 +178,7 @@ def removecallbacks(modname):
                 if not c.modname == modname: continue
                 if not callbacktable.data.has_key(type): callbacktable.data[type] = []
                 if c.modname in callbacktable.data[type]: callbacktable.data[type].remove(c.modname)
-    logging.warn("saving callback table")
+    logging.info("saving callback table")
     assert callbacktable
     callbacktable.save()
 
@@ -201,7 +201,7 @@ def savepluginlist(modname=None):
         if c and not c.plugname: logging.info("boot - not adding %s to pluginlist" % cmndname) ; continue
         if c and c.plugname not in pluginlist.data: pluginlist.data.append(c.plugname)
     pluginlist.data.sort()
-    logging.warn("saving plugin list")
+    logging.info("saving plugin list")
     assert pluginlist
     pluginlist.save()
 

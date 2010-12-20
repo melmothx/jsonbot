@@ -79,7 +79,7 @@ def forwardoutcb(bot, event):
     if event.chan: e.allowwatch = event.chan.data.allowwatch
     fleet = getfleet()
     for jid in forward.data.channels[event.channel.lower()]:
-        logging.warn("forward - sending to %s" % jid)
+        logging.info("forward - sending to %s" % jid)
         if jid == "twitter":
             try: postmsg(forward.data.outs[jid], e.txt)
             except Exception, ex: handle_exception()
@@ -92,7 +92,7 @@ def forwardoutcb(bot, event):
             #txt = e.tojson()
             container = Container(outbot.jid, txt)
             outbot.outnocb(jid, container.tojson()) 
-        else: logging.error("forward - no xmpp bot found in fleet".upper())
+        else: logging.info("forward - no xmpp bot found in fleet".upper())
 
 first_callbacks.add('BLIP_SUBMITTED', forwardoutcb, forwardoutpre)
 first_callbacks.add('MESSAGE', forwardoutcb, forwardoutpre)

@@ -191,7 +191,7 @@ class Config(LazyDict):
 
     def save(self):
         """ save the config. """
-        logging.warn("config - save called from %s" % calledfrom(sys._getframe(1)))
+        logging.info("config - save called from %s" % calledfrom(sys._getframe(1)))
         if self.isdb: self.todb()
         else: self.tofile()
      

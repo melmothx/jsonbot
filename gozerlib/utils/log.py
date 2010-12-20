@@ -35,7 +35,7 @@ try:
     if not os.path.isdir(LOGDIR): os.mkdir(LOGDIR)
 except: pass
 
-format = "%(asctime)s - %(levelname)s - %(message)s - <%(threadName)s+%(module)s-%(funcName)s:%(lineno)s>"
+format = "%(asctime)s - %(message)s - <%(threadName)s+%(module)s-%(funcName)s:%(lineno)s>"
 
 try:
     import waveapi
