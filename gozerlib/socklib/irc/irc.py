@@ -202,7 +202,7 @@ class Irc(BotBase):
                         continue
                     if not rr: continue
                     res = rr
-                    logging.info(u"%s - %s" % (self.name, res))
+                    logging.debug(u"%s - %s" % (self.name, res))
                     try:
                         ievent = IrcEvent().parse(self, res)
                     except Exception, ex:
