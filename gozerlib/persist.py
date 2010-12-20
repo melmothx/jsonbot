@@ -123,7 +123,7 @@ try:
                 set(self.fn, self.data)
 
         def sync(self):
-            logging.warn("persist - syncing %s" % self.fn)
+            logging.info("persist - syncing %s" % self.fn)
             data = dumps(self.data)
             mc.set(self.fn, data)
             delete(self.fn, self.data)
@@ -245,7 +245,7 @@ except ImportError:
             return loads(get(self.fn)) 
 
         def sync(self):
-            logging.warn("persist - syncing %s" % self.fn)
+            logging.info("persist - syncing %s" % self.fn)
             set(self.fn, self.data)
             return self.data
 
@@ -263,7 +263,7 @@ except ImportError:
                     d.append(p)
                     pp = os.sep.join(d)
                     if not os.path.isdir(pp):
-                        logging.warn("persist - creating %s dir" % pp)
+                        logging.info("persist - creating %s dir" % pp)
                         os.mkdir(pp)
                 tmp = fn + '.tmp' # tmp file to save to
                 try: datafile = open(tmp, 'w')
@@ -279,7 +279,8 @@ except ImportError:
                     handle_exception()
                     os.remove(fn)
                     os.rename(tmp, fn)
-                logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
+                if 'lastpoll' in self.logname: logging.debug('persist - %s saved (%s)' % (self.logname, len(data)))
+                else: logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
             except: handle_exception()
             finally: pass
 

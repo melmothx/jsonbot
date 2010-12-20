@@ -97,7 +97,7 @@ class EventBase(LazyDict):
             elif self.channel: self.chan = ChannelBase(self.channel, bot.botname)
             elif self.userhost: self.chan = ChannelBase(self.userhost, bot.botname)
             #if bot.isgae and bot.type == "web": self.chan.gae_create()
-        if not self.user: logging.warn("eventbase - setting nodispatch") ; self.nodispatch = True
+        if not self.user: logging.info("eventbase - setting nodispatch") ; self.nodispatch = True
         self.prepare(bot)
         return self
 
@@ -150,7 +150,7 @@ class EventBase(LazyDict):
     def leave(self):
         self.ttl -= 1
         if self.ttl <= 0 : self.status = "done"
-        logging.warn("======== STOP handling event ========")
+        logging.info("======== STOP handling event ========")
 
     def makeoptions(self):
         self.options = makeeventopts(self.txt)
@@ -200,7 +200,7 @@ class EventBase(LazyDict):
         """ check if event is a command. """
         if not self.txt: return
         if self.iscommand: return self.txt
-        if self.isremote(): logging.warn("eventbase - event is remote") ; return
+        if self.isremote(): logging.info("eventbase - event is remote") ; return
         logging.debug("eventbase - trying to match %s" % self.txt)
         cc = "!"
         if not self.chan: self.chan = ChannelBase(self.channel, self.bot.botname) 

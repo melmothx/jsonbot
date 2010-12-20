@@ -144,18 +144,18 @@ class Runners(object):
 
     def cleanup(self):
         """ clean up idle runners. """
-        if not len(self.runners): logging.warn("nothing to clean")
+        if not len(self.runners): logging.info("nothing to clean")
         for index in range(len(self.runners)-1, -1, -1):
             runner = self.runners[index]
             logging.debug("runner - cleanup %s" % runner.name)
             if not runner.queue.qsize(): runner.stop() ; del self.runners[index]
-            else: logging.warn("runners: %s" % runner.nowrunning)
+            else: logging.info("runners - %s" % runner.nowrunning)
 ## global runners
 
 cmndrunner = defaultrunner = longrunner = Runners(10, BotEventRunner)
 
 def runnercleanup(bot, event):
-    logging.info("runner sizes: %s" % str(cmndrunner.runnersizes()))
+    logging.debug("runner sizes: %s" % str(cmndrunner.runnersizes()))
     cmndrunner.cleanup()
 
 callbacks.add("TICK", runnercleanup)

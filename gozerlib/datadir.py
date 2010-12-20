@@ -41,7 +41,7 @@ def getsource(mod):
         thedir = mod.replace(".", os.sep)
         if os.path.isdir(thedir): source = thedir
         elif os.path.isdir("/var/lib/jsonbot" + os.sep + thedir): source = "/var/lib/jsonbot" + os.sep + thedir
-    logging.warn("datadir - source is %s" % source)
+    logging.info("datadir - source is %s" % source)
     return source
 
 def doit(ddir, mod):
@@ -61,12 +61,12 @@ def makedirs(ddir=None):
     else:
         ddir = ddir or datadir
     datadir = ddir
-    logging.warn("datadir - %s" % datadir)
+    logging.warn("datadir - set to %s" % datadir)
     if isgae: return
     if not os.path.isdir(ddir):
         try: os.mkdir(ddir)
         except: logging.warn("can't make %s dir" % ddir) ; os._exit(1)
-    logging.warn("making dirs in %s" % ddir)
+        logging.info("making dirs in %s" % ddir)
     try: os.chmod(ddir, 0700)
     except: pass
     last = datadir.split(os.sep)[-1]

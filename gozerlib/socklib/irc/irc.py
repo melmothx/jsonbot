@@ -84,7 +84,7 @@ class Irc(BotBase):
     def _raw(self, txt):
         """ send raw text to the server. """
         if not txt or self.stopped or not self.sock:
-            logging.warn("%s - bot is stopped .. not sending." % self.name)
+            logging.info("%s - bot is stopped .. not sending." % self.name)
             return 0
         if not txt.startswith("PONG"): logging.warn("%s - sending %s" % (self.name, txt))
         try:
@@ -202,7 +202,7 @@ class Irc(BotBase):
                         continue
                     if not rr: continue
                     res = rr
-                    logging.info(u"%s - %s" % (self.name, res))
+                    logging.debug(u"%s - %s" % (self.name, res))
                     try:
                         ievent = IrcEvent().parse(self, res)
                     except Exception, ex:

@@ -204,7 +204,7 @@ sleeptime=15*60, running=0):
             try: status = result.status
             except AttributeError: status = None
         logging.info("rss - status returned of %s feed is %s" % (name, status))
-        if status == 301: return []
+        if status == 304: return []
         if result: set(self.data.url, result.entries, namespace='rss')
         if data:
             try: etag = etags.data[name] = data.headers.get('etag') ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
@@ -212,14 +212,9 @@ sleeptime=15*60, running=0):
         else:
             try: etag = etags.data[name] = result.etag ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
             except KeyError: etag = None
-        logging.info("rss - etag of %s feed is %s" % (name, etag))
         if not name in urls.data: urls.data[name] = self.data.url ; urls.save()
         logging.debug("rss - got result from %s" % self.data.url)
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
-        try:
-            status = result.status
-            logging.info("rss - status is %s" % status)
-        except AttributeError: status = 200
         return result.entries
 
     def sync(self):
@@ -231,7 +226,7 @@ sleeptime=15*60, running=0):
         result = self.fetchdata()
         if not result:
             cached = get(self.data.url, namespace="rss")
-            if cached: result = cached.entries
+            if cached: result = cached
             else: result = []
         return result
 
@@ -242,13 +237,11 @@ sleeptime=15*60, running=0):
         if entries:
             for res in entries[::-1]:
                 if self.checkseen(res): continue 
-                #dt = feedparser._parse_date(res.updated)
-                #dtt = time.mktime(dt)
                 tobereturned.append(LazyDict(res))
                 got = True
                 self.setseen(res)
             if got and save: self.save()
-            logging.debug("rss - %s - got %s rss items" % (self.data.name, len(tobereturned)))
+            logging.debug("rss - %s - %s items ready" % (self.data.name, len(tobereturned)))
         return tobereturned
 
     def deliver(self, datalist, save=True):
@@ -288,7 +281,7 @@ sleeptime=15*60, running=0):
             return True
         except Exception, ex: handle_exception(txt=name) ; return False
 
-    def makeresponse(self, name, type, res, channel, sep=" .. "):
+    def makeresponse(self, name, type, res, channel, sep=" || "):
         """ loop over result to make a response. """
         if self.markup.get(jsonstring([name, type, channel]), 'nofeedname'): result = u""
         else: result = u"<b>[%s]</b> - " % name 
@@ -460,48 +453,12 @@ class Rsswatcher(Rssdict):
             else: logging.warn("rss - can't find %s item" % url) ; del data ; return
             if not name in urls.data: urls.data[name] = url ; urls.save()
             result = rssitem.fetchdata(data)
-            logging.warn("rss - %s - got %s items" % (name, len(result)))
+            logging.warn("rss - %s - got %s items from feed" % (name, len(result)))
             res = rssitem.check(result)
             if res: rssitem.deliver(res, save=True)
             else: logging.warn("rss - %s - no items to deliver" % name)
         except Exception, ex: handle_exception(txt=name)
         del data
-        return True
-
-    def insertdata(self, data):
-        """ get data of rss feed. """  
-        result = feedparser.parse(data)
-        url = find_self_url(result.feed.links)  
-        logging.debug("rss - insert - %s" % url)
-        try:
-            rssitem = self.byurl(url)
-            if rssitem: loopover = rssitem.data.watchchannels ; name = rssitem.data.name
-            else: logging.debug("rss - can't find %s item" % url) ; return
-            logging.debug("loopover in %s is: %s" % (rssitem.data.name, loopover))
-            for item in loopover:
-                try: (botname, type, channel) = item
-                except: logging.debug('rss - %s is not in the format (botname,channel)' % str(item))
-                bot = getfleet().byname(botname)
-                if not bot: logging.debug("rss - can't find %s bot in fleet" % botname) ; continue
-                res2 = result.entries
-                if not res2:
-                    logging.debug("rss - no updates for %s (%s) feed available" % (rssitem.data.name, channel))
-                    continue
-                if type == "irc" and not '#' in channel: nick = getwho(bot, channel)
-                else: nick = None                        
-                if rssitem.markup.get(jsonstring([name, type, channel]), 'reverse-order'): res2 = res2[::-1]
-                if rssitem.markup.get(jsonstring([name, type, channel]), 'all-lines'):
-                    for i in res2:
-                        response = self.makeresponse(name, type, [i, ], channel)
-                        try: bot.say(nick or channel, response) 
-                        except Exception, ex: handle_exception()
-                else:
-                    sep =  rssitem.markup.get(jsonstring([name, type, channel]), 'separator')
-                    if sep: response = self.makeresponse(name, type, res2, channel, sep=sep)
-                    else: response = self.makeresponse(name, type, res2, channel)
-                    try: bot.say(nick or channel, response) 
-                    except Exception, ex: handle_exception()
-        except Exception, ex: handle_exception(txt=name)
         return True
 
     def getall(self):
@@ -560,56 +517,6 @@ class Rsswatcher(Rssdict):
                 logging.warn('rss - %s feed error: %s' % (name, str(ex)))
                 if not rssitem.data.running: break
             else: break
-
-    def makeresult(self, name, type, target, data):
-        """ make a result (txt) of a feed depending on its itemlist. """
-        rssitem = self.byname(name)
-        if not rssitem == None: logging.error("rss - no %s rss item available" % name) ; return
-        res = []
-        for j in data:
-            tmp = {}
-            if not rssitem.itemslists.data[jsonstring([name, type, target])]: return []
-            for i in rssitem.itemslists.data[jsonstring([name, type, target])]:
-                try: tmp[i] = unicode(j[i])
-                except KeyError: continue
-            res.append(tmp)
-        return res
-
-
-    def makeresponse(self, name, type, res, channel, sep=" .. "):
-        """ loop over result to make a response. """
-        rssitem = self.byname(name)
-        if not rssitem: logging.error("rss - no %s rss item available" % name) ; return
-        if rssitem.markup.get(jsonstring([name, type, channel]), 'nofeedname'): result = u""
-        else: result = u"<b>[%s]</b> - " % name 
-        try: itemslist = rssitem.itemslists.data[jsonstring([name, type, channel])]
-        except KeyError:
-            itemslist = rssitem.itemslists.data[jsonstring([name, type, channel])] = ['title', 'link']
-            rssitem.itemslists.save()
-        for j in res:
-            if rssitem.markup.get(jsonstring([name, type, channel]), 'skipmerge') and 'Merge branch' in j['title']: continue
-            resultstr = u""
-            for i in itemslist:
-                try:
-                    item = getattr(j, i)
-                    if not item: continue
-                    item = unicode(item)
-                    if item.startswith('http://'):
-                        if rssitem.markup.get(jsonstring([name, type, channel]), 'tinyurl'):
-                            try:
-                                tinyurl = get_tinyurl(item)
-                                logging.debug('rss - tinyurl is: %s' % str(tinyurl))
-                                if not tinyurl: resultstr += u"%s - " % item
-                                else: resultstr += u"%s - " % tinyurl[0]
-                            except Exception, ex:
-                                handle_exception()
-                                resultstr += u"%s - " % item
-                        else: resultstr += u"%s - " % item
-                    else: resultstr += u"%s - " % item.strip()
-                except (KeyError, AttributeError, TypeError), ex: logging.warn('rss - %s - %s' % (name, str(ex))) ; continue
-            resultstr = resultstr[:-3]
-            if resultstr: result += u"%s %s " % (resultstr, sep)
-        return result[:-(len(sep)+2)]
 
     def stopwatch(self, name, save=True):
         """ stop watcher thread. """
@@ -670,14 +577,10 @@ class Rsswatcher(Rssdict):
 
     def scan(self, name):
         """ scan a rss url for tokens. """
-        #try: result = self.getdata(name)
-        #except RssException, ex: logging.error('rss - scan - %s error: %s' % (name, str(ex))) ; return
-        #if not result: return
         keys = []
         items = self.byname(name).getdata()
         for item in items:
             for key in item:
-                #if key in allowedtokens: keys.append(key)
                 keys.append(key)         
         statdict = StatDict()
         for key in keys: statdict.upitem(key)
@@ -1292,7 +1195,7 @@ def handle_rssget(bot, ievent):
     try: result = watcher.getdata(name)
     except Exception, ex: ievent.reply('%s error: %s' % (name, str(ex))) ; return
     if rssitem.markup.get(jsonstring([name, bot.type, channel]), 'reverse-order'): result = result[::-1]
-    response = watcher.makeresponse(name, bot.type, result, ievent.channel)
+    response = rssitem.makeresponse(name, bot.type, result, ievent.channel)
     if response: ievent.reply("results of %s: %s" % (name, response))
     else: ievent.reply("can't make a reponse out of %s" % name)
 
