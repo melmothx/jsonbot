@@ -67,9 +67,11 @@ import xml
 import logging
 import datetime
 import hashlib
+import copy
 
-## define
+## defines
 
+cpy = copy.deepcopy
 allowedtokens = ['updated', 'link', 'summary', 'tags', 'author', 'content', 'title', 'subtitle']
 savelist = []
 possiblemarkup = {'separator': 'set this to desired item separator', \
@@ -152,12 +154,18 @@ sleeptime=15*60, running=0):
             self.markup = Pdod(filebase + '-markup')
         else: raise NameNotSet()
 
-    def checkseen(self, data):
-        digest = hashlib.md5(unicode(data)).hexdigest()
+    def checkseen(self, data, itemslist=["title", "link"]):
+        d = {}
+        for item in itemslist:
+            d[item] = data[item]
+        digest = hashlib.md5(unicode(d)).hexdigest()
         return digest in self.data.seen
 
-    def setseen(self, data):
-        digest = hashlib.md5(unicode(data)).hexdigest()
+    def setseen(self, data, itemslist=['title', 'link']):
+        d = {}
+        for item in itemslist:
+            d[item] = data[item]
+        digest = hashlib.md5(unicode(d)).hexdigest()
         self.data.seen.insert(0, digest)
         if len(self.data.seen) > 100: self.data.seen = self.data.seen[:100]
         return self.data.seen
