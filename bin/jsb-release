@@ -56,7 +56,7 @@ else:
      release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsb'
      targetin = 'jsb'
 
-if isdebian() and botuser() == "jsb" and os.path.isdir("var/spool/jsb"): ddir = "var/spool/jsb"
+if isdebian() and botuser() == "jsonbot" and os.path.isdir("var/spool/jsonbot"): ddir = "var/spool/jsonbot"
 else: ddir = opts.datadir or getdatadir()
 ddir = ddir + os.sep + "releases"
 
@@ -104,14 +104,14 @@ def sed(source, target):
 
 try: source = pkg_resources.resource_filename("jsb", 'upload')
 except ImportError: 
-    if isdebian(): source = "/var/lib/jsb/jsb/upload"
-    else: source = "/usr/local/jsb/upload"
+    if isdebian(): source = "/var/lib/jsb/jsonbot/upload"
+    else: source = "/usr/local/jsonbot/upload"
 print source
 copyover(source, release)
 try: source = pkg_resources.resource_filename("jsb", "data")
 except ImportError:
-    if isdebian(): source = "/var/lib/jsb/data"
-    else: source = "/usr/local/jsb/data"
+    if isdebian(): source = "/var/lib/jsonbot/data"
+    else: source = "/usr/local/jsonbot/data"
 print source
 copyover(source, release + os.sep + "data")
 print source
@@ -141,7 +141,7 @@ except (OSError, IOError), ex:
         os._exit(1)
     except OSError, ex:
         try:
-            copyover(os.path.join('/usr', 'local', 'jsb', 'data', 'examples'), os.path.join(homedir, 'jsbregs', targetin))
+            copyover(os.path.join('/usr', 'local', 'jsonbot', 'data', 'examples'), os.path.join(homedir, 'jsbregs', targetin))
             print "\n\nplease edit ~/jsbregs/%s/ dir and rerun this program.\n\n" % (targetin,)
             os._exit(1)
         except OSError, ex:
