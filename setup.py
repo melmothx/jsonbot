@@ -105,7 +105,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Communications :: Chat',
         'Topic :: Software Development :: Libraries :: Python Modules'],
-    data_files=[(target + os.sep + 'data', uploadlist(target + os.sep + 'data')),
+    data_files=[(target + os.sep + 'data', uploadlist('jsb' + os.sep + 'data')),
                 (target + os.sep + 'data' + os.sep + 'examples', uploadfiles('jsb' + os.sep + 'data' + os.sep + 'examples')),
                 (target + os.sep + 'upload', uploadfiles('jsb' + os.sep + 'upload')),
                 (target + os.sep + 'upload' + os.sep + 'webapp2', uploadlist('jsb' + os.sep + 'upload' + os.sep + 'webapp2')),
