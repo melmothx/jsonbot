@@ -9,11 +9,11 @@ import sys, os
 os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 sys.path.insert(0, os.getcwd())
 
-## gozerlib imports
+## jsb imports
 
-from gozerlib.utils.popen import gozerpopen
-from gozerlib.datadir import getdatadir
-from gozerlib.version import getversion
+from jsb.utils.popen import gozerpopen
+from jsb.lib.datadir import getdatadir
+from jsb.lib.version import getversion
 
 ## basic imports
 

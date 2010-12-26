@@ -4,7 +4,7 @@
 
 """ upload all instances in ~/jsonreg/ """
 
-## gozerlib imports
+## jsb imports
 
 import os, sys
 sys.path.insert(0, os.getcwd())
@@ -12,10 +12,10 @@ sys.path.insert(0, os.getcwd() + os.sep + "..")
 
 os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 
-from gozerlib.utils.popen import gozerpopen
-from gozerlib.datadir import getdatadir
-from gozerlib.version import getversion
-from gozerlib.config import getmainconfig
+from jsb.utils.popen import gozerpopen
+from jsb.lib.datadir import getdatadir
+from jsb.lib.version import getversion
+from jsb.lib.config import getmainconfig
 
 print getversion("UPLOAD")
 
@@ -37,12 +37,12 @@ opts.args = args
 if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 ddir = opts.datadir or getdatadir()
-if getmainconfig().debian: homedir = "/var/spool/jsonbot"
+if getmainconfig().debian: homedir = "/var/spool/jsb"
 else: homedir = os.path.expanduser("~")
 try: target = opts.args[0]
 except IndexError: print "jsb-upload <appid>" ; os._exit(1)
 
-## upload all instances in ~/jsonregs/
+## upload all instances in ~/jsbregs/
 
 print "UPLOADING %s" % target
 execstring = '%s/google_appengine/appcfg.py update %s%sreleases%s%s' % (homedir, ddir, os.sep, os.sep, target)

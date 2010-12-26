@@ -10,8 +10,8 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.utils.generic import isdebian, botuser
-from gozerlib.version import getversion
+from jsb.utils.generic import isdebian, botuser
+from jsb.lib.version import getversion
 
 from optparse import OptionParser
 parser = OptionParser(usage='usage: %prog [options', version=getversion("INIT"))
@@ -20,16 +20,16 @@ parser.add_option('-l', '--loglevel', type='string', default=False, dest='loglev
 opts, args = parser.parse_args()
 opts.args = args
 
-from gozerlib.utils.log import setloglevel
+from jsb.utils.log import setloglevel
 setloglevel(opts.loglevel or "error")
 
 import logging
 logging.warn(getversion("INIT"))
 
-from gozerlib.datadir import makedirs
-if isdebian() and botuser == "jsonbot": makedirs("/var/cache/jsonbot")
+from jsb.lib.datadir import makedirs
+if isdebian() and botuser == "jsb": makedirs("/var/cache/jsb")
 else: makedirs(opts.datadir)
 
-from gozerlib.utils.opts import makeircconfig, makexmppconfig
+from jsb.utils.opts import makeircconfig, makexmppconfig
 irccfg = makeircconfig('irc') ; irccfg.save()
 xmppconfig = makexmppconfig("xmpp") ; xmppconfig.save()

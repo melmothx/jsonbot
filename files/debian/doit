@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "making dirs"
+mkdir /etc/jsb
+mkdir /var/log/jsb
+chown jsb:jsb /var/log/jsb
+mkdir /var/run/jsb
+chown jsb:jsb /var/run/jsb
+mkdir /var/cache/jsb
+chown jsb:jsb /var/cache/jsb
+mkdir /var/lib/jsb
+chown jsb:jsb /var/lib/jsb
+echo "running setup.py"
+python setup-debian.py install
+echo "copying files"
+cp debian/init.d/jsb /etc/init.d/
+cp debian/default/jsb /etc/default/
+cd debian/man
+if [ -f jsb.1 ] ; then gzip *.1
+fi
+cp *.gz /usr/share/man/man1
+echo "done"

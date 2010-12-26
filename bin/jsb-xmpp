@@ -11,18 +11,18 @@ import os, sys
 sys.path.insert(0, os.getcwd())
 
 
-## gozerlib impors
+## jsb impors
 
-from gozerlib.socklib.xmpp.bot import SXMPPBot
-from gozerlib.boot import plugin_packages, boot
-from gozerlib.utils.log import setloglevel
-from gozerlib.config import Config
-from gozerlib.errors import NoOwnerSet
-from gozerlib.fleet import getfleet
-from gozerlib.utils.mainloop import mainloop
-from gozerlib.utils.opts import makexmppopts, makexmppconfig
-import gozerlib.users as users
-import gozerlib
+from jsb.lib.socklib.xmpp.bot import SXMPPBot
+from jsb.lib.boot import plugin_packages, boot
+from jsb.utils.log import setloglevel
+from jsb.lib.config import Config
+from jsb.lib.errors import NoOwnerSet
+from jsb.lib.fleet import getfleet
+from jsb.utils.mainloop import mainloop
+from jsb.utils.opts import makexmppopts, makexmppconfig
+import jsb.lib.users as users
+import jsb
 
 ## basic imports
 
@@ -34,7 +34,7 @@ import os
 
 opts = makexmppopts()
 
-from gozerlib.version import getversion
+from jsb.lib.version import getversion
 print getversion('SXMPP')
 
 boot(opts.datadir)
@@ -51,7 +51,7 @@ setloglevel(cfg.loglevel)
 
 try:
     bot = SXMPPBot(cfg)
-    bot.nick = cfg.nick or 'jsonbot'
+    bot.nick = cfg.nick or 'jsb'
 except NoOwnerSet, ex:
     print "owner is not set in %s - use the -o option" % str(ex)
     os._exit(1)

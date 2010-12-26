@@ -23,7 +23,7 @@ print "STARTING"
 
 ## defines
 
-orig = 'jsonbot'
+orig = 'jsb'
 new = target
 
 ## gethighest function

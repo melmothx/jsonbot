@@ -3,7 +3,7 @@
 #
 
 cd docs
-rm -fR gozerlib plugins commonplugs/ waveplugs/ socketplugs/ gaeplugs/
+rm -fR jsb
 cd ..
 ./bin/jsb-makedocs
-sphinx-build docs docs/html
+sphinx-build -N docs docs/html

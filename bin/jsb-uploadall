@@ -4,7 +4,7 @@
 
 """ upload all instances in ~/jsonreg/ """
 
-## gozerlib imports
+## jsb imports
 
 import os, sys
 sys.path.insert(0, os.getcwd())
@@ -12,9 +12,9 @@ sys.path.insert(0, os.getcwd() + os.sep + "..")
 
 os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 
-from gozerlib.utils.popen import gozerpopen
-from gozerlib.datadir import getdatadir
-from gozerlib.version import getversion
+from jsb.utils.popen import gozerpopen
+from jsb.lib.datadir import getdatadir
+from jsb.lib.version import getversion
 
 print getversion("UPLOADALL")
 
@@ -37,9 +37,9 @@ if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 ddir = opts.datadir or getdatadir()
 homedir = os.path.expanduser("~")
-target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
+target = opts.args or os.listdir(homedir + os.sep + 'jsbregs')
 
-## upload all instances in ~/jsonregs/
+## upload all instances in ~/jsbregs/
 
 for item in target:
     print "DOING RELEASE %s" % item

@@ -4,10 +4,10 @@
 
 """ upload all instances in ~/jsonreg/ """
 
-## gozerlib imports
+## jsb imports
 
-from gozerlib.utils.popen import gozerpopen
-from gozerlib.datadir import getdatadir
+from jsb.utils.popen import gozerpopen
+from jsb.lib.datadir import getdatadir
 
 ## basic imports
 

@@ -13,7 +13,7 @@ from subprocess import Popen, PIPE
 import sys, site, os, subprocess
 
 from optparse import OptionParser
-parser = OptionParser(usage='usage: %prog [options]', version='%prog 0.9')
+parser = OptionParser(usage='usage: %prog [options]', version='%prog 0.1')
 
 parser.add_option("-x", action="store_true", dest='deps', help="only install dependancies")
 parser.add_option("-d", "--directory", type='string', default=False, dest='directory',
@@ -31,7 +31,7 @@ opts.args = args
 if opts.directory:
     installdir = opts.directory
 else:
-    installdir = 'jsonnest'
+    installdir = 'jsbnest'
 
 if not os.path.isdir(installdir):
     os.mkdir(installdir)
@@ -300,7 +300,7 @@ if __name__=='__main__':
         elif opts.deps:
             runstring = '--install-dir %s simplejson nose %s' % (nestdir, argsstring)
         else:
-            runstring = '--install-dir %s -a -U jsonbot %s' % (nestdir, argsstring)
+            runstring = '--install-dir %s -a -U jsb %s' % (nestdir, argsstring)
 
         main(runstring.split())
         print 'done'

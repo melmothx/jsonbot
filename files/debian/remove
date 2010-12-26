@@ -1,0 +1,5 @@
+rm -fR /var/run/jsb
+rm -fR /var/log/jsb
+rm -fR /var/lib/jsb
+rm -fR /var/cache/jsb
+rm -fR /etc/jsb

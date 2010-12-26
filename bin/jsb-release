@@ -6,8 +6,8 @@
 
 ## bootstrap
 
-import warnings
-warnings.simplefilter("ignore")
+#import warnings
+#warnings.simplefilter("ignore")
 
 ## imports
 
@@ -20,15 +20,15 @@ import time
 os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.utils.log import setloglevel
+from jsb.utils.log import setloglevel
 setloglevel("warn")
 
-## gozerlib imports
+## jsb imports
 
-from gozerlib.utils.generic import gethighest, dosed, isdebian, botuser
-from gozerlib.version import getversion
-from gozerlib.datadir import getdatadir
-from gozerlib.config import getmainconfig
+from jsb.utils.generic import gethighest, dosed, isdebian, botuser
+from jsb.lib.version import getversion
+from jsb.lib.datadir import getdatadir
+from jsb.lib.config import getmainconfig
 
 print getversion("RELEASE")
 
@@ -53,10 +53,10 @@ if opts.args:
          os.mkdir(release)
      targetin = opts.args[0]
 else:
-     release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsonbot'
-     targetin = 'jsonbot'
+     release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsb'
+     targetin = 'jsb'
 
-if isdebian() and botuser() == "jsonbot": ddir = "var/spool/jsonbot"
+if isdebian() and botuser() == "jsb" and os.path.isdir("var/spool/jsb"): ddir = "var/spool/jsb"
 else: ddir = opts.datadir or getdatadir()
 ddir = ddir + os.sep + "releases"
 
@@ -102,62 +102,50 @@ def sed(source, target):
 
 ## doit
 
-try: source = pkg_resources.resource_filename("gaeupload", '')
+try: source = pkg_resources.resource_filename("jsb", 'upload')
 except ImportError: 
-    if isdebian(): source = "/var/lib/jsonbot/gaeupload"
-    else: source = "/usr/local/jsonbot/gaeupload"
+    if isdebian(): source = "/var/lib/jsb/jsb/upload"
+    else: source = "/usr/local/jsb/upload"
 print source
 copyover(source, release)
-try: source = pkg_resources.resource_filename("gozerdata", '')
+try: source = pkg_resources.resource_filename("jsb", "data")
 except ImportError:
-    if isdebian(): source = "/var/lib/jsonbot/gozerdata"
-    else: source = "/usr/local/jsonbot/gozerdata"
+    if isdebian(): source = "/var/lib/jsb/data"
+    else: source = "/usr/local/jsb/data"
 print source
-copyover(source, release + os.sep + "gozerdata")
+copyover(source, release + os.sep + "data")
 print source
-source = pkg_resources.resource_filename('gozerlib', '')
+source = pkg_resources.resource_filename('jsb', '')
 print source
-copyover(source, release + os.sep + 'gozerlib')
-source = pkg_resources.resource_filename('commonplugs', '')
-print source
-copyover(source, release + os.sep + 'commonplugs')
-source = pkg_resources.resource_filename('socketplugs', '')
-print source
-copyover(source, release + os.sep + 'socketplugs')
-source = pkg_resources.resource_filename('waveplugs', '')
-print source
-copyover(source, release + os.sep + 'waveplugs')
+copyover(source, release + os.sep + 'jsb')
 
 homedir = os.path.expanduser("~")
 try:
-    shutil.move(release + os.sep + 'gozerdata' + os.sep + 'config', release + os.sep + 'gozerdata' + os.sep + 'config.bck')
+    shutil.move(os.path.join(release, 'data', 'config'), os.path.join(release, 'data', 'config.bck'))
 except IOError, ex:
-    print "TAKE NOTE ! no %s dir available" % os.path.join(release, "gozerdata", "config")
+    print "TAKE NOTE ! no %s dir available" % os.path.join(release, "data", "config")
 
-if not os.path.isdir(homedir + os.sep + 'jsonregs'):
-   os.mkdir(homedir + os.sep + 'jsonregs')
-
-#if not os.path.isdir(homedir + os.sep + 'jsonregs' + os.sep + targetin):
-#   os.mkdir(homedir + os.sep + 'jsonregs' + os.sep + targetin)
+if not os.path.isdir(homedir + os.sep + 'jsbregs'):
+   os.mkdir(homedir + os.sep + 'jsbregs')
 
 try:
-    copyover(homedir + os.sep + 'jsonregs' + os.sep + targetin, release + os.sep + 'gozerdata' + os.sep + 'config')
-    shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'app.yaml', release + os.sep + 'app.yaml')
-    shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'cron.yaml', release + os.sep + 'cron.yaml')
-    shutil.copy(homedir + os.sep + "jsonregs" + os.sep + targetin + os.sep + 'queue.yaml', release + os.sep + 'queue.yaml')
+    copyover(os.path.join(homedir, 'jsbregs', targetin), os.path.join(release, 'gozerdata', 'config'))
+    shutil.copy(os.path.join(homedir, "jsbregs", targetin, 'app.yaml'), release + os.sep + 'app.yaml')
+    shutil.copy(os.path.join(homedir, "jsbregs" , targetin,'cron.yaml'), release + os.sep + 'cron.yaml')
+    shutil.copy(os.path.join(homedir, "jsbregs", targetin, 'queue.yaml'), release + os.sep + 'queue.yaml')
 except (OSError, IOError), ex:
     print "TAKE NOTE: %s" % str(ex)
     try:
-        copyover(release + os.sep + 'gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
-        print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
+        copyover(os.path.join(release, 'data', 'examples'), os.path.join(homedir , 'jsbregs', targetin))
+        print "\n\nplease edit ~/jsbregs/%s/ dir and rerun this program.\n\n" % (targetin,)
         os._exit(1)
     except OSError, ex:
         try:
-            copyover('/usr/local/jsonbot/gozerdata' + os.sep + 'examples', homedir + os.sep + 'jsonregs' + os.sep + targetin)
-            print "please edit ~/jsonregs/%s/ dir and rerun this program." % (targetin,)
+            copyover(os.path.join('/usr', 'local', 'jsb', 'data', 'examples'), os.path.join(homedir, 'jsbregs', targetin))
+            print "\n\nplease edit ~/jsbregs/%s/ dir and rerun this program.\n\n" % (targetin,)
             os._exit(1)
         except OSError, ex:
-            print "ERROR: can't copy files to ~/jsonregs %s" % str(ex)
+            print "ERROR: can't copy files to ~/jsbregs %s" % str(ex)
             os._exit(1)
 
 if os.path.isdir('docs'):

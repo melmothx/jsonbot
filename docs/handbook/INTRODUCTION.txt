@@ -11,7 +11,7 @@ Install the bot from mercurial repository or untar the tarball
 
     ::
 
-        hg clone http://jsonbot.googlecode.com/hg jsonbot
+        hg clone http://jsonbot.googlecode.com/hg jsb
     
 
 All the programs have a --help option that shows a help page describing all
@@ -24,7 +24,7 @@ In the bot dir run the ./bin/jsb command to start the console version of the bot
 
     ::
 
-        09:15:01 bart@done:~/jsonbot/0.2.1/first/plugs$ ./bin/jsb
+        09:15:01 bart@done:~/jsb/0.2.1/first/plugs$ ./bin/jsb
         JSONBOT 0.2.1 RELEASE SOCKET CONSOLE
         > 
 

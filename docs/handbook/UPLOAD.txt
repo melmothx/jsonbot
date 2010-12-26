@@ -3,7 +3,7 @@ UPLOAD
 
 JSONBOT uses a directory in your home in that contains all the site specific
 files such as app.yaml, credentials.py and mainconfig. These files are
-expected in the ~/jsonregs/<botname> directory. When runnng
+expected in the ~/jsbregs/<botname> directory. When runnng
 ./bin/jsb-release for the first time these files will be created and can then be
 edited. JSONBOT needs the google_appengine package installed in your home dir as well.
 
