@@ -23,7 +23,7 @@ go = True
 def twitterapi(CONSUMER_KEY, CONSUMER_SECRET, token=None, *args, **kwargs):
     """ return twitter API object - with or without access token. """
     if not go:
-        logging.warn("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples".upper())
+        logging.warn("the twitter plugin needs the credentials.py file in the .jsb/data/config dir. see .jsb/data/examples".upper())
         return None
     if token:
         auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)

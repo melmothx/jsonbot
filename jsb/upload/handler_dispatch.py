@@ -7,7 +7,7 @@
 ## boot
 
 from jsb.lib.boot import boot
-boot("gozerdata")
+boot()
 
 ## jsb imports
 

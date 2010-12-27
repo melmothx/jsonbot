@@ -29,17 +29,21 @@ if len(sys.argv) < 3:
 
 ## edit the config file
 
+from jsb.lib.datadir import getdatadir
+
 filename = sys.argv[2]
-configfile = "gozerdata" + os.sep + "config" + os.sep + filename
+configfile = getdatadir() + os.sep + "config" + os.sep + filename
 if os.path.isdir(configfile):
     print "available - %s" % os.listdir(configfile)
     os._exit(1)
+
 try:
     from jsb.lib.config import Config
     cfg = Config(filename)
 except Exception, ex:
     print "can't make config from file %s - %s" % (filename, str(ex))
     os._exit(1)
+
 try:
     attr = sys.argv[3]
     value = sys.argv[4]

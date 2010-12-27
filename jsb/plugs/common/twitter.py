@@ -102,7 +102,7 @@ def handle_twitter(bot, ievent):
     """ send a twitter message. """
 
     if not go:
-        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        ievent.reply("the twitter plugin needs the credentials.py file in the .jsb/data/config dir. see .jsb/data/examples")
         return
     if not ievent.rest:
         ievent.missing('<text>')
@@ -122,7 +122,7 @@ examples.add('twitter', 'adds a message to your twitter account', 'twitter just 
 def handle_twittercmnd(bot, ievent):
     """ do a twitter API cmommand. """
     if not go:
-        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        ievent.reply("the twitter plugin needs the credentials.py file in the .jsb/data//config dir. see .jsb/data/examples")
         return
     if not ievent.args:
         ievent.missing('<text>')
@@ -187,7 +187,7 @@ examples.add('twitter-cmnd', 'do a cmnd on the twitter API', 'twitter-cmnd home_
 def handle_twitter_confirm(bot, ievent):
     """ confirm auth with PIN. """
     if not go:
-        ievent.reply("the twitter plugin needs the credentials.py file in the %s/config dir. see gozerdata/examples" % getdatadir())
+        ievent.reply("the twitter plugin needs the credentials.py file in the %s/config dir. see .jsb/data/examples" % getdatadir())
         return
 
     pin = ievent.args[0]
@@ -209,7 +209,7 @@ examples.add('twitter-confirm', 'confirm your twitter account', '1) twitter-conf
 def handle_twitter_auth(bot, ievent):
     """ get auth url. """
     if not go:
-        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        ievent.reply("the twitter plugin needs the credentials.py file in the .jsb/data/config dir. see .jsb/data/examples")
         return
 
     try:
@@ -230,7 +230,7 @@ examples.add('twitter-auth', 'adds your twitter account', '1) twitter-auth')
 def handle_twitterfriends(bot, ievent):
     """ do a twitter API cmommand. """
     if not go:
-        ievent.reply("the twitter plugin needs the credentials.py file in the gozerdata/config dir. see gozerdata/examples")
+        ievent.reply("the twitter plugin needs the credentials.py file in the .jsb/data/config dir. see .jsb/data/examples")
         return
 
     try:

@@ -21,7 +21,7 @@ except: homedir = os.getcwd()
 isgae = False
 
 try: getattr(os, "mkdir") ; logging.info("datadir - shell detected") ; datadir = homedir + os.sep + ".jsb"
-except AttributeError: logging.info("datadir - skipping makedirs") ; datadir = 'jsb' + os.sep + "data" ; isgae = True
+except AttributeError: logging.info("datadir - skipping makedirs") ; datadir = "data" ; isgae = True
 
 ## helper functions
 
@@ -96,7 +96,7 @@ def makedirs(ddir=None):
         if not source: raise Exception("can't find jsb.plugs.common package")
         try:
             shutil.copy(source + os.sep + "__init__.py", os.path.join(ddir, 'myplugs', '__init__.py'))
-        except (OSError, IOError), ex: logging.error("datadir - failed to copy gozerdata.config: %s" % str(ex))
+        except (OSError, IOError), ex: logging.error("datadir - failed to copy myplugs/__init__.py: %s" % str(ex))
     if not os.path.isdir(ddir + os.sep +'botlogs'): os.mkdir(ddir + os.sep + 'botlogs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/examples/'): os.mkdir(ddir + '/examples/')

@@ -42,7 +42,7 @@ def exceptionmsg():
         for i in plugfile[::-1]:
             if i in ['jsb.upload', 'jsb']: break
             mod.append(i)
-            if i in ['jsb', 'waveapi', 'google', 'gozerdata']: break
+            if i in ['jsb', 'waveapi', 'google', 'data']: break
         ownname = '.'.join(mod[::-1])
         result += "%s:%s %s | " % (ownname, linenr, func)
     del trace
