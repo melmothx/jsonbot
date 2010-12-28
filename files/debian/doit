@@ -8,13 +8,13 @@ mkdir /var/run/jsb
 chown jsb:jsb /var/run/jsb
 mkdir /var/cache/jsb
 chown jsb:jsb /var/cache/jsb
-mkdir /var/lib/jsb
-chown jsb:jsb /var/lib/jsb
+mkdir /usr/lib/jsb
+chown jsb:jsb /usr/lib/jsb
 echo "running setup.py"
-python setup-debian.py install
+python setup.py install
 echo "copying files"
-cp files/debian/init.d/jsb /etc/init.d/
-cp files/debian/default/jsb /etc/default/
+cp files/debian/init.d/jsonbot /etc/init.d/
+cp files/debian/default/jsonbot /etc/default/
 cd files/debian/man
 if [ -f jsb.1 ] ; then gzip *.1
 fi

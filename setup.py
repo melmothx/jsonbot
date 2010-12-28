@@ -4,8 +4,8 @@
 
 import os.path
 
-if os.path.isfile("/etc/debian_version") and os.path.isdir("/var/lib/jsb"):
-    target = "/var/lib/jsb"
+if os.path.isfile("/etc/debian_version"):
+    target = "/usr/lib/jsb"
 else:
     target = "jsb"
 
@@ -13,8 +13,11 @@ import os
 
 try:
     from setuptools import setup
+    target = "jsb"
 except ImportError:
     from distutils.core import setup
+
+print "TARGET IS %s" % target
 
 upload = []
 

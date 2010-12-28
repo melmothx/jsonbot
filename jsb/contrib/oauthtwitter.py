@@ -15,14 +15,9 @@ __version__ = "0.2"
 
 
 from jsb.contrib.twitter import Api, User
-
-import jsb.contrib.simplejson
-
-try:
-    import jsb.contrib.oauth as oauth
-except ImportError:
-    import oauth
-
+from jsb.imports import getjson, getoauth
+json = getjson()
+oauth = getoauth()
 
 # Taken from oauth implementation at: http://github.com/harperreed/twitteroauth-python/tree/master
 REQUEST_TOKEN_URL = 'https://twitter.com/oauth/request_token'
@@ -204,7 +199,7 @@ class OAuthApi(Api):
           Returns the twitter.User object
         '''
         json = self._FetchUrl(url)
-        data = simplejson.loads(json)
+        data = json.loads(json)
         self._CheckForTwitterError(data)
         return User.NewFromJsonDict(data)
 
