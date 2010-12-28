@@ -50,7 +50,7 @@ def uploadlist(dir):
 
 setup(
     name='jsb',
-    version='0.6b1',
+    version='0.6b2',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
