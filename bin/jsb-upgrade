@@ -33,7 +33,7 @@ def dodir(origdir, todir):
         ddd = stringsed(dd, "s/%s/%s/" % (".jsonbot", ".jsb"))
         if os.path.isfile(ddd): continue
         ddd = stringsed(ddd, "s/waveplugs/jsb.plugs.wave/")
-        ddd = stringsed(ddd, "s/gozerlib.plugs/jsb.plugs.core/")
+        ddd = stringsed(ddd, "s/gozerlib\.plugs/jsb.plugs.core/")
         ddd = stringsed(ddd, "s/commonplugs/jsb.plugs.common/")
         ddd = stringsed(ddd, "s/socketplugs/jsb.plugs.socket/")
         ddd = stringsed(ddd, "s/gaeplugs/jsb.plugs.gae/")
