@@ -267,3 +267,38 @@ def dosed(filename, sedstring):
     except WindowsError:
         os.remove(filename)
         os.rename(tmp, filename)
+
+def stringsed(instring, sedstring):
+    """ apply a sedstring to a string. """
+    seds = sedstring.split('/')   
+    fr = seds[1].replace('\\', '')
+    to = seds[2].replace('\\', '')
+    mekker = instring.replace(fr,to)
+    return mekker
+
+def copyfile(filename, filename2, sedstring=None):
+    """ copy a file with optional sed. """
+    if os.path.isdir(filename): return
+    try: f = open(filename, 'r')
+    except IOError: return
+    ddir = ""
+    for x in filename2.split(os.sep)[:-1]:
+        ddir += os.sep + x
+        if not os.path.isdir(ddir):
+            try: os.mkdir(ddir)
+            except: pass
+    try: fout = open(filename2, 'w')
+    except: return
+    if sedstring:
+        seds = sedstring.split('/')   
+        fr = seds[1].replace('\\', '')
+        to = seds[2].replace('\\', '')
+    try:
+        for line in f:
+            if sedstring:
+                l = line.replace(fr,to)
+            else: l = line 
+            fout.write(l)
+    finally:
+        fout.flush()
+        fout.close()
