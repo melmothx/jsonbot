@@ -40,7 +40,7 @@ def getsource(mod):
     except ImportError: 
         thedir = mod.replace(".", os.sep)
         if os.path.isdir(thedir): source = thedir
-        elif os.path.isdir("/var/lib/jsonbot" + os.sep + thedir): source = "/var/lib/jsonbot" + os.sep + thedir
+        elif os.path.isdir("/var/lib/jsb" + os.sep + thedir): source = "/var/lib/jsb" + os.sep + thedir
     logging.info("datadir - source is %s" % source)
     return source
 
@@ -57,7 +57,7 @@ def doit(ddir, mod):
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     global datadir
-    if os.path.exists("/var/cache/jsonbot") and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsonbot"
+    if os.path.exists("/var/cache/jsb") and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsb"
     else:
         ddir = ddir or datadir
     datadir = ddir

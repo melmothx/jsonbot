@@ -4,10 +4,10 @@
 
 import os.path
 
-if os.path.isfile("/etc/debian_version") and os.path.isdir("/var/lib/jsonbot"):
-    target = "/var/lib/jsonbot"
+if os.path.isfile("/etc/debian_version") and os.path.isdir("/var/lib/jsb"):
+    target = "/var/lib/jsb"
 else:
-    target = "jsonbot"
+    target = "jsb"
 
 import os
 
