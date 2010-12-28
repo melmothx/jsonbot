@@ -12,7 +12,6 @@
 
 from jsb.lib.commands import cmnds
 from jsb.lib.examples import examples
-from jsb.contrib import feedparser
 from jsb.lib.persist import Persist, PlugPersist
 from jsb.utils.pdol import Pdol
 from jsb.utils.pdod import Pdod
@@ -29,6 +28,8 @@ from jsb.lib.gae.wave.waves import Wave
 from jsb.lib.threads import start_new_thread
 from jsb.lib.datadir import getdatadir
 from jsb.lib.jsbimport import _import_byfile
+from jsb.imports import getfeedparser
+feedparser = getfeedparser()
 
 ## basic imports
 
