@@ -80,13 +80,13 @@ def convert_to_utf8_str(arg):
 
 
 def import_simplejson():
-    try: import jsb.contrib.simplejson as json
+    try:
+        import simplejson as json
     except ImportError:
         try:
-            import simplejson as json
+            import json  # Python 2.6+
         except ImportError:
-            try:
-                import json  # Python 2.6+
+            try: import jsb.contrib.simplejson as json
             except ImportError:
                 try:
                     from django.utils import simplejson as json  # Google App Engine
