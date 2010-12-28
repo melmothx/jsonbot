@@ -104,13 +104,13 @@ def sed(source, target):
 
 try: source = pkg_resources.resource_filename("jsb", 'upload')
 except ImportError: 
-    if isdebian() and botuser() == "jsb": source = "/var/lib/jsb/upload"
+    if isdebian(): source = "/usr/lib/jsb/upload"
     else: source = "/usr/local/jsb/upload"
 print source
 copyover(source, release)
 try: source = pkg_resources.resource_filename("jsb", "data")
 except ImportError:
-    if isdebian() and botuser() == "jsb": source = "/var/lib/jsb/data"
+    if isdebian(): source = "/usr/lib/jsb/data"
     else: source = "/usr/local/jsb/data"
 print source
 copyover(source, release + os.sep + "data")
