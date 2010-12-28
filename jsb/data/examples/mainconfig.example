@@ -10,7 +10,7 @@ domain = "googlewave.com"
 ## APPLICATION NAME
 
 appname = "JSONBOT"
-app_id = "jsb"
+app_id = "jsonbot"
 
 ## GLOBAL OWNER .. example: owner = ["~bart@127.0.0.1"] (include ident if needed)
 
@@ -23,4 +23,4 @@ debug = 0
 
 auto_register = 1
 
-color = "#123456"
+#color = "#123456"
