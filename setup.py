@@ -67,6 +67,7 @@ setup(
              'bin/jsb-run',
              'bin/jsb-stop',
              'bin/jsb-udp',
+             'bin/jsb-upgrade',
              'bin/jsb-upload',
              'bin/jsb-uploadall'],
     packages=['jsb',
