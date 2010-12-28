@@ -20,9 +20,6 @@ JSONBOT is all of the following:
     * event driven framework by the use of callbacks
 
 
-note: JSONBOT is in ALPHA stage right now and still subject to change of
-protocols and API.
-
 see http://jsonbot.googlecode.com
 running demo at http://jsonbot.appspot.com
 documentation is at http://jsonbot.appspot.com/docs
@@ -34,13 +31,13 @@ see docs/UPLOAD on how to upload your own bot.
 programs
 ~~~~~~~~
 
-jsonbot provides the following programs:
+jsb provides the following programs:
 
-    * jsb - console version of jsonbot
+    * jsb - console version of jsb
     * jsb-import - import data from another bot
     * jsb-installplug - install remote plugins
-    * jsb-irc - IRC version of jsonbot (socket)
-    * jsb-xmpp - XMPP version of jsonbot (socket)
+    * jsb-irc - IRC version of jsb (socket)
+    * jsb-xmpp - XMPP version of jsb (socket)
     * jsb-fleet - mix IRC and XMPP bots
     * jsb-release - create a new release directory
     * jsb-rollback - rollback a release
@@ -63,18 +60,14 @@ now you can run the programs in the bin directory with the
 contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
-* email: bthate@gmail.com
-* preview: bthate@googlewave.com
-* sandbox: bthate@wavesandbox.com
+* email: jsb@gmail.com
 
-You can reach me by joining #dunkbots on FreeNode or IRCNet. If we are not
-online on irc please email bthate@gmail.com if you have any problems with the
-bot.
+You can reach me by joining #jsb on FreeNode.
 
 plugins
 ~~~~~~~
 
-jsonbot provides the following plugins:
+jsb provides the following plugins:
 
   * 8b - eight ball
   * admin - administator related commands

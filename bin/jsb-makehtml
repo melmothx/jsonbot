@@ -62,12 +62,12 @@ def run_file(file_path, globals_, locals_, script_dir=SCRIPT_DIR):
 
 sys.path = EXTRA_PATHS + sys.path
 
-#from gozerlib.config import Config
+#from jsb.lib.config import Config
 
 #config = Config('mainconfig')
 #
 #APP_ID = config['app_id']
-APP_ID = 'jsonbot'
+APP_ID = 'jsb'
 AUTH_DOMAIN = 'gmail.com'
 LOGGED_IN_USER = 'bthate@gmail.com' # set to '' for no logged in user
 

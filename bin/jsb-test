@@ -31,13 +31,13 @@ import re
 
 starttime = time.time()
 
-from gozerlib.utils.lazydict import LazyDict
-from gozerlib.threads import start_new_thread
-from gozerlib.utils.exception import handle_exception, exceptionevents, exceptionlist
-from gozerlib.utils.url import useragent, striphtml
-from gozerlib.admin import plugin_packages
-from gozerlib.utils.log import setloglevel
-from gozerlib.version import getversion
+from jsb.utils.lazydict import LazyDict
+from jsb.lib.threads import start_new_thread
+from jsb.utils.exception import handle_exception, exceptionevents, exceptionlist
+from jsb.utils.url import useragent, striphtml
+from jsb.lib.admin import plugin_packages
+from jsb.utils.log import setloglevel
+from jsb.lib.version import getversion
 
 setloglevel("error")
 
@@ -84,8 +84,8 @@ certfile)
 print getversion()
 print "loading plugins ..."
 
-from gozerlib.examples import examples
-from gozerlib.plugins import plugs
+from jsb.lib.examples import examples
+from jsb.lib.plugins import plugs
 plugs.loadall(plugin_packages)
 
 print "done"

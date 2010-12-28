@@ -21,22 +21,22 @@ import signal
 
 ## options parser
 
-from gozerlib.utils.opts import makefleetopts
+from jsb.utils.opts import makefleetopts
 
 opts = makefleetopts()
 
 
-## gozerlib imports
+## jsb imports
 
-from gozerlib.datadir import makedirs
-from gozerlib.boot import boot
-from gozerlib.exit import globalshutdown
-from gozerlib.utils.mainloop import mainloop
-from gozerlib.users import users_boot
-import gozerlib
+from jsb.lib.datadir import makedirs
+from jsb.lib.boot import boot
+from jsb.lib.exit import globalshutdown
+from jsb.utils.mainloop import mainloop
+from jsb.lib.users import users_boot
+import jsb
 
 
-from gozerlib.fleet import getfleet
+from jsb.lib.fleet import getfleet
 fleet = getfleet(opts.datadir)
 if opts.all or opts.show:
     avail = fleet.avail()
@@ -54,8 +54,8 @@ signal.signal(signal.SIGTERM, dostop)
 
 ## loglevel
 
-from gozerlib.utils.log import setloglevel
-from gozerlib.version import getversion
+from jsb.utils.log import setloglevel
+from jsb.lib.version import getversion
 setloglevel(opts.loglevel or "warning")
 logging.warn(getversion('FLEET'))
 

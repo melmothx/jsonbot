@@ -4,7 +4,7 @@
 
 """ stop a running bot """
 
-## gozerlib imports
+## jsb imports
 
 import os, sys
 sys.path.insert(0, os.getcwd())
@@ -12,9 +12,9 @@ sys.path.insert(0, os.getcwd() + os.sep + "..")
 
 os.environ['PATH'] = os.getcwd() + os.sep + 'bin:' + os.environ['PATH']
 
-from gozerlib.utils.popen import gozerpopen
-from gozerlib.datadir import getdatadir
-from gozerlib.version import getversion
+from jsb.utils.popen import gozerpopen
+from jsb.lib.datadir import getdatadir
+from jsb.lib.version import getversion
 
 print getversion("STOP")
 
@@ -36,7 +36,7 @@ opts.args = args
 if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 ddir = opts.datadir or getdatadir()
-PID = open("%s/run/jsonbot.pid" % ddir, 'r').read()
+PID = open("%s/run/jsb.pid" % ddir, 'r').read()
 print "PID is %s" % PID
 execstring = "kill -s TERM %s" % PID
 print execstring

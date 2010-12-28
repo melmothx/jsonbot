@@ -34,20 +34,18 @@ documentation
 programs
 ~~~~~~~~
 
-jsonbot provides the following programs:
+jsb provides the following programs:
 
-    * jsb - console version of jsonbot
-    * jsb-import - import data from another bot
-    * jsb-installplug - install remote plugins
-    * jsb-irc - IRC version of jsonbot (socket)
-    * jsb-xmpp - XMPP version of jsonbot (socket)
+    * jsb - console version of jsb
+    * jsb-irc - IRC version of jsb (socket)
+    * jsb-xmpp - XMPP version of jsb (socket)
     * jsb-fleet - mix IRC and XMPP bots
     * jsb-release - create a new release directory
     * jsb-rollback - rollback a release
     * jsb-run - run a release in the GAE dev_appserver
     * jsb-stop - stop a running bot
     * jsb-upload - upload a release to the GAE
-    * jsb-uploadall - upload all bot in ~/jsonregs to the GAE
+    * jsb-uploadall - upload all bot in ~/jsbregs to the GAE
 
 see docs/UPLOAD on how to upload your own bot.
 
@@ -61,7 +59,7 @@ urls
 
     * Source code: http://jsonbot.googlecode.com
     * Web: http://jsonbot.appspot.com (web)
-    * Wave/Jabber: jsonbot@appspot.com
+    * Wave/Jabber: jsb@appspot.com
 
 running a development version of the bot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,11 +75,21 @@ now you can run the programs in the bin directory with the
 contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
-    * email: bthate@gmail.com
-    * jabber/xmpp: bthate@gmail.com
-    * IRC: #dunkbots on Freenode
-    * Twitter: http://twitter.com/jsonbot
- 
+    * email: jsb@gmail.com
+    * jabber/xmpp: jsb@gmail.com
+    * IRC: #jsbs on Freenode
+    * Twitter: http://twitter.com/jsb
+
+jsb code
+~~~~~~~~~~~
+
+    .. toctree::
+        :maxdepth: 2
+
+        jsb/lib/index
+        jsb/utils/index
+
+
 plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -89,48 +97,47 @@ plugins documentation
         :maxdepth: 3
         :glob:
 
-        plugins/index
+        jsb/plugs/index
 
-gozerlib code
-~~~~~~~~~~~~~
-
-    .. toctree::
-        :maxdepth: 2
-
-        gozerlib/index
-
-
-commonplugs code
-~~~~~~~~~~~~~~~~
+jsb.plugs.core code
+~~~~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
 
-        commonplugs/index
+        jsb/plugs/core/index
 
-waveplugs code
-~~~~~~~~~~~~~~
-
-    .. toctree::
-        :maxdepth: 2
-
-        waveplugs/index
-
-socketplugs code
-~~~~~~~~~~~~~~~~
-
+jsb.plugs.common code
+~~~~~~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
 
-        socketplugs/index
+        jsb/plugs/common/index
+
+jsb.plugs.wave code
+~~~~~~~~~~~~~~~~~~~~~~
+
+    .. toctree::
+        :maxdepth: 2
+
+        jsb/plugs/wave/index
+
+jsb.plugs.socket code
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+    .. toctree::
+        :maxdepth: 2
+
+        jsb/plugs/socket/index
         
 gaeplugs code
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 
     .. toctree::
         :maxdepth: 2
 
-        gaeplugs/index
+        jsb/plugs/gae/index
         

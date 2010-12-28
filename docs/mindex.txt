@@ -1,23 +1,22 @@
-gozerlib
+jsb
 ========
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :glob:
 
-    console/index
-    gae/index
-    gae/wave/index
-    gae/web/index
-    gae/xmpp/index
-    gae/utils/index
-    plugs/index
-    remote/index
-    socklib/index
-    socklib/irc/index
-    socklib/rest/index
-    socklib/utils/index
-    socklib/xmpp/index
+    lib/console/index
+    lib/gae/index
+    lib/gae/wave/index
+    lib/gae/web/index
+    lib/gae/xmpp/index
+    lib/gae/utils/index
+    lib/remote/index
+    lib/socklib/index
+    lib/socklib/irc/index
+    lib/socklib/rest/index
+    lib/socklib/utils/index
+    lib/socklib/xmpp/index
     utils/index
 
     *

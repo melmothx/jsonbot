@@ -3,5 +3,5 @@
 #
 
 export PATH="./bin:.:$PATH"
-python setup.py bdist_egg
-jsb-nest -f dist/jsonbot*
+python setup.py sdist
+jsb-nest -f dist/jsb-0.6b1.tar.gz

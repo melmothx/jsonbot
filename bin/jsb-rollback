@@ -10,14 +10,14 @@ import sys
 
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.utils.log import setloglevel
+from jsb.utils.log import setloglevel
 setloglevel("error")
 
-## gozerlib imports
+## jsb imports
 
-from gozerlib.version import getversion
-from gozerlib.utils.popen import gozerpopen
-from gozerlib.datadir import getdatadir
+from jsb.lib.version import getversion
+from jsb.utils.popen import gozerpopen
+from jsb.lib.datadir import getdatadir
 
 ## basic imports
 
@@ -37,9 +37,9 @@ opts.args = args
 
 ddir = opts.datadir or getdatadir()
 homedir = os.path.expanduser("~")
-target = opts.args or os.listdir(homedir + os.sep + 'jsonregs')
+target = opts.args or os.listdir(homedir + os.sep + 'jsbregs')
 
-## upload all instances in ~/jsonregs/
+## upload all instances in ~/jsbregs/
 
 for item in target:
     print "ROLLING BACK %s" % item

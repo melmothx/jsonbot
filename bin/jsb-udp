@@ -14,9 +14,9 @@ sys.path.insert(0, os.getcwd())
 
 ## commandline options
 
-import gozerlib
-from gozerlib.config import Config
-from gozerlib.version import getversion
+import jsb
+from jsb.lib.config import Config
+from jsb.lib.version import getversion
 
 from optparse import OptionParser
 

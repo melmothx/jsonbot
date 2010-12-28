@@ -13,7 +13,7 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.version import getversion
+from jsb.lib.version import getversion
 print getversion('CONSOLE')
 
 ## command line parsing
@@ -32,26 +32,26 @@ if opts.datadir and not os.path.isdir(opts.datadir): os.mkdir(opts.datadir)
 
 ## make config from cmndline options
 
-from gozerlib.utils.log import setloglevel
+from jsb.utils.log import setloglevel
 setloglevel(opts.loglevel or "error")
 
-from gozerlib.boot import boot
+from jsb.lib.boot import boot
 boot(opts.datadir)
 
-## gozerlib imports
+## jsb imports
 
-from gozerlib.utils.generic import waitforqueue
-from gozerlib.utils.mainloop import mainloop
-from gozerlib.plugins import Plugins
-from gozerlib.console.bot import ConsoleBot
-from gozerlib.console.event import ConsoleEvent
-from gozerlib.plugins import Plugins
-from gozerlib.config import Config
-from gozerlib.datadir import makedirs
-from gozerlib.users import Users, users
-from gozerlib.errors import NoOwnerSet
-from gozerlib.threads import start_new_thread
-from gozerlib.fleet import getfleet
+from jsb.utils.generic import waitforqueue
+from jsb.utils.mainloop import mainloop
+from jsb.lib.plugins import Plugins
+from jsb.lib.console.bot import ConsoleBot
+from jsb.lib.console.event import ConsoleEvent
+from jsb.lib.plugins import Plugins
+from jsb.lib.config import Config
+from jsb.lib.datadir import makedirs
+from jsb.lib.users import Users, users
+from jsb.lib.errors import NoOwnerSet
+from jsb.lib.threads import start_new_thread
+from jsb.lib.fleet import getfleet
 
 ## basic imports
 

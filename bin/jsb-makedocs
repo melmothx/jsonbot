@@ -2,29 +2,34 @@
 #
 #
 
-""" jsonbot documentation generator. """
+""" jsb documentation generator. """
 
 ## boot
 
 import os
 import sys
 sys.path.insert(0, os.getcwd())
-sys.path.append(os.getcwd() + os.sep + 'gozerlib')
+sys.path.append(os.getcwd() + os.sep + 'jsb')
+sys.path.append(os.path.join(os.getcwd(), 'jsb', 'plugs', 'core'))
+sys.path.append(os.path.join(os.getcwd(), 'jsb', 'plugs', 'common'))
+sys.path.append(os.path.join(os.getcwd(), 'jsb', 'plugs', 'wave'))
+sys.path.append(os.path.join(os.getcwd(), 'jsb', 'plugs', 'socket'))
+sys.path.append(os.path.join(os.getcwd(), 'jsb', 'plugs', 'gae'))
 sys.path.append(os.path.abspath("~") + os.sep + 'google_appengine')
 sys.path.insert(0, "..")
 
-## gozerlib imports
+## jsb imports
 
-from gozerlib.utils.exception import handle_exception
-from gozerlib.utils.generic import toascii, splittxt, strippedtxt, waitforqueue
-from gozerlib.plugins import plugs, Plugins
-from gozerlib.examples import examples
-from gozerlib.users import Users
-from gozerlib.commands import cmnds
-from gozerlib.threads import start_new_thread
-from gozerlib.boot import boot
-from gozerlib.botbase import BotBase
-from gozerlib.utils.exception import exceptionlist
+from jsb.utils.exception import handle_exception
+from jsb.utils.generic import toascii, splittxt, strippedtxt, waitforqueue
+from jsb.lib.plugins import plugs, Plugins
+from jsb.lib.examples import examples
+from jsb.lib.users import Users
+from jsb.lib.commands import cmnds
+from jsb.lib.threads import start_new_thread
+from jsb.lib.boot import boot, plugin_packages
+from jsb.lib.botbase import BotBase
+from jsb.utils.exception import exceptionlist
 
 ## basic imports
 
@@ -34,12 +39,12 @@ import time
 import sys
 
 ## defines
-try: boot(sys.argv[2])
-except IndexError: boot()
-donot = ['stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get']
+try: boot(sys.argv[2], force=True)
+except IndexError: boot(force=True)
+donot = ['reconnect', 'stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get', 'hb-register', 'reboot', 'admin-stop']
 bot = BotBase()
 bot.allowall = True
-plugs.loadall(['gozerlib.plugs', 'commonplugs', 'waveplugs', 'socketplugs'], force=True)
+#plugs.loadall(plugin_packages, force=True)
 users = Users()
 
 try:
@@ -98,10 +103,6 @@ def gendoc(mod, f, output):
     print cmndlist
     for command in cmndlist:
         data['commands'].append(command)
-        #alias = aliasreverse(command)
-        #data['options'][command] = cmnds.options(command)
-        #if alias:
-        #    data['aliases'][command] = alias
         try:
             ex = examples[command]
         except Exception, exx:
@@ -172,7 +173,7 @@ def gendoc(mod, f, output):
                         output.write('        <output> no output\n')
                         output.write('\n\n')
                 except Exception, ex:
-                    handle_exception()
+                    handle_exception(txt=i)
         teller += 1
     if not data['commands']:
         output.write("no commands in this plugin" + '\n')
@@ -197,36 +198,34 @@ def doindexfile(file):
     return txt
 
 def domodfile(module, dir):
-    if "contrib" in module:
-        return
     module = module.replace(os.sep, '.')
-    if not os.path.isdir('docs' + os.sep + dir):
-        os.mkdir('docs' + os.sep + dir)
+    dd = [] 
+    for d in dir.split(os.sep):
+        dd.append(d)
+        z = os.sep.join(dd)
+        if not os.path.isdir('docs' + os.sep + z):
+            os.mkdir('docs' + os.sep + z)
     plugin = dir.split(os.sep)[-1]
     print "writing %s" % plugin
     if True:
+        f = open('docs' + os.sep + dir + os.sep + 'index.txt', 'w')
+        f.write(doindexfile(dir))
+        f.flush()
+        f.close()
         for mod in os.listdir(dir):
-            if '__init__' in mod or mod.endswith('.pyc') or mod.endswith('~'):
-                continue
-            #sys.stdout.write(" %s" % mod)
-            #print "in dir %s file %s" % (dir, mod)
+            if '__init__' in mod or mod.endswith('.pyc') or mod.endswith('~'): continue
             m = mod.split(os.sep)[-1]
             z = mod[:-3]
-            f = open('docs' + os.sep + dir + os.sep + 'index.txt', 'w')
-            f.write(doindexfile(module))
-            f.flush()
-            f.close()
             thedir = dir + os.sep + mod
+            mm = module + '.' + m
             if os.path.isdir(thedir):
-                #print "\nRECURSE !! " + thedir
-                domodfile(module + "." + m, thedir)
+                domodfile(mm, thedir)
                 continue
             elif "contrib" not in thedir:
                 n = mod[:-3]
                 p = module + '.' + n
                 predir = '..' + os.sep
                 mfile = '..' + os.sep + predir * p.count('.') + thedir 
-                #print "writing %s.txt - %s (%s)" % (n, mfile, p)
                 if not os.path.isdir('docs' + os.sep + dir):
                     os.mkdir('docs' + os.sep + dir)
                 f = open('docs' + os.sep + thedir[:-3] + '.txt', 'w')
@@ -241,38 +240,13 @@ def domodfile(module, dir):
                         f.write(u"-" * (len(line.strip())-3) + u"\n")
                         f.write(u"\n    ::\n\n")
                     else:
-                        f.write(u"        " + line)
-                #f.write("code\n~~~~\n\n.. literalinclude::  %s\n    :linenos:\n\n" % mfile)
+                        f.write("        " + line)
                 f.flush()
                 f.close() 
 
         sys.stdout.write(" .. done\n")
 
 def domods(dir):
-    try:
-        os.mkdir('docs' + os.sep +'gozerlib')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'plugs')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'commonplugs')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'gaeplugs')
-    except:
-        pass
     d = dir 
     d.replace(os.sep, '.')
     domodfile(d, dir)
@@ -282,86 +256,79 @@ if __name__ == '__main__':
     try: boot(sys.argv[2])
     except IndexError: boot()
     import shutil
-    from gozerlib.socklib.utils.generic import touch
+    import os.path
+    from jsb.lib.socklib.utils.generic import touch
+    from jsb.utils.exception import handle_exception
     try:
-        shutil.copyfile(os.path.expanduser("~") + os.sep + 'jsonregs' + os.sep + 'jsonbot' + os.sep + 'credentials.py', os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + 'credentials.py')
-        touch(os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + '__init__.py')
+        shutil.copyfile(os.path.join(os.path.expanduser("~"), 'jsbregs', 'jsb', 'credentials.py'), os.path.join(os.getcwd(), 'jsb', 'data', 'config', 'credentials.py'))
+        touch(os.path.join(os.getcwd(), 'jsb', 'data', 'config', '__init__.py'))
     except:
-        print "CAN'T COPY OVER ~/jsonregs/jsonbot/credentials.py"
+        print "CAN'T COPY OVER ~/jsbregs/jsb/credentials.py"
         handle_exception()
 
     try:
-        os.mkdir('docs' + os.sep + 'plugins')
-    except:
-        pass
-
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'plugs')
-    except:
-        pass
-
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'commonplugs')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'socketplugs')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'waveplugs')
-    except:
-        pass
-    try:
-        os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'gaeplugs')
-    except:
-        pass
-  
+         os.mkdir('docs' + os.sep + 'jsb')
+         os.mkdir('docs' + os.sep + 'jsb' + os.sep + 'plugs')
+         os.mkdir(os.path.join('docs', 'jsb', 'lib'))
+         os.mkdir(os.path.join('docs', 'jsb', 'utils'))
+         os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'core'))
+         os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'common'))
+         os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'socket'))
+         os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'wave'))
+         os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'gae'))
+    except: pass
     if True:
-        for file in os.listdir('gozerlib' + os.sep + 'plugs'):
+        for file in os.listdir(os.path.join('jsb', 'plugs', 'core')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open('docs' + os.sep + 'plugins' + os.sep + 'plugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, ('gozerlib.plugs', file, f)))
-        for file in os.listdir('commonplugs'):
+            f = open(os.path.join('docs', 'jsb', 'plugs', 'core', file[:-3] + '.txt'), 'w')
+            threads.append(start_new_thread(gendoc, ('jsb.plugs.core', file, f)))
+            #gendoc('jsb.plugs.core', file, f)
+        for file in os.listdir(os.path.join('jsb', 'plugs', 'common')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open('docs' + os.sep + 'plugins' + os.sep + 'commonplugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, ('commonplugs', file, f)))
-        for file in os.listdir('waveplugs'):
+            f = open(os.path.join('docs', 'jsb', 'plugs', 'common', file[:-3] + '.txt'), 'w')
+            threads.append(start_new_thread(gendoc, ('jsb.plugs.common', file, f)))
+            #gendoc('jsb.plugs.common', file, f)
+        for file in os.listdir(os.path.join('jsb', 'plugs', 'wave')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open('docs' + os.sep + 'plugins' + os.sep + 'waveplugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, ('waveplugs', file, f)))
-        for file in os.listdir('socketplugs'):
+            f = open(os.path.join('docs', 'jsb', 'plugs', 'wave', file[:-3] + '.txt'), 'w')
+            threads.append(start_new_thread(gendoc, ('jsb.plugs.wave', file, f)))
+            #gendoc('jsb.plugs.wave', file, f)
+        for file in os.listdir(os.path.join('jsb', 'plugs', 'socket')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open('docs' + os.sep + 'plugins' + os.sep + 'socketplugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, ('socketplugs', file, f)))
-        for file in os.listdir('gaeplugs'):
+            f = open(os.path.join('docs', 'jsb', 'plugs', 'socket', file[:-3] + '.txt'), 'w')
+            threads.append(start_new_thread(gendoc, ('jsb.plugs.socket', file, f)))
+            #gendoc('jsb.plugs.socket', file, f)
+        for file in os.listdir(os.path.join('jsb', 'plugs', 'gae')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open('docs' + os.sep + 'plugins' + os.sep + 'gaeplugs' + os.sep + file[:-3] + '.txt', 'w')
-            threads.append(start_new_thread(gendoc, ('gaeplugs', file, f)))
+            f = open(os.path.join('docs', 'jsb', 'plugs', 'gae', file[:-3] + '.txt'), 'w')
+            threads.append(start_new_thread(gendoc, ('jsb.plugs.gae', file, f)))
+            #gendoc('jsb.plugs.gae', file, f)
 
-        for thread in threads:
-            thread.join(10)
+        for t in threads:
+            t.join(10)
 
-    domods('gozerlib')
-    domods('gozerlib' + os.sep + 'plugs')
-    domods('commonplugs')
-    domods('waveplugs')
-    domods('socketplugs')
-    domods('gaeplugs')
+    time.sleep(5)
+    domods(os.path.join('jsb', 'lib'))
+    domods(os.path.join('jsb', 'utils'))
+    #domods(os.path.join('jsb','plugs'))
+    domods(os.path.join('jsb','plugs', 'core'))
+    domods(os.path.join('jsb','plugs', 'common'))
+    domods(os.path.join('jsb','plugs', 'wave'))
+    domods(os.path.join('jsb','plugs', 'socket'))
+    domods(os.path.join('jsb','plugs', 'gae'))
 
-    shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'mindex.txt', 'docs' + os.sep + 'gozerlib' + os.sep + 'index.txt')
-    #shutil.copyfile('pindex.txt', 'plugdoc' + os.sep + 'index.txt')
-    shutil.copyfile(os.getcwd() + os.sep + 'docs' + os.sep + 'plugsdocindex.txt', 'docs' + os.sep + 'plugins' + os.sep + 'index.txt')
+    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'mindex.txt'), os.path.join('docs', 'jsb', 'index.txt'))
+    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'plugsdocindex.txt'), os.path.join('docs', 'jsb', 'plugs', 'index.txt'))
     try:
-        shutil.copyfile(os.path.expanduser("~") + os.sep + 'jsonregs' + os.sep + 'jsonbot' + os.sep + 'credentials.py', os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + 'credentials.py')
-        touch(os.getcwd() + os.sep + 'gozerdata' + os.sep + 'config' + os.sep + '__init__.py')
+        shutil.copyfile(os.path.join(os.path.expanduser("~"), 'jsbregs', 'jsb', 'credentials.py'), os.path.join(os.getcwd(), 'jsb', 'data', 'config', 'credentials.py'))
+        touch(os.path.join(os.getcwd(), 'jsb', 'data', 'config', '__init__.py'))
     except:
-        print "CAN'T COPY OVER ~/jsonregs/jsonbot/credentials.py"
+        print "CAN'T COPY OVER ~/jsbregs/jsb/credentials.py"
         handle_exception()
 
     for ex in exceptionlist:

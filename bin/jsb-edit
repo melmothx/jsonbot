@@ -2,11 +2,11 @@
 #
 #
 
-""" edit jsonbot config files. """
+""" edit jsb config files. """
 
 ## basic imports
 
-from gozerlib.contrib.simplejson import loads
+from jsb.contrib.simplejson import loads
 import logging
 
 ## bootstrap
@@ -17,10 +17,10 @@ warnings.simplefilter("ignore")
 import os, sys
 sys.path.insert(0, os.getcwd())
 
-from gozerlib.version import getversion
+from jsb.lib.version import getversion
 print getversion('EDIT')
 
-from gozerlib.utils.log import setloglevel
+from jsb.utils.log import setloglevel
 setloglevel("error")
 
 if len(sys.argv) < 3:
@@ -29,17 +29,21 @@ if len(sys.argv) < 3:
 
 ## edit the config file
 
+from jsb.lib.datadir import getdatadir
+
 filename = sys.argv[2]
-configfile = "gozerdata" + os.sep + "config" + os.sep + filename
+configfile = getdatadir() + os.sep + "config" + os.sep + filename
 if os.path.isdir(configfile):
     print "available - %s" % os.listdir(configfile)
     os._exit(1)
+
 try:
-    from gozerlib.config import Config
+    from jsb.lib.config import Config
     cfg = Config(filename)
 except Exception, ex:
     print "can't make config from file %s - %s" % (filename, str(ex))
     os._exit(1)
+
 try:
     attr = sys.argv[3]
     value = sys.argv[4]
