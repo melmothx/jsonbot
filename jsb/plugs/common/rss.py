@@ -35,7 +35,8 @@ from jsb.lib.threads import start_new_thread
 from jsb.lib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
 from jsb.lib.datadir import getdatadir
 
-import jsb.contrib.feedparser as feedparser
+from jsb.imports import getfeedparser
+feedparser = getfeedparser()
 
 ## google imports
 
