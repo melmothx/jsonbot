@@ -15,8 +15,7 @@ __version__ = "0.2"
 
 
 from jsb.contrib.twitter import Api, User
-
-fro jsb.imports import getjson, getoauth
+from jsb.imports import getjson, getoauth
 json = getjson()
 oauth = getoauth()
 
