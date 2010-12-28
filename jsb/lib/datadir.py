@@ -57,7 +57,7 @@ def doit(ddir, mod):
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     global datadir
-    if os.path.exists("/var/cache/jsb") and getpass.getuser() == 'jsonbot': ddir = "/var/cache/jsb"
+    if os.path.exists("/var/cache/jsb") and getpass.getuser() == 'jsb': ddir = "/var/cache/jsb"
     else:
         ddir = ddir or datadir
     datadir = ddir

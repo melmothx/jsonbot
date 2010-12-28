@@ -13,9 +13,9 @@ chown jsb:jsb /var/lib/jsb
 echo "running setup.py"
 python setup-debian.py install
 echo "copying files"
-cp debian/init.d/jsb /etc/init.d/
-cp debian/default/jsb /etc/default/
-cd debian/man
+cp files/debian/init.d/jsb /etc/init.d/
+cp files/debian/default/jsb /etc/default/
+cd files/debian/man
 if [ -f jsb.1 ] ; then gzip *.1
 fi
 cp *.gz /usr/share/man/man1
