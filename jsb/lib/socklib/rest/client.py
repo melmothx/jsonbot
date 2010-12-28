@@ -11,7 +11,8 @@ from jsb.utils.generic import toenc
 from jsb.utils.exception import handle_exception, exceptionmsg
 from jsb.utils.locking import lockdec
 from jsb.utils.lazydict import LazyDict
-from jsb.contrib.simplejson import loads
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -99,7 +100,7 @@ class RestClient(object):
             else: result.error = None
             if result.status == 200:
                 r = res.read()
-                result.data = loads(r)
+                result.data = json.loads(r)
             else: result.data = None
             logging.info("rest.client - %s - result: %s" % (url, str(result))) 
         except Exception, ex:
@@ -242,7 +243,7 @@ class RestClientAsync(RestClient, asynchat.async_chat):
                 result.error = None
             else:
                 try:
-                    res = loads(self.buffer)
+                    res = json.loads(self.buffer)
                     if not res:
                         self.buffer = ''
                         return

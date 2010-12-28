@@ -4,9 +4,13 @@
 
 """ edit jsb config files. """
 
+## json imports
+
+from jsb.imports import getjson
+json = getjson()
+
 ## basic imports
 
-from jsb.contrib.simplejson import loads
 import logging
 
 ## bootstrap
@@ -47,7 +51,7 @@ except Exception, ex:
 try:
     attr = sys.argv[3]
     value = sys.argv[4]
-    cfg[attr] = loads(value)
+    cfg[attr] = json.loads(value)
 except IndexError, ex: print "no values to set"
 except TypeError, ex:
     print u"can't parse %s - %s" % (unicode(value), unicode(ex))

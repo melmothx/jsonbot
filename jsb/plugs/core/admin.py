@@ -15,10 +15,6 @@ from jsb.lib.plugins import plugs
 from jsb.lib.botbase import BotBase
 from jsb.lib.exit import globalshutdown
 
-## simplejson imports
-
-from jsb.contrib.simplejson import dump
-
 ## admin-boot command
 
 def handle_adminboot(bot, ievent):

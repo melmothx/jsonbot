@@ -14,7 +14,8 @@ from google.appengine.api.labs.taskqueue import Task, Queue
 
 ## simplejson imports
 
-from jsb.contrib.simplejson import dumps
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -40,7 +41,7 @@ def start_botevent(bot, event, speed=5):
         if event.usercmnd[0] == "!": e = event.usercmnd[1:]
         else: e = event.usercmnd
         name = e + "-" + str(uuid.uuid4())
-        payload = dumps({ 'bot': bot.tojson(),
+        payload = json.dumps({ 'bot': bot.tojson(),
                           'event': event.tojson()
                         })
         be = BotEvent(name=name, payload=payload, url="/tasks/botevent")

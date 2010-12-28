@@ -11,10 +11,6 @@ from jsb.utils.exception import handle_exception
 from jsb.utils.locking import lockdec
 from jsb.utils.generic import strippedtxt, toenc, fromenc
 
-## simplejson imports
-
-from jsb.contrib.simplejson import dumps
-
 ## basic imports
 
 import logging

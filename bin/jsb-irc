@@ -36,7 +36,6 @@ import jsb
 
 ## basic imports
 
-from jsb.contrib.simplejson import load
 import logging
 import time
 import os

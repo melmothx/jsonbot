@@ -16,7 +16,8 @@ from jsb.lib.callbacks import first_callbacks, callbacks, last_callbacks
 
 ## simplejson imports
 
-from jsb.contrib.simplejson import loads
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -30,18 +31,18 @@ def boteventcb(inputdict, request, response):
     logging.warn(dir(response))
     body = request.body
     logging.warn(body)
-    payload = loads(body)
+    payload = json.loads(body)
     try:
         botjson = payload['bot']
         logging.warn(botjson)
-        cfg = LazyDict(loads(botjson))
+        cfg = LazyDict(json.loads(botjson))
         logging.warn(str(cfg))
         bot = BotFactory().create(cfg.type, cfg)
         logging.warn("botevent - created bot: %s" % bot.dump())
         eventjson = payload['event']
         logging.warn(eventjson)
         event = EventBase()
-        event.update(LazyDict(loads(eventjson)))
+        event.update(LazyDict(json.loads(eventjson)))
         logging.warn("botevent - created event: %s" % event.dump())
         event.isremote = True
         event.notask = True

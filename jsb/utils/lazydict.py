@@ -9,7 +9,8 @@
 from jsb.utils.locking import lockdec
 from jsb.utils.exception import handle_exception
 from jsb.lib.errors import PropertyIgnored
-from jsb.contrib.simplejson import loads, dumps
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -53,7 +54,7 @@ def dumpelement(element, prev={}, withtypes=False):
         if checkignore(name, defaultignore): continue
         if not elem[name]: continue
         try:
-            dumps(elem[name])
+            json.dumps(elem[name])
             new[name] = elem[name]
         except TypeError:
             if type(elem) not in jsontypes:
@@ -90,7 +91,7 @@ class LazyDict(dict):
 
     def tojson(self, withtypes=False):
         """ dump the lazydict object to json. """
-        try: return dumps(dumpelement(self, withtypes))
+        try: return json.dumps(dumpelement(self, withtypes))
         except RuntimeError, ex: handle_exception()
            
     def dump(self, withtypes=False):
@@ -101,7 +102,7 @@ class LazyDict(dict):
 
     def load(self, input):
         """ load from json string. """  
-        try: temp = loads(input)
+        try: temp = json.loads(input)
         except ValueError:
             handle_exception()
             logging.error("lazydict - can't decode %s" % input)

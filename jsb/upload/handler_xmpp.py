@@ -12,7 +12,6 @@ from jsb.utils.lazydict import LazyDict
 from jsb.utils.exception import handle_exception
 from jsb.lib.plugins import plugs
 from jsb.lib.boot import boot, plugin_packages
-from jsb.contrib.simplejson import loads
 
 ## gaelib imports
 

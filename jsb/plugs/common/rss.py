@@ -12,49 +12,45 @@
 
 ## gozerlib imports
 
-from gozerlib.persist import Persist, PlugPersist
-from gozerlib.utils.url import geturl2, striphtml, useragent
-from gozerlib.utils.exception import handle_exception
-from gozerlib.utils.generic import strippedtxt, fromenc, toenc, jsonstring, getwho
-from gozerlib.utils.rsslist import rsslist
-from gozerlib.utils.lazydict import LazyDict
-from gozerlib.utils.statdict import StatDict
-from gozerlib.utils.timeutils import strtotime
-from gozerlib.commands import cmnds
-from gozerlib.examples import examples
-from gozerlib.utils.dol import Dol
-from gozerlib.utils.pdod import Pdod
-from gozerlib.utils.pdol import Pdol
-from gozerlib.users import users
-from gozerlib.utils.id import getrssid
-from gozerlib.tasks import taskmanager
-from gozerlib.callbacks import callbacks
-from gozerlib.fleet import getfleet
-from gozerlib.threadloop import TimedLoop
-from gozerlib.threads import start_new_thread
-from gozerlib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
-from gozerlib.datadir import getdatadir
+from jsb.lib.persist import Persist, PlugPersist
+from jsb.utils.url import geturl2, striphtml, useragent
+from jsb.utils.exception import handle_exception
+from jsb.utils.generic import strippedtxt, fromenc, toenc, jsonstring, getwho
+from jsb.utils.rsslist import rsslist
+from jsb.utils.lazydict import LazyDict
+from jsb.utils.statdict import StatDict
+from jsb.utils.timeutils import strtotime
+from jsb.lib.commands import cmnds
+from jsb.lib.examples import examples
+from jsb.utils.dol import Dol
+from jsb.utils.pdod import Pdod
+from jsb.utils.pdol import Pdol
+from jsb.lib.users import users
+from jsb.utils.id import getrssid
+from jsb.lib.tasks import taskmanager
+from jsb.lib.callbacks import callbacks
+from jsb.lib.fleet import getfleet
+from jsb.lib.threadloop import TimedLoop
+from jsb.lib.threads import start_new_thread
+from jsb.lib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
+from jsb.lib.datadir import getdatadir
 
-import gozerlib.contrib.feedparser as feedparser
+import jsb.contrib.feedparser as feedparser
 
 ## google imports
 
 try:
     from google.appengine.api.memcache import get, set, delete
 except ImportError:
-    from gozerlib.cache import get, set, delete
+    from jsb.lib.cache import get, set, delete
 
 ## tinyurl import
 
 try:
-    from commonplugs.tinyurl import get_tinyurl
+    from jsb.plugs.common.tinyurl import get_tinyurl
 except ImportError:
     def get_tinyurl(url):
         return [url, ]
-
-## simplejson import
-
-from gozerlib.contrib.simplejson import loads
 
 ## basic imports
 

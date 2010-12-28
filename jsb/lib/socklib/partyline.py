@@ -13,7 +13,8 @@ __author__ = 'Aim'
 from jsb.lib.fleet import getfleet
 from jsb.utils.exception import handle_exception
 from jsb.lib.threads import start_new_thread
-from jsb.contrib.simplejson import load
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -58,7 +59,7 @@ class PartyLine(object):
 
     def resume(self, sessionfile):
         """ resume from session file. """
-        session = load(open(sessionfile, 'r'))
+        session = json.load(open(sessionfile, 'r'))
         try:
             reto = session['channel']
             self._doresume(session, reto)

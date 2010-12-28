@@ -13,10 +13,6 @@ from jsb.lib.eventbase import EventBase
 from jsb.utils.exception import handle_exception
 from jsb.lib.examples import examples
 
-## simplejson imports
-
-from jsb.contrib.simplejson import dumps
-
 ## basic imports
 
 import socket

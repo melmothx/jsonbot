@@ -11,8 +11,6 @@ from jsb.lib.commands import cmnds
 from jsb.lib.examples import examples
 from jsb.utils.url import useragent
 
-from jsb.contrib.simplejson import loads
-
 ## basic imports
 
 import urllib2

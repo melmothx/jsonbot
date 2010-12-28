@@ -20,7 +20,8 @@ from cache import get, set, delete
 
 ## simplejson imports
 
-from jsb.contrib.simplejson import load, dump, loads, dumps
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -103,7 +104,7 @@ try:
                 cachetype = "file"
             else: cachetype = "cache"
             logging.debug("persist - %s - loaded %s" % (cachetype, self.fn))
-            self.data = loads(jsontxt)
+            self.data = json.loads(jsontxt)
             if type(self.data) == types.DictType:
                 d = LazyDict()
                 d.update(self.data)
@@ -124,14 +125,14 @@ try:
 
         def sync(self):
             logging.info("persist - syncing %s" % self.fn)
-            data = dumps(self.data)
+            data = json.dumps(self.data)
             mc.set(self.fn, data)
             delete(self.fn, self.data)
             return data
      
         def save(self):
             """ save json data to database. """
-            bla = dumps(self.data)
+            bla = json.dumps(self.data)
             if self.obj == None:
                 self.obj = JSONindb(key_name=self.fn)
                 self.obj.content = bla
@@ -222,7 +223,7 @@ except ImportError:
                     logging.debug("persist - %s doesn't exist yet" % self.logname)
                     return
             try:
-                self.data = loads(data)
+                self.data = json.loads(data)
                 set(self.fn, self.data)
                 if type(self.data) == types.DictType:
                     d = LazyDict()
@@ -242,7 +243,7 @@ except ImportError:
             self.save(filename)
 
         def get(self):
-            return loads(get(self.fn)) 
+            return json.loads(get(self.fn)) 
 
         def sync(self):
             logging.info("persist - syncing %s" % self.fn)
@@ -254,7 +255,7 @@ except ImportError:
             """ persist data attribute. """
             try:
                 fn = filename or self.fn
-                data = dumps(self.data)
+                data = json.dumps(self.data)
                 set(fn, self.data)
                 d = []
                 if fn.startswith(os.sep): d = [os.sep,]
@@ -271,7 +272,7 @@ except ImportError:
                     logging.error("persist - can't save %s: %s" % (self.fn, str(ex)))
                     return
                 fcntl.flock(datafile, fcntl.LOCK_EX)
-                dump(self.data, datafile)
+                json.dump(self.data, datafile)
                 fcntl.flock(datafile, fcntl.LOCK_UN)
                 datafile.close()
                 try: os.rename(tmp, fn)

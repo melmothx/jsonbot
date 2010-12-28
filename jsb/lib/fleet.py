@@ -18,8 +18,8 @@ from eventhandler import mainhandler
 from jsb.utils.name import stripname
 
 ## simplejson imports
-
-from jsb.contrib.simplejson import load
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -275,7 +275,7 @@ class Fleet(Persist):
 
     def resume(self, sessionfile):
         """ resume bot from session file. """
-        session = load(open(sessionfile))
+        session = json.load(open(sessionfile))
         for name in session['bots'].keys():
             reto = None
             if session['name'] == name: reto = session['channel']

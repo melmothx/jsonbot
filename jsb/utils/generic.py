@@ -9,7 +9,8 @@
 from exception import handle_exception
 from trace import calledfrom, whichmodule
 from lazydict import LazyDict
-from jsb.contrib.simplejson import dumps
+from jsb.imports import getjson
+json = getjson()
 
 ## generic imports
 
@@ -62,7 +63,7 @@ def checkpermissions(ddir, umode):
 def jsonstring(s):
     """ convert s to a jsonstring. """
     if type(s) == types.TupleType: s = list(s)
-    return dumps(s)
+    return json.dumps(s)
 
 ## getwho function
 
