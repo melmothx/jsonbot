@@ -16,7 +16,8 @@ from jsb.utils.locking import lockdec
 
 ## simplejson imports
 
-from jsb.contrib.simplejson import loads, dumps
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -118,7 +119,7 @@ class Config(LazyDict):
             else:
                 try:
                     key, value = line.split('=', 1)
-                    self[key.strip()] = loads(unicode(value.strip()))
+                    self[key.strip()] = json.loads(unicode(value.strip()))
                 except ValueError: logging.warn("config - skipping line - unable to parse: %s" % line)
         return
 
@@ -164,7 +165,7 @@ class Config(LazyDict):
                     configtmp.write(line)
                     continue
                 if self.has_key(keyword):  
-                    try: configtmp.write('%s = %s\n' % (keyword, dumps(self[keyword])))
+                    try: configtmp.write('%s = %s\n' % (keyword, json.dumps(self[keyword])))
                     except TypeError: logging.error("config - %s - can't serialize %s" % (filename, keyword)) ; continue
                     written.append(keyword)
                 else: configtmp.write(line)
@@ -179,7 +180,7 @@ class Config(LazyDict):
                 if keyword == 'optionslist': continue
                 if keyword == 'gatekeeper': continue
                 curitem = keyword
-                try: configtmp.write('%s = %s\n' % (keyword, dumps(value)))
+                try: configtmp.write('%s = %s\n' % (keyword, json.dumps(value)))
                 except TypeError: logging.error("config - %s - can't serialize %s" % (filename, keyword)) ; continue
             configtmp.close()
             os.rename(filename + '.tmp', filename)

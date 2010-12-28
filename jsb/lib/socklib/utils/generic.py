@@ -11,7 +11,8 @@ from jsb.lib.persist import Persist
 from jsb.utils.exception import handle_exception
 from jsb.utils.trace import calledfrom
 from jsb.utils.lazydict import LazyDict
-from jsb.contrib.simplejson import dumps
+from jsb.imports import getjson
+json = getjson()
 
 ## generic imports
 
@@ -31,7 +32,7 @@ import logging
 def jsonstring(s):
     if type(s) == types.TupleType:
         s = list(s)
-    return dumps(s)
+    return json.dumps(s)
 
 def stripident(userhost):
     """ strip ident char from userhost """

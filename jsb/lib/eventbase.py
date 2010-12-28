@@ -17,10 +17,6 @@ from errors import NoSuchUser
 from jsb.utils.opts import makeeventopts
 from jsb.lib.config import Config
 
-## simplejson imports
-
-from jsb.contrib.simplejson import dumps, loads
-
 ## basic imports
 
 from  xml.sax.saxutils import unescape

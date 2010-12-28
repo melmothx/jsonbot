@@ -37,10 +37,6 @@ import types
 import hmac 
 import hashlib
 
-## simpljejson imports
-
-from jsb.contrib.simplejson import loads, dumps
-
 ## defines
 
 forward = PlugPersist("forward-core")

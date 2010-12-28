@@ -7,7 +7,8 @@
 ## jsb imports
 
 from jsb.lib.fleet import getfleet
-from jsb.contrib.simplejson import dump
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -38,7 +39,7 @@ def reboot_stateful(bot, ievent, fleet, partyline):
         if i.bottype == "sxmpp": i.exit()
     session['partyline'] = partyline._resumedata()
     sessionfile = tempfile.mkstemp('-session', 'jsb-')[1]
-    dump(session, open(sessionfile, 'w'))
+    json.dump(session, open(sessionfile, 'w'))
     #getfleet().save()
     args = []
     if len(sys.argv) > 1:

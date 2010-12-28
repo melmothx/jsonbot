@@ -37,7 +37,8 @@ def task(func):
 
 try: 
     from google.appengine.api.labs.taskqueue import Task
-    from jsb.contrib.simplejson import dumps
+    from jsb.imports import getjson
+    json = getjson()
 
     class BotEvent(Task):
         pass
@@ -50,7 +51,7 @@ try:
         try:
             event.botevent = True
             name = event.usercmnd[1:] + "-" + str(uuid.uuid4())
-            payload = dumps({ 'bot': bot.tojson(),
+            payload = json.dumps({ 'bot': bot.tojson(),
                         'event': event.tojson()
                       })
             be = BotEvent(name=name, payload=payload, url="/tasks/botevent")
@@ -63,7 +64,7 @@ try:
         try:
             event.botcallback = True
             name = event.usercmnd[1:] + "-" + str(uuid.uuid4())
-            payload = dumps({ 'bot': bot.tojson(),
+            payload = json.dumps({ 'bot': bot.tojson(),
                         'event': event.tojson()
                       })
             be = BotCallback(name=name, payload=payload, url="/tasks/botcallback")

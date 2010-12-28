@@ -9,7 +9,6 @@ __version__ = "1"
 ## jsb imports
 
 from jsb.lib.gozerevent import GozerEvent
-from jsb.contrib.simplejson import dumps
 
 ## xmpp import
 

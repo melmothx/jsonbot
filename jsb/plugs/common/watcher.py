@@ -22,7 +22,6 @@ from jsb.plugs.common.chatlog import formatevent
 
 ## basic imports
 
-from jsb.contrib.simplejson import loads
 import copy
 import logging
 

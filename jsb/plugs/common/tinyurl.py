@@ -30,7 +30,8 @@ plugcfg.define("url", 'http://tinyurl.com/create.php')
 
 ## simpljejson
 
-from jsb.contrib.simplejson import dumps, loads
+from jsb.imports import getjson
+json = getjson()
 
 ## basic imports
 
@@ -76,7 +77,7 @@ def privmsgcb(bot, ievent):
 def get_tinyurl(url):
     """ grab a tinyurl. """
     res = get(url, namespace='tinyurl') ; logging.debug('tinyurl - cache - %s' % unicode(res))
-    if res and res[0] == '[': return loads(res)
+    if res and res[0] == '[': return json.loads(res)
 
     postarray = [
         ('submit', 'submit'),
@@ -97,7 +98,7 @@ def get_tinyurl(url):
     for line in res:
         if line.startswith('<blockquote><b>'): urls.append(striphtml(line.strip()).split('[Open')[0])
     if len(urls) == 3: urls.pop(0)
-    set(url, dumps(urls), namespace='tinyurl')
+    set(url, json.dumps(urls), namespace='tinyurl')
     return urls
 
 def handle_tinyurl(bot, ievent):

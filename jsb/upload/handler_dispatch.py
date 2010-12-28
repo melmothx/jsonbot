@@ -34,10 +34,6 @@ from webapp2 import RequestHandler, Route, WSGIApplication
 from google.appengine.ext.webapp import template
 from google.appengine.api import users as gusers
 
-## simplejson import
-
-from jsb.contrib.simplejson import loads
-
 ## basic imports
 
 import sys
