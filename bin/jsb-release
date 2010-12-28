@@ -56,7 +56,7 @@ else:
      release = opts.datadir or getdatadir() + os.sep + "releases" + os.sep + 'jsb'
      targetin = 'jsb'
 
-if isdebian() and botuser() == "jsb" and os.path.isdir("var/spool/jsb"): ddir = "var/spool/jsb"
+if isdebian() and botuser() == "jsb" and os.path.isdir("var/cache/jsb"): ddir = "var/cache/jsb"
 else: ddir = opts.datadir or getdatadir()
 ddir = ddir + os.sep + "releases"
 
@@ -102,16 +102,16 @@ def sed(source, target):
 
 ## doit
 
-try: source = pkg_resources.resource_filename("jsb", 'upload')
-except ImportError: 
-    if isdebian(): source = "/usr/lib/jsb/upload"
-    else: source = "/usr/local/jsb/upload"
+if isdebian() and os.path.isdir("/usr/lib/jsb/upload"): source = "/usr/lib/jsb/upload"
+else:
+    try: source = pkg_resources.resource_filename("jsb", 'upload')
+    except ImportError: source = "/usr/local/jsb/upload"
 print source
 copyover(source, release)
-try: source = pkg_resources.resource_filename("jsb", "data")
-except ImportError:
-    if isdebian(): source = "/usr/lib/jsb/data"
-    else: source = "/usr/local/jsb/data"
+if isdebian() and os.path.isdir("/usr/lib/jsb/upload"): source = "/usr/lib/jsb/data"
+else:
+    try: source = pkg_resources.resource_filename("jsb", "data")
+    except ImportError: source = "/usr/local/jsb/data"
 print source
 copyover(source, release + os.sep + "data")
 print source

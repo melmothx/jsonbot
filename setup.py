@@ -4,7 +4,7 @@
 
 import os.path
 
-if os.path.isfile("/etc/debian_version") and os.path.isdir("/usr/lib/jsb"):
+if os.path.isfile("/etc/debian_version"):
     target = "/usr/lib/jsb"
 else:
     target = "jsb"
