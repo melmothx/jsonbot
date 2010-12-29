@@ -136,7 +136,7 @@ class Feed(Persist):
     def __init__(self, name="nonameset", url="", owner="noownerset", itemslist=['title', 'link'], watchchannels=[], \
 sleeptime=15*60, running=0):
         if name:
-            filebase = getdatadir() + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
+            filebase = getdatadir() + os.sep + 'plugs' + os.sep + 'jsb.plugs.common.rss' + os.sep + name
             Persist.__init__(self, filebase + '-core')
             if not self.data: self.data = {}
             self.data = LazyDict(self.data)

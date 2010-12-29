@@ -91,14 +91,15 @@ def handle_adminupgrade(bot, event):
             ddd = stringsed(ddd, "s/commonplugs/jsb.plugs.common/")  
             ddd = stringsed(ddd, "s/socketplugs/jsb.plugs.socket/")  
             ddd = stringsed(ddd, "s/gaeplugs/jsb.plugs.gae/")
+            if d.get_by_key_name(ddd): continue 
             d.filename = ddd
             kwds = {}
             for prop in props: kwds[prop] = getattr(d, prop)
-            bot.say(event.channel, "upgrading %s" % ddd)
             d.get_or_insert(ddd, **kwds)
+            bot.say(event.channel, "UPGRADED %s" % ddd)
             teller += 1
         except Exception, ex: bot.say(event.channel, str(ex))
-    event.reply("upgraded %s items" % teller)
+    bot.say(event.channel, "DONE - upgraded %s items" % teller)
 
 cmnds.add("admin-upgrade", handle_adminupgrade, "OPER", threaded=True)
 examples.add("admin-upgrade", "upgrade the GAE bot", "admin-upgrade")
