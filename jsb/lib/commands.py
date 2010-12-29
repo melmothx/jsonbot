@@ -131,6 +131,7 @@ class Commands(LazyDict):
                     from jsb.lib.gae.tasks import start_botevent
                     event.txt = event.origtxt
                     start_botevent(bot, event, event.speed)
+                    event.reply("task started for %s" % event.auth)
                 else:
                     target.func(bot, event)
                     if event.closequeue and event.queues:

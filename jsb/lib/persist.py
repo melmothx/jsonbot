@@ -130,24 +130,25 @@ try:
             delete(self.fn, self.data)
             return data
      
-        def save(self):
+        def save(self, filename=None):
             """ save json data to database. """
+            fn = filename or self.fn
             bla = json.dumps(self.data)
-            if self.obj == None:
-                self.obj = JSONindb(key_name=self.fn)
+            if filename or self.obj == None:
+                self.obj = JSONindb(key_name=fn)
                 self.obj.content = bla
             else: self.obj.content = bla
-            self.obj.filename = self.fn
+            self.obj.filename = fn
             from google.appengine.ext import db
             key = db.run_in_transaction(self.obj.put)
             logging.debug("persist - transaction returned %s" % key)
-            mc.set(self.fn, bla)
-            delete(self.fn, self.data)
+            mc.set(fn, bla)
+            delete(fn, self.data)
             cfrom = whichmodule(0)
             if 'jsb' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'jsb' in cfrom: cfrom = whichmodule(3)
-            logging.warn('persist - %s - saved %s (%s)' % (cfrom, self.fn, len(bla)))
+            logging.warn('persist - %s - saved %s (%s)' % (cfrom, fn, len(bla)))
 
         def upgrade(self, filename):
             self.init(self.data, filename=filename)

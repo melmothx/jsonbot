@@ -49,8 +49,8 @@ def dumpelement(element, prev={}, withtypes=False):
     elem = cpy(element)
     try: new = dict(prev)
     except (TypeError, ValueError): new = {}
-    
     for name in elem:
+        #logging.debug("lazydict - trying dump of %s" % name) 
         if checkignore(name, defaultignore): continue
         if not elem[name]: continue
         try:

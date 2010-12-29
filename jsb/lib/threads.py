@@ -24,57 +24,6 @@ import uuid
 methodre = re.compile('method\s+(\S+)', re.I)
 funcre = re.compile('function\s+(\S+)', re.I)
 
-## defer to task (GAE)
-
-def task(func):
-    try:
-        from google.appengine.ext.deferred import defer
-        task.defer = lambda *args, **kwargs: defer(func, *args, **kwargs)
-    except ImportError: pass
-    return task
-
-## BotEvent class
-
-try: 
-    from google.appengine.api.labs.taskqueue import Task
-    from jsb.imports import getjson
-    json = getjson()
-
-    class BotEvent(Task):
-        pass
-
-    class BotCallback(Task):
-        pass
-
-    def start_botevent(bot, event):
-        """ start a new botevent task. """
-        try:
-            event.botevent = True
-            name = event.usercmnd[1:] + "-" + str(uuid.uuid4())
-            payload = json.dumps({ 'bot': bot.tojson(),
-                        'event': event.tojson()
-                      })
-            be = BotEvent(name=name, payload=payload, url="/tasks/botevent")
-            be.add()
-        except Exception, ex:
-            handle_exception()
-
-    def start_botcallback(bot, event):
-        """ start a new botevent task. """
-        try:
-            event.botcallback = True
-            name = event.usercmnd[1:] + "-" + str(uuid.uuid4())
-            payload = json.dumps({ 'bot': bot.tojson(),
-                        'event': event.tojson()
-                      })
-            be = BotCallback(name=name, payload=payload, url="/tasks/botcallback")
-            be.add()
-        except Exception, ex:
-            handle_exception()
-
-except ImportError: logging.info("No BotEvent defined.")
-except Exception, ex: handle_exception()
-
 ## Botcommand class
 
 class Botcommand(threading.Thread):

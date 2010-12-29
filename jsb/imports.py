@@ -20,7 +20,7 @@ def getjson():
         try:
             mod = _import("simplejson")
         except:
-            mod = _import("contrib.simplejson")
+            mod = _import("jsb.contrib.simplejson")
     logging.debug("imports - module is %s" % str(mod))
     return mod
 
@@ -29,13 +29,13 @@ def getjson():
 def getfeedparser():
     try: mod = _import("feedparser")
     except:
-        mod = _import("contrib.feedparser")
+        mod = _import("jsb.contrib.feedparser")
     logging.debug("imports - module is %s" % str(mod))
     return mod
 
 def getoauth():
     try: mod = _import("oauth")
     except:
-        mod = _import("contrib.oauth")
+        mod = _import("jsb.contrib.oauth")
     logging.debug("imports - module is %s" % str(mod))
     return mod
