@@ -76,24 +76,28 @@ examples.add("admin-stop", "stop the bot.", "stop")
 
 def handle_adminupgrade(bot, event):
     if not bot.isgae: event.reply("this command only works in GAE") ; return
+    else: import google
     from jsb.lib.persist import JSONindb
     teller = 0
     props = JSONindb.properties()
     for d in JSONindb.all():
-        dd = d.filename
-        if not "gozerdata" in dd: continue
-        if 'run' in dd: continue
-        ddd = stringsed(dd, "s/%s/%s/" % ("gozerdata", "data"))
-        ddd = stringsed(ddd, "s/waveplugs/jsb.plugs.wave/")
-        ddd = stringsed(ddd, "s/gozerlib\.plugs/jsb.plugs.core/")
-        ddd = stringsed(ddd, "s/commonplugs/jsb.plugs.common/")  
-        ddd = stringsed(ddd, "s/socketplugs/jsb.plugs.socket/")  
-        ddd = stringsed(ddd, "s/gaeplugs/jsb.plugs.gae/")
-        d.filename = ddd
-        kwds = {}
-        for prop in props: kwds[prop] = getattr(d, prop)
-        d.get_or_insert(ddd, **kwds)
-        teller += 1
+        try:
+            dd = d.filename
+            if not "gozerdata" in dd: continue
+            if 'run' in dd: continue
+            ddd = stringsed(dd, "s/%s/%s/" % ("gozerdata", "data"))
+            ddd = stringsed(ddd, "s/waveplugs/jsb.plugs.wave/")
+            ddd = stringsed(ddd, "s/gozerlib\.plugs/jsb.plugs.core/")
+            ddd = stringsed(ddd, "s/commonplugs/jsb.plugs.common/")  
+            ddd = stringsed(ddd, "s/socketplugs/jsb.plugs.socket/")  
+            ddd = stringsed(ddd, "s/gaeplugs/jsb.plugs.gae/")
+            d.filename = ddd
+            kwds = {}
+            for prop in props: kwds[prop] = getattr(d, prop)
+            bot.say(event.channel, "upgrading %s" % ddd)
+            d.get_or_insert(ddd, **kwds)
+            teller += 1
+        except Exception, ex: bot.say(event.channel, str(ex))
     event.reply("upgraded %s items" % teller)
 
 cmnds.add("admin-upgrade", handle_adminupgrade, "OPER", threaded=True)
