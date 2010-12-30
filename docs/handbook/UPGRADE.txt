@@ -1,7 +1,10 @@
 UPGRADE
 =======
 
-from 0.4 to 0.5 a number of changes went into JSONBOT.
+from 0.4 to 0.5
+---------------
+
+a number of changes went into JSONBOT.
 
 first i needed to change the stripname() function to make used filename
 compatible with appengine. this means that most json data lives under a
@@ -25,3 +28,27 @@ to recap:
     1) move your data dir into ~/.jsb or use -d gozerdata 
     2) run !chan-upgrade to update you channel data
     3) use !chan-allowwatch on the sending side to allow channels on the receiving side if you use forwarding
+
+from 0.5 to 0.6
+---------------
+
+the bot got refactored beyond sanity, so seperate upgrade scripts and
+programs are provided to upgrade to 0.6
+
+* on shell
+    
+use the ./bin/jsb-upgrade program, this will copy your data from ~/.jsonbot to ~/.jsb
+
+* on GAE
+
+copy over the files from ~/jsonregs to ~/jsbregs (cp -Ra)
+
+best is to upload the new bot into its own version (edit ~/jsbregs/<appid>/app.yaml)
+
+run the !admin-upgrade command, you may need to run this multiple
+times until the bot says it's done upgrading, check if everything is still
+working and switch to the new version.
+
+
+you might need to run !chan-upgrade to update your channel.
+
