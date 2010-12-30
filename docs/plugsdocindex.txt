@@ -14,7 +14,7 @@ standard plugins
     :maxdepth: 2
     :glob:
 
-    core/*
+    jsb/plugs/core/*
 
 common plugins
 --------------
@@ -23,7 +23,7 @@ common plugins
     :maxdepth: 2
     :glob:
 
-    common/*
+    jsb/plugs/common/*
 
 
 wave plugins
@@ -33,7 +33,7 @@ wave plugins
     :maxdepth: 2
     :glob:
 
-    wave/*
+    jsb/plugs/wave/*
 
 socket plugins
 --------------
@@ -42,7 +42,7 @@ socket plugins
     :maxdepth: 2
     :glob:
 
-    socket/*
+    jsb/plugs/socket/*
 
 gae plugins
 -----------
@@ -51,4 +51,4 @@ gae plugins
     :maxdepth: 2
     :glob:
 
-    gae/*
+    jsb/plugs/gae/*

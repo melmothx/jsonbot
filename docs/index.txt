@@ -59,7 +59,7 @@ urls
 
     * Source code: http://jsonbot.googlecode.com
     * Web: http://jsonbot.appspot.com (web)
-    * Wave/Jabber: jsb@appspot.com
+    * Wave/Jabber: jsonbot@appspot.com
 
 running a development version of the bot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,10 +75,10 @@ now you can run the programs in the bin directory with the
 contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
-    * email: jsb@gmail.com
-    * jabber/xmpp: jsb@gmail.com
-    * IRC: #jsbs on Freenode
-    * Twitter: http://twitter.com/jsb
+    * email: bthate@gmail.com
+    * jabber/xmpp: bthate@gmail.com
+    * IRC: #dunkbots on Freenode
+    * Twitter: http://twitter.com/jsonbot
 
 jsb code
 ~~~~~~~~~~~
