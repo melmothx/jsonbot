@@ -47,10 +47,11 @@ def checkignore(name, ignore):
 def dumpelement(element, prev={}, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
     elem = cpy(element)
+    if not elem: elem = element
     try: new = dict(prev)
     except (TypeError, ValueError): new = {}
-    
     for name in elem:
+        #logging.debug("lazydict - trying dump of %s" % name) 
         if checkignore(name, defaultignore): continue
         if not elem[name]: continue
         try:

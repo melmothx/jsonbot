@@ -130,6 +130,13 @@ class BotBase(LazyDict):
             defaultrunner.start()
             tickloop.start(self)
 
+    def __deepcopy__(self, a):
+        """ deepcopy an event. """  
+        logging.debug("botbase - cpy - %s" % type(self))
+        bot = BotBase() 
+        bot.copyin(self)
+        return bot
+
     def copyin(self, data):
         self.update(data)
 

@@ -267,6 +267,13 @@ if __name__ == '__main__':
         handle_exception()
 
     try:
+         os.mkdir('docs' + os.sep + 'plugins')
+         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'core') 
+         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'wave') 
+         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'socket')
+         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'common')
+         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'gae')
+         os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'myplugs') 
          os.mkdir('docs' + os.sep + 'jsb')
          os.mkdir('docs' + os.sep + 'jsb' + os.sep + 'plugs')
          os.mkdir(os.path.join('docs', 'jsb', 'lib'))
@@ -276,36 +283,37 @@ if __name__ == '__main__':
          os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'socket'))
          os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'wave'))
          os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'gae'))
+         os.mkdir(os.path.join('docs', 'jsb', 'plugs', 'myplugs'))
     except: pass
     if True:
         for file in os.listdir(os.path.join('jsb', 'plugs', 'core')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open(os.path.join('docs', 'jsb', 'plugs', 'core', file[:-3] + '.txt'), 'w')
+            f = open(os.path.join('docs', 'plugins', 'core', file[:-3] + '.txt'), 'w')
             threads.append(start_new_thread(gendoc, ('jsb.plugs.core', file, f)))
             #gendoc('jsb.plugs.core', file, f)
         for file in os.listdir(os.path.join('jsb', 'plugs', 'common')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open(os.path.join('docs', 'jsb', 'plugs', 'common', file[:-3] + '.txt'), 'w')
+            f = open(os.path.join('docs', 'plugins', 'common', file[:-3] + '.txt'), 'w')
             threads.append(start_new_thread(gendoc, ('jsb.plugs.common', file, f)))
             #gendoc('jsb.plugs.common', file, f)
         for file in os.listdir(os.path.join('jsb', 'plugs', 'wave')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open(os.path.join('docs', 'jsb', 'plugs', 'wave', file[:-3] + '.txt'), 'w')
+            f = open(os.path.join('docs', 'plugins', 'wave', file[:-3] + '.txt'), 'w')
             threads.append(start_new_thread(gendoc, ('jsb.plugs.wave', file, f)))
             #gendoc('jsb.plugs.wave', file, f)
         for file in os.listdir(os.path.join('jsb', 'plugs', 'socket')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open(os.path.join('docs', 'jsb', 'plugs', 'socket', file[:-3] + '.txt'), 'w')
+            f = open(os.path.join('docs', 'plugins', 'socket', file[:-3] + '.txt'), 'w')
             threads.append(start_new_thread(gendoc, ('jsb.plugs.socket', file, f)))
             #gendoc('jsb.plugs.socket', file, f)
         for file in os.listdir(os.path.join('jsb', 'plugs', 'gae')):
             if not file.endswith('.py') or '__init__' in file:
                 continue
-            f = open(os.path.join('docs', 'jsb', 'plugs', 'gae', file[:-3] + '.txt'), 'w')
+            f = open(os.path.join('docs', 'plugins', 'gae', file[:-3] + '.txt'), 'w')
             threads.append(start_new_thread(gendoc, ('jsb.plugs.gae', file, f)))
             #gendoc('jsb.plugs.gae', file, f)
 
@@ -315,15 +323,17 @@ if __name__ == '__main__':
     time.sleep(5)
     domods(os.path.join('jsb', 'lib'))
     domods(os.path.join('jsb', 'utils'))
-    #domods(os.path.join('jsb','plugs'))
+    domods(os.path.join('jsb','plugs'))
     domods(os.path.join('jsb','plugs', 'core'))
     domods(os.path.join('jsb','plugs', 'common'))
     domods(os.path.join('jsb','plugs', 'wave'))
     domods(os.path.join('jsb','plugs', 'socket'))
     domods(os.path.join('jsb','plugs', 'gae'))
 
-    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'mindex.txt'), os.path.join('docs', 'jsb', 'index.txt'))
-    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'plugsdocindex.txt'), os.path.join('docs', 'jsb', 'plugs', 'index.txt'))
+    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'jsbindex.txt'), os.path.join('docs', 'jsb', 'index.txt'))
+    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'lindex.txt'), os.path.join('docs', 'jsb', 'lib', 'index.txt'))
+    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'uindex.txt'), os.path.join('docs', 'jsb', 'utils', 'index.txt'))
+    shutil.copyfile(os.path.join(os.getcwd(), 'docs', 'plugsdocindex.txt'), os.path.join('docs', 'plugins', 'index.txt'))
     try:
         shutil.copyfile(os.path.join(os.path.expanduser("~"), 'jsbregs', 'jsb', 'credentials.py'), os.path.join(os.getcwd(), 'jsb', 'data', 'config', 'credentials.py'))
         touch(os.path.join(os.getcwd(), 'jsb', 'data', 'config', '__init__.py'))

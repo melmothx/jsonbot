@@ -49,7 +49,7 @@ jsb provides the following programs:
 
 see docs/UPLOAD on how to upload your own bot.
 
-License
+license
 ~~~~~~~
 
 JSONBOT is free code (MIT) and can be cloned where needed. 
@@ -59,7 +59,7 @@ urls
 
     * Source code: http://jsonbot.googlecode.com
     * Web: http://jsonbot.appspot.com (web)
-    * Wave/Jabber: jsb@appspot.com
+    * Wave/Jabber: jsonbot@appspot.com
 
 running a development version of the bot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,10 +75,20 @@ now you can run the programs in the bin directory with the
 contact the developer
 ~~~~~~~~~~~~~~~~~~~~~
 
-    * email: jsb@gmail.com
-    * jabber/xmpp: jsb@gmail.com
-    * IRC: #jsbs on Freenode
-    * Twitter: http://twitter.com/jsb
+    * email: bthate@gmail.com
+    * jabber/xmpp: bthate@gmail.com
+    * IRC: #dunkbots on Freenode
+    * Twitter: http://twitter.com/jsonbot
+
+
+plugins documentation
+~~~~~~~~~~~~~~~~~~~~~
+
+    .. toctree::        
+        :maxdepth: 3
+        :glob:
+
+        plugins/index
 
 jsb code
 ~~~~~~~~~~~
@@ -90,54 +100,55 @@ jsb code
         jsb/utils/index
 
 
-plugins documentation
-~~~~~~~~~~~~~~~~~~~~~
-
-    .. toctree::        
-        :maxdepth: 3
-        :glob:
-
-        jsb/plugs/index
-
 jsb.plugs.core code
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/core/index
+        /jsb/plugs/core/index
 
 jsb.plugs.common code
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/common/index
+        /jsb/plugs/common/index
 
 jsb.plugs.wave code
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/wave/index
+        /jsb/plugs/wave/index
 
 jsb.plugs.socket code
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/socket/index
+        /jsb/plugs/socket/index
         
-gaeplugs code
-~~~~~~~~~~~~~
+jsb.plugs.gae code
+~~~~~~~~~~~~~~~~~~
 
 
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/gae/index
+        /jsb/plugs/gae/index
+        
+
+jsb.plugs.myplugs code
+~~~~~~~~~~~~~~~~~~
+
+
+    .. toctree::
+        :maxdepth: 2
+
+        /jsb/plugs/myplugs/index
         

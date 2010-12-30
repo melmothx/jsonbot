@@ -28,7 +28,7 @@ import google
 
 ## vars
 
-periodicals =  ['jsb.plugs.common.rss', 'jsb.plugs.botevent']
+periodicals =  ['jsb.plugs.common.rss', 'jsb.plugs.core.botevent']
 mountpoints = ['rss', 'botevent']
 
 ##

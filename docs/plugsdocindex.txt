@@ -52,3 +52,12 @@ gae plugins
     :glob:
 
     gae/*
+
+myplugs plugins
+---------------
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    myplugs/*

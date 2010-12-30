@@ -136,7 +136,7 @@ class Feed(Persist):
     def __init__(self, name="nonameset", url="", owner="noownerset", itemslist=['title', 'link'], watchchannels=[], \
 sleeptime=15*60, running=0):
         if name:
-            filebase = getdatadir() + os.sep + 'plugs' + os.sep + 'commonplugs.rss' + os.sep + name
+            filebase = getdatadir() + os.sep + 'plugs' + os.sep + 'jsb.plugs.common.rss' + os.sep + name
             Persist.__init__(self, filebase + '-core')
             if not self.data: self.data = {}
             self.data = LazyDict(self.data)
@@ -216,7 +216,7 @@ sleeptime=15*60, running=0):
             except KeyError: etag = None
         else:
             try: etag = etags.data[name] = result.etag ; logging.info("rss - etag of %s set to %s" % (name, etags.data[name])) ; etags.sync()
-            except KeyError: etag = None
+            except (AttributeError, KeyError): etag = None
         if not name in urls.data: urls.data[name] = self.data.url ; urls.save()
         logging.debug("rss - got result from %s" % self.data.url)
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))

@@ -1,0 +1,22 @@
+jsb.lib
+=======
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    console/index
+    gae/index
+    gae/wave/index
+    gae/web/index
+    gae/xmpp/index
+    gae/utils/index
+    remote/index
+    socklib/index
+    socklib/irc/index
+    socklib/rest/index
+    socklib/utils/index
+    socklib/xmpp/index
+    utils/index
+
+    *

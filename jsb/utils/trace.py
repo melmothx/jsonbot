@@ -11,7 +11,7 @@ import os
 
 ## defines
 
-stopmarkers = ['jsb', 'jsb.plugs.common', 'jsb.plugs.wave', 'jsb.plugs.socket', 'waveapi', 'jsb', 'myplugs', 'python2.5', 'python2.6']
+stopmarkers = ['waveapi', 'jsb', 'myplugs', 'python2.5', 'python2.6']
 
 ## calledfrom function
 
