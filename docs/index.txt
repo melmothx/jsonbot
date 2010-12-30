@@ -49,7 +49,7 @@ jsb provides the following programs:
 
 see docs/UPLOAD on how to upload your own bot.
 
-License
+license
 ~~~~~~~
 
 JSONBOT is free code (MIT) and can be cloned where needed. 
@@ -80,15 +80,6 @@ contact the developer
     * IRC: #dunkbots on Freenode
     * Twitter: http://twitter.com/jsonbot
 
-jsb code
-~~~~~~~~~~~
-
-    .. toctree::
-        :maxdepth: 2
-
-        jsb/lib/index
-        jsb/utils/index
-
 
 plugins documentation
 ~~~~~~~~~~~~~~~~~~~~~
@@ -99,8 +90,18 @@ plugins documentation
 
         plugins/index
 
+jsb code
+~~~~~~~~~~~
+
+    .. toctree::
+        :maxdepth: 2
+
+        jsb/lib/index
+        jsb/utils/index
+
+
 jsb.plugs.core code
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
@@ -108,7 +109,7 @@ jsb.plugs.core code
         /jsb/plugs/core/index
 
 jsb.plugs.common code
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
@@ -116,7 +117,7 @@ jsb.plugs.common code
         /jsb/plugs/common/index
 
 jsb.plugs.wave code
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
     .. toctree::
         :maxdepth: 2
@@ -124,7 +125,7 @@ jsb.plugs.wave code
         /jsb/plugs/wave/index
 
 jsb.plugs.socket code
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 
     .. toctree::
@@ -132,12 +133,22 @@ jsb.plugs.socket code
 
         /jsb/plugs/socket/index
         
-gaeplugs code
-~~~~~~~~~~~~~
+jsb.plugs.gae code
+~~~~~~~~~~~~~~~~~~
 
 
     .. toctree::
         :maxdepth: 2
 
         /jsb/plugs/gae/index
+        
+
+jsb.plugs.myplugs code
+~~~~~~~~~~~~~~~~~~
+
+
+    .. toctree::
+        :maxdepth: 2
+
+        /jsb/plugs/myplugs/index
         
