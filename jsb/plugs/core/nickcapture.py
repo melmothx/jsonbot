@@ -20,6 +20,6 @@ def ncaptest(bot, ievent):
 
 def ncap(bot, ievent):
     """ recapture the nick. """
-    bot.donick(bot.orignick)
+    bot.donick(bot.nick)
 
 callbacks.add('QUIT', ncap, ncaptest, threaded=True)
