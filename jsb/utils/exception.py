@@ -40,7 +40,7 @@ def exceptionmsg():
         plugfile = fname[:-3].split(os.sep)
         mod = []
         for i in plugfile[::-1]:
-            if i in ['jsb.upload', 'jsb']: break
+            if i in ['jsb.upload']: break
             mod.append(i)
             if i in ['jsb', 'waveapi', 'google', 'data']: break
         ownname = '.'.join(mod[::-1])

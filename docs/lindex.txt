@@ -1,5 +1,5 @@
-jsb
-===
+jsb.lib
+=======
 
 .. toctree::
     :maxdepth: 2

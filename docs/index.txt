@@ -97,7 +97,7 @@ plugins documentation
         :maxdepth: 3
         :glob:
 
-        jsb/plugs/index
+        plugins/index
 
 jsb.plugs.core code
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -105,7 +105,7 @@ jsb.plugs.core code
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/core/index
+        /jsb/plugs/core/index
 
 jsb.plugs.common code
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +113,7 @@ jsb.plugs.common code
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/common/index
+        /jsb/plugs/common/index
 
 jsb.plugs.wave code
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -121,7 +121,7 @@ jsb.plugs.wave code
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/wave/index
+        /jsb/plugs/wave/index
 
 jsb.plugs.socket code
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,7 +130,7 @@ jsb.plugs.socket code
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/socket/index
+        /jsb/plugs/socket/index
         
 gaeplugs code
 ~~~~~~~~~~~~~
@@ -139,5 +139,5 @@ gaeplugs code
     .. toctree::
         :maxdepth: 2
 
-        jsb/plugs/gae/index
+        /jsb/plugs/gae/index
         

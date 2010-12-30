@@ -82,7 +82,7 @@ release = '0.6 BETA2'
 #today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-unused_docs = ['jsbindex', 'pindex', 'mindex', 'plugsdocindex']
+unused_docs = ['jsbindex', 'lindex', 'uindex', 'plugsdocindex']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
