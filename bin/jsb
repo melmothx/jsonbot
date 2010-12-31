@@ -14,14 +14,12 @@ import os, sys
 sys.path.insert(0, os.getcwd())
 
 from jsb.lib.version import getversion
-print getversion('CONSOLE')
 
 ## command line parsing
 
 from optparse import OptionParser
 parser = OptionParser(usage='usage: %prog [options] <appid>', version='%prog ' + getversion())
 parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir', help="datadir to use")
-parser.add_option('-x', '--execute', type='string', default=False, dest='command', help="command to execute")
 parser.add_option('-c', '--channel', type='string', default=False, dest='channel', help="channel to operate on")
 parser.add_option('-n', '--name', type='string', default=False, dest='name', help="name of the console bot")
 parser.add_option('-l', '--loglevel', type='string', default=False, dest='loglevel', help="logging level")
@@ -77,14 +75,10 @@ except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
 
-## check for -x option
-
-if opts.command:
-    result = bot.docmnd(userid, opts.channel or "console", opts.command + u' '+ u' '.join(opts.args))
-    if result:
-        waitforqueue(result.inqueue, 60)
-        print "command done. ltrs"
-    else: print "can't execute %s" % opts.command    
+if opts.args:
+    result = bot.docmnd(userid, opts.channel or "console", u' '.join(opts.args), showall=True)
+    if result: waitforqueue(result.inqueue, 60)
     os._exit(0)
 
+print getversion('CONSOLE')
 bot.start()
