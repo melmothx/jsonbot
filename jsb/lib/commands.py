@@ -69,21 +69,13 @@ class Commands(LazyDict):
         except IndexError: pass
         return self
 
-    def dispatch(self, bot, event, wait=0):
+    def woulddispatch(self, bot, event):
         """ 
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
 
         """
 
-        event.bind(bot)
-        if event.groupchat: id = event.auth = event.userhost
-        else: id = event.auth
-        #if bot.cfg.auto_register: bot.users.addguest(id)
-        if not event.user:
-            event.user = bot.users.getuser(id)
-            if event.user: event.userstate = UserState(event.user.data.name)
-            else: logging.debug("failed to set user %s" % id)
         cmnd = event.usercmnd.lower()
         try:
             cmnd = event.chan.data.aliases[cmnd]
@@ -93,17 +85,29 @@ class Commands(LazyDict):
         except (TypeError, KeyError, AttributeError): pass
         target = bot.plugs
         if target: target.reloadcheck(bot, event)
+        result = None
         try:
-            c = self[event.usercmnd]
+            result = self[cmnd]
         except KeyError:
-            if self.subs and self.subs.has_key(cmnd):
-                if len(self.subs[cmnd]) == 1: c = self.subs[cmnd][0]
-                else:
-                    event.reply("use one of ", [c.orig for c in self.subs[cmnd]])
-                    return
-            else:
-                raise NoSuchCommand(cmnd)
+            if self.subs and self.subs.has_key(cmnd): result = self.subs[cmnd][0]
+        return result
 
+    def dispatch(self, bot, event, wait=0):
+        """ 
+            dispatch an event if cmnd exists and user is allowed to exec this 
+            command.
+
+        """
+        event.bind(bot)
+        if event.groupchat: id = event.auth = event.userhost
+        else: id = event.auth
+        #if bot.cfg.auto_register: bot.users.addguest(id)
+        if not event.user:
+            event.user = bot.users.getuser(id)
+            if event.user: event.userstate = UserState(event.user.data.name)
+            else: logging.debug("failed to set user %s" % id)
+        c = self.woulddispatch(bot, event)
+        if not c: raise NoSuchCommand()
         ## core business
         if bot.cmndperms and bot.cmndperms[c.cmnd]: perms = bot.cmndperms[c.cmnd]
         else: perms = c.perms
@@ -126,7 +130,7 @@ class Commands(LazyDict):
         logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
             if bot.isgae or wait:
-                if bot.isgae and not event.notask and (target.threaded or event.threaded):
+                if bot.isgae and not event.notask and (target.threaded or event.threaded) and not event.nothreads:
                     logging.warn("commands - LAUNCHING AS TASK")
                     from jsb.lib.gae.tasks import start_botevent
                     event.txt = event.origtxt
@@ -139,7 +143,7 @@ class Commands(LazyDict):
                             q.put_nowait(None)
                         event.outqueue.put_nowait(None)
             else:
-                if target.threaded:
+                if target.threaded and not event.nothreads:
                     logging.warning("commands - launching thread for %s" % event.usercmnd)
                     thread = start_bot_command(target.func, (bot, event))
                     if bot.isgae and event.closequeue:

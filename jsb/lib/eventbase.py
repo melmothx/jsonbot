@@ -58,6 +58,7 @@ class EventBase(LazyDict):
         self.botevent = False
         self.notask = False
         self.speed = 5
+        self.nothread = False
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """

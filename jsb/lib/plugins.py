@@ -134,11 +134,10 @@ class Plugins(LazyDict):
     def dispatch(self, bot, event, wait=0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
         result = []
-        if event.txt and not ' | ' in event.txt:
-            self.reloadcheck(bot, event)
-            return cmnds.dispatch(bot, event, wait=wait, *args, **kwargs)
-        if event.txt and ' | ' in event.txt: return self.pipelined(bot, event, wait=wait, *args, **kwargs)
-        return event              
+        if not event.pipelined and ' ! ' in event.txt: return self.pipelined(bot, event, wait=wait, *args, **kwargs)
+        self.reloadcheck(bot, event)
+        return cmnds.dispatch(bot, event, wait=wait, *args, **kwargs)
+        
 
     def pipelined(self, bot, event, wait=0, *args, **kwargs):
         """ split cmnds, create events for them, chain the queues and dispatch.  """
@@ -146,13 +145,16 @@ class Plugins(LazyDict):
         event.queues = []
         event.allowqueue = True
         event.closequeue = True
+        event.pipelined = True 
         events = []
-        for item in event.txt.split(' | '):
+        splitted = event.txt.split(" ! ")
+        for item in splitted:
             e = cpy(event)
             e.queues = []
             e.onlyqueues = True
             e.txt = item.strip()
             e.usercmnd = e.txt.split()[0].lower()
+            if not cmnds.woulddispatch(bot, e): events.append(event) ; break
             logging.debug('creating event for %s' % e.txt)
             e.bot = bot
             e.makeargs()

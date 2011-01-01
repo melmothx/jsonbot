@@ -569,6 +569,7 @@ class BotBase(LazyDict):
         e.onlyqueues = False
         e.closequeue = True
         e.showall = showall
+        e.nothread = True
         if wait: e.direct = True
         e.bind(self)
         try:
