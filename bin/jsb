@@ -77,7 +77,8 @@ except NoOwnerSet:
 
 if opts.args:
     result = bot.docmnd(userid, opts.channel or "console", u' '.join(opts.args), wait=1, showall=True)
-    #if result: waitforqueue(result.inqueue, 60)
+    if result: waitforqueue(result.outqueue, 60)
+    time.sleep(0.5)
     os._exit(0)
 
 print getversion('CONSOLE')

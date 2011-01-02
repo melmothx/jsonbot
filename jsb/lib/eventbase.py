@@ -207,9 +207,10 @@ class EventBase(LazyDict):
             self.chan.save()
         if not cc: cc = "!"
         if self.type == "DISPATCH": cc += "!"
-        if self.txt and self.txt[0] in cc: return self.txt[1:]
         if not self.bot: logging.warn("eventbase - bot is not bind into event.") ; return False
         logging.debug("eventbase - cc for %s is %s (%s)" % (self.title or self.channel or self.userhost, cc, self.bot.nick))
+        if self.iscmnd or self.txt[0] in cc:
+            return "".join([ x for x in self.txt if x not in cc])
         matchnick = unicode(self.bot.nick + u":")
         if self.txt.startswith(matchnick): return self.txt[len(matchnick):]
         return False

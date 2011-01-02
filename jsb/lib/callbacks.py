@@ -144,9 +144,9 @@ class Callbacks(object):
             else: logging.warn('%s - executing %s - %s' % (bot.name, getname(cb.func), event.cbtype))
             event.iscallback = True
             logging.debug("callback - %s - trail - %s" % (getname(cb.func), callstack(sys._getframe())[::-1]))
-            if cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
+            if not event.direct and cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))
             else:
-                if bot.isgae: cb.func(bot, event)
+                if bot.isgae or event.direct: cb.func(bot, event)
                 else:
                     from runner import defaultrunner
                     defaultrunner.put(cb.modname, cb.func, bot, event)

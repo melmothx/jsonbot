@@ -63,15 +63,17 @@ cmnds.add('whatis', handle_whatis, ['USER', 'GUEST'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsb")
 
 def prelearn(bot, event):
-    if event.iscmnd() and not event.forwarded: return True
+    if event.txt and event.txt[0] == "?" and not event.forwarded: return True
     return False
 
 def learncb(bot, event):
     event.bind(bot)
     items = PlugPersist(event.channel)
-    target = event.usercmnd[1:].lower()
+    target = event.txt[1:].lower()
     if target in items.data: event.reply("%s is " % target, items.data[target], dot=", ")
 
 callbacks.add("PRIVMSG", learncb, prelearn)
 callbacks.add("MESSAGE", learncb, prelearn)
 callbacks.add("DISPATCH", learncb, prelearn)
+callbacks.add("CONSOLE", learncb, prelearn)
+callbacks.add("CMND", learncb, prelearn)

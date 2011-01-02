@@ -554,6 +554,7 @@ class BotBase(LazyDict):
         """ do a command. """
         if event: e = cpy(event)
         else: e = EventBase()
+        e.cbtype = "CMND"
         e.bot = self
         e.origin = origin
         e.ruserhost = origin
@@ -563,16 +564,14 @@ class BotBase(LazyDict):
         e.txt = unicode(txt)
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
-        e.iscmnd = True
+        e.iscommand = True
         e.iscallback = False
         e.allowqueues = True
         e.onlyqueues = False
         e.closequeue = True
         e.showall = showall
-        e.nothread = True
-        if wait: e.direct = True
+        if wait: e.direct = True ; e.nothreads = True
         e.bind(self)
-        try:
-            result = self.plugs.dispatch(self, e, wait=wait)
-            return result
-        except NoSuchCommand: e.reply("no such command: %s" % e.usercmnd)
+        #result = self.plugs.dispatch(self, e, wait=wait)
+        #return result
+        return self.doevent(e)
