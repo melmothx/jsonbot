@@ -42,6 +42,7 @@ from jsb.utils.generic import waitforqueue
 from jsb.lib.console.bot import ConsoleBot
 from jsb.lib.config import Config
 from jsb.lib.errors import NoOwnerSet
+from jsb.lib.commands import cmnds
 
 ## basic imports
 

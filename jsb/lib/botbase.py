@@ -14,7 +14,7 @@ from plugins import plugs as coreplugs
 from callbacks import callbacks, first_callbacks, last_callbacks, remote_callbacks
 from eventbase import EventBase
 from errors import NoSuchCommand, PlugsNotConnected, NoOwnerSet, NameNotSet, NoEventProvided
-from commands import Commands
+from commands import Commands, cmnds
 from config import Config
 from jsb.utils.pdod import Pdod
 from channelbase import ChannelBase
@@ -571,7 +571,4 @@ class BotBase(LazyDict):
         e.closequeue = True
         e.showall = showall
         if wait: e.direct = True ; e.nothreads = True
-        e.bind(self)
-        #result = self.plugs.dispatch(self, e, wait=wait)
-        #return result
-        return self.doevent(e)
+        if cmnds.woulddispatch(self, e): return self.doevent(e)

@@ -69,14 +69,14 @@ class Commands(LazyDict):
         except IndexError: pass
         return self
 
-    def woulddispatch(self, bot, event):
+    def woulddispatch(self, bot, event, cmnd=""):
         """ 
             dispatch an event if cmnd exists and user is allowed to exec this 
             command.
 
         """
 
-        cmnd = event.usercmnd.lower()
+        cmnd = cmnd or event.usercmnd.lower()
         try:
             cmnd = event.chan.data.aliases[cmnd]
             event.txt = event.chan.data.cc + cmnd +  ' ' + ' '.join(event.txt.split()[1:])
