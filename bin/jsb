@@ -83,6 +83,7 @@ if opts.args:
         cmndstring += u" %s" % unicode(cmnd)
     result = bot.docmnd(userid, opts.channel or "console", cmndstring, wait=1, showall=True)
     if result: waitforqueue(result.outqueue, 60)
+    time.sleep(0.2)
     sys.stdout.close()
     os._exit(0)
 
