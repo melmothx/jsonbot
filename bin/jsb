@@ -53,6 +53,7 @@ from jsb.lib.fleet import getfleet
 
 ## basic imports
 
+import sys
 import getpass
 import logging
 import time
@@ -76,9 +77,13 @@ except NoOwnerSet:
     os._exit(1)
 
 if opts.args:
-    result = bot.docmnd(userid, opts.channel or "console", u' '.join(opts.args), wait=1, showall=True)
+    cmndstring = ""
+    for cmnd in opts.args:
+        if "|" in cmnd: break
+        cmndstring += u" %s" % unicode(cmnd)
+    result = bot.docmnd(userid, opts.channel or "console", cmndstring, wait=1, showall=True)
     if result: waitforqueue(result.outqueue, 60)
-    time.sleep(0.5)
+    sys.stdout.close()
     os._exit(0)
 
 print getversion('CONSOLE')
