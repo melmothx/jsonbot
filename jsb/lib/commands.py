@@ -75,21 +75,22 @@ class Commands(LazyDict):
             command.
 
         """
-
+        event.bind(bot)
         cmnd = cmnd or event.usercmnd.lower()
         try:
             cmnd = event.chan.data.aliases[cmnd]
-            event.txt = event.chan.data.cc + cmnd +  ' ' + ' '.join(event.txt.split()[1:])
+            event.txt = cmnd +  ' ' + ' '.join(event.txt.split()[1:])
             event.usercmnd = cmnd.split()[0]
             event.prepare()
         except (TypeError, KeyError, AttributeError): pass
-        target = bot.plugs
-        if target: target.reloadcheck(bot, event)
+        logging.warn("commands - %s" % cmnd)
+        bot.plugs.reloadcheck(bot, event)
         result = None
         try:
             result = self[cmnd]
         except KeyError:
             if self.subs and self.subs.has_key(cmnd): result = self.subs[cmnd][0]
+        logging.warn("commands - woulddispatch result: %s" % result)
         return result
 
     def dispatch(self, bot, event, wait=0):
