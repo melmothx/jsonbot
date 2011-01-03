@@ -39,28 +39,12 @@ boot(opts.datadir)
 ## jsb imports
 
 from jsb.utils.generic import waitforqueue
-from jsb.utils.mainloop import mainloop
-from jsb.lib.plugins import Plugins
 from jsb.lib.console.bot import ConsoleBot
-from jsb.lib.console.event import ConsoleEvent
-from jsb.lib.plugins import Plugins
 from jsb.lib.config import Config
-from jsb.lib.datadir import makedirs
-from jsb.lib.users import Users, users
 from jsb.lib.errors import NoOwnerSet
-from jsb.lib.threads import start_new_thread
-from jsb.lib.fleet import getfleet
 
 ## basic imports
 
-import sys
-import getpass
-import logging
-import time
-import code
-import readline
-import atexit
-import os
 import getpass
 
 ## start the bot
