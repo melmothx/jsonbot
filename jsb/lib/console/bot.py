@@ -131,4 +131,5 @@ class ConsoleBot(BotBase):
         what = what.replace("</b>", self.ENDC)
         what = what.replace("&lt;b&gt;", self.GREEN)
         what = what.replace("&lt;/b&gt;", self.ENDC)
+        if what.count(self.ENDC) % 2: what = "%s%s" %  (self.ENDC, what)
         return what
