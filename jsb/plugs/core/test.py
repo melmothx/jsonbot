@@ -83,6 +83,7 @@ def handle_testplugs(bot, event):
     except (ValueError, IndexError): threaded = 0
     threads = []
     teller = 0
+    event.dontclose = True
     for i in range(loop):
         if threaded: threads.append(start_new_thread(dotest, (bot, event)))
         else: dotest(bot, event)

@@ -82,9 +82,10 @@ if opts.args:
         if "|" in cmnd: break
         cmndstring += u" %s" % unicode(cmnd)
     result = bot.docmnd(userid, opts.channel or "console", cmndstring, wait=1, showall=True)
-    if result: waitforqueue(result.outqueue, 60)
-    time.sleep(0.2)
-    sys.stdout.close()
+    if result: waitforqueue(result.outqueue, 60000)
+    try:
+        sys.stdout.close()
+    except: pass
     os._exit(0)
 
 print getversion('CONSOLE')
