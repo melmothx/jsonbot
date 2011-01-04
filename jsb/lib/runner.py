@@ -78,7 +78,6 @@ class BotEventRunner(Runner):
                 logging.debug("closing %s queues" % len(ievent.queues))
                 for queue in ievent.queues: queue.put_nowait(None)
             if not ievent.dontclose: ievent.outqueue.put_nowait(None)
-            ievent.outqueue.task_done()
             ievent.inqueue.put_nowait(None)
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
