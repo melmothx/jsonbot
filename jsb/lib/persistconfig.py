@@ -45,10 +45,11 @@ class PersistConfig(Config):
 
     def __init__(self):
         self.hide = []
-        self.modname = whichplugin()
-        self.plugname = self.modname.split('.')[-1]
-        Config.__init__(self, 'plugs' + os.sep + self.modname, "config")
-        self.modname = whichplugin()
+        modname = whichplugin()
+        logging.debug("persistconfig - module name is %s" % modname)
+        self.plugname = modname.split('.')[-1]
+        Config.__init__(self, 'plugs' + os.sep + modname, "config")
+        self.modname = modname
         cmndname = "%s-cfg" % self.plugname
         logging.debug('persistconfig - added command %s (%s)' % (cmndname, self.plugname))
         from jsb.lib.commands import cmnds, Command
