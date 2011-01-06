@@ -41,9 +41,12 @@ format = "%(asctime)s - %(message)s - <%(threadName)s+%(module)s-%(funcName)s:%(
 try:
     import waveapi
 except ImportError:
-    filehandler = logging.handlers.TimedRotatingFileHandler(LOGDIR + os.sep + "jsb.log", 'midnight')
-    formatter = logging.Formatter(format)
-    filehandler.setFormatter(formatter)  
+    try:
+        filehandler = logging.handlers.TimedRotatingFileHandler(LOGDIR + os.sep + "jsb.log", 'midnight')
+        formatter = logging.Formatter(format)
+        filehandler.setFormatter(formatter)  
+    except IOError:
+        filehandler = None
 
 ## setloglevel function
 
@@ -55,6 +58,7 @@ def setloglevel(level_name):
         for handler in root.handlers: root.removeHandler(handler)
     logging.basicConfig(level=level, format=format)
     try: import waveapi
-    except ImportError: root.addHandler(filehandler)
+    except ImportError:
+        if filehandler: root.addHandler(filehandler)
     root.setLevel(level)
     logging.info("loglevel is %s (%s)" % (str(level), level_name))

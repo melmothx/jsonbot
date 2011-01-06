@@ -47,34 +47,31 @@ class Config(LazyDict):
 
     def __init__(self, filename=None, verbose=False, input={}, ddir=None, *args, **kw):
         LazyDict.__init__(self, input, *args, **kw)
-        try: del self.filename
-        except: pass
-        self.filename = filename or 'mainconfig'
+        filename = filename or 'mainconfig'
         datadir = ddir or getdatadir()
-        try: del self.dir
-        except: pass
-        self.dir = datadir + os.sep + 'config'
-        try: del self.cfile
-        except: pass
-        if datadir not in self.filename: self.cfile = self.dir + os.sep + self.filename
-        else: self.cfile = self.filename
-        logging.debug("config - filename is %s" % self.cfile)
+        dir = datadir + os.sep + 'config'
+        if datadir not in filename: cfile = dir + os.sep + filename
+        else: cfile = filename
+        logging.warn("config - filename is %s" % cfile)
         self.jsondb = None
         try: import waveapi ; self.isdb = True
         except ImportError: self.isdb = False
         try:
-            try: self.fromfile(self.cfile)
+            try: self.fromfile(cfile)
             except IOError:
                 logging.warn("can't read config from %s" % self.cfile) 
                 import waveapi
                 from persist import Persist
-                self.jsondb = Persist(self.cfile)
+                self.jsondb = Persist(cfile)
                 self.update(self.jsondb.data)
                 self.isdb = True
                 logging.debug("config - fromdb - %s - %s" % (self.cfile, str(self)))
         except ImportError:
             handle_exception()
             self.isdb = False
+        self.cfile = cfile
+        self.dir = dir
+        self.filename = filename
         self.init()
         if not self.owner: self.owner = []
         if not self.uuid: self.uuid = str(uuid.uuid4())
@@ -121,6 +118,7 @@ class Config(LazyDict):
                     key, value = line.split('=', 1)
                     self[key.strip()] = json.loads(unicode(value.strip()))
                 except ValueError: logging.warn("config - skipping line - unable to parse: %s" % line)
+        self.cfile = fname
         return
 
     @savelocked
