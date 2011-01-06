@@ -152,6 +152,7 @@ class Plugins(LazyDict):
             e = cpy(event)
             e.queues = []
             e.onlyqueues = True
+            e.dontclose = True
             e.txt = item.strip()
             e.usercmnd = e.txt.split()[0].lower()
             if not cmnds.woulddispatch(bot, e): events.append(event) ; break
@@ -166,11 +167,13 @@ class Plugins(LazyDict):
             if prevq:
                 e.inqueue = prevq
             prevq = q
-        events[-1].inqueue = prevq
-        events[-1].closequeue = True
-        if origqueues: events[-1].queues = origqueues
+        lq = events[-1]
+        lq.inqueue = prevq
+        lq.closequeue = True
+        lq.dontclose = False
+        if origqueues: lq.queues = origqueues
         for e in events: self.dispatch(bot, e, wait=wait)
-        return events[-1]
+        return lq
 
     def reloadcheck(self, bot, event, target=None):
         """

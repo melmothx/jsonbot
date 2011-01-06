@@ -17,7 +17,7 @@ def handle_count(bot, ievent):
     if not ievent.inqueue:
         ievent.reply("use count in a pipeline")
         return
-    result = waitforqueue(ievent.inqueue, 5)
+    result = waitforqueue(ievent.inqueue, 5000)
     ievent.reply(str(len(result)))
 
 cmnds.add('count', handle_count, ['USER', 'GUEST'])
