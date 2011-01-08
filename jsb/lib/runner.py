@@ -73,6 +73,7 @@ class BotEventRunner(Runner):
             self.name = name
             self.working = True
             logging.debug("runner - now running %s" % name)
+        
             func(bot, ievent, *args, **kwargs)
             if ievent.closequeue and ievent.queues:
                 logging.debug("closing %s queues" % len(ievent.queues))
@@ -85,7 +86,7 @@ class BotEventRunner(Runner):
                 logging.warn('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
         except Exception, ex:
             if ievent.showexception: handle_exception(ievent)
-            else: handle_exception(stop=True)
+            else: handle_exception(stop=False)
         finally: lockmanager.release(getname(str(func)))
         self.working = False
 
