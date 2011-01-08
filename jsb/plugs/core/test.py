@@ -96,7 +96,7 @@ def handle_testplugs(bot, event):
     else: event.reply("no errors")
     event.outqueue.put_nowait(None)
 
-cmnds.add('test-plugs', handle_testplugs, ['USER', ], threaded=True)
+cmnds.add('test-plugs', handle_testplugs, ['OPER', ], threaded=True)
 examples.add('test-plugs', 'test all plugins by running there examples', 'test-plugs')
 
 ## test-forcedconnection command

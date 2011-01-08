@@ -37,5 +37,5 @@ def handle_echo(bot, event):
     if event.how != "background" and not event.iscmnd() and not event.isremote:
         if not event.isdcc: bot.saynocb(event.channel, u"[%s] %s" % (event.nick, event.txt))
             
-cmnds.add("echo", handle_echo, ['USER', 'GUEST'])
+cmnds.add("echo", handle_echo, ['OPER'])
 examples.add("echo", "echo input", "echo yoooo dudes")
