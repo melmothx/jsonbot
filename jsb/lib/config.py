@@ -52,7 +52,7 @@ class Config(LazyDict):
         dir = datadir + os.sep + 'config'
         if datadir not in filename: cfile = dir + os.sep + filename
         else: cfile = filename
-        logging.warn("config - filename is %s" % cfile)
+        logging.debug("config - filename is %s" % cfile)
         self.jsondb = None
         try: import waveapi ; self.isdb = True
         except ImportError: self.isdb = False

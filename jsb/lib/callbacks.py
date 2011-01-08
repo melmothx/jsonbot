@@ -126,7 +126,7 @@ class Callbacks(object):
 
     def callback(self, cb, bot, event):
         """  do the actual callback with provided bot and event as arguments. """
-        if event.stop: logging.warn("callbacks - event is stopped.") ; return
+        if event.stop: logging.info("callbacks - event is stopped.") ; return
         event.calledfrom = cb.modname
         try:
             if event.status == "done":
@@ -139,9 +139,9 @@ class Callbacks(object):
                 logging.debug('callbacks - executing in loop %s' % str(cb.prereq))
                 if not cb.prereq(bot, event): return
             if not cb.func: return
-            if event.isremote(): logging.warn('%s - executing %s - %s' % (bot.name, getname(cb.func), event.cbtype))
+            if event.isremote(): logging.info('%s - executing REMOTE %s - %s' % (bot.name, getname(cb.func), event.cbtype))
             elif event.cbtype == "TICK": logging.debug('LOCAL - %s - executing %s - %s' % (bot.name, getname(cb.func), event.cbtype))
-            else: logging.warn('%s - executing %s - %s' % (bot.name, getname(cb.func), event.cbtype))
+            else: logging.info('%s - executing %s - %s' % (bot.name, getname(cb.func), event.cbtype))
             event.iscallback = True
             logging.debug("callback - %s - trail - %s" % (getname(cb.func), callstack(sys._getframe())[::-1]))
             if not event.direct and cb.threaded and not bot.isgae: start_new_thread(cb.func, (bot, event))

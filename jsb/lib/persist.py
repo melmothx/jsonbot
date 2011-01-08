@@ -148,7 +148,7 @@ try:
             if 'jsb' in cfrom: 
                 cfrom = whichmodule(2)
                 if 'jsb' in cfrom: cfrom = whichmodule(3)
-            logging.warn('persist - %s - saved %s (%s)' % (cfrom, fn, len(bla)))
+            logging.info('persist - %s - saved %s (%s)' % (cfrom, fn, len(bla)))
 
         def upgrade(self, filename):
             self.init(self.data, filename=filename)
@@ -282,7 +282,7 @@ except ImportError:
                     os.remove(fn)
                     os.rename(tmp, fn)
                 if 'lastpoll' in self.logname: logging.debug('persist - %s saved (%s)' % (self.logname, len(data)))
-                else: logging.warn('persist - %s saved (%s)' % (self.logname, len(data)))
+                else: logging.info('persist - %s saved (%s)' % (self.logname, len(data)))
             except: handle_exception()
             finally: pass
 
