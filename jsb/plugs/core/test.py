@@ -96,7 +96,7 @@ def handle_testplugs(bot, event):
     else: event.reply("no errors")
     event.outqueue.put_nowait(None)
 
-cmnds.add('test-plugs', handle_testplugs, ['OPER', ], threaded=True)
+cmnds.add('test-plugs', handle_testplugs, ['TEST', ], threaded=True)
 examples.add('test-plugs', 'test all plugins by running there examples', 'test-plugs')
 
 ## test-forcedconnection command
@@ -106,7 +106,7 @@ def handle_forcedreconnect(bot, ievent):
     if not bot.ssl: bot.sock.shutdown(2)
     else: bot.sock.shutdown()
 
-cmnds.add('test-forcedreconnect', handle_forcedreconnect, 'OPER')
+cmnds.add('test-forcedreconnect', handle_forcedreconnect, 'TEST')
 
 ## test-forcedexception command
 
@@ -114,7 +114,7 @@ def handle_forcedexception(bot, ievent):
     """ raise a exception. """
     raise Exception('test exception')
 
-cmnds.add('test-forcedexception', handle_forcedexception, 'OPER')
+cmnds.add('test-forcedexception', handle_forcedexception, 'TEST')
 examples.add('test-forcedexception', 'throw an exception as test', 'test-forcedexception')
 
 ## test-wrongxml command
@@ -127,7 +127,7 @@ def handle_testwrongxml(bot, ievent):
     ievent.reply('sending bork xml')
     bot._raw('<message asdfadf/>')
 
-cmnds.add('test-wrongxml', handle_testwrongxml, 'OPER')
+cmnds.add('test-wrongxml', handle_testwrongxml, 'TEST')
 
 ## test-unicode command
 
@@ -137,7 +137,7 @@ def handle_testunicode(bot, ievent):
     ievent.reply(outtxt)
     bot.say(ievent.channel, outtxt, event=ievent)
 
-cmnds.add('test-unicode', handle_testunicode, 'OPER')
+cmnds.add('test-unicode', handle_testunicode, 'TEST')
 examples.add('test-unicode', 'test if unicode output path is clear', 'test-unicode')
 
 ## test-docmnd command
@@ -147,7 +147,7 @@ def handle_testdocmnd(bot, ievent):
     if ievent.rest: bot.docmnd(ievent.origin or ievent.userhost, ievent.channel, ievent.rest, event=ievent)
     else: ievent.missing("<cmnd>")
 
-cmnds.add('test-docmnd', handle_testdocmnd, 'OPER')
+cmnds.add('test-docmnd', handle_testdocmnd, 'TEST')
 examples.add('test-docmnd', 'test the bot.docmnd() method', 'test-docmnd version')
 
 ## test-say command
@@ -158,7 +158,7 @@ def handle_testsay(bot, ievent):
         return
     bot.say(ievent.printto, ievent.rest)
 
-cmnds.add('test-say', handle_testsay, 'OPER')
+cmnds.add('test-say', handle_testsay, 'TEST')
 examples.add('test-say', 'use bot.say()', 'test-say')
 
 ## test-options command
@@ -166,7 +166,7 @@ examples.add('test-say', 'use bot.say()', 'test-say')
 def handle_testoptions(bot, ievent):
     ievent.reply('"%s" - %s' % (ievent.txt, unicode(ievent.options)))
 
-cmnds.add('test-options', handle_testoptions, 'OPER')
+cmnds.add('test-options', handle_testoptions, 'TEST')
 examples.add('test-options', "test event options", "test-options")
 
 ## test-deadline command
@@ -175,7 +175,7 @@ def handle_testdeadline(bot, ievent):
     ievent.reply('starting 40 sec sleep')
     time.sleep(40)
 
-cmnds.add('test-deadline', handle_testdeadline, 'OPER')
+cmnds.add('test-deadline', handle_testdeadline, 'TEST')
 examples.add('test-deadline', "sleep 40 sec to trigger deadlineexceeded exception (GAE)", "test-deadline")
 
 ## test-xhtml command
@@ -185,16 +185,16 @@ def handle_testhtml(bot, ievent):
     else: data = ievent.rest
     ievent.reply(data, html=True)
 
-cmnds.add('test-html', handle_testhtml, 'OPER')
+cmnds.add('test-html', handle_testhtml, 'TEST')
 examples.add('test-html', 'test html output', '1) test-html 2) test-html <h1><YOO</h1>')
 
 def handle_testuuid(bot, ievent):
     import uuid
     ievent.reply(uuid.uuid4())
 
-cmnds.add('test-uuid', handle_testuuid, 'OPER')
+cmnds.add('test-uuid', handle_testuuid, 'TEST')
 
 def handle_testthreaded(bot, ievent):
     ievent.reply("yoooo!")
 
-cmnds.add("test-threaded", handle_testthreaded, "OPER", threaded=True)
+cmnds.add("test-threaded", handle_testthreaded, "TEST", threaded=True)
