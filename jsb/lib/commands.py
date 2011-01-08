@@ -77,6 +77,7 @@ class Commands(LazyDict):
         """
         event.bind(bot)
         cmnd = cmnd or event.usercmnd.lower()
+        if not cmnd: return None
         try:
             cmnd = event.chan.data.aliases[cmnd]
             event.txt = cmnd +  ' ' + ' '.join(event.txt.split()[1:])
