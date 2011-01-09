@@ -29,7 +29,7 @@ if not idle.data:
 
 def preidle(bot, event):
     """ idle precondition aka check if it is not a command """
-    if event.iscmnd() or bot.isgae and event.userhost not in bot.cfg.followlist:
+    if event.iscmnd() or (bot.isgae and event.userhost not in bot.cfg.followlist):
         return False
     else:
         return True
