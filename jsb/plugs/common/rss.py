@@ -154,7 +154,8 @@ sleeptime=15*60, running=0):
     def checkseen(self, data, itemslist=["title", "link"]):
         d = {}
         for item in itemslist:
-            d[item] = data[item]
+            try: d[item] = data[item]
+            except KeyError: continue
         digest = hashlib.md5(unicode(d)).hexdigest()
         return digest in self.data.seen
 
