@@ -51,7 +51,7 @@ def handle_fleetconnect(bot, ievent):
             cfg['disable'] = 0
             cfg.save()
             bot = fleet.makebot(cfg.type, cfg.name, cfg)
-            ievent.reply('enabled and started %s bot' % name)
+            ievent.reply('enabled and started %s bot' % botname)
             start_new_thread(bot.start, ())
     except Exception, ex:
         ievent.reply(str(ex))
