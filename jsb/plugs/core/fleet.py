@@ -16,6 +16,7 @@ from jsb.lib.fleet import getfleet, FleetBotAlreadyExists
 from jsb.lib.commands import cmnds
 from jsb.lib.examples import examples
 from jsb.utils.name import stripname
+from jsb.utils.generic import waitforqueue
 
 ## basic imports
 
@@ -151,3 +152,53 @@ def fleet_enable(bot, ievent):
 
 cmnds.add('fleet-enable', fleet_enable, 'OPER', threaded=True)
 examples.add('fleet-enable', 'enable a fleet bot', 'fleet-enable local')
+
+def fleet_add(bot, ievent):
+    """ add a fleet bot. """
+    try:
+        name, type, server, nick = ievent.rest.split()
+    except ValueError: ievent.missing("<name> <type> <server>|<botjid> <nick>|<passwd>") ; return
+    bots = ievent.rest.split()
+    fleet = getfleet()
+    bot = fleet.byname(name)
+    if bot: event.reply("%s bot already exists" % name) ; return
+    cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
+    cfg.disable = 0
+    if type == "irc":
+        cfg.port = 6667
+        cfg.server = server
+        cfg.nick = nick
+    elif type in ["xmpp", "sxmpp"]:
+        cfg.port = 4442
+        cfg.host = server
+        try: n, serv = cfg.host.split("@")
+        except (ValueError, TypeError): pass
+        cfg.server = serv
+        cfg.password = nick
+    cfg.save()
+    bot = fleet.makebot(type, name, cfg)
+    ievent.reply('enabled and started %s bot - %s' % (name, cfg.filename))
+    start_new_thread(bot.start, ())
+
+cmnds.add('fleet-add', fleet_add, 'OPER', threaded=True)
+examples.add('fleet-add', 'add a fleet bot', 'fleet-add local irc localhost jsbtest')
+
+def fleet_cmnd(bot, ievent):
+    """ co cmnd on fleet bot(s). """
+    try:
+        (name, cmndtxt) = ievent.rest.split(' ', 1)
+    except ValueError: ievent.missing("<name> <cmndstring>") ; return
+    fleet = getfleet()
+    if name == "all": do = fleet.list()
+    else: do = [name, ]
+    for botname in do:
+        bot = fleet.byname(botname)
+        if not bot: ievent.reply("%s bot is not in fleet" % botname) ; return
+        result = bot.docmnd(ievent.userhost, ievent.channel, cmndtxt, wait=1, nooutput=True)
+        if result: res = waitforqueue(result.outqueue, 60000)
+        else: ievent.reply("no result")
+        ievent.reply("[%s] %s" % (botname, ", ".join(res)))
+    ievent.reply("done")
+
+cmnds.add('fleet-cmnd', fleet_cmnd, 'OPER', threaded=True)
+examples.add('fleet-cmnd', 'run cmnd on fleet bot(s)', '1) fleet-cmnd default-irc uptime 2) fleet-cmnd all uptime')

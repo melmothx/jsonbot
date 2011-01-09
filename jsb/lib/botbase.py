@@ -362,6 +362,10 @@ class BotBase(LazyDict):
     writenocb = outnocb
 
     def say(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
+        if event.nooutput:
+            logging.debug("%s - event has nooutput set, not outputing" % self.name)
+            if event: event.outqueue.put_nowait(txt)
+            return
         if event and event.showall: txt = self.makeresponse(txt, result, dot, *args, **kwargs)
         else: txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
         if txt: self.out(channel, txt, how, event=event, origin=channel, *args, **kwargs)
@@ -550,7 +554,7 @@ class BotBase(LazyDict):
         e.bind(self)
         first_callbacks.check(self, e)
 
-    def docmnd(self, origin, channel, txt, event=None, wait=0, showall=False):
+    def docmnd(self, origin, channel, txt, event=None, wait=0, showall=False, nooutput=False):
         """ do a command. """
         if event: e = cpy(event)
         else: e = EventBase()
@@ -570,5 +574,6 @@ class BotBase(LazyDict):
         e.onlyqueues = False
         e.closequeue = True
         e.showall = showall
+        e.nooutput = nooutput
         if wait: e.direct = True ; e.nothreads = True
         if cmnds.woulddispatch(self, e): return self.doevent(e)
