@@ -98,7 +98,7 @@ def getUrlInfo(text):
         #socket.setdefaulttimeout(30)
 
         server = xmlrpclib.ServerProxy("http://whatisthisfile.appspot.com/xmlrpc")
-        logging.warn('urlinfo - XMLRPC query: %s' % i)
+        logging.info('urlinfo - XMLRPC query: %s' % i)
         urlinfo = server.app.query(i)
         if urlinfo.has_key('html'):
           if urlinfo['html'].has_key('title'):
