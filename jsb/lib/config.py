@@ -76,6 +76,10 @@ class Config(LazyDict):
         if not self.owner: self.owner = []
         if not self.uuid: self.uuid = str(uuid.uuid4())
 
+    def __deepcopy__(self, a):
+        """ accessor function. """
+        return Config(input=self)
+         
     def __getitem__(self, item):
         """ accessor function. """
         if not self.has_key(item): return None

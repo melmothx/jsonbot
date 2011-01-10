@@ -24,6 +24,7 @@ from jsb.utils.trace import calledfrom, whichplugin
 from jsb.lib.examples import examples
 from jsb.lib.persist import Persist
 from jsb.lib.config import Config
+from jsb.imports import getjson
 
 ## basic imports
 
@@ -64,7 +65,9 @@ class PersistConfig(Config):
     def show_cfg(self, bot, ievent):
         """ show config options. """
         s = []
-        for key, optionvalue in sorted(self.iteritems()):
+        dumpstr = self.tojson()
+        logging.warn(dumpstr)
+        for key, optionvalue in sorted(getjson().loads(dumpstr).iteritems()):
             if key in self.hide: continue
             v = optionvalue
             if type(v) in [str, unicode]: v = '"'+v+'"'

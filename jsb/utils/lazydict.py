@@ -29,7 +29,7 @@ locked = lockdec(lock)
 ## defines
 
 jsontypes = [types.StringType, types.UnicodeType, types.DictType, types.ListType, types.IntType]
-defaultignore = ['webchannels', 'tokens', 'token', 'cmndperms', 'gatekeeper', 'stanza', 'isremote', 'iscmnd', 'orig', 'bot', 'origtxt', 'body', 'subelements', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
+defaultignore = ['modname', 'cfile', 'dir', 'filename', 'webchannels', 'tokens', 'token', 'cmndperms', 'gatekeeper', 'stanza', 'isremote', 'iscmnd', 'orig', 'bot', 'origtxt', 'body', 'subelements', 'args', 'rest', 'cfg', 'pass', 'password', 'fsock', 'sock', 'handlers', 'users', 'plugins', 'outqueue', 'inqueue']
 cpy = copy.deepcopy
 
 ## checkignore function
@@ -97,7 +97,7 @@ class LazyDict(dict):
            
     def dump(self, withtypes=False):
         """ just dunp the lazydict object. DON'T convert to json. """
-        logging.debug("lazydict - dumping - %s" %  type(self))
+        logging.warn("lazydict - dumping - %s" %  type(self))
         try: return dumpelement(cpy(self), withtypes)
         except RuntimeError, ex: handle_exception()
 
