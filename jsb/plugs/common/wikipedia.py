@@ -94,13 +94,12 @@ def handle_wikipedia(bot, ievent):
     if not res[0]:
         ievent.reply('no result found')
         return
-
     result = splittxt(res[0])
     if result:
         prefix = u'%s ===> ' % res[1]
         ievent.reply(prefix, result, dot="<br><br>")
     else:
-        event.reply("no data found on %s" % event.rest)
+        ievent.reply("no data found on %s" % event.rest)
 
 cmnds.add('wikipedia', handle_wikipedia, ['USER', 'GUEST'])
 examples.add('wikipedia', 'wikipedia ["-" <countrycode>] <what> .. search wikipedia for <what>','1) wikipedia gozerbot 2) wikipedia -nl bot')
