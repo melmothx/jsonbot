@@ -97,7 +97,7 @@ class LazyDict(dict):
            
     def dump(self, withtypes=False):
         """ just dunp the lazydict object. DON'T convert to json. """
-        logging.warn("lazydict - dumping - %s" %  type(self))
+        #logging.warn("lazydict - dumping - %s" %  type(self))
         try: return dumpelement(cpy(self), withtypes)
         except RuntimeError, ex: handle_exception()
 
