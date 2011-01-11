@@ -25,7 +25,7 @@ wikire = re.compile('start content(.*?)end content', re.M)
 ## functions
 
 def searchwiki(txt, lang='en'):
-    txt = txt.strip()
+    input = []     
     for i in txt.split():
         if i.startswith('-'):
             if len(i) != 3:
@@ -33,9 +33,8 @@ def searchwiki(txt, lang='en'):
             else:
                 lang = i[1:]
             continue
-    txt = txt.replace(u"-%s" % lang, '')
-    txt = txt.capitalize()
-    what = txt.replace(' ', '_')
+        input.append(i.strip().capitalize())
+    what = "_".join(input)
     url = u'http://%s.wikipedia.org/wiki/Special:Export/%s' % (lang, \
 quote(what.encode('utf-8')))
     url2 = u'http://%s.wikipedia.org/wiki/%s' % (lang, \
