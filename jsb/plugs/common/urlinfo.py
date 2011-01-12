@@ -116,6 +116,7 @@ def getUrlInfo(text):
             idx += 1
 
           out += o
+        if not "http://" in out: out = out.strip() ; out += " - %s" % i
 
       except Exception:
         pass
