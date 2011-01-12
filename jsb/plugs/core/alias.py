@@ -95,5 +95,5 @@ def handle_getaliases(bot, ievent):
     if aliases: ievent.reply("aliases: %s" % str(aliases))
     else: ievent.reply("no aliases yet")
 
-cmnds.add('aliases', handle_getaliases, 'USER')
+cmnds.add('aliases', handle_getaliases, 'OPER')
 examples.add('aliases', 'aliases <what> .. get aliases', 'aliases')

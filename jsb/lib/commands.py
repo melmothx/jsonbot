@@ -87,6 +87,7 @@ class Commands(LazyDict):
         logging.warn("commands - %s" % cmnd)
         bot.plugs.reloadcheck(bot, event)
         result = None
+        cmnd = event.usercmnd
         try:
             result = self[cmnd]
         except KeyError:
