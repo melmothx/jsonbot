@@ -170,6 +170,7 @@ class SXMPPBot(XMLStream, BotBase):
     def logon(self, user, password):
         """ logon on the xmpp server. """
         iq = self.initstream()
+        if not iq: logging.error("sxmpp - cannot init stream") ; return
         if not self.auth(user, password, iq.id):
             logging.warn("%s - sleeping 20 seconds before register" % self.name)
             time.sleep(20)
