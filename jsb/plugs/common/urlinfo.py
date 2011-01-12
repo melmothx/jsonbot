@@ -133,7 +133,7 @@ def catchHasUrls(bot, ievent):
 
 # Catch channel chat
 def catchUrls(bot, ievent):
-  bot.saynocb(ievent.channel, getUrlInfo(ievent.txt))
+  bot.say(ievent.channel, getUrlInfo(ievent.txt))
 
 callbacks.add('PRIVMSG', catchUrls, catchHasUrls, threaded=True)
 callbacks.add('CONSOLE', catchUrls, catchHasUrls, threaded=True)
