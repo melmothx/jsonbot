@@ -133,16 +133,16 @@ examples.add('relay', 'open a relay to another user', 'relay bthate@gmail.com')
 
 def handle_relaystop(bot, event):
     """ stop a relay to a user. all relaying to target will be ignore. """
-    try: (type, target) = event.args
+    try: (botname, type, target) = event.args
     except ValueError:
         try:
-            target = event.args[0]
-            type = bot.type
-        except IndexError: type = bot.type ; target = event.channel
+            botname = bot.name
+            (type, target) = event.args
+        except (IndexError, ValueError): botname = bot.name ; type = bot.type ; target = event.channel 
     origin = event.origin or event.channel
     try:
         logging.debug('trying to remove relay (%s,%s)' % (type, target))
-        relay.data[origin].remove([type, target])
+        relay.data[origin].remove([botname, type, target])
         relay.save()
     except (KeyError, ValueError): pass
     event.done()
