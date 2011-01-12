@@ -24,6 +24,7 @@ import types
 
 sys.path.insert(0, os.getcwd())
 sys.path.insert(0, os.getcwd() + os.sep + '..')
+sys.path.insert(0, os.path.expanduser("~") + os.sep + '.jsb')
 
 ## defines
 

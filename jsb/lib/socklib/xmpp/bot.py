@@ -247,7 +247,7 @@ class SXMPPBot(XMLStream, BotBase):
             return False        
         logging.debug('%s - auth - %s' % (self.name, result))
         if iq.error:
-            logging.warn('%s - auth failed - %s' % (self.name, iq.error))
+            logging.warn('%s - auth failed - %s' % (self.name, iq.error.code))
             if iq.error.code == "401":
                 logging.warn("%s - wrong user or password" % self.name)
             else:
