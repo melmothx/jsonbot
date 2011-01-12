@@ -106,9 +106,9 @@ def getUrlInfo(text):
         elif urlinfo.has_key('image'):
           o += 'Image: %dx%d ' % (urlinfo['image']['width'], urlinfo['image']['height'])
 
-        if urlinfo.has_key('real_url'):
-          if urlinfo['real_url'] != i:
-            o += 'Redirect: %s ' % (urlinfo['real_url'])
+        #if urlinfo.has_key('real_url'):
+        #  if urlinfo['real_url'] != i:
+        #    o += 'Redirect: %s ' % (urlinfo['real_url'])
 
         if len(o):
           if len(urls) > 1:
