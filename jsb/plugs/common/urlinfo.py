@@ -20,7 +20,7 @@ from jsb.lib.callbacks import callbacks
 from jsb.lib.commands import cmnds
 from jsb.lib.persist import PlugPersist
 from jsb.lib.examples import examples
-
+from jsb.plugs.common.tinyurl import get_tinyurl
 
 import re
 import urlparse
@@ -116,8 +116,7 @@ def getUrlInfo(text):
             idx += 1
 
           out += o
-        if not "http://" in out: out = out.strip() ; out += " - %s" % i
-
+        if not "http://" in out: out = out.strip() ; out += " - %s" % get_tinyurl(i)[0]
       except Exception:
         pass
   return out.strip()
