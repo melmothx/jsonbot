@@ -154,7 +154,7 @@ sleeptime=15*60, running=0):
         d = {}
         for item in itemslist:
             try: d[item] = data[item]
-            except KeyError: continue
+            except (KeyError, TypeError): continue
         digest = hashlib.md5(unicode(d)).hexdigest()
         return digest in self.data.seen
 
