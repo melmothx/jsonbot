@@ -55,7 +55,7 @@ examples.add('forget', 'forget a description of an item.', "forget dunk and botp
 
 def handle_whatis(bot, event):
     items = PlugPersist(event.channel)
-    what = event.rest.lower()
+    what = event.rest.lower().split('!')[0]
     if what in items.data and items.data[what]: event.reply("%s is " % event.rest, items.data[what], dot=", ")
     else: event.reply("no information known about %s" % what)
 
