@@ -231,7 +231,7 @@ sleeptime=15*60, running=0):
         result = self.fetchdata()
         if not result:
             cached = get(self.data.url, namespace="rss")
-            if cached: result = json.loads(cached)
+            if cached: result = cached
             else: result = []
         return result
 
