@@ -21,7 +21,7 @@ def handle_to(bot, ievent):
     if not getwho(bot, nick): ievent.reply("don't know %s" % nick) ; return
     result = waitforqueue(ievent.inqueue, 5000)
     if result:
-        ievent.reply("%s sends you this:" % ievent.nick, nick=nick)
+        bot.say(nick, "%s sends you this:" % ievent.nick)
         bot.say(nick, result)
         if len(result) == 1: ievent.reply('1 element sent')
         else: ievent.reply('%s elements sent' % len(result))
