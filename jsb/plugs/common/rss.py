@@ -34,10 +34,9 @@ from jsb.lib.threadloop import TimedLoop
 from jsb.lib.threads import start_new_thread
 from jsb.lib.errors import NoSuchBotType, FeedAlreadyExists, NameNotSet
 from jsb.lib.datadir import getdatadir
-
-from jsb.imports import getfeedparser
+from jsb.imports import getfeedparser, getjson
 feedparser = getfeedparser()
-
+json = getjson()
 ## google imports
 
 try:
@@ -232,7 +231,7 @@ sleeptime=15*60, running=0):
         result = self.fetchdata()
         if not result:
             cached = get(self.data.url, namespace="rss")
-            if cached: result = cached
+            if cached: result = json.loads(cached)
             else: result = []
         return result
 
