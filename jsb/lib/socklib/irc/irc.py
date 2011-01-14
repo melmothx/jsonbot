@@ -86,7 +86,7 @@ class Irc(BotBase):
         if not txt or self.stopped or not self.sock:
             logging.info("%s - bot is stopped .. not sending." % self.name)
             return 0
-        if not txt.startswith("PONG"): logging.warn("%s - sending %s" % (self.name, txt))
+        if not txt.startswith("PONG"): logging.info("%s - sending %s" % (self.name, txt))
         try:
             self.lastoutput = time.time()
             itxt = toenc(outputmorphs.do(txt), self.encoding)

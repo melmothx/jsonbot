@@ -22,7 +22,7 @@ def handle_to(bot, ievent):
     result = waitforqueue(ievent.inqueue, 5000)
     if result:
         bot.say(nick, "%s sends you this:" % ievent.nick)
-        bot.say(nick, result)
+        bot.say(nick, " ".join(result))
         if len(result) == 1: ievent.reply('1 element sent')
         else: ievent.reply('%s elements sent' % len(result))
     else: ievent.reply('nothing to send')
