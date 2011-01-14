@@ -69,7 +69,7 @@ def postmsg(username, txt):
     twitter = twitterapi(key, secret, token)
     for txt in result:
         status = twitter.update_status(txt)
-    logging.warn("logged %s tweets for %s" % (len(result), username))
+    logging.info("logged %s tweets for %s" % (len(result), username))
     # BHJTW need to check status
     return len(result)
     
