@@ -84,7 +84,7 @@ class Commands(LazyDict):
             event.usercmnd = cmnd.split()[0]
             event.prepare()
         except (TypeError, KeyError, AttributeError): pass
-        logging.warn("commands - %s" % cmnd)
+        logging.debug("commands - %s" % cmnd)
         bot.plugs.reloadcheck(bot, event)
         result = None
         cmnd = event.usercmnd
@@ -92,7 +92,7 @@ class Commands(LazyDict):
             result = self[cmnd]
         except KeyError:
             if self.subs and self.subs.has_key(cmnd): result = self.subs[cmnd][0]
-        logging.warn("commands - woulddispatch result: %s" % result)
+        logging.debug("commands - woulddispatch result: %s" % result)
         return result
 
     def dispatch(self, bot, event, wait=0):
