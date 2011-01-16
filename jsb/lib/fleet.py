@@ -71,7 +71,8 @@ class Fleet(Persist):
 
     def getfirstbot(self):
         """ return the first bot in the fleet. """
-        return self.bots[0]
+        try: return self.bots[0]
+        except IndexError: return
 
     def getfirstjabber(self, isgae=False):
         """ return the first jabber bot of the fleet. """
