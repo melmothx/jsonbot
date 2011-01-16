@@ -731,19 +731,19 @@
 --- jsonbot-0.6.1.orig/files/debian/manpages
 +++ jsonbot-0.6.1/debian/manpages
 @@ -0,0 +1,13 @@
-+/debian/jsb.1
-+/debian/jsb-fleet.1
-+/debian/jsb-init.1
-+/debian/jsb-irc.1
-+/debian/jsb-release.1
-+/debian/jsb-rollback.1
-+/debian/jsb-run.1
-+/debian/jsb-stop.1
-+/debian/jsb-udp.1
-+/debian/jsb-upload.1
-+/debian/jsb-uploadall.1
-+/debian/jsb-xmpp.1
-+/debian/jsonbot.1
++debian/jsb.1
++debian/jsb-fleet.1
++debian/jsb-init.1
++debian/jsb-irc.1
++debian/jsb-release.1
++debian/jsb-rollback.1
++debian/jsb-run.1
++debian/jsb-stop.1
++debian/jsb-udp.1
++debian/jsb-upload.1
++debian//jsb-uploadall.1
++debian/jsb-xmpp.1
++debian/jsonbot.1
 --- jsonbot-0.6.1.orig/files/debian/jsonbot.postrm
 +++ jsonbot-0.6.1/debian/jsonbot.postrm
 @@ -0,0 +1,45 @@
