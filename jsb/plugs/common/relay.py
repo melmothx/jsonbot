@@ -70,7 +70,10 @@ def relaycallback(bot, event):
                 if outbot:
                     logging.debug('relay - outbot found - %s - %s' % (outbot.name, outbot.type))
                     # we got bot .. use it to send the relayed message
-                    txt = "[%s] %s" % (event.nick, event.txt)
+                    if event.nick == "bot":
+                        txt = event.txt
+                    else:
+                        txt = "[%s] %s" % (event.nick, event.txt)
                     if txt.find('] [') != -1: continue
                     outbot.saynocb(target, txt)
                 else: logging.error("can't find %s bot" % type)
