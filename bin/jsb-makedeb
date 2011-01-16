@@ -1,0 +1,2 @@
+patch -P1 < files/debian/deb.diff
+dpkg-buildpackage -rfakeroot 
