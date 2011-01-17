@@ -1,0 +1,1519 @@
+--- jsonbot-0.6.1.orig/jsb.egg-info/SOURCES.txt
++++ jsonbot-0.6.1/jsb.egg-info/SOURCES.txt
+@@ -0,0 +1,218 @@
++README
++setup.py
++bin/jsb
++bin/jsb-fleet
++bin/jsb-init
++bin/jsb-irc
++bin/jsb-release
++bin/jsb-rollback
++bin/jsb-run
++bin/jsb-stop
++bin/jsb-udp
++bin/jsb-upgrade
++bin/jsb-upload
++bin/jsb-uploadall
++bin/jsb-xmpp
++jsb/__init__.py
++jsb/imports.py
++jsb.egg-info/PKG-INFO
++jsb.egg-info/SOURCES.txt
++jsb.egg-info/dependency_links.txt
++jsb.egg-info/top_level.txt
++jsb/contrib/__init__.py
++jsb/contrib/feedparser.py
++jsb/contrib/oauth.py
++jsb/contrib/oauthtwitter.py
++jsb/contrib/rijndael.py
++jsb/contrib/xmlstream.py
++jsb/contrib/simplejson/__init__.py
++jsb/contrib/simplejson/decoder.py
++jsb/contrib/simplejson/encoder.py
++jsb/contrib/simplejson/ordered_dict.py
++jsb/contrib/simplejson/scanner.py
++jsb/contrib/simplejson/tool.py
++jsb/contrib/tweepy/__init__.py
++jsb/contrib/tweepy/api.py
++jsb/contrib/tweepy/auth.py
++jsb/contrib/tweepy/binder.py
++jsb/contrib/tweepy/cache.py
++jsb/contrib/tweepy/cursor.py
++jsb/contrib/tweepy/error.py
++jsb/contrib/tweepy/models.py
++jsb/contrib/tweepy/oauth.py
++jsb/contrib/tweepy/parsers.py
++jsb/contrib/tweepy/streaming.py
++jsb/contrib/tweepy/utils.py
++jsb/lib/__init__.py
++jsb/lib/boot.py
++jsb/lib/botbase.py
++jsb/lib/cache.py
++jsb/lib/callbacks.py
++jsb/lib/channelbase.py
++jsb/lib/commands.py
++jsb/lib/config.py
++jsb/lib/container.py
++jsb/lib/datadir.py
++jsb/lib/errors.py
++jsb/lib/eventbase.py
++jsb/lib/eventhandler.py
++jsb/lib/examples.py
++jsb/lib/exit.py
++jsb/lib/factory.py
++jsb/lib/fleet.py
++jsb/lib/gatekeeper.py
++jsb/lib/gozerevent.py
++jsb/lib/jsbimport.py
++jsb/lib/less.py
++jsb/lib/morphs.py
++jsb/lib/outputcache.py
++jsb/lib/persist.py
++jsb/lib/persistconfig.py
++jsb/lib/persiststate.py
++jsb/lib/plugins.py
++jsb/lib/reboot.py
++jsb/lib/runner.py
++jsb/lib/tasks.py
++jsb/lib/threadloop.py
++jsb/lib/threads.py
++jsb/lib/tick.py
++jsb/lib/users.py
++jsb/lib/version.py
++jsb/lib/console/__init__.py
++jsb/lib/console/bot.py
++jsb/lib/console/event.py
++jsb/lib/gae/__init__.py
++jsb/lib/gae/tasks.py
++jsb/lib/gae/utils/__init__.py
++jsb/lib/gae/utils/auth.py
++jsb/lib/gae/utils/web.py
++jsb/lib/gae/wave/__init__.py
++jsb/lib/gae/wave/bot.py
++jsb/lib/gae/wave/event.py
++jsb/lib/gae/wave/waves.py
++jsb/lib/gae/web/__init__.py
++jsb/lib/gae/web/bot.py
++jsb/lib/gae/web/event.py
++jsb/lib/gae/xmpp/__init__.py
++jsb/lib/gae/xmpp/bot.py
++jsb/lib/gae/xmpp/event.py
++jsb/lib/socklib/__init__.py
++jsb/lib/socklib/partyline.py
++jsb/lib/socklib/wait.py
++jsb/lib/socklib/irc/__init__.py
++jsb/lib/socklib/irc/bot.py
++jsb/lib/socklib/irc/channels.py
++jsb/lib/socklib/irc/irc.py
++jsb/lib/socklib/irc/ircevent.py
++jsb/lib/socklib/rest/__init__.py
++jsb/lib/socklib/rest/client.py
++jsb/lib/socklib/rest/server.py
++jsb/lib/socklib/utils/__init__.py
++jsb/lib/socklib/utils/generic.py
++jsb/lib/socklib/xmpp/__init__.py
++jsb/lib/socklib/xmpp/bot.py
++jsb/lib/socklib/xmpp/core.py
++jsb/lib/socklib/xmpp/errors.py
++jsb/lib/socklib/xmpp/iq.py
++jsb/lib/socklib/xmpp/jid.py
++jsb/lib/socklib/xmpp/message.py
++jsb/lib/socklib/xmpp/namespace.py
++jsb/lib/socklib/xmpp/presence.py
++jsb/lib/socklib/xmpp/wait.py
++jsb/plugs/__init__.py
++jsb/plugs/common/8b.py
++jsb/plugs/common/__init__.py
++jsb/plugs/common/ask.py
++jsb/plugs/common/chatlog.py
++jsb/plugs/common/controlchar.py
++jsb/plugs/common/forward.py
++jsb/plugs/common/gcalc.py
++jsb/plugs/common/hubbub.py
++jsb/plugs/common/idle.py
++jsb/plugs/common/ipcalc.py
++jsb/plugs/common/karma.py
++jsb/plugs/common/koffie.py
++jsb/plugs/common/learn.py
++jsb/plugs/common/quote.py
++jsb/plugs/common/relay.py
++jsb/plugs/common/remind.py
++jsb/plugs/common/rss.py
++jsb/plugs/common/seen.py
++jsb/plugs/common/shop.py
++jsb/plugs/common/tinyurl.py
++jsb/plugs/common/todo.py
++jsb/plugs/common/twitter.py
++jsb/plugs/common/urlinfo.py
++jsb/plugs/common/watcher.py
++jsb/plugs/common/weather.py
++jsb/plugs/common/wikipedia.py
++jsb/plugs/core/__init__.py
++jsb/plugs/core/admin.py
++jsb/plugs/core/alias.py
++jsb/plugs/core/botevent.py
++jsb/plugs/core/chan.py
++jsb/plugs/core/choice.py
++jsb/plugs/core/core.py
++jsb/plugs/core/count.py
++jsb/plugs/core/data.py
++jsb/plugs/core/dispatch.py
++jsb/plugs/core/echo.py
++jsb/plugs/core/fleet.py
++jsb/plugs/core/gatekeeper.py
++jsb/plugs/core/grep.py
++jsb/plugs/core/irc.py
++jsb/plugs/core/misc.py
++jsb/plugs/core/more.py
++jsb/plugs/core/nickcapture.py
++jsb/plugs/core/nickserv.py
++jsb/plugs/core/not.py
++jsb/plugs/core/outputcache.py
++jsb/plugs/core/plug.py
++jsb/plugs/core/reload.py
++jsb/plugs/core/remotecallbacks.py
++jsb/plugs/core/reverse.py
++jsb/plugs/core/sort.py
++jsb/plugs/core/tail.py
++jsb/plugs/core/test.py
++jsb/plugs/core/underauth.py
++jsb/plugs/core/uniq.py
++jsb/plugs/core/user.py
++jsb/plugs/core/userstate.py
++jsb/plugs/core/welcome.py
++jsb/plugs/core/xmpp.py
++jsb/plugs/gae/__init__.py
++jsb/plugs/gae/gae.py
++jsb/plugs/myplugs/__init__.py
++jsb/plugs/socket/__init__.py
++jsb/plugs/socket/kickban.py
++jsb/plugs/socket/restserver.py
++jsb/plugs/socket/udp.py
++jsb/plugs/wave/__init__.py
++jsb/plugs/wave/clone.py
++jsb/plugs/wave/gadget.py
++jsb/plugs/wave/wave.py
++jsb/utils/__init__.py
++jsb/utils/dol.py
++jsb/utils/exception.py
++jsb/utils/fileutils.py
++jsb/utils/generic.py
++jsb/utils/id.py
++jsb/utils/lazydict.py
++jsb/utils/limlist.py
++jsb/utils/locking.py
++jsb/utils/lockmanager.py
++jsb/utils/log.py
++jsb/utils/mainloop.py
++jsb/utils/name.py
++jsb/utils/opts.py
++jsb/utils/pdod.py
++jsb/utils/pdol.py
++jsb/utils/popen.py
++jsb/utils/rsslist.py
++jsb/utils/statdict.py
++jsb/utils/textutils.py
++jsb/utils/timeutils.py
++jsb/utils/trace.py
++jsb/utils/twitter.py
++jsb/utils/url.py
++jsb/utils/xmpp.py
+\ No newline at end of file
+--- jsonbot-0.6.1.orig/jsb.egg-info/dependency_links.txt
++++ jsonbot-0.6.1/jsb.egg-info/dependency_links.txt
+@@ -0,0 +1 @@
++
+--- jsonbot-0.6,1.orig/jsb.egg-info/top_level.txt
++++ jsonbot-0.6.1/jsb.egg-info/top_level.txt
+@@ -0,0 +1 @@
++jsb
+--- jsonbot-0.6.1.orig/jsb.egg-info/PKG-INFO
++++ jsonbot-0.6.1/jsb.egg-info/PKG-INFO
+@@ -0,0 +1,21 @@
++Metadata-Version: 1.0
++Name: jsb
++Version: 0.6.1
++Summary: The bot for you!
++Home-page: http://jsonbot.googlecode.com/
++Author: Bart Thate
++Author-email: bthate@gmail.com
++License: MIT
++Download-URL: http://code.google.com/p/jsonbot/downloads
++Description:  JSONBOT is a remote event-driven framework for building bots that talk JSON to each other over XMPP. IRC/Console/XMPP (shell) Wave/Web/XMPP (GAE) implementations provided. 
++Platform: UNKNOWN
++Classifier: Development Status :: 3 - Alpha
++Classifier: Environment :: Console
++Classifier: Environment :: Other Environment
++Classifier: Intended Audience :: Developers
++Classifier: License :: OSI Approved :: MIT License
++Classifier: Operating System :: Unix
++Classifier: Operating System :: Other OS
++Classifier: Programming Language :: Python
++Classifier: Topic :: Communications :: Chat
++Classifier: Topic :: Software Development :: Libraries :: Python Modules
+--- jsonbot-0.6.1.orig/files/debian/jsonbot.postinst
++++ jsonbot-0.6.1/debian/jsonbot.postinst
+@@ -0,0 +1,60 @@
++#!/bin/sh
++# postinst script for jsonbot
++#
++# see: dh_installdeb(1)
++. /usr/share/debconf/confmodule
++
++set -e
++
++# summary of how this script can be called:
++#        * <postinst> `configure' <most-recently-configured-version>
++#        * <old-postinst> `abort-upgrade' <new version>
++#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
++#          <new-version>
++#        * <postinst> `abort-remove'
++#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
++#          <failed-install-package> <version> `removing'
++#          <conflicting-package> <version>
++# for details, see http://www.debian.org/doc/debian-policy/ or
++# the debian-policy package
++
++
++case "$1" in
++    configure)
++    # If jsonbot was never installed before
++    if ! getent passwd jsb >/dev/null; then
++        if ! [ -d /var/cache/jsb ]; then
++            mkdir /var/cache/jsb 2>/dev/null
++        fi
++        if ! [ -d /var/log/jsb ]; then
++            mkdir /var/log/jsb 2>/dev/null
++        fi
++        adduser --disabled-password  --quiet --system \
++        --home /var/cache/jsb --no-create-home \
++        --shell /bin/sh --gecos "JSONBOT" --group jsb 
++	export PYTHONPATH="$PYTHONPATH:/usr/share/pyshared"
++        jsb-init -d /var/cache/jsb
++        rm -rf /etc/jsonbot
++        ln -s /var/cache/jsb/config /etc/jsonbot
++        chown -R jsb:jsb /var/cache/jsb
++        chown jsb:jsb /var/log/jsb
++    fi
++    ;;
++
++    abort-upgrade|abort-remove|abort-deconfigure)
++    ;;
++
++    *)
++        echo "postinst called with unknown argument \`$1'" >&2
++        exit 1
++    ;;
++esac
++
++# dh_installdeb will replace this with shell code automatically
++# generated by other debhelper scripts.
++
++#DEBHELPER#
++
++exit 0
++
++
+--- jsonbot-0.6.1.orig/files/debian/jsb-run.1
++++ jsonbot-0.6.1/debian/jsb-run.1
+@@ -0,0 +1,40 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-run \- The JSONBOT run program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-run
++can be used to run an GAE bot locally.
++.B 
++.SH "DESCRIPTION"
++.P
++For testing purposes
++.B jsb-run 
++can be used to start a GAE bot local on your own box. This
++program first creates a new release directory and then runs dev_appserver
++(the appengine program to run a GAE program) on this directory.
++
++.SH REQUIREMENTS
++This program needs google_appengine installed in your home dir. See
++http://appengine.google.com
++.PP
++.SH USAGE
++.P
++.B Usage: jsb-run [options] <appid>
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -d DATADIR, --datadir=DATADIR
++                        datadir to use
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-release(1), jsb-rollback(1), jsb-upload(1), jsb-uploadall(1) 
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/jsonbot.init
++++ jsonbot-0.6.1/debian/jsonbot.init
+@@ -0,0 +1,110 @@
++#!/bin/sh
++
++### BEGIN INIT INFO
++# Provides:          jsonbot
++# Required-Start:    $local_fs $remote_fs $network $named
++# Required-Stop:     $local_fs $remote_fs
++# Default-Start:     2 3 4 5
++# Default-Stop:      0 1 6
++# Short-Description: JSONBOT IRC, XMPP and Web robot
++# Description:       Framework for building bots for IRC, XMPP and the Web
++### END INIT INFO
++
++NAME=jsonbot
++DESC="JSONBOT IRC, XMPP and Web robot"
++DATADIR=/var/cache/jsb
++PIDFILE=/var/run/jsonbot.pid
++
++PID=`cat $PIDFILE` 2>/dev/null
++
++# Include jsonbot defaults if available
++if [ -f /etc/default/jsonbot ] ; then
++    . /etc/default/jsonbot
++fi
++
++if [ "$RUN" != "yes" ] ; then
++    echo "$NAME disabled; edit /etc/default/jsonbot"
++    exit 0
++fi
++
++if [ -n "$RUNUSER" ] ; then
++    RUNUSER=jsb
++fi
++
++status()
++{
++	test -n "$PID" && ps auxw | grep -v grep | grep jsonbot | grep -q -s " $PID " && return 0
++        return 1
++}
++
++stop()
++{
++	if status
++	then
++		kill -KILL $PID
++	fi
++}
++
++start()
++{
++	status && exit 1 # already running
++        if [ -e $DATADIR ]
++        then
++          cd $DATADIR
++        else
++          mkdir -p $DATADIR
++          cd $DATADIR
++        fi
++        if [ -e config/mainconfig ]
++        then
++           su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>/dev/null &"
++        else
++           su $RUNUSER -c "jsb-init -d $DATADIR"
++           rm -rf /etc/jsonbot
++           ln -s /var/cache/jsb/config /etc/jsonbot
++           echo ""
++           echo "A default config file /etc/jsonbot/mainconfig has been created."
++           echo "irc and jabber bot example files are installed in /etc/jsonbot/fleet."
++           echo "Please edit those files and then run this script again to start jsonbot."
++        fi
++}
++
++case "$1" in
++start)
++	echo -n "Starting $DESC: $NAME"
++	start
++	case "$?" in
++		0) echo "." ; exit 0 ;;
++		1) echo " (already running)." ; exit 0 ;;
++		*) echo " (failed)." ; exit 1 ;;
++	esac
++	;;
++stop)
++	echo -n "Stopping $DESC: $NAME"
++	stop
++	case "$?" in
++		0) echo "." ; exit 0 ;;
++		1) echo " (not running)." ; exit 0 ;;
++		*) echo " (failed)." ; exit 1 ;;
++	esac
++	;;
++restart|force-reload|reload)
++	echo -n "Restarting $DESC: $NAME"
++	stop
++	start
++	;;
++status)
++	echo -n "Status of $DESC service: "
++	status
++	case "$?" in
++		0) echo "running." ; exit 0 ;;
++		1) echo "not running." ; exit 3 ;;
++	esac
++	;;
++*)
++	echo "Usage: /etc/init.d/jsonbot {start|stop|reload|force-reload|restart|status}" >&2
++	exit 1
++	;;
++esac
++
++*t
+--- jsonbot-0.6.1.orig/files/debian/jsb-fleet.1
++++ jsonbot-0.6.1/debian/jsb-fleet.1
+@@ -0,0 +1,56 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-fleet \- The JSONBOT fleet program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-fleet 
++is the program where you can combine IRC bots and XMPP bots into one
++program. 
++.B 
++.SH "DESCRIPTION"
++.P
++When you want to forward IRC to other bots you need an XMPP bot to let it
++communicate with these bots. The
++.B jsb-fleet
++progam lets you combine IRC bots and XMPP bots to forward events to other
++bots with a XMPP component running. Communication to GAE bots is also done
++through XMPP.
++
++.PP
++.SH USAGE
++.P
++First run your bots with
++.B jsb-irc
++and
++.B jsb-xmpp
++, make sure they work. After
++this you can run them all by starting 
++.B jsb-fleet.
++.P
++.B Usage: jsb-fleet [options] [list of bot names]
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -a, --all             show available fleet bots
++  -d DATADIR, --datadir=DATADIR
++                        datadir of the bot
++  -l LOGLEVEL, --loglevel=LOGLEVEL
++                        loglevel of the bot
++  -o OWNER, --owner=OWNER
++                        owner of the bot
++  -r PATH               resume the bot from the folder specified
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb(1), jsb-irc(1), jsb-xmpp(1), jsb-stop(1), jsb-udp(1)
++
++
++.SH "SEE ALSO"
++The program is documented fully on http://jsonbot.appspot.com/docs
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/jsonbot.preinst
++++ jsonbot-0.6.1/debian/jsonbot.preinst
+@@ -0,0 +1,10 @@
++#! /bin/sh
++
++set -e
++
++if [ -e /var/lib/dpkg/info/jsonbot.list ] && which pycentral >/dev/null 2>&1
++then
++    pycentral pkgremove jsonbot
++fi
++
++#DEBHELPER#
+--- jsonbot-0.6.1.orig/files/debian/jsb-upload.1
++++ jsonbot-0.6.1/debian/jsb-upload.1
+@@ -0,0 +1,34 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-upload \- The JSONBOT upload program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-upload 
++uploads a release directory to the Google Application Engine (GAE)
++.B 
++.SH "DESCRIPTION"
++.P
++With this program you can upload a directory created by the
++.B jsb-release
++program to the GAE.
++.PP
++.SH USAGE
++.P
++.B Usage: jsb-upload [options] <appid>
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -d DATADIR, --datadir=DATADIR
++                        datadir to use
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-release(1), jsb-uploadall(1) 
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/changelog
++++ jsonbot-0.6.1/debian/changelog
+@@ -0,0 +1,5 @@
++jsonbot (0.6.1-1) unstable; urgency=low
++
++  * Initial release. (Closes: #607957)
++
++ -- Jeremy Malcolm <terminus@debian.org>  Tue, 28 Dec 2010 12:25:22 +0800
+--- jsonbot-0.6.1.orig/files/debian/control
++++ jsonbot-0.6.1/debian/control
+@@ -0,0 +1,20 @@
++Source: jsonbot
++Maintainer: Jeremy Malcolm <terminus@debian.org>
++Section: net
++Priority: optional
++Build-Depends: debhelper, python-support
++Standards-Version: 3.7.2
++XS-Python-Version: current
++
++Package: jsonbot
++Architecture: all
++Depends: ${python:Depends}, python-central, python-pkg-resources (>= 0.6b3), python-simplejson (>= 2.0), python-oauth (>= 1.0), python-feedparser (>= 4.0), adduser
++XB-Python-Version: ${python:Versions}
++Provides: ${python:Provides}
++Description: Framework for building bots for IRC, XMPP and the Web
++ .
++ JSONBOT is a remote event-driven framework for building bots that talk JSON
++ to each other over XMPP. This distribution provides bots built on the
++ JSONBOT framework for console, IRC, XMPP for the shell and WWW, and XMPP
++ for the Google App Engine. A plugin infrastructure can be used to write
++ your own functionality.
+--- jsonbot-0.6.1.orig/files/debian/jsb-rollback.1
++++ jsonbot-0.6.1/debian/jsb-rollback.1
+@@ -0,0 +1,38 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-rollback \- The JSONBOT rollback program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-rollback
++is used to rollback a release.  
++.B 
++.SH "DESCRIPTION"
++.P
++When the uploading of a release to the GAE goes wrong, the upload needs to
++be rolled back into a state where it can be uploaded again.
++.B jsb-rollback
++does this.
++.SH REQUIREMENTS
++This program needs google_appengine installed in your home dir. See
++http://appengine.google.com
++.PP
++.SH USAGE
++.P
++.B Usage: jsb-rollback [options] <appid>
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -d DATADIR, --datadir=DATADIR
++                        datadir to use
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-release(1), jsb-run(1), jsb-upload(1), jsb-uploadall(1) 
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/jsonbot.default
++++ jsonbot-0.6.1/debian/jsonbot.default
+@@ -0,0 +1,10 @@
++# Defaults for the jsonbot initscript
++
++# Set to yes to start a system-wide instance of jsonbot
++RUN=no
++
++# Set to the user jsonbot should run as
++RUNUSER=jsb
++
++# Arguments to jsb-fleet
++ARGSTRING=""
+--- jsonbot-0.6.1.orig/files/debian/compat
++++ jsonbot-0.6.1/debian/compat
+@@ -0,0 +1 @@
++7
+--- jsonbot-0.6.1.orig/files/debian/jsb-irc.1
++++ jsonbot-0.6.1/debian/jsb-irc.1
+@@ -0,0 +1,56 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-irc \- The JSONBOT IRC program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-irc
++is the shell IRC program build on this framework
++.P
++
++.B 
++.SH "DESCRIPTION"
++.P
++.B jsb-irc 
++can connect to IRC network and join a channel, react on /msg and
++operate on /DCC CHAT connections. It supports SSL and ipv6.
++.PP
++.SH USAGE
++.P
++.B Usage: jsb-irc [options]
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -r PATH               resume the bot from the folder specified
++  -d DATADIR, --datadir=DATADIR
++                        datadir of the bot
++  -o OWNER, --owner=OWNER
++                        owner of the bot
++  -s SERVER, --server=SERVER
++                        server to connect to (irc)
++  -c CHANNEL, --channel=CHANNEL
++                        channel to join
++  -l LOGLEVEL, --loglevel=LOGLEVEL
++                        loglevel of the bot
++  -p PASSWORD, --password=PASSWORD
++                        set password used to connect to the server
++  --name=NAME           bot's name
++  --port=PORT           set port of server to connect to
++  --save                save to config file
++  -n NICK, --nick=NICK  nick of the bot
++  --ssl                 use ssl
++  -y, --nossl           don't use ssl
++  -6, --ipv6            enable ipv6 bot
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb(1), jsb-xmpp(1), jsb-fleet(1), jsb-release(1), jsb-run(1),
++jsb-rollback(1), jsb-stop(1), jsb-upload(1), jsb-uploadall(1), jsb-udp(1)
++
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/manpages
++++ jsonbot-0.6.1/debian/manpages
+@@ -0,0 +1,13 @@
++debian/jsb.1
++debian/jsb-fleet.1
++debian/jsb-init.1
++debian/jsb-irc.1
++debian/jsb-release.1
++debian/jsb-rollback.1
++debian/jsb-run.1
++debian/jsb-stop.1
++debian/jsb-udp.1
++debian/jsb-upload.1
++debian//jsb-uploadall.1
++debian/jsb-xmpp.1
++debian/jsonbot.1
+--- jsonbot-0.6.1.orig/files/debian/jsonbot.postrm
++++ jsonbot-0.6.1/debian/jsonbot.postrm
+@@ -0,0 +1,45 @@
++#!/bin/sh
++# postrm script for jsonbot
++#
++# see: dh_installdeb(1)
++. /usr/share/debconf/confmodule
++
++set -e
++
++# summary of how this script can be called:
++#        * <postrm> `remove'
++#        * <postrm> `purge'
++#        * <old-postrm> `upgrade' <new-version>
++#        * <new-postrm> `failed-upgrade' <old-version>
++#        * <new-postrm> `abort-install'
++#        * <new-postrm> `abort-install' <old-version>
++#        * <new-postrm> `abort-upgrade' <old-version>
++#        * <disappearer's-postrm> `disappear' <overwriter>
++#          <overwriter-version>
++# for details, see http://www.debian.org/doc/debian-policy/ or
++# the debian-policy package
++
++
++case "$1" in
++    purge)
++        deluser --quiet --system jsb > /dev/null || true
++        delgroup --quiet --system jsb > /dev/null || true
++    ;;
++
++    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
++    ;;
++
++    *)
++        echo "postrm called with unknown argument \`$1'" >&2
++        exit 1
++    ;;
++esac
++
++# dh_installdeb will replace this with shell code automatically
++# generated by other debhelper scripts.
++
++#DEBHELPER#
++
++exit 0
++
++
+--- jsonbot-0.6.1.orig/files/debian/jsb-uploadall.1
++++ jsonbot-0.6.1/debian/jsb-uploadall.1
+@@ -0,0 +1,33 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-uploadall \- The JSONBOT uploadall program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-uploadall 
++uploads multiple apps to the GAE
++.B 
++.SH "DESCRIPTION"
++.P
++JSONBOT use the ~/jsbregs/ dir to maintain app specific data, this program
++will upload all the apps available in this directory to the GAE.
++.PP
++.SH "USAGE"
++.P
++.B Usage: jsb-uploadall [options] [list of appids]
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -d DATADIR, --datadir=DATADIR
++                        datadir to use
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-release(1), jsb-upload(1) 
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/jsb-init.1
++++ jsonbot-0.6.1/debian/jsb-init.1
+@@ -0,0 +1,33 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-init \- The JSONBOT IRC program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-init
++initialises a data directory for the bot.
++.P
++
++.B 
++.SH "DESCRIPTION"
++.P
++.B jsb-init 
++is used to initialise a data directory for the bot. It should not normally be necessary 
++for the user to run this script, as the bot will also initialise its own data directory
++when first run if it does not already exist.
++.PP
++.SH USAGE
++.P
++.B Usage: jsb-init
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb(1), jsb-irc(1), jsb-xmpp(1), jsb-fleet(1), jsb-release(1), jsb-run(1),
++jsb-rollback(1), jsb-stop(1), jsb-upload(1), jsb-uploadall(1), jsb-udp(1)
++
++
++.SH AUTHOR
++This manual page was written by Jeremy Malcolm <terminus@debian.org>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/jsb-xmpp.1
++++ jsonbot-0.6.1/debian/jsb-xmpp.1
+@@ -0,0 +1,53 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-xmpp \- The JSONBOT XMPP (Jabber) program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-xmpp
++is the shell XMPP program build on this framework
++.P
++
++.B 
++.SH "DESCRIPTION"
++.P
++.B jsb-xmpp
++can connect to Jabber servers, join a conference and react on /msg. It uses
++TLS to connect to these servers on the default 5222 port.
++.PP
++.SH USAGE
++.P
++Usage: jsb-xmpp [options]
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -r PATH               resume the bot from the folder specified
++  -d DATADIR, --datadir=DATADIR
++                        datadir of the bot
++  -u USER, --user=USER  JID of the bot
++  -o OWNER, --owner=OWNER
++                        owner of the bot
++  -s SERVER, --server=SERVER
++                        server to connect to (irc)
++  -c CHANNEL, --channel=CHANNEL
++                        channel to join
++  -l LOGLEVEL, --loglevel=LOGLEVEL
++                        loglevel of the bot
++  -p PASSWORD, --password=PASSWORD
++                        set password used to connect to the server
++  --name=NAME           bot's name
++  --port=PORT           set port of server to connect to
++  --save                save to config file
++  -n NICK, --nick=NICK  nick of the bot
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-irc(1), jsb-xmpp(1), jsb-fleet(1), jsb-stop(1), jsb-udp(1)
++
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/docs
++++ jsonbot-0.6.1/debian/docs
+@@ -0,0 +1,2 @@
++README
++jsb/data/examples
+--- jsonbot-0.6.1.orig/files/debian/jsb-stop.1
++++ jsonbot-0.6.1/debian/jsb-stop.1
+@@ -0,0 +1,33 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-stop \- The JSONBOT stop program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-stop 
++stops a running bot
++.B 
++.SH "DESCRIPTION"
++.P
++If you need to stop a running JSONBOT (shell) you can do that with this
++program. It uses a pid file found in the <datadir>/run directory.
++.PP
++.SH USAGE
++.P
++.B Usage: jsb-stop
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -d DATADIR, --datadir=DATADIR
++                        datadir to use
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-irc(1), jsb-xmpp(1), jsb-fleet(1) 
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/jsb-release.1
++++ jsonbot-0.6.1/debian/jsb-release.1
+@@ -0,0 +1,43 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-release \- The JSONBOT release program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-release
++is the program that you can use to create a directory ready for uploading to
++the GAE (Google Application Engine).  
++.B 
++.SH "DESCRIPTION"
++.P
++The bot can also run in the Google cloud (GAE) and for this to work a
++directory needs to be created with all the files needed to run properly on
++the GAE. The directory is created in <datadir>/releases/<appid>, default
++datadir is ~/.jsb. Use the
++.B jsb-upload
++program to upload the bot to the GAE
++.PP
++.SH REQUIREMENTS
++This program need google_appengine installed in your homedir. See
++http://appengine.google.com
++
++.SH USAGE
++.P
++.B Usage: jsb-release [options] <appid>
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -b, --backup          keep backup dir
++  -d DATADIR, --datadir=DATADIR
++                        datadir to use
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-run(1), jsb-rollback(1), jsb-upload(1), jsb-uploadall(1) 
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/jsb.1
++++ jsonbot-0.6.1/debian/jsb.1
+@@ -0,0 +1,49 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb \- The JSONBOT console app
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb
++is the console app build on this framework
++.P
++
++.B 
++.SH "DESCRIPTION"
++.P
++The jsb program provides a console interface to the JSONBOT framework. 
++.B jsb
++is mainly used to quickly debug new written plugins, so you can test them
++without having to run a network connected bot. For testing GAE bots you need
++to run your code in the dev_appserver, see 
++.B jsb-run 
++for that.
++.PP
++.SH USAGE
++.P
++.B Usage: jsb [options] <appid>
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -d DATADIR, --datadir=DATADIR
++                        datadir to use
++  -x COMMAND, --execute=COMMAND
++                        command to execute
++  -c CHANNEL, --channel=CHANNEL
++                        channel to operate on
++  -n NAME, --name=NAME  name of the console bot
++  -l LOGLEVEL, --loglevel=LOGLEVEL
++                        logging level
++
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-irc(1), jsb-xmpp(1), jsb-fleet(1), jsb-release(1), jsb-run(1),
++jsb-rollback(1), jsb-stop(1), jsb-upload(1), jsb-uploadall(1) 
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/gozerbot.postrm
++++ jsonbot-0.6.1/debian/gozerbot.postrm
+@@ -0,0 +1,45 @@
++#!/bin/sh
++# postrm script for jsonbot
++#
++# see: dh_installdeb(1)
++. /usr/share/debconf/confmodule
++
++set -e
++
++# summary of how this script can be called:
++#        * <postrm> `remove'
++#        * <postrm> `purge'
++#        * <old-postrm> `upgrade' <new-version>
++#        * <new-postrm> `failed-upgrade' <old-version>
++#        * <new-postrm> `abort-install'
++#        * <new-postrm> `abort-install' <old-version>
++#        * <new-postrm> `abort-upgrade' <old-version>
++#        * <disappearer's-postrm> `disappear' <overwriter>
++#          <overwriter-version>
++# for details, see http://www.debian.org/doc/debian-policy/ or
++# the debian-policy package
++
++
++case "$1" in
++    purge)
++        deluser --quiet --system jsonbot > /dev/null || true
++        delgroup --quiet --system jsonbot > /dev/null || true
++    ;;
++
++    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
++    ;;
++
++    *)
++        echo "postrm called with unknown argument \`$1'" >&2
++        exit 1
++    ;;
++esac
++
++# dh_installdeb will replace this with shell code automatically
++# generated by other debhelper scripts.
++
++#DEBHELPER#
++
++exit 0
++
++
+--- jsonbot-0.6.1.orig/files/debian/copyright
++++ jsonbot-0.6.1/debian/copyright
+@@ -0,0 +1,36 @@
++This is JSONBOT, written and maintained by Bart Thate
++
++This package was debianized by Jeremy Malcolm <terminus@debian.org>.
++
++The original source can always be found at:
++	http://code.google.com/p/jsonbot/
++
++Copyright Holder:  B.H.J Thate <bthate@gmail.com>
++
++License:
++
++Copyright (c) 2010 B.H.J Thate
++
++note: this license is for software created by me, JSONBOT includes 
++third party software that have their own licenses, see the source 
++files themselves.
++
++Permission is hereby granted, free of charge, to any person obtaining 
++a copy of this software and associated documentation files (the 
++"Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish,
++distribute, sublicense, and/or sell copies of the Software, and to
++permit persons to whom the Software is furnished to do so, subject
++to the following conditions:
++
++The above copyright notice and this permission notice shall be 
++included in all copies or substantial portions of the Software.
++ 
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
++EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
++MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
++NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
++BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
++ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
++CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
++SOFTWARE.
+--- jsonbot-0.6.1.orig/files/debian/jsonbot.1
++++ jsonbot-0.6.1/debian/jsonbot.1
+@@ -0,0 +1,59 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++JSONBOT \- The JSON everywhere bot!
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. This manual page documents briefly the
++.B jsb
++distribution..
++.P
++.B 
++.SH "DESCRIPTION"
++.P
++This distribution provides bots built on this framework for console, IRC,
++XMPP for the shell and WWW and XMPP for the Google Application engine.
++
++jsb is all of the following:
++
++    * a shell console bot
++    * a shell IRC bot
++    * a shell XMPP bot
++    * a Web bot running on Google Application Engine
++    * a XMPP bot running on Google Application Engine
++    * a Google Wave bot running op Google Application Engine
++    * the XMPP bots are used to communicate between bots
++    * plugin infrastructure to write your own functionality
++    * event driven framework by the use of callbacks
++
++.B
++See http://jsonbot.googlecode.com
++.PP
++.SH USAGE
++JSONBOT uses command line options to configure a bot. See the --help option to get more help on a command
++options or see the corresponding man page.
++.PP
++
++JSONBOT provides the following programs:
++
++    * jsb - console version of jsb (shell)
++    * jsb-irc - IRC version of jsb (shell)
++    * jsb-xmpp - XMPP version of jsb (shell)
++    * jsb-fleet - mix IRC and XMPP bots (shell)
++    * jsb-release - create a new release directory (appengine)
++    * jsb-rollback - rollback a release (appengine)
++    * jsb-run - run a release in the GAE dev_appserver
++    * jsb-stop - stop a running bot (shell)
++    * jsb-upload - upload a release to the GAE
++.P
++For appengine related commands you need google_appengine installed in your home dir
++.PP
++.SH "SEE ALSO"
++The program is documented fully on http://jsonbot.appspot.com/docs
++
++.SH "SEE ALSO"
++jsb-irc(1), jsb-xmpp(1), jsb-fleet(1), jsb-release(1), jsb-run(1),
++jsb-rollback(1), jsb-stop(1), jsb-upload(1), jsb-uploadall(1), jsb-udp(1)
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/dirs
++++ jsonbot-0.6.1/debian/dirs
+@@ -0,0 +1,3 @@
++etc/jsonbot
++var/cache/jsb
++var/log/jsb
+--- jsonbot-0.6.1.orig/files/debian/jsb-udp.1
++++ jsonbot-0.6.1/debian/jsb-udp.1
+@@ -0,0 +1,41 @@
++.TH JSONBOT 1 "7 Nov 2010" "Debian GNU/Linux" "jsb manual"
++.SH NAME
++.B jsb-udp \- The JSONBOT udp program
++.SH SYNOPSIS
++JSONBOT is a remote event-driven framework for building bots that talk JSON
++to each other over XMPP. 
++.B jsb-udp 
++can send txt in a udp packet to the bot which in his/her turn sends it to a channel.
++.B 
++.SH "DESCRIPTION"
++.P
++Sometimes you want to have the output of a program send to a channel or
++conference the bot is participating in, for example logfiles (if they dont
++accumulate too fast). JSONBOT provides a plugin that can do this with the
++use of UDP packets send to the bot. This program is the client part and can
++be used to send txt pipelined into it to a UDP port on the listening bot.
++This bot will then forward the txt to the channel provided with the -p,
++--printto option.
++.PP
++.SH USAGE
++.P
++.B Usage: jsb-udp [options]
++
++Options:
++  --version             show program's version number and exit
++  -h, --help            show this help message and exit
++  -p PATH, --printto=PATH
++                        channel/user to print to
++  -c CONFIGNAME, --config=CONFIGNAME
++                        Specify a config file
++  -s, --save            save to config file
++
++.SH "DOCUMENTATION"
++See http://jsonbot.appspot.com/docs for more documentation
++
++.SH "SEE ALSO"
++jsb-irc(1), jsb-xmpp(1), jsb-fleet(1), jsb-stop(1)
++
++.SH AUTHOR
++This manual page was written by Bart Thate <bthate@gmail.com>,
++for the Debian GNU/Linux system (but may be used by others).
+--- jsonbot-0.6.1.orig/files/debian/rules
++++ jsonbot-0.6.1/debian/rules
+@@ -0,0 +1,41 @@
++#!/usr/bin/make -f
++
++# This file was automatically generated by stdeb 0.5.1 at
++# Tue, 28 Dec 2010 13:08:30 +0800
++
++# Unset the environment variables set by dpkg-buildpackage. (This is
++# necessary because distutils is brittle with compiler/linker flags
++# set. Specifically, packages using f2py will break without this.)
++unexport CPPFLAGS
++unexport CFLAGS
++unexport CXXFLAGS
++unexport FFLAGS
++unexport LDFLAGS
++
++#exports specified using stdeb Setup-Env-Vars:
++export DH_OPTIONS=--buildsystem=python_distutils
++
++
++%:
++	dh $@
++
++# Deleting provided libraries that are packaged separately for Debian
++# and moving files that the setup script puts in the wrong place.
++binary: build
++#	dpatch apply-all
++#	dpatch cat-all >patch-stamp
++	dh binary --until install
++	mv debian/jsonbot/usr/jsb/upload debian/jsonbot/usr/share/pyshared
++	mkdir -p debian/jsonbot/var/cache/jsb/data
++	mv debian/jsonbot/usr/jsb/data debian/jsonbot/var/cache/jsb
++	ln -s data/examples debian/jsonbot/var/cache/jsb/examples
++	rm -rf debian/jsonbot/usr/jsb
++	rm debian/jsonbot/usr/bin/jsb-upgrade
++	rm -rf debian/jsonbot/usr/share/pyshared/jsb/contrib/simplejson
++	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/oauth.py
++	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/feedparser.py
++	dh binary --remaining
++
++clean:
++#	dpatch deapply-all
++#	rm -rf patch-stamp debian/patched
+--- jsonbot-0.6.1.orig/files/debian/README.Debian
++++ jsonbot-0.6.1/debian/README.Debian
+@@ -0,0 +1,12 @@
++JSONBOT for DEBIAN
++------------------
++The optional Google Application Engine functionality of JSONBOT requires
++the Google Application Engine SDK for Python to be installed locally in
++the user's home directory.  This is not (yet) packaged for Debian and is
++not supplied with this package.  See http://code.google.com/appengine/.
++
++If you want to run a systemwide jsonbot, edit the file 
++/etc/defaults/jsonbot to change the value of RUN to "yes", then run 
++"/etc/init.d/jsonbot start" (it will also run on boot).
++
++Jeremy Malcolm <terminus@debian.org>
+--- jsonbot-0.6.1.orig/files/debian/var/cache/jsb/data/examples/cron.yaml.example
++++ jsonbot-0.6.1/debian/var/cache/jsb/data/examples/cron.yaml.example
+@@ -0,0 +1,8 @@
++# gozbot cron file
++#
++#
++
++cron:
++- description: rss beat
++  url: /tasks/rss
++  schedule: every 1 minutes
+--- jsonbot-0.6.1.orig/files/debian/var/cache/jsb/data/examples/mainconfig.example
++++ jsonbot-0.6.1/debian/var/cache/jsb/data/examples/mainconfig.example
+@@ -0,0 +1,26 @@
++# jsb config
++#
++#
++# TAKE NOTE THAT FORMAT IS IN JSON NOW SO USE " not '
++
++## DOMAIN 
++
++domain = "googlewave.com"
++
++## APPLICATION NAME
++
++appname = "JSONBOT"
++app_id = "jsonbot"
++
++## GLOBAL OWNER .. example: owner = ["~bart@127.0.0.1"] (include ident if needed)
++
++owner = []
++
++# enable debugging
++debug = 0
++
++# auto register new users 
++
++auto_register = 1
++
++#color = "#123456"
+\ No newline at end of file
+--- jsonbot-0.6.1.orig/files/debian/var/cache/jsb/data/examples/README
++++ jsonbot-0.6.1/debian/var/cache/jsb/data/examples/README
+@@ -0,0 +1,3 @@
++This is the config dir of JSONBOT
++
++copy the .example files to their normal parts and edit plz.
+--- jsonbot-0.6.1.orig/files/debian/var/cache/jsb/data/examples/queue.yaml.example
++++ jsonbot-0.6.1/debian/var/cache/jsb/data/examples/queue.yaml.example
+@@ -0,0 +1,21 @@
++queue:
++- name: default
++  rate: 1/s
++- name: queue0
++  rate: 100/s
++- name: queue1
++  rate: 80/s
++- name: queue2
++  rate: 60/s
++- name: queue3
++  rate: 40/s
++- name: queue4
++  rate: 20/s
++- name: queue5
++  rate: 10/s
++- name: queue6
++  rate: 5/s
++- name: queue7
++  rate: 2/s
++- name: queue8
++  rate: 1/s
+--- jsonbot-0.6.1.orig/files/debian/var/cache/jsb/data/examples/app.yaml.example
++++ jsonbot-0.6.1/debian/var/cache/jsb/data/examples/app.yaml.example
+@@ -0,0 +1,84 @@
++# JSONBOT application file
++#
++#
++
++application: jsonbot
++version: 1
++runtime: python
++api_version: 1
++
++default_expiration: "1s"
++
++handlers:
++
++- url: /_ah/warmup
++  script: handler_warmup.py
++
++- url: /
++  script: handler_web.py
++  secure: always
++
++- url: /_ah/login.*
++  script: handler_openid.py
++
++- url: /_ah/queue/deferred
++  script: $PYTHON_LIB/google/appengine/ext/deferred/deferred.py
++  login: admin
++
++- url: /stats.*
++  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
++  login: admin
++
++- url: /tasks.*
++  script: handler_task.py
++  login: required
++  secure: always
++
++- url: /assets/(.*)
++  static_files: assets/\1
++  upload: assets/(.*)
++
++- url: /_wave.*
++  script: handler_wave.py
++
++- url: /_ah/xmpp/.*
++  script: handler_xmpp.py
++
++- url: /hubbub(.*)
++  script: handler_hubbub.py
++
++- url: /assets/(.*)
++  static_dir: /assets/
++
++- url: /dispatch.*
++  script: handler_dispatch.py
++  login: required
++  secure: always
++
++- url: /feeds.*
++  script: handler_web.py
++
++- url: /docs/html/(.*)
++  static_files: docs/html/\1
++  upload: docs/html/(.*)
++
++- url: /docs.*
++  script: handler_docs.py
++
++- url: /(.*\.xml)  
++  static_files: gadgets/\1
++  upload: gadgets/(.*\.xml)
++
++- url: /_static/(.*)
++  static_files: assets/\1
++  upload: assets/(.*)
++
++- url: /favicon.ico
++  static_files: assets/favicon.ico
++  upload: assets/favivon.ico
++
++
++inbound_services:
++- warmup
++- xmpp_message   
++
+--- jsonbot-0.6.1.orig/files/debian/var/cache/jsb/data/examples/credentials.py.example
++++ jsonbot-0.6.1/debian/var/cache/jsb/data/examples/credentials.py.example
+@@ -0,0 +1,39 @@
++# credentials.py
++#
++#
++
++""" this file holds all the password and token stuff etc. """
++
++## WAVE STUFF
++
++RPC_BASE = {}
++verification_token = {}
++verification_secret = {}
++Consumer_Key = {}
++Consumer_Secret = {}
++
++## googlewave.com
++
++RPC_BASE['googlewave.com'] = "http://preview.gmodules.com/api/rpc"
++verification_token['googlewave.com'] = ""
++verification_secret['googlewave.com'] = ""
++Consumer_Key['googlewave.com'] = ""
++Consumer_Secret['googlewave.com'] = ""
++
++## wavesandbox.com
++
++RPC_BASE['wavesandbox.com'] = "http://sandbox.gmodules.com/api/rpc"
++verification_token['wavesandbox.com'] = ""
++verification_secret['wavesandbox.com'] = ""
++Consumer_Key['wavesandbox.com'] = ""
++Consumer_Secret['wavesandbox.com'] = ""
++
++## HUBBUB stuff
++
++HUB_URL = "http://superfeedr.com/hubbub"
++HUB_CREDENTIALS = ["username","password"]
++
++## twitter 
++
++CONSUMER_KEY = ""
++CONSUMER_SECRET = ""
