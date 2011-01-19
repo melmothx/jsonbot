@@ -40,7 +40,8 @@ def getsource(mod):
     except ImportError: 
         thedir = mod.replace(".", os.sep)
         if os.path.isdir(thedir): source = thedir
-    if not source and os.path.isdir("/usr/lib" + os.sep + thedir): source = "/usr/lib" + os.sep + thedir
+    if not source and os.path.isdir("/var/cache/jsb"): source = "/var/cache/" + os.sep + thedir
+    if not source and os.path.isdir("/usr/lib/jsb"): source = "/usr/lib/" + os.sep + thedir
     logging.info("datadir - source is %s" % source)
     return source
 
