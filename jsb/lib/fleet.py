@@ -69,10 +69,10 @@ class Fleet(Persist):
         """ return available bots. """
         return self.data['names']
 
-    def getfirstbot(self):
+    def getfirstbot(self, type="irc"):
         """ return the first bot in the fleet. """
-        try: return self.bots[0]
-        except IndexError: return
+        for bot in self.bots:
+            if bot.type == type: return bot
 
     def getfirstjabber(self, isgae=False):
         """ return the first jabber bot of the fleet. """
