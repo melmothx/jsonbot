@@ -1,4 +1,4 @@
---- jsonbot-0.6.1.orig/jsb.egg-info/SOURCES.txt
+
 +++ jsonbot-0.6.1/jsb.egg-info/SOURCES.txt
 @@ -0,0 +1,218 @@
 +README
@@ -287,14 +287,18 @@
 +            mkdir /var/log/jsb 2>/dev/null
 +        fi
 +        adduser --disabled-password  --quiet --system \
-+        --home /var/cache/jsb --no-create-home \
++        # BHJTW --home /var/cache/jsb --no-create-home \
++        --home /home/jsb \
 +        --shell /bin/sh --gecos "JSONBOT" --group jsb 
-+	export PYTHONPATH="$PYTHONPATH:/usr/share/pyshared"
-+        jsb-init -d /var/cache/jsb
++	 export PYTHONPATH="$PYTHONPATH:/usr/share/pyshared"
++        chown -R root:jsb /var/cache/jsb
++        chown -R root:jsb /var/log/jsb
++        chmod 664 /var/cache/jsb
++        chmod 664 /var/log/jsb
++        su jsb -c "jsb-init -d /home/jsb/.jsb"
 +        rm -rf /etc/jsonbot
-+        ln -s /var/cache/jsb/config /etc/jsonbot
-+        chown -R jsb:jsb /var/cache/jsb
-+        chown jsb:jsb /var/log/jsb
++        # BHJTW ln -s /var/cache/jsb/config /etc/jsonbot
++        ln -s /home/jsb/.jsb/config /etc/jsonbot
 +    fi
 +    ;;
 +
@@ -375,7 +379,8 @@
 +
 +NAME=jsonbot
 +DESC="JSONBOT IRC, XMPP and Web robot"
-+DATADIR=/var/cache/jsb
++# BHJTW DATADIR=/home/jsb/.jsb
++DATADIR=/home/jsb/.jsb
 +PIDFILE=/var/run/jsonbot.pid
 +
 +PID=`cat $PIDFILE` 2>/dev/null
@@ -410,21 +415,22 @@
 +
 +start()
 +{
-+	status && exit 1 # already running
-+        if [ -e $DATADIR ]
-+        then
-+          cd $DATADIR
-+        else
-+          mkdir -p $DATADIR
-+          cd $DATADIR
-+        fi
-+        if [ -e config/mainconfig ]
++	 status && exit 1 # already running
++        # BHJTW if [ -e $DATADIR ]
++        # BHJTW then
++        # BHJTW  cd $DATADIR
++        # BHJTW else
++        # BHJTW   mkdir -p $DATADIR
++        # BHJTW  cd $DATADIR
++        # BHJTW fi
++        if [ -e $DATADIR/config/mainconfig ]
 +        then
 +           su $RUNUSER -c "$NAME -d $DATADIR $ARGSTRING 2>/dev/null &"
 +        else
 +           su $RUNUSER -c "jsb-init -d $DATADIR"
-+           rm -rf /etc/jsonbot
-+           ln -s /var/cache/jsb/config /etc/jsonbot
++           #rm -rf /etc/jsonbot
++           # BHJTW ln -s /var/cache/jsb/config /etc/jsonbot
++           #ln -s /home/jsb/.jsb/config /etc/jsonbot
 +           echo ""
 +           echo "A default config file /etc/jsonbot/mainconfig has been created."
 +           echo "irc and jabber bot example files are installed in /etc/jsonbot/fleet."
@@ -1276,7 +1282,7 @@
 +unexport LDFLAGS
 +
 +#exports specified using stdeb Setup-Env-Vars:
-+export DH_OPTIONS=--buildsystem=python_distutils
++export DH_OPTIONS=-spython_distutils
 +
 +
 +%:
@@ -1288,15 +1294,15 @@
 +#	dpatch apply-all
 +#	dpatch cat-all >patch-stamp
 +	dh binary --until install
-+#	mv debian/jsonbot/usr/jsb/upload debian/jsonbot/var/cache/jsb
-+#	mkdir -p debian/jsonbot/var/cache/jsb/data
-+#	mv debian/jsonbot/usr/jsb/data debian/jsonbot/var/cache/jsb
-+#	ln -s data/examples debian/jsonbot/var/cache/jsb/examples
-+#	rm -rf debian/jsonbot/usr/jsb
-+#	rm debian/jsonbot/usr/bin/jsb-upgrade
-+#	rm -rf debian/jsonbot/usr/share/pyshared/jsb/contrib/simplejson
-+#	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/oauth.py
-+#	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/feedparser.py
++#	BHJTW - mv debian/jsonbot/usr/jsb/upload debian/jsonbot/var/cache/jsb
++#	BHJTW - mkdir -p debian/jsonbot/var/cache/jsb/data
++#	BHJTW - mv debian/jsonbot/usr/jsb/data debian/jsonbot/var/cache/jsb
++#	BHJTW - ln -s data/examples debian/jsonbot/var/cache/jsb/examples
++	# BHJTW rm -rf debian/jsonbot/usr/jsb
++	rm debian/jsonbot/usr/bin/jsb-upgrade
++	#rm -rf debian/jsonbot/usr/share/pyshared/jsb/contrib/simplejson
++	#rm debian/jsonbot/usr/share/pyshared/jsb/contrib/oauth.py
++	#rm debian/jsonbot/usr/share/pyshared/jsb/contrib/feedparser.py
 +	dh binary --remaining
 +
 +clean:

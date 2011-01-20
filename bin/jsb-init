@@ -27,7 +27,7 @@ import logging
 logging.warn(getversion("INIT"))
 
 from jsb.lib.datadir import makedirs
-if isdebian() and botuser == "jsb": makedirs("/var/cache/jsb")
+if isdebian() and botuser == "jsb": makedirs("/home/jsb/.jsb")
 else: makedirs(opts.datadir)
 
 from jsb.utils.opts import makeircconfig, makexmppconfig
