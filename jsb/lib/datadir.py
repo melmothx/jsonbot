@@ -41,8 +41,8 @@ def getsource(mod):
         thedir = mod.replace(".", os.sep)
         if os.path.isdir(thedir): source = thedir
     #if not source and os.path.isdir("/home/jsb/.jsb"): source = "/home/jsb/.jsb" + os.sep + thedir
-    if not source and os.path.isdir("/var/cache/jsb"): source = "/var/cache/" + os.sep + thedir
-    if not source and os.path.isdir("/usr/lib/jsb"): source = "/usr/lib/" + os.sep + thedir
+    if not source and os.path.isdir("/var/cache/jsb"): source = "/var/cache" + os.sep + thedir
+    if not source and os.path.isdir("/usr/lib/jsb"): source = "/usr/lib" + os.sep + thedir
     logging.info("datadir - source is %s" % source)
     return source
 
@@ -58,8 +58,7 @@ def doit(ddir, mod):
 
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
-    #if os.path.exists("/var/cache/jsb") and getpass.getuser() == 'jsb': ddir = "/var/cache/jsb"
-    #else: ddir = ddir or datadir
+    if os.path.exists("/home/jsb/.jsb") and getpass.getuser() == 'jsb': ddir = "/home/jsb/.jsb"
     datadir = ddir or getdatadir()
     logging.warn("datadir - set to %s" % datadir)
     if isgae: return

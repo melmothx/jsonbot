@@ -292,8 +292,8 @@
 +	 export PYTHONPATH="$PYTHONPATH:/usr/share/pyshared"
 +        chown -R root:jsb /var/cache/jsb
 +        chown -R root:jsb /var/log/jsb
-+        chmod 664 /var/cache/jsb
-+        chmod 664 /var/log/jsb
++        chmod 770 /var/cache/jsb
++        chmod 770 /var/log/jsb
 +        #su jsb -c "jsb-init -d /home/jsb/.jsb"
 +        rm -rf /etc/jsonbot
 +        # BHJTW ln -s /var/cache/jsb/config /etc/jsonbot
@@ -376,7 +376,7 @@
 +# Description:       Framework for building bots for IRC, XMPP and the Web
 +### END INIT INFO
 +
-+NAME=jsonbot
++NAME=jsb-fleet
 +DESC="JSONBOT IRC, XMPP and Web robot"
 +# BHJTW DATADIR=/home/jsb/.jsb
 +DATADIR=/home/jsb/.jsb
