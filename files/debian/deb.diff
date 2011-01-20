@@ -363,7 +363,7 @@
 +for the Debian GNU/Linux system (but may be used by others).
 --- jsonbot-0.6.1.orig/files/debian/jsonbot.init
 +++ jsonbot-0.6.1/debian/jsonbot.init
-@@ -0,0 +1,102 @@
+@@ -0,0 +1,101 @@
 +#!/bin/sh
 +
 +### BEGIN INIT INFO
@@ -378,7 +378,6 @@
 +
 +NAME=jsb-fleet
 +DESC="JSONBOT IRC, XMPP and Web robot"
-+# BHJTW DATADIR=/home/jsb/.jsb
 +DATADIR=/home/jsb/.jsb
 +PIDFILE=/var/run/jsonbot.pid
 +
@@ -400,7 +399,7 @@
 +
 +status()
 +{
-+	test -n "$PID" && ps auxw | grep -v grep | grep jsonbot | grep -q -s " $PID " && return 0
++	test -n "$PID" && ps auxw | grep -v grep | grep jsb-fleet | grep -q -s " $PID " && return 0
 +        return 1
 +}
 +
