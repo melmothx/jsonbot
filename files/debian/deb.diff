@@ -1288,15 +1288,15 @@
 +#	dpatch apply-all
 +#	dpatch cat-all >patch-stamp
 +	dh binary --until install
-+	mv debian/jsonbot/usr/jsb/upload debian/jsonbot/usr/share/pyshared
-+	mkdir -p debian/jsonbot/var/cache/jsb/data
-+	mv debian/jsonbot/usr/jsb/data debian/jsonbot/var/cache/jsb
-+	ln -s data/examples debian/jsonbot/var/cache/jsb/examples
-+	rm -rf debian/jsonbot/usr/jsb
-+	rm debian/jsonbot/usr/bin/jsb-upgrade
-+	rm -rf debian/jsonbot/usr/share/pyshared/jsb/contrib/simplejson
-+	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/oauth.py
-+	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/feedparser.py
++#	mv debian/jsonbot/usr/jsb/upload debian/jsonbot/var/cache/jsb
++#	mkdir -p debian/jsonbot/var/cache/jsb/data
++#	mv debian/jsonbot/usr/jsb/data debian/jsonbot/var/cache/jsb
++#	ln -s data/examples debian/jsonbot/var/cache/jsb/examples
++#	rm -rf debian/jsonbot/usr/jsb
++#	rm debian/jsonbot/usr/bin/jsb-upgrade
++#	rm -rf debian/jsonbot/usr/share/pyshared/jsb/contrib/simplejson
++#	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/oauth.py
++#	rm debian/jsonbot/usr/share/pyshared/jsb/contrib/feedparser.py
 +	dh binary --remaining
 +
 +clean:

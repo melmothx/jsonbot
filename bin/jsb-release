@@ -102,13 +102,13 @@ def sed(source, target):
 
 ## doit
 
-if isdebian() and os.path.isdir("/usr/lib/jsb/upload"): source = "/usr/lib/jsb/upload"
+if isdebian() and os.path.isdir("/var/cache/jsb/"): source = "/var/cache/jsb/upload"
 else:
     try: source = pkg_resources.resource_filename("jsb", 'upload')
     except ImportError: source = "/usr/local/jsb/upload"
 print source
 copyover(source, release)
-if isdebian() and os.path.isdir("/usr/lib/jsb/upload"): source = "/usr/lib/jsb/data"
+if isdebian() and os.path.isdir("/var/cache/jsb/"): source = "/var/cache/jsb/data"
 else:
     try: source = pkg_resources.resource_filename("jsb", "data")
     except ImportError: source = "/usr/local/jsb/data"
