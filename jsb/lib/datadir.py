@@ -40,6 +40,7 @@ def getsource(mod):
     except ImportError: 
         thedir = mod.replace(".", os.sep)
         if os.path.isdir(thedir): source = thedir
+    #if not source and os.path.isdir("/home/jsb/.jsb"): source = "/home/jsb/.jsb" + os.sep + thedir
     if not source and os.path.isdir("/var/cache/jsb"): source = "/var/cache/" + os.sep + thedir
     if not source and os.path.isdir("/usr/lib/jsb"): source = "/usr/lib/" + os.sep + thedir
     logging.info("datadir - source is %s" % source)
@@ -71,7 +72,7 @@ def makedirs(ddir=None):
     last = datadir.split(os.sep)[-1]
     if not os.path.isdir(ddir): doit(ddir, "jsb.data")
     try:
-        if not os.path.isdir(ddir + os.sep + 'myplugs'): doit(ddir, "myplugs")
+        if not os.path.isdir(ddir + os.sep + 'myplugs'): doit(ddir, "jsb.plugs.myplugs")
     except: pass
     if not os.path.isdir(ddir + os.sep + 'examples'): doit(ddir, "jsb.data.examples")
     try: touch(ddir + os.sep + "__init__.py")
