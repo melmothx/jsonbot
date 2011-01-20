@@ -9,7 +9,7 @@ warnings.simplefilter("ignore")
 
 import os, sys
 sys.path.insert(0, os.getcwd())
-
+sys.path.insert(0, "/usr/lib/python2.6/dist-packages")
 from jsb.utils.generic import isdebian, botuser
 from jsb.lib.version import getversion
 
