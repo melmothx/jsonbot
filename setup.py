@@ -5,7 +5,7 @@
 import os.path
 
 if os.path.isfile("/etc/debian_version"):
-    target = "/usr/lib/jsb"
+    target = "/var/cache/jsb"
 else:
     target = "jsb"
 
@@ -13,7 +13,7 @@ import os
 
 try:
     from setuptools import setup
-    target = "jsb"
+    #target = "jsb"
 except ImportError:
     from distutils.core import setup
 
