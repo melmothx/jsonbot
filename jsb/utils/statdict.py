@@ -21,6 +21,13 @@ class StatDict(dict):
             return
         self[item] += value
 
+    def downitem(self, item, value=1):
+        """ decrease item """
+        if not self.has_key(item):
+            self[item] = value
+            return
+        self[item] -= value
+
     def top(self, start=1, limit=None):
         """ return highest items """
         result = []
