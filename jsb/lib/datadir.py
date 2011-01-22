@@ -59,6 +59,7 @@ def doit(ddir, mod):
 def makedirs(ddir=None):
     """ make subdirs in datadir. """
     if os.path.exists("/home/jsb/.jsb") and getpass.getuser() == 'jsb': ddir = "/home/jsb/.jsb"
+    global datadir
     datadir = ddir or getdatadir()
     logging.warn("datadir - set to %s" % datadir)
     if isgae: return
