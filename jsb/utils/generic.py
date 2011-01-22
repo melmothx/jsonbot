@@ -72,10 +72,11 @@ def getwho(bot, who):
     who = who.lower()
     for user in bot.userhosts:
         if user.lower() == who: return bot.userhosts[user]
-    bot.whois(who)
-    time.sleep(3)
-    for user in bot.userhosts:
-        if user.lower() == who: return bot.userhosts[user]
+    if bot.type == "irc":
+        bot.whois(who)
+        time.sleep(3)
+        for user in bot.userhosts:
+            if user.lower() == who: return bot.userhosts[user]
     
 ## splitxt function
 

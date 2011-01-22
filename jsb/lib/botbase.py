@@ -451,15 +451,26 @@ class BotBase(LazyDict):
     def makeresponse(self, txt, result=[], dot=", ", *args, **kwargs):
         """ create a response from a string and result list. """
         res = []
-        if result:
-            txt = u"<b>" + txt + u"</b>"   
-            for i in result:
+        dres = []
+        if type(txt) == types.DictType or type(txt) == types.ListType:
+            result = txt
+        if type(result) == types.DictType:
+            for key, value in result.iteritems():
+                dres.append(u"%s: %s" % (key, unicode(value)))
+        if dres: target = dres
+        else: target = result
+        if target:
+            txt = u"<b>" + txt + u"</b>"
+            for i in target:
                 if not i: continue
                 if type(i) == types.ListType or type(i) == types.TupleType:
                     try:
                         res.append(dot.join(i))
                     except TypeError: res.extend(i)
-                else: res.append(i)
+                elif type(i) == types.DictType:
+                    for key, value in i.iteritems():
+                        res.append(u"%s: %s" % (key, unicode(value)))
+                else: res.append(unicode(i))
         if txt: return unicode(txt) + dot.join(res)   
         elif res: return dot.join(res)
         return ""
