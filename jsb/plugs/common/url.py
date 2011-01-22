@@ -7,7 +7,7 @@
 ## jsb imports
 
 from jsb.utils.exception import handle_exception
-from jsb.lib..callbacks import callbacks
+from jsb.lib.callbacks import callbacks
 from jsb.lib.commands import cmnds
 from jsb.lib.examples import examples
 from jsb.lib.persiststate import PlugState
