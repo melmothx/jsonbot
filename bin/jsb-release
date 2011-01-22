@@ -114,6 +114,12 @@ else:
     except ImportError: source = "/usr/local/jsb/data"
 print source
 copyover(source, release + os.sep + "data")
+if os.path.isdir("jsb/plugs/myplugs"): source = "jsb/plugs/myplugs"
+else:
+    try: source = pkg_resources.resource_filename("myplugs", '')
+    except ImportError: source = getdatadir() + os.sep + "myplugs"
+print source
+copyover(source, release + os.sep + "myplugs")
 print source
 source = pkg_resources.resource_filename('jsb', '')
 print source
