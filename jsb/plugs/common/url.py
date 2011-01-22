@@ -111,7 +111,7 @@ def handle_urlsearch(bot, ievent):
         ievent.reply(str(ex))
         return
     if result:
-        ievent.reply('results matching %s: ' % ievent.rest, result, nr=True)
+        ievent.reply('results matching %s: ' % ievent.rest, result)
     else:
         ievent.reply('no result found')
         return
@@ -139,7 +139,7 @@ def handle_urlsearchall(bot, ievent):
         ievent.reply(str(ex))
         return
     if result:
-        ievent.reply('results matching %s: ' % ievent.rest, result, nr=True)
+        ievent.reply('results matching %s: ' % ievent.rest, result)
     else:
         ievent.reply('no result found')
         return
