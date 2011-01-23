@@ -120,7 +120,6 @@ else:
     except ImportError: source = getdatadir() + os.sep + "myplugs"
 print source
 copyover(source, release + os.sep + "myplugs")
-print source
 source = pkg_resources.resource_filename('jsb', '')
 print source
 copyover(source, release + os.sep + 'jsb')
