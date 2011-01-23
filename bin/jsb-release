@@ -72,17 +72,19 @@ if os.path.isdir(release):
 ## define
 
 orig = 'jsonbot'
+homedir = os.path.expanduser("~")
 
 ## functions
 
 def copyover(source, target):
+    if os.path.exists(source + os.sep + "NOGAE"): print "IGNORE %s" % source ; return
     print "COPYING RESULTS TO %s" % target
-    shutil.copytree(source, target)   
+    shutil.copytree(source, target, False, shutil.ignore_patterns("\..*"))
     if len(sys.argv) > 1:
         sed(source, target)
   
 def sed(source, target):
-    print "source: %s target: %s" % (source, target)
+    print "== source: %s target: %s" % (source, target)
 
     for f in os.listdir(target):
         if f.startswith('..'):
@@ -106,22 +108,20 @@ if isdebian() and os.path.isdir("/var/cache/jsb/") and not os.path.exists("jsb/u
 else:
     try: source = pkg_resources.resource_filename("jsb", 'upload')
     except ImportError: source = "/usr/local/jsb/upload"
-print source
 copyover(source, release)
 if isdebian() and os.path.isdir("/var/cache/jsb/") and not os.path.exists("jsb/data"): source = "/var/cache/jsb/data"
 else:
     try: source = pkg_resources.resource_filename("jsb", "data")
     except ImportError: source = "/usr/local/jsb/data"
-print source
 copyover(source, release + os.sep + "data")
 if os.path.isdir("jsb/plugs/myplugs"): source = "jsb/plugs/myplugs"
+elif os.path.isdir(homedir + os.sep + ".jsb" + os.sep + "myplugs"): source = homedir + os.sep + ".jsb" + os.sep + "myplugs"
 else:
     try: source = pkg_resources.resource_filename("myplugs", '')
-    except ImportError: source = getdatadir() + os.sep + "myplugs"
-print source
-copyover(source, release + os.sep + "myplugs")
+    except ImportError: source = None
+if source: copyover(source, release + os.sep + "myplugs")
+else: print "can't find myplugs directory".upper()
 source = pkg_resources.resource_filename('jsb', '')
-print source
 copyover(source, release + os.sep + 'jsb')
 
 homedir = os.path.expanduser("~")
