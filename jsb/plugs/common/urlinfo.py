@@ -116,7 +116,8 @@ def getUrlInfo(text):
             idx += 1
 
           out += o
-        if not "http://" in out: out = out.strip() ; out += " - %s" % get_tinyurl(i)[0]
+        if "tinyurl" in i: out = out.strip() ; out += " - %s" % i
+        elif not "http://" in out: out = out.strip() ; out += " - %s" % get_tinyurl(i)[0]
       except Exception:
         pass
   return out.strip()
