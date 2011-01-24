@@ -60,17 +60,19 @@ def getauth(datadir):
 ## functions
 
 def postmsg(username, txt):
-    result = splittxt(txt, 139)
-    twitteruser = TwitterUsers("users")
-    key, secret = getcreds(getdatadir())
-    token = twittertoken(key, secret, twitteruser, username)
-    if not token:
-        raise TweepError("Can't get twitter token")
-    twitter = twitterapi(key, secret, token)
-    for txt in result:
-        status = twitter.update_status(txt)
-    logging.info("logged %s tweets for %s" % (len(result), username))
-    # BHJTW need to check status
+    try:
+        result = splittxt(txt, 139)
+        twitteruser = TwitterUsers("users")
+        key, secret = getcreds(getdatadir())
+        token = twittertoken(key, secret, twitteruser, username)
+        if not token:
+            raise TweepError("Can't get twitter token")
+        twitter = twitterapi(key, secret, token)
+        for txt in result:
+            status = twitter.update_status(txt)
+        logging.info("logged %s tweets for %s" % (len(result), username))
+        # BHJTW need to check status
+    except TweepError, ex: logging.error("twitter - error: %s" % str(ex))
     return len(result)
     
 ## classes
