@@ -13,6 +13,11 @@ from jsb.utils.statdict import StatDict
 ## basic imports
 
 import logging
+import re
+
+## defines
+
+RE_KARMA = re.compile(r'(?P<item>\([^\)]+\)|\[[^\]]+\]|\w+)(?P<mod>\+\+|--)')
 
 ## KarmaItem class
 
@@ -30,41 +35,41 @@ class KarmaItem(PlugPersist):
 ## karma precondition
 
 def prekarma(bot, event):
-    if event.iscmnd(): return True
+    if re.search(RE_KARMA, event.txt): return True
     return False
 
 ## karma callbacks
 
 def karmacb(bot, event):
-    try: target = event.txt[1:].lower()
-    except IndexError: return
-    item = item2 = rest = reason = None
-    try: item, rest = target.split("++", 1)
-    except ValueError:
-        try: item2, rest = target.split("--", 1)
-        except ValueError: return
-    try: reason = rest.split('#', 1)[1]
-    except IndexError: reason = None
-    if item:
-        i = KarmaItem(event.channel + "-" + item)
-        i.data.count += 1
-        if event.nick not in i.data.whoup: i.data.whoup[event.nick] = 0
-        i.data.whoup[event.nick] += 1
-        if reason and reason not in i.data.whyup: i.data.whyup.append(reason)
-        i.save()
-    else:
-        i = KarmaItem(event.channel + "-" + item2)
-        i.data.count -= 1
-        if event.nick not in i.data.whodown: i.data.whodown[event.nick] = 0
-        i.data.whodown[event.nick] -= 1
-        if reason and reason not in i.data.whyup: i.data.whydown.append(reason)
-        i.save()
-    got = item or item2
     event.bind(bot)
-    event.reply("karma of %s is now %s" % (got, i.data.count))
+    targets = re.findall(RE_KARMA, event.txt)
+    karma = []
+    try: reason = event.txt.split('#', 1)[1]
+    except IndexError: reason = None
+    for target in targets:
+        try: item, what = target
+        except ValueError: print target ; continue
+        if what == "++":
+            i = KarmaItem(event.channel + "-" + item)
+            i.data.count += 1
+            if event.nick not in i.data.whoup: i.data.whoup[event.nick] = 0
+            i.data.whoup[event.nick] += 1
+            if reason and reason not in i.data.whyup: i.data.whyup.append(reason)
+            i.save()
+        else:
+            i = KarmaItem(event.channel + "-" + item)
+            i.data.count -= 1
+            if event.nick not in i.data.whodown: i.data.whodown[event.nick] = 0
+            i.data.whodown[event.nick] -= 1
+            if reason and reason not in i.data.whyup: i.data.whydown.append(reason)
+            i.save()
+        karma.append("%s: %s" % (item, i.data.count))
+        got = item or item2
+    event.reply("karma - ", karma)
 
 callbacks.add('PRIVMSG', karmacb, prekarma)
 callbacks.add('MESSAGE', karmacb, prekarma)
+callbacks.add('CONSOLE', karmacb, prekarma)
 
 ## karma command
 
