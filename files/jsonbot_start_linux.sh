@@ -11,4 +11,3 @@ PID=`cat $PIDFILE` 2>/dev/null
 
 test -n "$PID" && ps auxw | grep -v grep | grep jsb-fleet | grep -q -s " $PID " && return 0
 jsb-fleet
-return 1
