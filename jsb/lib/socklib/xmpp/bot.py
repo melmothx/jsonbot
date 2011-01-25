@@ -326,7 +326,7 @@ class SXMPPBot(XMLStream, BotBase):
     def errorHandler(self, event):
         """ error handler .. calls the errorhandler set in the event. """
         try:
-            logging.error("%s - error occured in %s" % (self.name, event.dump()))
+            logging.error("%s - error occured in %s" % (self.name, event.txt))
             event.errorHandler()
         except AttributeError: logging.error('%s - unhandled error - %s' % (self.name, event.dump()))
 
