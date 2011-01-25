@@ -21,7 +21,7 @@ debug = 0
 
 # auto register new users 
 
-auto_register = 1
-guestasuser = 1
+auto_register = 0
+guestasuser = 0
 
 #color = "#123456"
