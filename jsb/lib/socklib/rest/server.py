@@ -105,8 +105,8 @@ class RestServerBase(HTTPServer):
             if i: splitted.append(i)
             else: splitted.append("/")
         splitted = tuple(splitted)
-        if not self.handlers.has_key(splitted): self.handlers[splitted[0]] = {}
-        self.handlers[splitted[0]][type] = handler
+        if not self.handlers.has_key(splitted): self.handlers[splitted] = {}
+        self.handlers[splitted][type] = handler
         logging.info('rest.server - %s %s handler added' % (splitted[0], type))
 
     def enable(self, what):
@@ -125,7 +125,7 @@ class RestServerBase(HTTPServer):
         """ do a request """
         path = unquote_plus(request.path.strip())
         path = path.split('?')[0]
-        if path.endswith('/'): path = path[:-1]
+        #if path.endswith('/'): path = path[:-1]
         splitted = []
         for i in path.split('/'):
             if i: splitted.append(i)
@@ -140,13 +140,13 @@ class RestServerBase(HTTPServer):
         request.splitted = splitted
         request.value = None
         type = request.command
-        try: func = self.handlers[splitted[0]][type]
+        try: func = self.handlers[splitted][type]
         except (KeyError, ValueError):
             try:
-                func = self.handlers[splitted[0]][type]
+                func = self.handlers[splitted][type]
                 request.value = splitted[-1]
             except (KeyError, ValueError):
-                logging.error("rest.server - no handler found for %s" % str(splitted[:-1]))
+                logging.error("rest.server - no handler found for %s" % str(splitted))
                 request.send_error(404)
                 return
         result = func(self, request)
