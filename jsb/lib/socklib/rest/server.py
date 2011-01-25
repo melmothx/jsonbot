@@ -103,7 +103,7 @@ class RestServerBase(HTTPServer):
         splitted = []
         for i in path.split('/'):
             if i: splitted.append(i)
-        else: splitted.append("/")
+            else: splitted.append("/")
         splitted = tuple(splitted)
         if not self.handlers.has_key(splitted): self.handlers[splitted[0]] = {}
         self.handlers[splitted[0]][type] = handler
@@ -129,7 +129,7 @@ class RestServerBase(HTTPServer):
         splitted = []
         for i in path.split('/'):
             if i: splitted.append(i)
-        else: splitted.append("/")
+            else: splitted.append("/")
         splitted = tuple(splitted)
         logging.warn("rest.server - incoming - %s" % str(splitted))
         for i in self.state['disable']:
