@@ -4,6 +4,10 @@
 
 """ the data directory of the bot. """
 
+## jsb imports
+
+from jsb.utils.source import getsource
+
 ## basic imports
 
 import re
@@ -29,22 +33,6 @@ def touch(fname):
     """ touch a file. """
     fd = os.open(fname, os.O_WRONLY | os.O_CREAT)
     os.close(fd)
-
-def getsource(mod):
-    source = None
-    splitted = mod.split(".")
-    if len(splitted) == 1: splitted.append("")
-    try:
-        import pkg_resources
-        source = pkg_resources.resource_filename(".".join(splitted[:len(splitted)-1]), splitted[-1])
-    except ImportError: 
-        thedir = mod.replace(".", os.sep)
-        if os.path.isdir(thedir): source = thedir
-    #if not source and os.path.isdir("/home/jsb/.jsb"): source = "/home/jsb/.jsb" + os.sep + thedir
-    if not source and os.path.isdir("/var/cache/jsb"): source = "/var/cache" + os.sep + thedir
-    if not source and os.path.isdir("/usr/lib/jsb"): source = "/usr/lib" + os.sep + thedir
-    logging.info("datadir - source is %s" % source)
-    return source
 
 def doit(ddir, mod):
     source = getsource(mod)

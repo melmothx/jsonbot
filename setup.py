@@ -2,13 +2,7 @@
 #
 #
 
-import os.path
-
-try:
-    import getpass
-    if os.path.isfile("/etc/debian_version") and getpass.getuser() == "root": target = "/var/cache/jsb"
-    else: target = "jsb"
-except ImportError: target == "jsb"
+target = "jsb" # BHJTW change this to /var/cache/jsb on debian
 
 import os
 
