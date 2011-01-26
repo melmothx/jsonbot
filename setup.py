@@ -4,10 +4,7 @@
 
 import os.path
 
-if os.path.isfile("/etc/debian_version"):
-    target = "/var/cache/jsb"
-else:
-    target = "jsb"
+target = "jsb" #BHJTW needs to be patched to /var/cache/jsb on debian
 
 import os
 
@@ -53,7 +50,7 @@ def uploadlist(dir):
 
 setup(
     name='jsb',
-    version='0.6.1',
+    version='0.6.1rc1',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
