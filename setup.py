@@ -4,7 +4,11 @@
 
 import os.path
 
-target = "jsb" #BHJTW needs to be patched to /var/cache/jsb on debian
+try:
+    import getpass
+    if os.path.isfile("/etc/debian_version") and getpass.getuser() == "root": target = "/var/cache/jsb"
+    else: target = "jsb"
+except ImportError: target == "jsb"
 
 import os
 
