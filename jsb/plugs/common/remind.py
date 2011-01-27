@@ -61,7 +61,8 @@ class Remind(PlugPersist):
                 timestr = None
             bot.saynocb(tonick, txtformat % (timestr, fromnick, txt))
             bot.saynocb(fromnick, '[%s] reminded %s of: %s' % (timestr, tonick, txt))
-        del self.data[userhost]
+        try: del self.data[userhost]
+        except KeyError: pass
         self.save()
 
 ## defines
