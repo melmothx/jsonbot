@@ -96,7 +96,6 @@ def getUrlInfo(text):
       o = ''
       try:
         #socket.setdefaulttimeout(30)
-
         server = xmlrpclib.ServerProxy("http://whatisthisfile.appspot.com/xmlrpc")
         logging.info('urlinfo - XMLRPC query: %s' % i)
         urlinfo = server.app.query(i)
@@ -105,6 +104,8 @@ def getUrlInfo(text):
             o += 'Title: "%s" ' % urlinfo['html']['title'].strip()
         elif urlinfo.has_key('image'):
           o += 'Image: %dx%d ' % (urlinfo['image']['width'], urlinfo['image']['height'])
+
+        if not o: continue
 
         #if urlinfo.has_key('real_url'):
         #  if urlinfo['real_url'] != i:
