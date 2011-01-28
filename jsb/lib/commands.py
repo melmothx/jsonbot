@@ -84,7 +84,6 @@ class Commands(LazyDict):
             try: cmnd = bot.aliases.data[cmnd]
             except (KeyError, TypeError): pass
         try:
-            print cmnd
             if cmnd:
                 event.txt = cmnd +  ' ' + ' '.join(event.txt.split()[1:])
                 event.usercmnd = cmnd.split()[0]
