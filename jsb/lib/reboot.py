@@ -40,7 +40,7 @@ def reboot_stateful(bot, ievent, fleet, partyline):
     session['partyline'] = partyline._resumedata()
     sessionfile = tempfile.mkstemp('-session', 'jsb-')[1]
     json.dump(session, open(sessionfile, 'w'))
-    #getfleet().save()
+    getfleet().save()
     args = []
     if len(sys.argv) > 1:
         os.execl(sys.argv[0], sys.argv[0], '-r', sessionfile, *sys.argv[1:])
