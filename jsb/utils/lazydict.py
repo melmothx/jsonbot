@@ -20,6 +20,7 @@ import logging
 import uuid
 import types
 import threading
+import os
 
 ## locks
 
@@ -113,3 +114,13 @@ class LazyDict(dict):
             return self
         self.update(temp)
         return self
+
+    def savetofile(self, filename):
+        f = open(filename + ".tmp", 'w')
+        f.write(self.tojson())
+        f.close()
+        os.rename(filename + '.tmp', filename)
+
+    def fromfile(self, filename):
+        f = open(filename, "r")
+        self.update(json.loads(f.read()))

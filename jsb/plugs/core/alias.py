@@ -66,6 +66,36 @@ def handle_aliasset(bot, ievent):
 cmnds.add('alias', handle_aliasset, 'USER', allowqueue=False)
 examples.add('alias', 'alias <alias> <command> .. define alias', 'alias ll list')
 
+## alias-global command
+
+def handle_aliasglobal(bot, ievent):
+    aliases = ievent.chan.data.aliases
+    if not aliases: ievent.chan.data.aliases = aliases = {}
+    from jsb.lib.aliases import getaliases
+    galiases = getaliases()
+    galiases.data.update(ievent.chan.data.aliases)
+    bot.aliases.data.update(ievent.chan.data.aliases)
+    galiases.save()
+    ievent.reply('global aliases updated')
+
+cmnds.add('alias-global', handle_aliasglobal, 'OPER', allowqueue=False)
+examples.add('alias-global', 'show global aliases', 'alias-global')
+
+## alias-makeglobal command
+
+def handle_aliasmakeglobal(bot, ievent):
+    aliases = ievent.chan.data.aliases
+    if not aliases: ievent.chan.data.aliases = aliases = {}
+    from jsb.lib.aliases import getaliases
+    galiases = getaliases()
+    galiases.data.update(ievent.chan.data.aliases)
+    bot.aliases.data.update(ievent.chan.data.aliases)
+    galiases.save()
+    ievent.reply('global aliases updated')
+
+cmnds.add('alias-makeglobal', handle_aliasmakeglobal, 'OPER', allowqueue=False)
+examples.add('alias-makeglobal', 'push channel specific aliases into the global aliases', 'alias-makeglobal')
+
 ## alias-del command
 
 def handle_delalias(bot, ievent):

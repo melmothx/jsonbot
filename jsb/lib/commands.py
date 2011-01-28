@@ -80,9 +80,15 @@ class Commands(LazyDict):
         if not cmnd: return None
         try:
             cmnd = event.chan.data.aliases[cmnd]
-            event.txt = cmnd +  ' ' + ' '.join(event.txt.split()[1:])
-            event.usercmnd = cmnd.split()[0]
-            event.prepare()
+        except (KeyError, TypeError):
+            try: cmnd = bot.aliases.data[cmnd]
+            except (KeyError, TypeError): pass
+        try:
+            print cmnd
+            if cmnd:
+                event.txt = cmnd +  ' ' + ' '.join(event.txt.split()[1:])
+                event.usercmnd = cmnd.split()[0]
+                event.prepare()
         except (TypeError, KeyError, AttributeError): pass
         logging.debug("commands - %s" % cmnd)
         bot.plugs.reloadcheck(bot, event)

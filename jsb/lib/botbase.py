@@ -25,6 +25,7 @@ from exit import globalshutdown
 from jsb.utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt
 from jsb.utils.trace import whichmodule
 from fleet import getfleet
+from aliases import getaliases
 from jsb.utils.name import stripname
 from tick import tickloop
 from threads import start_new_thread, threaded
@@ -72,6 +73,7 @@ class BotBase(LazyDict):
         else: self.cfg = Config(self.fleetdir + os.sep + u'config')
         LazyDict.__init__(self)
         self.update(self.cfg)
+        self.aliases = getaliases()
         self.curevent = None
         self.inqueue = Queue.Queue()
         self.outqueue = Queue.Queue()
