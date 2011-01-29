@@ -24,8 +24,8 @@ import types
 
 sys.path.insert(0, os.getcwd())
 sys.path.insert(0, os.getcwd() + os.sep + '..')
-try: sys.path.insert(0, os.path.expanduser("~") + os.sep + '.jsb')
-except: pass
+#try: sys.path.append(os.path.expanduser("~") + os.sep + '.jsb')
+#except: pass
 
 ## defines
 
@@ -51,11 +51,13 @@ cmndperms = None
 def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
     """ initialize the bot. """
     logging.info("booting ..")
-    from jsb.lib.datadir import getdatadir
+    from jsb.lib.datadir import getdatadir, setdatadir
+    if ddir: setdatadir(ddir)
+    origdir = ddir 
     ddir = ddir or getdatadir()
-    if ddir: makedirs(ddir)
-    else: makedirs() 
+    if not ddir: logging.error("can't determine datadir to boot from") ; os._exit(1)
     if not ddir in sys.path: sys.path.append(ddir)
+    makedirs(ddir)
     if os.path.isdir("/var/run/jsb") and botuser() == "jsb": rundir = "/var/run/jsb"
     else: rundir = ddir + os.sep + "run"
     try:
