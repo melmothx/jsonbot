@@ -115,7 +115,7 @@ class LazyDict(dict):
         self.update(temp)
         return self
 
-    def savetofile(self, filename):
+    def tofile(self, filename):
         f = open(filename + ".tmp", 'w')
         f.write(self.tojson())
         f.close()

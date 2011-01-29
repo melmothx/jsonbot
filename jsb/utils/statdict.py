@@ -4,9 +4,13 @@
 
 """ dictionairy to keep stats. """
 
+## jsb imports
+
+from jsb.utils.lazydict import LazyDict
+
 ## classes
 
-class StatDict(dict):
+class StatDict(LazyDict):
 
     """ dictionary to hold stats """
 
