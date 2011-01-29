@@ -33,7 +33,7 @@ class Command(LazyDict):
 
     """ a command object. """
 
-    def __init__(self, modname, cmnd, func, perms=[], threaded=False, wait=False, orig=None):
+    def __init__(self, modname, cmnd, func, perms=[], threaded=False, wait=False, orig=None, how=None):
         LazyDict.__init__(self)
         if not modname: raise Exception("modname is not set - %s" % cmnd)
         self.modname = modname
@@ -47,6 +47,7 @@ class Command(LazyDict):
         self.threaded = threaded
         self.wait = wait
         self.enable = True
+        self.how = how or "channel"
 
 class Commands(LazyDict):
 
@@ -55,17 +56,17 @@ class Commands(LazyDict):
  
     """
 
-    def add(self, cmnd, func, perms, threaded=False, wait=False, *args, **kwargs):
+    def add(self, cmnd, func, perms, threaded=False, wait=False, orig=None, how=None, *args, **kwargs):
         """ add a command. """
         modname = calledfrom(sys._getframe())
-        self[cmnd] = Command(modname, cmnd, func, perms, threaded, wait)
+        self[cmnd] = Command(modname, cmnd, func, perms, threaded, wait, orig, how)
         try:
             c = cmnd.split('-')[1]
             if not self.subs: self.subs = LazyDict()
             if self.subs.has_key(c):
                 if not self.subs[c]: self.subs[c] = []
-                self.subs[c].append(Command(modname, c, func, perms, threaded, wait, cmnd))
-            else: self.subs[c] = [Command(modname, c, func, perms, threaded, wait, cmnd), ]
+                self.subs[c].append(Command(modname, c, func, perms, threaded, wait, cmnd, how))
+            else: self.subs[c] = [Command(modname, c, func, perms, threaded, wait, cmnd, how), ]
         except IndexError: pass
         return self
 
@@ -135,6 +136,7 @@ class Commands(LazyDict):
              return
         id = event.auth or event.userhost
         event.iscommand = True
+        event.how = target.how
         logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
             if bot.isgae or wait:

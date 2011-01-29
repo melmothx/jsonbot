@@ -218,7 +218,7 @@ def handle_helpplug(bot, ievent):
         if perms: ievent.reply('no commands available for permissions: %s' % ", ".join(perms))
         else: ievent.reply("can't find help on %s" % what)
 
-cmnds.add('help', handle_helpplug, ['USER', 'GUEST'])
+cmnds.add('help', handle_helpplug, ['USER', 'GUEST'], how="msg")
 examples.add('help', 'get help on <cmnd> or <plugin>', '1) help 2) help misc')
 
 ## apro command

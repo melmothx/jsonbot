@@ -48,7 +48,7 @@ class EventBase(LazyDict):
         self.bottype = "botbase"
         self.closequeue = True
         self.ttl = 1
-        self.how = "normal"
+        self.how = "channel"
         self.chantag = None
         self.resqueue = Queue.Queue()
         self.forwarded = False

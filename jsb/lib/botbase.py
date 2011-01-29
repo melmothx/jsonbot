@@ -347,10 +347,10 @@ class BotBase(LazyDict):
         logging.debug(u"%s - out - %s" % (self.name, txt))
         print txt
 
-    def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", *args, **kwargs):
+    def makeoutput(self, printto, txt, result=[], nr=375, extend=0, dot=", ", origin=None, *args, **kwargs):
         if not txt: return ""
         txt = self.makeresponse(txt, result, dot)
-        res1, nritems = self.less(printto, txt, nr+extend)
+        res1, nritems = self.less(origin or printto, txt, nr+extend)
         return res1
 
     def out(self, printto, txt, how="msg", event=None, origin=None, html=False, *args, **kwargs):
@@ -370,9 +370,13 @@ class BotBase(LazyDict):
             logging.debug("%s - event has nooutput set, not outputing" % self.name)
             if event: event.outqueue.put_nowait(txt)
             return
+        if event and event.how == "msg":
+             if self.type == "irc": target = event.nick
+             else: target = channel
+        else: target = channel
         if event and event.showall: txt = self.makeresponse(txt, result, dot, *args, **kwargs)
-        else: txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        if txt: self.out(channel, txt, how, event=event, origin=channel, *args, **kwargs)
+        else: txt = self.makeoutput(channel, txt, result, nr, extend, dot, origin=target, *args, **kwargs)
+        if txt: self.out(target, txt, how, event=event, origin=target, *args, **kwargs)
         if event: event.outqueue.put_nowait(txt)
         
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
