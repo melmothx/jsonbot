@@ -365,7 +365,7 @@ class BotBase(LazyDict):
     writenocb = outnocb
 
     def say(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
-        if event.userhost in self.ignore: logging.warn("%s - ignore on %s - no output done" % (self.name, event.userhost)) ; return
+        if event and event.userhost in self.ignore: logging.warn("%s - ignore on %s - no output done" % (self.name, event.userhost)) ; return
         if event and event.nooutput:
             logging.debug("%s - event has nooutput set, not outputing" % self.name)
             if event: event.outqueue.put_nowait(txt)
