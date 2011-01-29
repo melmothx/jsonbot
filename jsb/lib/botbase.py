@@ -73,6 +73,7 @@ class BotBase(LazyDict):
         else: self.cfg = Config(self.fleetdir + os.sep + u'config')
         LazyDict.__init__(self)
         self.update(self.cfg)
+        self.ignore = []
         self.aliases = getaliases()
         self.curevent = None
         self.inqueue = Queue.Queue()
