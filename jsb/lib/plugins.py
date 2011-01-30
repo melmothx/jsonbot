@@ -84,30 +84,24 @@ class Plugins(LazyDict):
         except KeyError: pass
         return True
 
-    def load(self, modname, force=False, showerror=False):
+    def load(self, modname, force=False, showerror=False, loaded=[]):
         """ load a plugin. """
         if not modname: raise NoSuchPlugin(modname)
+        if modname in loaded: logging.warn("plugins - skipping %s" % modname) ; return loaded
         if self.has_key(modname):
             try:
                 logging.info("plugins - %s already loaded" % modname)                
                 if not force: return self[modname]
                 self[modname] = reload(self[modname])
-                try: init = getattr(self[modname], 'init')
-                except AttributeError:
-                    logging.info("%s reloaded - no init" % modname)
-                    return self[modname]
-                init()
-                logging.debug('plugins - %s init called' % modname)
-                logging.info("%s reloaded - with init" % modname)
-                return self[modname]
             except Exception, ex: raise
-        logging.debug("plugins - trying %s" % modname)
-        mod = _import(modname)
-        if not mod: return None
-        try: self[modname] = mod
-        except KeyError:
-            logging.info("plugins - failed to load %s" % modname)
-            raise NoSuchPlugin(modname)
+        else:
+            logging.debug("plugins - trying %s" % modname)
+            mod = _import(modname)
+            if not mod: return None
+            try: self[modname] = mod
+            except KeyError:
+                logging.info("plugins - failed to load %s" % modname)
+                raise NoSuchPlugin(modname)
         try: init = getattr(self[modname], 'init')
         except AttributeError:
             logging.debug("%s loaded - no init" % modname)
@@ -117,13 +111,26 @@ class Plugins(LazyDict):
             logging.debug('plugins - %s init called' % modname)
         except Exception, ex: raise
         logging.debug("%s loaded - with init" % modname)
-        return self[modname]
+        loaded.append(modname)
+        return loaded
+
+    def loaddeps(self, modname, force=False, showerror=False, loaded=[]):
+        try:
+            deps = self[modname].__depending__
+            if deps: logging.warn("plugins - dependcies detected: %s" % deps)
+            for dep in deps:
+                if dep not in loaded:
+                    if self.has_key(dep): self.unload(dep)
+                    self.load(dep, force, showerror, loaded)
+        except AttributeError: pass
+        return loaded
 
     def reload(self, modname, force=True, showerror=False):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
         if self.has_key(modname): self.unload(modname)
-        return self.load(modname, force=force, showerror=showerror)
+        loaded = self.load(modname, force, showerror)
+        return self.loaddeps(modname, force, showerror, loaded)
 
     def dispatch(self, bot, event, wait=0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
@@ -199,7 +206,7 @@ class Plugins(LazyDict):
                     logging.info("plugins - no %s plugin package found" % module)
                     continue
                 raise
-            except Exception, ex: handle_exception()
+            except Exception, ex: handle_exception() ; continue
             if plugname in imp.__plugs__: return "%s.%s" % (module, plugname)
 
 
