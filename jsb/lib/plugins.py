@@ -102,11 +102,8 @@ class Plugins(LazyDict):
                 return self[modname]
             except Exception, ex: raise
         logging.debug("plugins - trying %s" % modname)
-        try: mod = _import(modname)
-        except ImportError, ex:
-            logging.info("plugins - import error on %s - %s" % (modname, str(ex)))
-            if showerror: handle_exception()
-            raise NoSuchPlugin(modname)
+        mod = _import(modname)
+        if not mod: return None
         try: self[modname] = mod
         except KeyError:
             logging.info("plugins - failed to load %s" % modname)
@@ -126,10 +123,7 @@ class Plugins(LazyDict):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
         if self.has_key(modname): self.unload(modname)
-        try: return self.load(modname, force=force, showerror=showerror)
-        except Exception, ex:
-            if showerror: handle_exception()
-            logging.info("plugins - %s not found - %s" % (modname, str(ex)))
+        return self.load(modname, force=force, showerror=showerror)
 
     def dispatch(self, bot, event, wait=0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """
@@ -200,9 +194,11 @@ class Plugins(LazyDict):
     def getmodule(self, plugname):
         for module in plugin_packages:
             try: imp = _import(module)
-            except ImportError:
-                logging.info("plugins - no %s plugin package found" % module)
-                continue
+            except ImportError, ex:
+                if "No module" in str(ex):
+                    logging.info("plugins - no %s plugin package found" % module)
+                    continue
+                raise
             except Exception, ex: handle_exception()
             if plugname in imp.__plugs__: return "%s.%s" % (module, plugname)
 
