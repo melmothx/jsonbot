@@ -17,9 +17,9 @@ def handle_set(bot, ievent):
     """ let the user manage its own state. """
     try: (item, value) = ievent.args
     except ValueError: ievent.missing("<item> <value>") ; return
-    ievent.user.state.data[item] = value
+    ievent.user.state.data[item.lower()] = value
     ievent.user.state.save()
-    ievent.reply("%s set to %s" % (item, value))
+    ievent.reply("%s set to %s" % (item.lower(), value))
     
 cmnds.add('set', handle_set, ['OPER', 'USER', 'GUEST'])
 examples.add('set', 'set userstate', 'set place heerhugowaard')
@@ -29,6 +29,7 @@ examples.add('set', 'set userstate', 'set place heerhugowaard')
 def handle_get(bot, ievent):
     """ get state of a user. """
     target = ievent.rest
+    if target: target = target.lower()
     userstate = ievent.user.state
     result = []
     for i, j in userstate.data.iteritems():
@@ -44,8 +45,8 @@ examples.add('get', 'get your userstate', 'get')
 def handle_unset(bot, ievent):
     """ remove value from user state of the user giving the command. """
     try:
-        item = ievent.args[0]
-    except IndexError:
+        item = ievent.args[0].lower()
+    except (IndexError, TypeError):
         ievent.missing('<item>')
         return
     try: del ievent.user.state.data[item]

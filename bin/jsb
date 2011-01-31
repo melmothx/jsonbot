@@ -23,6 +23,7 @@ parser.add_option('-d', '--datadir', type='string', default=False, dest='datadir
 parser.add_option('-c', '--channel', type='string', default=False, dest='channel', help="channel to operate on")
 parser.add_option('-n', '--name', type='string', default=False, dest='name', help="name of the console bot")
 parser.add_option('-l', '--loglevel', type='string', default=False, dest='loglevel', help="logging level")
+parser.add_option('-f', '--fast', action="store_true", default=False, dest='fast', help="boot fast (dont load myplugs)")
 opts, args = parser.parse_args()
 opts.args = args
 
@@ -34,7 +35,8 @@ from jsb.utils.log import setloglevel
 setloglevel(opts.loglevel or "error")
 
 from jsb.lib.boot import boot
-boot(opts.datadir)
+if opts.fast: boot(opts.datadir, fast=True)
+else: boot(opts.datadir)
 
 ## jsb imports
 

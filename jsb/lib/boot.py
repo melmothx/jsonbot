@@ -48,7 +48,7 @@ cmndperms = None
 
 ## boot function
 
-def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
+def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True, fast=False):
     """ initialize the bot. """
     logging.info("booting ..")
     from jsb.lib.datadir import getdatadir, setdatadir
@@ -108,7 +108,8 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True):
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
             plugs.reload(plug, showerror=True, force=True)
-        plugs.loadall(["myplugs", "jsb.plugs.myplugs"], force=True)
+        if not fast: plugs.loadall(["myplugs", "jsb.plugs.myplugs"], force=True)
+        else: logging.error("skipped loading of myplugs")
     logging.warn("boot - done")
 
 ## commands related commands

@@ -151,7 +151,8 @@ class EventBase(LazyDict):
         logging.info("======== STOP handling event ========")
 
     def makeoptions(self):
-        self.options = makeeventopts(self.txt)
+        try: self.options = makeeventopts(self.txt)
+        except: return 
         if not self.options: return
         logging.debug("eventbase - options - %s" % unicode(self.options))
         self.txt = ' '.join(self.options.args)

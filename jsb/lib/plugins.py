@@ -116,8 +116,8 @@ class Plugins(LazyDict):
     def loaddeps(self, modname, force=False, showerror=False, loaded=[]):
         try:
             deps = self[modname].__depending__
+            if deps: logging.warn("plugins - dependcies detected: %s" % deps)
         except (KeyError, AttributeError): deps = [modname, ]
-        if deps: logging.warn("plugins - dependcies detected: %s" % deps)
         for dep in deps:
             if dep not in loaded:
                 if self.has_key(dep): self.unload(dep)

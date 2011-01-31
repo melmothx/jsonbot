@@ -97,7 +97,8 @@ class Commands(LazyDict):
         try:
             result = self[cmnd]
         except KeyError:
-            if self.subs and self.subs.has_key(cmnd): result = self.subs[cmnd][0]
+            # if self.subs and self.subs.has_key(cmnd): result = self.subs[cmnd][0]
+            pass 
         logging.debug("commands - woulddispatch result: %s" % result)
         return result
 
