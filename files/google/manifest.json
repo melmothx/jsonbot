@@ -1,0 +1,20 @@
+{
+"name": "JSONBOT",
+"description": "The bot for you!",
+"version": "0.6.1",
+"icons": {
+"128": "128.png"
+},
+"app": {
+"urls": [
+"https://jsonbot.appspot.com/"
+],
+"launch": {
+"web_url": "https://jsonbot.appspot.com/"
+}
+},
+"permissions": [
+"unlimitedStorage",
+"notifications"
+]
+}
