@@ -9,6 +9,7 @@
 from jsb.utils.exception import handle_exception, exceptionmsg
 from jsb.utils.generic import stripped
 from jsb.utils.name import stripname
+from persiststate import UserState
 from persist import Persist
 from jsb.utils.lazydict import LazyDict
 from datadir import getdatadir
@@ -40,6 +41,7 @@ class JsonUser(Persist):
         self.data.permits = self.data.permits or permits
         self.data.status = self.data.status or status
         self.data.email = self.data.email or email
+        self.state = UserState(name)
 
 ## Users class
 

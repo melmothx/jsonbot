@@ -111,26 +111,25 @@ class Plugins(LazyDict):
             logging.debug('plugins - %s init called' % modname)
         except Exception, ex: raise
         logging.debug("%s loaded - with init" % modname)
-        loaded.append(modname)
-        return loaded
+        return self[modname]
 
     def loaddeps(self, modname, force=False, showerror=False, loaded=[]):
         try:
             deps = self[modname].__depending__
-            if deps: logging.warn("plugins - dependcies detected: %s" % deps)
-            for dep in deps:
-                if dep not in loaded:
-                    if self.has_key(dep): self.unload(dep)
-                    self.load(dep, force, showerror, loaded)
-        except AttributeError: pass
+        except (KeyError, AttributeError): deps = [modname, ]
+        if deps: logging.warn("plugins - dependcies detected: %s" % deps)
+        for dep in deps:
+            if dep not in loaded:
+                if self.has_key(dep): self.unload(dep)
+                self.load(dep, force, showerror, loaded)
+                loaded.append(dep)
         return loaded
 
     def reload(self, modname, force=True, showerror=False):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
         if self.has_key(modname): self.unload(modname)
-        loaded = self.load(modname, force, showerror)
-        return self.loaddeps(modname, force, showerror, loaded)
+        return self.loaddeps(modname, force, showerror, [])
 
     def dispatch(self, bot, event, wait=0, *args, **kwargs):
         """ dispatch event onto the cmnds object. check for pipelines first. """

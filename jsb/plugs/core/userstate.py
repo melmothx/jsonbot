@@ -13,38 +13,48 @@ from jsb.lib.errors import NoSuchUser
 
 ## userstate command
 
-def handle_userstate(bot, ievent):
+def handle_set(bot, ievent):
     """ let the user manage its own state. """
     try: (item, value) = ievent.args
-    except ValueError: item = value = None
+    except ValueError: ievent.missing("<item> <value>") ; return
     username = bot.users.getname(ievent.userhost)
     if not username:
         ievent.reply("we have not state of %s" % ievent.userhost)
         return
     userstate = UserState(username)
-    if item and value:
-        userstate[item] = value
-        userstate.save()
+    userstate[item] = value
+    userstate.save()
+    ievent.reply("%s set to %s" % (item, value))
+    
+cmnds.add('set', handle_set, ['OPER', 'USER', 'GUEST'])
+examples.add('set', 'set userstate', 'set place heerhugowaard')
+
+## userstate-get command
+
+def handle_get(bot, ievent):
+    """ get state of a user. """
+    target = ievent.rest
+    username = ievent.user.data.name
+    if not username: ievent.reply("we dont have any state of you.")
+    userstate = UserState(username)
+    result = []
+    for i, j in userstate.data.iteritems():
+        if target == i or not target: result.append("%s=%s" % (i, j))
+    if result: ievent.reply("state: ", result)
+    else: ievent.reply('no userstate of %s known' % username)
+
+cmnds.add('get', handle_get, ['OPER', 'USER', 'GUEST'])
+examples.add('get', 'get your userstate', 'get')
+
+def handle_userstateget(bot, ievent):
+    """ get state of a user. """
+    if not ievent.rest: ievent.missing("<username>") ; return
+    else: username = ievent.rest
+    userstate = UserState(username)
     result = []
     for i, j in userstate.data.iteritems(): result.append("%s=%s" % (i, j))
     if result: ievent.reply("userstate of %s: " % username, result)
     else: ievent.reply('no userstate of %s known' % username)
-
-cmnds.add('userstate', handle_userstate, ['USER', 'GUEST'])
-examples.add('userstate', 'get or set userstate', '1) userstate 2) userstate TZ -1')
-
-## userstate-get command
-
-def handle_userstateget(bot, ievent):
-    """ get state of a user. """
-    if not ievent.rest:
-        ievent.missing('<username>')
-        return
-    userstate = UserState(ievent.rest)
-    result = []
-    for i, j in userstate.data.iteritems(): result.append("%s=%s" % (i, j))
-    if result: ievent.reply("userstate of %s: " % ievent.rest, result)
-    else: ievent.reply('no userstate of %s known' % ievent.rest)
 
 cmnds.add('userstate-get', handle_userstateget, 'OPER')
 examples.add('userstate-get', 'get the userstate of another user', 'userstate-get dunker')
@@ -71,4 +81,4 @@ def handle_unset(bot, ievent):
     ievent.reply('item %s deleted' % item)
 
 cmnds.add('unset', handle_unset, ['USER', 'GUEST'])
-examples.add('unset', 'delete userstate variable for user gving the command', '1) unset TZ')
+examples.add('unset', 'delete variable from your state', 'unset TZ')
