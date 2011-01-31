@@ -116,6 +116,7 @@ class XMLStream(NodeBuilder):
                 logging.error("%s - data is not well formed" % self.name)
                 logging.debug(data)
                 handle_exception()
+                logging.debug("buffer: %s previous: %s" % (self.buffer, self.prevbuffer))
                 return {}
             logging.debug("%s - ALERT: %s - %s" % (self.name, str(ex), data))
         except Exception, ex:
@@ -128,23 +129,27 @@ class XMLStream(NodeBuilder):
         self.reslist = []
         self.tags = []
         self.subelements = []
-        self.buffer = ""
+        #self.buffer = ""
         return result
 
     @inlocked
     def loop_one(self, data):
         """ handle one xml stanza. """
-        self.parse_one(data)
-        return self.finish(data)
+        if self.parse_one(data): return self.finish(data)
+        return {}
 
     def _readloop(self):
         """ proces all incoming data. """
         logging.debug('%s - starting readloop' % self.name)
+        self.prevbuffer = ""
         self.buffer = ""
         self.error = ""
+        data = ""
         while not self.stopped:
+            time.sleep(0.0001)
             try:
                 data = jabberstrip(fromenc(self.connection.read()))
+                logging.debug(u"%s - incoming: %s" % (self.name, data))
                 if data.endswith("</stream:stream>"):
                     logging.error("%s - end of stream detected" % self.name)
                     self.error = "streamend"
@@ -155,15 +160,20 @@ class XMLStream(NodeBuilder):
                     self.error = 'disconnected'
                     self.disconnectHandler(Exception('remote %s disconnected' %  self.host))
                     break
-                if data:
-                    self.buffer += data
-                    splitted = data.split("<")
+                if True:
+                    self.buffer = u"%s%s" % (self.buffer, data)
+                    splitted = self.buffer.split("<")
                     lastitem = splitted[-1]
                     for handler in self.handlers.keys():
-                        if (handler in lastitem and '/' in lastitem) or lastitem.endswith("/>"):
-                            self.loop_one(self.buffer)
-                            self.buffer = ""
-                            break
+                        index = self.buffer.find("%s>" % handler)
+                        if index != -1:
+                            try:
+                                if self.loop_one(self.buffer[:index]):
+                                    self.buffer = self.buffer[index+1:]
+                                else:
+                                    self.buffer = ""
+                                    break
+                            except: handle_exception()
             except xml.parsers.expat.ExpatError, ex:
                 logging.error("%s - %s - %s" % (self.name, str(ex), data))
                 self.buffer = ""
@@ -289,12 +299,13 @@ class XMLStream(NodeBuilder):
         else:
             logging.error("%s - can't find handler for %s" % (self.name, element))
             result = {}
-        self.final = {}
-        self.reslist = []
-        self.tags = []
-        self.subelements = []
-        self.buffer = ""
-        return result
+        if result:
+            self.final = {}
+            self.reslist = []
+            self.tags = []
+            self.subelements = []
+            self.buffer = ""
+            return result
 
     def unknown_starttag(self,  tag, attrs):
         """ handler called by the self._parser on start of a unknown start tag. """
