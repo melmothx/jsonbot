@@ -21,9 +21,6 @@ def getsource(mod):
     except ImportError:
         thedir = mod.replace(".", os.sep)
         if os.path.isdir(thedir): source = thedir
-    #if not source and os.path.isdir("/home/jsb/.jsb"): source = "/home/jsb/.jsb" + os.sep + thedir
-    if not source and os.path.isdir("/var/cache/jsb"): source = "/var/cache" + os.sep + thedir
-    if not source and os.path.isdir("/usr/lib/jsb"): source = "/usr/lib" + os.sep + thedir
-    if not source and os.path.isdir("/usr/jsb"): source = "/usr" + os.sep + thedir        
+    if not source and os.path.isdir("/usr/lib/jsb"): source = "/usr/lib" + os.sep + thedir # BHJTW set this to /var/cache on debian
     logging.info("datadir - source is %s" % source)
     return source
