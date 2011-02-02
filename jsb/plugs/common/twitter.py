@@ -71,7 +71,6 @@ def postmsg(username, txt):
         for txt in result:
             status = twitter.update_status(txt)
         logging.info("logged %s tweets for %s" % (len(result), username))
-        # BHJTW need to check status
     except TweepError, ex: logging.error("twitter - error: %s" % str(ex))
     return len(result)
     

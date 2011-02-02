@@ -96,15 +96,6 @@ def handle_ask(bot, event):
         questions.data[expert].append([bot.name, bot.type, event.userhost, event.channel])
     questions.save()
     event.reply('question is sent to %s' % ' .. '.join(expertslist))
-    logging.debug('options: %s' % str(event.options))
-    # BHJTW .. need to adapt this to new style event.options 
-    #if event.options and '-w' in event.options:
-    #    event.reply('wave for this question is created for %s' % event.userhost)
-    #    bot = fleet.makebot(type='wave')
-    #     if bot:
-    #         newwave = bot.newwave(event.context, participants=['jsb@appspot.com', event.userhost])
-    #         newwave.SetTitle("ask-bot wave: %s" % question)
-    #
 
 cmnds.add('ask', handle_ask, ['USER', 'GUEST'], options={'-w': False})
 examples.add('ask', 'ask [group|JID] question .. ask a groups of users a question or use a specific JID', 'ask ask-bot what is the mercurial repository')
