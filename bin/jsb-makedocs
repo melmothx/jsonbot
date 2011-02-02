@@ -155,12 +155,11 @@ def gendoc(mod, f, output):
                     if 'deadline' in i: continue
                     out = bot.docmnd("test@test", "#test", i.strip(), wait=5.0)
                     if not out: continue
-                    #res = waitforqueue(out.outqueue, 4)
-                    print out.result
-                    if not out.result:
+                    res = waitforqueue(out.outqueue, 5000)
+                    if not res:
                         output.write("        <output> none" + '\n')
                         continue
-                    result = ' - '.join(out.result)
+                    result = ' - '.join(res)
                     result = result.replace('\002', '')
                     teller2 = 1
                     for j in splittxt(result, 50):
@@ -318,7 +317,7 @@ if __name__ == '__main__':
             #gendoc('jsb.plugs.gae', file, f)
 
         for t in threads:
-            t.join(10)
+            t.join(30)
 
     time.sleep(5)
     domods(os.path.join('jsb', 'lib'))

@@ -131,7 +131,7 @@ class EventBase(LazyDict):
             self.bot.say(self.nick, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         elif self.isdcc: self.bot.say(self.sock, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         else: self.bot.say(self.channel, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
-        self.outqueue.put_nowait(txt)
+        #self.outqueue.put_nowait(txt)
         self.result.append(txt)
         return self
 
