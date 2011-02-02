@@ -487,7 +487,7 @@ class SXMPPBot(XMLStream, BotBase):
         if password:
              presence.x.password = password             
         self.send(presence)
-        errorobj = waitforqueue(q, 3)
+        errorobj = waitforqueue(q, 3000)
         if errorobj:
             err = errorobj[0].error
             logging.error('%s - error joining %s - %s' % (self.name, channel, err))

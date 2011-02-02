@@ -21,7 +21,7 @@ def handle_tail(bot, ievent):
     except (ValueError, IndexError):
         ievent.reply('tail <nr>')
         return
-    result = waitforqueue(ievent.inqueue, 5)
+    result = waitforqueue(ievent.inqueue, 3000)
     if not result:
         ievent.reply('no data to tail')
         return

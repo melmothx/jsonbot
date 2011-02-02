@@ -256,7 +256,7 @@ class Fleet(Persist):
         j.queues = [q]
         j.speed = 3
         plugs.trydispatch(bot, j)
-        result = waitforqueue(q)
+        result = waitforqueue(q, 3000)
         if not result: return
         res = ["[%s]" % bot.botname, ]
         res += result

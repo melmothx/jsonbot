@@ -75,7 +75,7 @@ def handle_sort(bot, ievent):
             ievent.reply(str(e))
             return
     elif ievent.inqueue:
-        result = waitforqueue(ievent.inqueue, 30)
+        result = waitforqueue(ievent.inqueue, 3000)
         try: options, args = parser.parse_args(ievent.rest.split())
         except SortError, e:
             ievent.reply(str(e))

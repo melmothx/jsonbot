@@ -13,7 +13,7 @@
 from jsb.utils.exception import handle_exception
 from jsb.utils.generic import toenc, fromenc
 from jsb.lib.socklib.utils.generic import getrandomnick, strippedtxt
-from jsb.lib.socklib.utils.generic import fix_format, splittxt, waitforqueue, uniqlist
+from jsb.lib.socklib.utils.generic import fix_format, splittxt, uniqlist
 from jsb.utils.locking import lockdec
 from jsb.lib.botbase import BotBase
 from jsb.lib.threads import start_new_thread, threaded

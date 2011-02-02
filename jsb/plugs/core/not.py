@@ -29,7 +29,7 @@ def handle_not(bot, ievent):
     except getopt.GetoptError, ex:
         ievent.reply(str(ex))
         return
-    result = waitforqueue(ievent.inqueue, 10)
+    result = waitforqueue(ievent.inqueue, 3000)
     if not result:
         ievent.reply('no data to grep on')
         return

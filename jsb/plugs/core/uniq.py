@@ -22,7 +22,7 @@ def handle_uniq(bot, ievent):
     if not ievent.inqueue:
         ievent.reply('use uniq in a pipeline')
         return
-    result = waitforqueue(ievent.inqueue, 30)
+    result = waitforqueue(ievent.inqueue, 3000)
     if not result:
         ievent.reply('no data')
         return

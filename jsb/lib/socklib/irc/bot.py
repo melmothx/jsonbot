@@ -168,7 +168,7 @@ class IRCBot(Irc):
                     ievent.queues = [q]
                     ievent.txt = ievent.txt[1:]
                     self.doevent(ievent)
-                    result = waitforqueue(q, 5)
+                    result = waitforqueue(q, 3000)
                     if result:
                         for i in result:
                             partyline.say_broadcast("[bot] %s" % i)
