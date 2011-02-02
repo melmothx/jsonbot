@@ -8,7 +8,6 @@ import os
 
 try:
     from setuptools import setup
-    #target = "jsb"
 except ImportError:
     from distutils.core import setup
 
