@@ -47,7 +47,7 @@ def uploadlist(dir):
 
 setup(
     name='jsb',
-    version='0.6.1',
+    version='0.6.1.1',
     url='http://jsonbot.googlecode.com/',
     download_url="http://code.google.com/p/jsonbot/downloads", 
     author='Bart Thate',
