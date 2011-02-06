@@ -594,5 +594,5 @@ class BotBase(LazyDict):
         e.closequeue = True
         e.showall = showall
         e.nooutput = nooutput
-        if wait: e.direct = True ; e.nothreads = True ; e.dontclose = True
+        if wait: e.direct = True ; e.nothreads = True
         if cmnds.woulddispatch(self, e): return self.doevent(e)
