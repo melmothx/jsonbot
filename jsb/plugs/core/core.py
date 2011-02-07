@@ -176,7 +176,7 @@ def handle_helpplug(bot, ievent):
         try:
              modname = "%s.%s" % (package, what)
              try:
-                 plugin = plugs.reload(modname)
+                 plugin = plugs.load(modname)
                  if plugin: break
              except NoSuchPlugin: continue
         except(KeyError, ImportError): pass
