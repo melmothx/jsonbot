@@ -69,7 +69,7 @@ class Fleet(Persist):
     def loadall(self, names=[]):
         """ load all bots. """ 
         target = names or self.data.names
-        if not target: logging.error("fleet - no bots in fleet")
+        if not target: logging.error("fleet - no bots in fleet") ; return
         else: logging.warning("fleet - loading %s" % ", ".join(target))
         threads = []
         for name in target:
@@ -123,8 +123,9 @@ class Fleet(Persist):
             cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
             cfg['name'] = cfg['botname'] = name
         if cfg.disable:
-            logging.warn("fleet - %s bot is disabled" % name)
+            logging.warn("fleet - %s bot is disabled. see %s" % (name, cfg.cfile))
             if showerror: raise BotNotEnabled(name)
+            return
         if not cfg.type and type:
             logging.debug("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
