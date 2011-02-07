@@ -146,7 +146,6 @@ def makeircconfig(type=None, opts=None, botname=None):
         cfg.port = 6667
         cfg.server = "localhost"
         cfg.owner = []
-        cfg.loglevel = "warn"
         cfg.ipv6 = False
         return cfg          
     if opts.password: cfg.password = opts.password
@@ -158,8 +157,6 @@ def makeircconfig(type=None, opts=None, botname=None):
     else: cfg.server = cfg.server or "localhost"
     if not cfg.owner: cfg.owner = []
     if opts.owner and opts.owner not in cfg.owner: cfg.owner.append(opts.owner)
-    if opts.loglevel: cfg.loglevel = opts.loglevel
-    else: cfg.loglevel = cfg.loglevel or "warn"
     if opts.ipv6: cfg.ipv6 = opts.ipv6
     return cfg
 
@@ -195,6 +192,4 @@ def makexmppconfig(type, opts=None, botname=None):
     if opts.name: cfg.jid = opts.name
     if not cfg.owner: cfg.owner = []
     if opts.owner and opts.owner not in cfg.owner: cfg.owner.append(opts.owner)
-    if opts.loglevel: cfg.loglevel = opts.loglevel
-    else: cfg.loglevel = cfg.loglevel or "warn"
     return cfg

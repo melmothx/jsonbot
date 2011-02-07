@@ -26,10 +26,14 @@ setloglevel(opts.loglevel or "error")
 import logging
 logging.warn(getversion("INIT"))
 
-from jsb.lib.datadir import makedirs
-if isdebian() and botuser == "jsb": makedirs("/home/jsb/.jsb")
-else: makedirs(opts.datadir)
-
-from jsb.utils.opts import makeircconfig, makexmppconfig
-irccfg = makeircconfig('irc') ; irccfg.save()
-xmppconfig = makexmppconfig("xmpp") ; xmppconfig.save()
+from jsb.lib.datadir import makedirs, getdatadir
+ddir = opts.datadir or getdatadir()
+try:
+    makedirs(ddir)
+except Exception, ex: print str(ex) ; os._exit(1)
+from jsb.lib.config import makedefaultconfig
+from jsb.lib.fleet import getfleet
+makedefaultconfig("irc", ddir)
+getfleet().addnametype("default-irc", "irc")
+makedefaultconfig("sxmpp", ddir)
+getfleet().addnametype("default-sxmpp", "sxmpp")

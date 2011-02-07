@@ -37,9 +37,7 @@ def touch(fname):
 def doit(ddir, mod):
     source = getsource(mod)
     if not source: raise Exception("can't find %s package" % mod)
-    try:
-        shutil.copytree(source, ddir + os.sep + mod.replace(".", os.sep))
-    except (OSError, IOError), ex: logging.error("datadir - failed to copy %s: %s" % (mod, str(ex)))
+    shutil.copytree(source, ddir + os.sep + mod.replace(".", os.sep))
 
 
 ## makedir function
@@ -58,11 +56,11 @@ def makedirs(ddir=None):
     try: os.chmod(ddir, 0700)
     except: pass
     last = datadir.split(os.sep)[-1]
-    if not os.path.isdir(ddir): doit(ddir, "jsb.data")
-    try:
-        if not os.path.isdir(ddir + os.sep + 'myplugs'): doit(ddir, "jsb.plugs.myplugs")
+    #if not os.path.isdir(ddir): doit(ddir, "jsb.data")
+    try: doit(ddir, "jsb.plugs.myplugs")
     except: pass
-    if not os.path.isdir(ddir + os.sep + 'examples'): doit(ddir, "jsb.data.examples")
+    try: doit(ddir, "jsb.data.examples")
+    except: pass
     try: touch(ddir + os.sep + "__init__.py")
     except: pass
     if not os.path.isdir(ddir + os.sep + "config"): os.mkdir(ddir + os.sep + "config")
@@ -80,14 +78,13 @@ def makedirs(ddir=None):
     except: pass
     if not os.path.isdir(ddir + os.sep + 'myplugs'): os.mkdir(ddir + os.sep + 'myplugs')
     if not os.path.isfile(ddir + os.sep + 'myplugs' + os.sep + "__init__.py"):
-        source = getsource("jsb.plugs.common")
-        if not source: raise Exception("can't find jsb.plugs.common package")
+        source = getsource("jsb.plugs.myplugs")
+        if not source: raise Exception("can't find jsb.plugs.myplugs package")
         try:
             shutil.copy(source + os.sep + "__init__.py", os.path.join(ddir, 'myplugs', '__init__.py'))
         except (OSError, IOError), ex: logging.error("datadir - failed to copy myplugs/__init__.py: %s" % str(ex))
     if not os.path.isdir(ddir + os.sep +'botlogs'): os.mkdir(ddir + os.sep + 'botlogs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
-    if not os.path.isdir(ddir + '/examples/'): os.mkdir(ddir + '/examples/')
     if not os.path.isdir(ddir + '/users/'): os.mkdir(ddir + '/users/')
     if not os.path.isdir(ddir + '/channels/'): os.mkdir(ddir + '/channels/')
     if not os.path.isdir(ddir + '/fleet/'): os.mkdir(ddir + '/fleet/')

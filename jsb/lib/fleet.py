@@ -50,6 +50,13 @@ class Fleet(Persist):
         self.startok = threading.Event()
         self.bots = []
 
+    def addnametype(self, name, type):
+        if name not in self.data['names']:
+            self.data['names'].append(name)
+            self.data['types'][name] = type
+            self.save()
+        return True
+
     def loadall(self, names=[]):
         """ load all bots. """ 
         target = names or self.data.names

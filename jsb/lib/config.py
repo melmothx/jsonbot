@@ -56,6 +56,7 @@ class Config(LazyDict):
         self.jsondb = None
         try: import waveapi ; self.isdb = True
         except ImportError: self.isdb = False
+        if not self.comments: self.comments = {}
         try:
             try: self.fromfile(cfile)
             except IOError:
@@ -113,14 +114,19 @@ class Config(LazyDict):
         fname = filename
         logging.debug("config - fromfile - %s" % fname)
         if not os.path.exists(fname): return False 
+        comment = ""
         for line in open(fname, 'r'):
             curline = line
-            line = line.strip()
-            if line == "" or line.startswith('#'): continue
-            else:
+            curline = curline.strip()
+            if curline == "": continue
+            if curline.startswith('#'): comment = curline; continue
+            if True:
                 try:
-                    key, value = line.split('=', 1)
-                    self[key.strip()] = json.loads(unicode(value.strip()))
+                    key, value = curline.split('=', 1)
+                    kkey = key.strip()
+                    self[kkey] = json.loads(unicode(value.strip()))
+                    if comment: self.comments[kkey] = comment 
+                    comment = ""
                 except ValueError: logging.warn("config - skipping line - unable to parse: %s" % line)
         self.cfile = fname
         return
@@ -149,41 +155,30 @@ class Config(LazyDict):
         written = []
         curitem = None
         try:
-            try: configlist = open(filename, 'r').readlines()
-            except IOError: configlist = []
             configtmp = open(filename + '.tmp', 'w')
             teller = 0
-            if not configlist: configtmp.write('# %s\n\n' % self.cfile)
-            configlist.sort()
-            for line in configlist:
-                teller += 1
-                if line.startswith('#'):
-                    configtmp.write(line)
-                    continue
-                try:
-                    keyword = line.split('=')[0].strip()
-                    curitem = keyword
-                except IndexError:   
-                    configtmp.write(line)
-                    continue
-                if self.has_key(keyword):  
-                    try: configtmp.write('%s = %s\n' % (keyword, json.dumps(self[keyword])))
-                    except TypeError: logging.error("config - %s - can't serialize %s" % (filename, keyword)) ; continue
-                    written.append(keyword)
-                else: configtmp.write(line)
             keywords = self.keys()
             keywords.sort()
             for keyword in keywords:
                 value = self[keyword]
                 if keyword in written: continue
+                if keyword == 'name': continue
+                if keyword == 'createdfrom': continue
                 if keyword == 'cfile': continue
+                if keyword == 'filename': continue
+                if keyword == 'dir': continue
                 if keyword == 'jsondb': continue
                 if keyword == 'isdb': continue
                 if keyword == 'optionslist': continue
                 if keyword == 'gatekeeper': continue
+                if keyword == "comments": continue
+                if self.comments and self.comments.has_key(keyword):
+                    configtmp.write(self.comments[keyword] + u"\n")
                 curitem = keyword
                 try: configtmp.write('%s = %s\n' % (keyword, json.dumps(value)))
                 except TypeError: logging.error("config - %s - can't serialize %s" % (filename, keyword)) ; continue
+                teller += 1
+                configtmp.write("\n")
             configtmp.close()
             os.rename(filename + '.tmp', filename)
             return teller
@@ -237,3 +232,100 @@ def getmainconfig():
     global mainconfig
     if not mainconfig: mainconfig = Config()
     return mainconfig
+
+irctemplate = """# welcome to JSONBOT .. this file can be written to by the bot
+
+# the name of the bot
+botname = "default-irc"
+
+# channels to join .. not implemented yet .. use /msg bot !join #channel
+channels = []
+
+# disable .. set this to 0 to enable the bot
+disable = 1
+
+# domain .. not used yet
+domain = ""
+
+# who to follow on the bot .. bot maintains this list
+followlist = []
+
+# owner of the bot .. is list of userhosts
+owner = ["~dev@127.0.0.1"]
+
+# port to connect to
+port = 6667
+
+
+# networkname .. not used right now
+networkname = null
+
+# whether this is a ipv6 bot
+ipv6 = null
+
+# server to connect to
+server = "localhost"
+
+# whether this is a ssl bot
+ssl = null
+
+# bot type
+type = "irc"
+
+"""
+
+xmpptemplate = """# welcome to JSONBOT .. this file can be written to by the bot
+
+# name of the bot
+botname = "default-sxmpp"
+
+# channels to join .. not implemented yet .. use /msg bot !join <conference>
+channels = []
+
+# disable .. set this to 0 to enable the bot
+disable = 1
+
+# domain .. not used yet
+domain = ""
+
+# who to follow on the bot .. bot maintains this list
+followlist = []
+
+# this is the host part of the user variable .. is generated by the bot
+host = "localhost"
+
+# owner of the bot .. list of JIDS
+owner = ["dunk@localhost"]
+
+# networkname .. not used right now
+networkname = null
+
+# password used 
+password = "passje"
+
+# server part of the user variable .. can be set to connect to different server then host
+server = "localhost"
+
+# type of bot .. sxmpp stands for socket xmpp to differentiate from GAE xmpp
+type = "sxmpp"
+
+# the user as which the bot should connect to the server
+user = "dev@localhost"
+"""
+
+def makedefaultconfig(type, ddir=None):
+    filename = 'config'
+    datadir = ddir or getdatadir()
+    dir = datadir + os.sep + 'config'
+    ttype = "default-%s" % type
+    cfile = dir + os.sep + "fleet" + os.sep + ttype + os.sep + filename
+    splitted = cfile.split(os.sep)
+    mdir = "" 
+    for i in splitted[:-1]:
+        mdir += "%s%s" % (i, os.sep)
+        if not os.path.isdir(mdir): os.mkdir(mdir)
+    logging.debug("config - filename is %s" % cfile)
+    f = open(cfile, "w")
+    if type == "irc": f.write(irctemplate) ; f.close()
+    elif type == "sxmpp": f.write(xmpptemplate) ; f.close()
+    else: raise Exception("no such bot type: %s" % type)
