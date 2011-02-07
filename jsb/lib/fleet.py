@@ -30,11 +30,20 @@ import time
 import glob
 import logging
 import threading
+import thread
 
 ## classes
 
 class FleetBotAlreadyExists(Exception):
     pass
+
+## locks
+
+from jsb.utils.locking import lockdec
+lock = thread.allocate_lock()
+locked = lockdec(lock)
+
+## Fleet class
 
 class Fleet(Persist):
 
@@ -62,15 +71,21 @@ class Fleet(Persist):
         target = names or self.data.names
         if not target: logging.error("fleet - no bots in fleet")
         else: logging.warning("fleet - loading %s" % ", ".join(target))
+        threads = []
         for name in target:
             if not name: logging.debug("fleet - name is not set") ; continue
             try:
                 if self.data.types[name] == "console": logging.warn("fleet- skipping console bot %s" % name) ; continue
             except KeyError: continue
-            try: self.makebot(self.data.types[name], name)
+            try: import waveapi ; self.makebot(self.data.types[name], name)
+            except ImportError:
+                try: threads.append(start_new_thread(self.makebot, (self.data.types[name], name)))
+                except: handle_exception() ; continue
             except BotNotEnabled: pass
             except KeyError: logging.error("no type know for %s bot" % name)
             except Exception, ex: handle_exception()
+        for t in threads:
+            t.join()
 
     def avail(self):
         """ return available bots. """
@@ -100,13 +115,16 @@ class Fleet(Persist):
         cfg.type = type
         cfg.save()
 
-    def makebot(self, type, name, domain="", cfg={}):
+    def makebot(self, type, name, domain="", cfg={}, showerror=False):
         """ create a bot .. use configuration if provided. """
         if cfg: logging.warn('fleet - making %s (%s) bot - %s' % (type, name, cfg.dump()))
         bot = None
         if not cfg:
             cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
             cfg['name'] = cfg['botname'] = name
+        if cfg.disable:
+            logging.warn("fleet - %s bot is disabled" % name)
+            if showerror: raise BotNotEnabled(name)
         if not cfg.type and type:
             logging.debug("fleet - %s - setting type to %s" % (cfg.cfile, type))
             cfg.type = type
@@ -121,9 +139,6 @@ class Fleet(Persist):
         if not cfg.domain and domain: cfg.domain = domain
         if not cfg: raise Exception("can't make config for %s" % name)
         cfg.save()
-        if cfg.disable:
-            logging.warn("fleet - %s bot is disabled" % name)
-            raise BotNotEnabled(name)
         if type == 'xmpp' or type == 'jabber':
             try:
                 from jsb.lib.gae.xmpp.bot import XMPPBot
@@ -195,6 +210,7 @@ class Fleet(Persist):
             self.save()
         return True
 
+    @locked
     def addbot(self, bot):
         """
             add a bot to the fleet .. remove all existing bots with the 
