@@ -202,19 +202,37 @@ class Config(LazyDict):
     def init(self):
         """ initialize the config object. """
         if self.filename == 'mainconfig':
+            self.comments["whitelist"] = "# whitelist used to allow ips .. bot maintains this"
             self.setdefault("whitelist", [])
+            self.comments["blacklist"] = "# blacklist used to deny ips .. bot maintains this"
             self.setdefault("blacklist", [])
+            self.comments["owner"] = "# global owner of all bots"
             self.setdefault('owner', [])
+            self.comments["loglist"] = "# loglist .. maintained by the bot."
             self.setdefault('loglist',  [])
+            self.comments["loglevel"] = "# loglevel of all bots"
+            self.setdefault('loglevel',  "warn")
+            self.comments["loadlist"] = "# loadlist .. not used yet."
             self.setdefault('loadlist', [])
+            self.comments["quitmsg"] = "# message to send on quit"
             self.setdefault('quitmsg', "http://jsonbot.googlecode.com")
+            self.comments["dotchars"] = "# characters to used as seperator"
             self.setdefault('dotchars',  ", ")
+            self.comments["floodallow"] = "# whether the bot is allowed to flood."
             self.setdefault('floodallow', 0)
+            self.comments["auto_register"] = "# enable automatic registration of new users"
             self.setdefault('auto_register', 0)
-            self.setdefault('ondemand', 1)
-            self.setdefault('debian', 0)
+            self.comments["guestasuser"] = "# enable this to give new users the USER permission besides GUEST"
+            self.setdefault('guestasuser', 0)
+            self.comments["app_id"] = "# application id used by appengine"
+            self.setdefault('app_id', "jsonbot")
+            self.comments["appname"] = "# application name as used by the bot"
+            self.setdefault('appnamer', "JSONBOT")
+            self.comments["domain"] = "# domain .. used for WAVE"
+            self.setdefault('domain', "")
         self.cfile = self.dir + os.sep + self.filename
         self['createdfrom'] = whichmodule()
+        self.comments["uuid"] = "# bot generated uuid for this config file"
 
     def reload(self):
         """ reload the config file. """

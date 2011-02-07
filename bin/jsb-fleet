@@ -12,7 +12,6 @@ warnings.simplefilter("ignore")
 import os, sys, logging
 sys.path.insert(0, os.getcwd())
 
-
 ## basic imports
 
 import logging
@@ -25,6 +24,8 @@ from jsb.utils.opts import makefleetopts
 
 opts = makefleetopts()
 
+from jsb.lib.version import getversion
+logging.warn(getversion('FLEET'))
 
 ## jsb imports
 
@@ -34,7 +35,6 @@ from jsb.lib.exit import globalshutdown
 from jsb.utils.mainloop import mainloop
 from jsb.lib.users import users_boot
 import jsb
-
 
 from jsb.lib.fleet import getfleet
 fleet = getfleet(opts.datadir)
@@ -52,14 +52,15 @@ def dostop(a, b):
 
 signal.signal(signal.SIGTERM, dostop)
 
+if not fleet.avail(): logging.error("fleet - no bots found.") ; os._exit(1)
+
 ## loglevel
 
+from jsb.lib.config import getmainconfig
+mainconfig = getmainconfig()
+if opts.loglevel and opts.loglevel != mainconfig.loglevel: mainconfig.loglevel = opts.loglevel ; mainconfig.save()
 from jsb.utils.log import setloglevel
-from jsb.lib.version import getversion
-setloglevel(opts.loglevel or "warning")
-logging.warn(getversion('FLEET'))
-
-if not fleet.avail(): logging.error("fleet - no bots found.") ; os._exit(1)
+setloglevel(mainconfig.loglevel or "warn") 
 
 ## start the fleet
 

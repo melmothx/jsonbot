@@ -25,7 +25,7 @@ from jsb.lib.socklib.partyline import partyline
 from jsb.lib.socklib.irc.bot import IRCBot
 from jsb.lib.boot import plugin_packages, boot
 from jsb.utils.log import setloglevel
-from jsb.lib.config import Config
+from jsb.lib.config import Config, getmainconfig
 from jsb.lib.errors import NoOwnerSet
 from jsb.lib.fleet import getfleet
 from jsb.utils.mainloop import mainloop
@@ -49,13 +49,15 @@ cfg.type = "irc"
 if opts.nick: cfg.nick = opts.nick
 cfg.save()
 
+mainconfig = getmainconfig()
+if opts.loglevel and opts.loglevel != mainconfig.loglevel: mainconfig.loglevel = opts.loglevel ; mainconfig.save()
+setloglevel(mainconfig.loglevel or "warning")
+
 ## runtime
 
 if opts.owner:
     u = users.users_boot()
     u.make_owner(opts.owner)
-
-setloglevel(cfg.loglevel)
 
 ## resume or start the bot
 

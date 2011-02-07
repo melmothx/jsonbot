@@ -43,9 +43,12 @@ cfg = makexmppconfig('sxmpp', opts)
 if opts.nick: cfg.nick = opts.nick
 cfg.save()
 
-## runtime
+## loglevel
 
-setloglevel(cfg.loglevel)
+mainconfig = getmainconfig()
+if opts.loglevel and opts.loglevel != mainconfig.loglevel: mainconfig.loglevel = opts.loglevel ; mainconfig.save()
+from jsb.utils.log import setloglevel
+setloglevel(mainconfig.loglevel or "warn")
 
 ## start bot
 
