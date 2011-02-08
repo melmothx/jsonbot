@@ -17,7 +17,7 @@ import re
 
 ## defines
 
-RE_KARMA = re.compile(r'(?P<item>\([^\)]+\)|\[[^\]]+\]|\w+)(?P<mod>\+\+|--)')
+RE_KARMA = re.compile(r'(?P<item>\([^\)]+\)|\[[^\]]+\]|\w+)(?P<mod>\+\+|--)( |$)')
 
 ## KarmaItem class
 
@@ -48,7 +48,7 @@ def karmacb(bot, event):
     try: reason = event.txt.split('#', 1)[1]
     except IndexError: reason = None
     for target in targets:
-        try: item, what = target
+        try: item, what, bogus = target
         except ValueError: print target ; continue
         if what == "++":
             i = KarmaItem(event.channel + "-" + item)
