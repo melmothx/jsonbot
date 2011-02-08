@@ -422,8 +422,7 @@ class Rssdict(PlugPersist):
         rssitem.data.stoprunning = 0
         rssitem.check(rssitem.sync())
         rssitem.save()
-        runners.data[name] = "bla"
-        runners.save()
+        if not name in runners.data: runners.data[name] = "bla" ; runners.save()
         sleeptime.data[name] = sleepsec
         sleeptime.save()
         logging.info('rss - started %s rss watch' % name)

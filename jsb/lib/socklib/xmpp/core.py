@@ -162,14 +162,17 @@ class XMLStream(NodeBuilder):
                     break
                 if True:
                     self.buffer = u"%s%s" % (self.buffer, data)
-                    splitted = self.buffer.split("<")
-                    lastitem = splitted[-1]
-                    for handler in self.handlers.keys():
-                        index = self.buffer.find("%s>" % handler)
+                    #splitted = self.buffer.split(">")
+                    #lastitem = splitted[-1]
+                    handlers = self.handlers.keys()
+                    handlers.append("/")
+                    for handler in handlers:
+                        target = "%s>" % handler
+                        index = self.buffer.find(target)
                         if index != -1:
                             try:
-                                if self.loop_one(self.buffer[:index]):
-                                    self.buffer = self.buffer[index+1:]
+                                if self.loop_one(self.buffer[:index+len(target)]):
+                                    self.buffer = self.buffer[index+1+len(target):]
                                 else:
                                     self.buffer = ""
                                     break
