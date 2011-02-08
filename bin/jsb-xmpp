@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 from jsb.lib.socklib.xmpp.bot import SXMPPBot
 from jsb.lib.boot import plugin_packages, boot
 from jsb.utils.log import setloglevel
-from jsb.lib.config import Config
+from jsb.lib.config import Config, getmainconfig
 from jsb.lib.errors import NoOwnerSet
 from jsb.lib.fleet import getfleet
 from jsb.utils.mainloop import mainloop
