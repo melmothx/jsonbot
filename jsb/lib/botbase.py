@@ -381,7 +381,7 @@ class BotBase(LazyDict):
         
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
-        if txt: self.outnocb(channel, txt, event=event, origin=channel, *args, **kwargs)
+        if txt: self.outnocb(channel, txt, how, event=event, origin=channel, *args, **kwargs)
 
     def less(self, printto, what, nr=365):
         """ split up in parts of <nr> chars overflowing on word boundaries. """
