@@ -146,7 +146,7 @@ class XMLStream(NodeBuilder):
         self.error = ""
         data = ""
         while not self.stopped:
-            time.sleep(0.0001)
+            time.sleep(0.001)
             try:
                 data = jabberstrip(fromenc(self.connection.read()))
                 logging.debug(u"%s - incoming: %s" % (self.name, data))
@@ -224,13 +224,13 @@ class XMLStream(NodeBuilder):
     def connect(self):
         """ connect to the server. """
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.settimeout(30)
+        self.sock.setblocking(0)
+        self.sock.settimeout(10)
         if not self.port: self.port = 5222
         if self.server != 'localhost': self.host = self.server
         else: self.host = self.cfg.host
         logging.warn("%s - connecting to %s:%s" % (self.name, self.host, self.port))
         self.sock.connect((self.host, self.port))
-        self.sock.setblocking(False)
         self.sock.settimeout(60)
         time.sleep(1) 
         logging.debug("%s - starting stream" % self.name)
@@ -245,6 +245,7 @@ class XMLStream(NodeBuilder):
         logging.debug("%s - %s" % (self.name, str(result)))
         self.loop_one(result)
         self.sock.settimeout(60)
+        self.sock.setblocking(1)
         return self.dossl()
 
     def dossl(self):

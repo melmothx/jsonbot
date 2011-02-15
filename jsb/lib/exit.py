@@ -22,20 +22,20 @@ import logging
 
 def globalshutdown():
     """ shutdown the bot. """
+    logging.warn('shutting down'.upper())
     defaultrunner.stop()
     cmndrunner.stop()
     sys.stdout.write("\n")
-    logging.warn('shutting down'.upper())
     try:os.remove('jsb.pid')
     except: pass
     from fleet import getfleet
     fleet = getfleet()
     if fleet:
-        logging.info('shutting down fleet')
+        logging.warn('shutting down fleet')
         fleet.exit()
-    logging.info('shutting down plugins')
+    logging.warn('shutting down plugins')
     plugs.exit()
-    logging.info('done')
+    logging.warn('done')
     #print "ltrs!"
     os._exit(0)
 
