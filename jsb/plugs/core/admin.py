@@ -103,3 +103,14 @@ def handle_adminupgrade(bot, event):
 
 cmnds.add("admin-upgrade", handle_adminupgrade, "OPER", threaded=True)
 examples.add("admin-upgrade", "upgrade the GAE bot", "admin-upgrade")
+
+def handle_adminsetstatus(bot, event):
+    if bot.type != "sxmpp": event.reply("this command only works on sxmpp bots (for now)") ; return
+    if not event.rest: event.missing("<status> [<show>]") ; return
+    status = event.args[0]
+    try: show = event.args[1]
+    except IndexError: show = ""
+    bot.setstatus(status, show)
+
+cmnds.add("admin-setstatus", handle_adminsetstatus, ["GUEST", "USER", "OPER"])
+examples.add("admin-setstatus", "set status of sxmpp bot", "admin-setstatus available Yooo dudes !")

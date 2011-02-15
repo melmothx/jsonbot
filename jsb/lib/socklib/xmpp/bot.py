@@ -469,6 +469,12 @@ class SXMPPBot(XMLStream, BotBase):
         presence['from'] = self.me
         self.send(presence)
 
+    def setstatus(self, status, show=""):
+        """ send status presence. """
+        if self.error: return
+        presence = Presence({'status': status, 'show': show ,'to': self.jid})
+        self.send(presence)
+
     def shutdown(self):
         self.outqueue.put_nowait(None)
 
