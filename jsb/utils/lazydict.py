@@ -44,7 +44,7 @@ def checkignore(name, ignore):
             return True
     return False
 
-@locked
+#@locked
 def dumpelement(element, prev={}, withtypes=False):
     """ check each attribute of element whether it is dumpable. """
     elem = cpy(element)
