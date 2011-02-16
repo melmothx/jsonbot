@@ -110,6 +110,7 @@ class SXMPPBot(XMLStream, BotBase):
     def _keepalive(self):
         """ keepalive method .. send empty string to self every 3 minutes. """
         nrsec = 0
+        self.sendpresence()
         while not self.stopped:
             time.sleep(1)
             nrsec += 1
@@ -472,6 +473,10 @@ class SXMPPBot(XMLStream, BotBase):
     def setstatus(self, status, show=""):
         """ send status presence. """
         if self.error: return
+        if self.state:
+            self.state['status'] = status
+            self.state['show'] = show
+            self.state.save()
         presence = Presence({'status': status, 'show': show ,'to': self.jid})
         self.send(presence)
 
