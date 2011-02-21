@@ -139,6 +139,7 @@ sleeptime=15*60, running=0):
             Persist.__init__(self, filebase + '-core')
             if not self.data: self.data = {}
             self.data = LazyDict(self.data)
+            self.data.length = 100
             self.data['name'] = self.data.name or unicode(name)
             self.data['url'] = self.data.url or unicode(url)
             self.data['owner'] = self.data.owner or unicode(owner)
@@ -158,13 +159,13 @@ sleeptime=15*60, running=0):
         digest = hashlib.md5(unicode(d)).hexdigest()
         return digest in self.data.seen
 
-    def setseen(self, data, itemslist=['title', 'link']):
+    def setseen(self, data, itemslist=['title', 'link'], length=100):
         d = {}
         for item in itemslist:
             d[item] = data[item]
         digest = hashlib.md5(unicode(d)).hexdigest()
         self.data.seen.insert(0, digest)
-        if len(self.data.seen) > 100: self.data.seen = self.data.seen[:100]
+        if len(self.data.seen) > self.data.length: self.data.seen = self.data.seen[:self.data.length]
         return self.data.seen
 
     def ownercheck(self, userhost):
@@ -240,6 +241,7 @@ sleeptime=15*60, running=0):
         tobereturned = []
         if entries == None: entries = self.fetchdata()
         if entries:
+            self.data.length = len(entries)
             for res in entries[::-1]:
                 if self.checkseen(res): continue 
                 tobereturned.append(LazyDict(res))
