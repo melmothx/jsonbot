@@ -84,7 +84,7 @@ class Plugins(LazyDict):
         except KeyError: pass
         return True
 
-    def load(self, modname, force=False, showerror=False, loaded=[]):
+    def load(self, modname, force=False, showerror=True, loaded=[]):
         """ load a plugin. """
         if not modname: raise NoSuchPlugin(modname)
         if modname in loaded: logging.warn("plugins - skipping %s" % modname) ; return loaded
