@@ -20,6 +20,7 @@ from jsb.utils.exception import handle_exception
 from jsb.utils.lazydict import LazyDict
 from jsb.lib.datadir import getdatadir
 from jsb.utils.name import stripname
+from jsb.utils.url import striphtml
 
 ## basic imports
 
@@ -117,6 +118,7 @@ def enablelogging(botname, channel):
     logging.warn("chatlog - enabling on (%s,%s)" % (botname, channel))
     channel = stripname(channel)
     logname = "%s_%s" % (botname, channel)
+    #if logname in loggers: logging.warn("chatlog - there is already a logger for %s" % logname) ; return
     try:
         filehandler = logging.handlers.TimedRotatingFileHandler(LOGDIR + os.sep + logname + ".log", 'midnight')
         formatter = logging.Formatter(format)
@@ -199,7 +201,9 @@ def formatevent(bot, ievent):
     m = LazyDict(m)
     if ievent.cmnd == 'PRIVMSG':
         if ievent.txt.startswith('\001ACTION'): m.txt = '* %s %s' % (m.nick, ievent.txt[7:-1].strip())
-        else: m.txt = '<%s> %s' % (m.nick, ievent.txt)
+        else:
+             if bot.type == "irc": m.txt = '<%s> %s' % (m.nick, striphtml(ievent.txt))
+             else: m.txt = '<%s> %s' % (m.nick, bot.normalize(ievent.txt))
     elif ievent.cmnd == 'NOTICE':
             m.target = ievent.arguments[0]
             m.txt = "-%s- %s"%(ievent.nick, ievent.txt)
@@ -271,8 +275,7 @@ def init():
     for (botname, channel) in cfg.get("channels"):
         enablelogging(botname, channel)  
     callbacks.add("ALL", chatlogcb, prechatlogcb)
-    last_callbacks.add("ALL", chatlogcb, prechatlogcb)
-    first_callbacks.add("ALL", chatlogcb, prechatlogcb)
+    first_callbacks.add("OUTPUT", chatlogcb, prechatlogcb)
     return 1
 
 ## plugin stop
