@@ -59,14 +59,23 @@ class Commands(LazyDict):
     def add(self, cmnd, func, perms, threaded=False, wait=False, orig=None, how=None, *args, **kwargs):
         """ add a command. """
         modname = calledfrom(sys._getframe())
-        self[cmnd] = Command(modname, cmnd, func, perms, threaded, wait, orig, how)
+        target = Command(modname, cmnd, func, perms, threaded, wait, orig, how)
+        self[cmnd] = target
         try:
             c = cmnd.split('-')[1]
             if not self.subs: self.subs = LazyDict()
             if self.subs.has_key(c):
                 if not self.subs[c]: self.subs[c] = []
-                self.subs[c].append(Command(modname, c, func, perms, threaded, wait, cmnd, how))
-            else: self.subs[c] = [Command(modname, c, func, perms, threaded, wait, cmnd, how), ]
+                if target not in self.subs[c]: self.subs[c].append(target)
+            else: self.subs[c] = [target, ]
+        except IndexError: pass
+        try:
+            p = cmnd.split('-')[0]
+            if not self.pre: self.pre = LazyDict()
+            if self.pre.has_key(p):
+                if not self.pre[p]: self.pre[p] = []
+                if target not in self.pre[p]: self.pre[p].append(target)
+            else: self.pre[p] = [target, ]
         except IndexError: pass
         return self
 
@@ -97,8 +106,15 @@ class Commands(LazyDict):
         try:
             result = self[cmnd]
         except KeyError:
-            # if self.subs and self.subs.has_key(cmnd): result = self.subs[cmnd][0]
-            pass 
+            if self.subs and self.subs.has_key(cmnd):
+                cmndlist = self.subs[cmnd]
+                if len(cmndlist) == 1: result = cmndlist[0]
+                else: event.reply("try one of: %s" % ", ".join([x.cmnd for x in cmndlist]))
+            else:
+                if self.pre and self.pre.has_key(cmnd):
+                    cmndlist = self.pre[cmnd]
+                    if len(cmndlist) == 1: result = cmndlist[0]
+                    else: event.reply("try one of: %s" % ", ".join([x.cmnd for x in cmndlist]))
         logging.debug("commands - woulddispatch result: %s" % result)
         return result
 
