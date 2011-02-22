@@ -122,8 +122,10 @@ class Plugins(LazyDict):
         for dep in deps:
             if dep not in loaded:
                 if self.has_key(dep): self.unload(dep)
-                self.load(dep, force, showerror, loaded)
-                loaded.append(dep)
+                try:
+                    self.load(dep, force, showerror, loaded)
+                    loaded.append(dep)
+                except Exception, ex: handle_exception()
         return loaded
 
     def reload(self, modname, force=True, showerror=False):
