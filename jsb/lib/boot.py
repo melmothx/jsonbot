@@ -243,6 +243,7 @@ def whatcommands(plug):
     tbl = getcmndtable()
     result = []
     for cmnd, mod in tbl.iteritems():
+        if not mod: continue
         if plug in mod:
             result.append(cmnd)
     return result
