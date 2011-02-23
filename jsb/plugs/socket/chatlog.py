@@ -99,7 +99,8 @@ formats = {
 
 loggers = {}
 
-LOGDIR = os.path.expanduser("~") + os.sep + ".jsb" + os.sep + "chatlogs"
+try: LOGDIR = os.path.expanduser("~") + os.sep + ".jsb" + os.sep + "chatlogs"
+except ImportError: LOGDIR = os.getcwd() + os.sep + ".jsb" + os.sep + "chatlogs"
 
 try:
     ddir = os.sep.join(LOGDIR.split(os.sep)[:-1])
@@ -186,7 +187,7 @@ backends['log'] = log_write
 
 ## formatevent function
 
-def formatevent(bot, ievent):
+def formatevent(bot, ievent, forwarded=False):
     m = {
         'datetime': datetime.now(),
         'separator': format_opt('separator'),
@@ -203,7 +204,8 @@ def formatevent(bot, ievent):
         if ievent.txt.startswith('\001ACTION'): m.txt = '* %s %s' % (m.nick, ievent.txt[7:-1].strip())
         else:
              if bot.type == "irc": m.txt = '<%s> %s' % (m.nick, striphtml(ievent.txt))
-             else: m.txt = '<%s> %s' % (m.nick, bot.normalize(ievent.txt))
+             elif not forwarded: m.txt = '<%s> %s' % (m.nick, bot.normalize(ievent.txt))
+             else: m.txt = bot.normalize(ievent.txt)
     elif ievent.cmnd == 'NOTICE':
             m.target = ievent.arguments[0]
             m.txt = "-%s- %s"%(ievent.nick, ievent.txt)
