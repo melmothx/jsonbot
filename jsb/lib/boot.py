@@ -116,6 +116,7 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True, f
 
 def savecmndtable(modname=None, saveperms=True):
     """ save command -> plugin list to db backend. """
+    target = {}
     global cmndtable
     if not cmndtable.data: cmndtable.data = {}
     global cmndperms
@@ -125,14 +126,16 @@ def savecmndtable(modname=None, saveperms=True):
     if cmnds.subs:
         for name, clist in cmnds.subs.iteritems():
             if name:
-                if clist and len(clist) == 1: cmndtable.data[name] = clist[0].modname
+                if clist and len(clist) == 1: target[name] = clist[0].modname
     for cmndname, c in cmnds.iteritems():
         if modname and c.modname != modname or cmndname == "subs": continue
         if cmndname and c:
-            cmndtable.data[cmndname] = c.modname  
+            target[cmndname] = c.modname  
             cmndperms[cmndname] = c.perms
     logging.info("saving command table")
     assert cmndtable
+    assert target
+    cmndtable.data = target
     cmndtable.save()
     if saveperms:
         logging.info("saving command perms")
@@ -158,6 +161,7 @@ def getcmndtable():
 
 def savecallbacktable(modname=None):
     """ save command -> plugin list to db backend. """
+    target = {}
     global callbacktable
     assert callbacktable
     if not callbacktable.data: callbacktable.data = {}
@@ -166,10 +170,12 @@ def savecallbacktable(modname=None):
         for type, cbs in cb.cbs.iteritems():
             for c in cbs:
                 if modname and c.modname != modname: continue
-                if not callbacktable.data.has_key(type): callbacktable.data[type] = []
-                if not c.modname in callbacktable.data[type]: callbacktable.data[type].append(c.modname)
+                if not target.has_key(type): target[type] = []
+                if not c.modname in target[type]: target[type].append(c.modname)
     logging.info("saving callback table")
     assert callbacktable
+    assert target
+    callbacktable.data = target
     callbacktable.save()
 
 def removecallbacks(modname):
@@ -197,6 +203,7 @@ def getcallbacktable():
 
 def savepluginlist(modname=None):
     """ save a list of available plugins to db backend. """
+    target = []
     global pluginlist
     if not pluginlist.data: pluginlist.data = []
     from jsb.lib.commands import cmnds
@@ -204,10 +211,12 @@ def savepluginlist(modname=None):
     for cmndname, c in cmnds.iteritems():
         if modname and c.modname != modname: continue
         if c and not c.plugname: logging.info("boot - not adding %s to pluginlist" % cmndname) ; continue
-        if c and c.plugname not in pluginlist.data: pluginlist.data.append(c.plugname)
-    pluginlist.data.sort()
+        if c and c.plugname not in target: target.append(c.plugname)
+    assert target
+    target.sort()
     logging.info("saving plugin list")
     assert pluginlist
+    pluginlist.data = target
     pluginlist.save()
 
 def remove_plugin(modname):
@@ -250,4 +259,3 @@ def whatcommands(plug):
 
 def getcmndperms():
     return cmndperms
-

@@ -87,6 +87,7 @@ class Message(GozerEvent):
         else:
             self.groupchat = False
             self.auth = self.stripped
+            self.nick = self.jid.split("@")[0]
         self.msg = not self.groupchat
         self.makeargs()
 
