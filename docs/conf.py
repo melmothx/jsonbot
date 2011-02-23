@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'JSONBOT'
-copyright = u'2010, Bart Thate'
+copyright = u'2010,2011, Bart Thate'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

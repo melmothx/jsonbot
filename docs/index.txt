@@ -77,7 +77,7 @@ contact the developer
 
     * email: bthate@gmail.com
     * jabber/xmpp: bthate@gmail.com
-    * IRC: #dunkbots on Freenode
+    * IRC: #jsb on Freenode
     * Twitter: http://twitter.com/jsonbot
 
 
