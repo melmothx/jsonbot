@@ -273,7 +273,7 @@ except ImportError:
                     logging.error("persist - can't save %s: %s" % (self.fn, str(ex)))
                     return
                 fcntl.flock(datafile, fcntl.LOCK_EX)
-                json.dump(self.data, datafile)
+                json.dump(self.data, datafile, indent=True)
                 fcntl.flock(datafile, fcntl.LOCK_UN)
                 datafile.close()
                 try: os.rename(tmp, fn)
