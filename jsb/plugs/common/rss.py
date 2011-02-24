@@ -243,7 +243,6 @@ sleeptime=15*60, running=0):
         tobereturned = []
         if entries == None: entries = self.fetchdata()
         if entries:
-            self.data.length = len(entries)
             for res in entries[::-1]:
                 if self.checkseen(res): continue 
                 tobereturned.append(LazyDict(res))
