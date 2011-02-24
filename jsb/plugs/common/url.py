@@ -33,12 +33,6 @@ def init():
     initdone = True
     return 1
 
-def shutdown():
-    if state:
-        if len(state.data['urls']) > 0:
-            state.save()
-    return 1
-
 def size():
     s = 0
     if not initdone:
@@ -85,6 +79,7 @@ def urlcb(bot, ievent):
                 state['urls'][bot.name][ievent.channel] = []
             if not i in state['urls'][bot.name][ievent.channel]:
                 state['urls'][bot.name][ievent.channel].append(i)  
+        state.save()
     except Exception, ex:
         handle_exception()
 
