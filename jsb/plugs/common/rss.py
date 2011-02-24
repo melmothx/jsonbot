@@ -221,6 +221,8 @@ sleeptime=15*60, running=0):
         if not name in urls.data: urls.data[name] = self.data.url ; urls.save()
         logging.debug("rss - got result from %s" % self.data.url)
         if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
+        l = len(result.entries)
+        if l > self.data.length: self.data.length = l ; self.save()
         return result.entries
 
     def sync(self):
