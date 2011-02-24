@@ -37,6 +37,7 @@ cpy = copy.deepcopy
 
 def checkignore(name, ignore):
     """ see whether a element attribute (name) should be ignored. """
+    name = unicode(name)
     if name.startswith('_'): return True
     for item in ignore:
         if item == name:

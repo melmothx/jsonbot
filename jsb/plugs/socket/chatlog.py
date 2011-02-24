@@ -316,6 +316,7 @@ def handle_chatlogoff(bot, ievent):
         return
     try:
         del loggers["%s-%s" % (bot.name, stripname(ievent.channel))]
+    except KeyError: pass
     except Exception, ex: handle_exception()
     ievent.reply('chatlog disabled on (%s,%s)' % (bot.name, ievent.channel))
 

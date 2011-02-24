@@ -12,12 +12,12 @@ you need an account on the Google Application Engine. see http://appengine.googl
 you also need to enable openid authentication (federated login) on your app, it's in
 Applcation Settings in your admin console.
 
-1) run jsb-upload <yourbotname> - this will create a uploadable dir and upload it to the
+1) run jsb-uploadall <yourbotname> - this will create a uploadable dir and upload it to the
    GAE, enabling web and xmpp. For wave you need to do the following:
 
 2) go to https://wave.google.com/wave/robot/register and register your bot
 3) edit ~/regs/<yourbotname>/ dir and copy the verification token and secret to the credentials.py file
-4) run jsb-upload <yourbotname>
+4) run jsb-uploadall <yourbotname>
 5) once its uploaded click the "verify" button
 6) copy the consumer key and secret to the credentials.py file en run jsb-upload again
 7) done !
