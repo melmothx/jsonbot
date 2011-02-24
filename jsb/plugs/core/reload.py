@@ -41,7 +41,8 @@ def handle_reload(bot, ievent):
                 logging.debug('reload - %s - %s' % (modname, str(ex)))
                 continue
             errors.append(exceptionmsg())
-        update_mod(modname)
+    for modname in reloaded:
+        if modname: update_mod(modname)
     if errors: ievent.reply('errors: ', errors)
     if reloaded: ievent.reply('reloaded: ', reloaded)
 

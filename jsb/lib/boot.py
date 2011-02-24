@@ -12,6 +12,7 @@ from jsb.utils.exception import handle_exception
 from jsb.lib.datadir import makedirs
 from jsb.lib.config import Config
 from jsb.lib.jsbimport import _import
+from jsb.utils.lazydict import LazyDict
 
 ## basic imports
 
@@ -19,6 +20,7 @@ import logging
 import os
 import sys
 import types
+import copy
 
 ## paths
 
@@ -45,6 +47,8 @@ cmndtable = None
 pluginlist = None
 callbacktable = None
 cmndperms = None
+
+cpy = copy.deepcopy
 
 ## boot function
 
@@ -116,9 +120,10 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True, f
 
 def savecmndtable(modname=None, saveperms=True):
     """ save command -> plugin list to db backend. """
-    target = {}
     global cmndtable
     if not cmndtable.data: cmndtable.data = {}
+    if modname: target = LazyDict(cmndtable.data)
+    else: target = LazyDict()
     global cmndperms
     #if not cmndperms.data: cmndperms.data = {}
     from jsb.lib.commands import cmnds
@@ -161,10 +166,12 @@ def getcmndtable():
 
 def savecallbacktable(modname=None):
     """ save command -> plugin list to db backend. """
-    target = {}
+    if modname: logging.warn("boot - module name is %s" % modname)
     global callbacktable
     assert callbacktable
     if not callbacktable.data: callbacktable.data = {}
+    if modname: target = LazyDict(callbacktable.data)
+    else: target = LazyDict()
     from jsb.lib.callbacks import first_callbacks, callbacks, last_callbacks, remote_callbacks
     for cb in [first_callbacks, callbacks, last_callbacks, remote_callbacks]:
         for type, cbs in cb.cbs.iteritems():
@@ -172,7 +179,7 @@ def savecallbacktable(modname=None):
                 if modname and c.modname != modname: continue
                 if not target.has_key(type): target[type] = []
                 if not c.modname in target[type]: target[type].append(c.modname)
-    logging.info("saving callback table")
+    logging.warn("saving callback table")
     assert callbacktable
     assert target
     callbacktable.data = target
@@ -189,7 +196,7 @@ def removecallbacks(modname):
                 if not c.modname == modname: continue
                 if not callbacktable.data.has_key(type): callbacktable.data[type] = []
                 if c.modname in callbacktable.data[type]: callbacktable.data[type].remove(c.modname)
-    logging.info("saving callback table")
+    logging.warn("saving callback table")
     assert callbacktable
     callbacktable.save()
 
@@ -203,9 +210,10 @@ def getcallbacktable():
 
 def savepluginlist(modname=None):
     """ save a list of available plugins to db backend. """
-    target = []
     global pluginlist
     if not pluginlist.data: pluginlist.data = []
+    if modname: target = cpy(pluginlist.data)
+    else: target = []
     from jsb.lib.commands import cmnds
     assert cmnds
     for cmndname, c in cmnds.iteritems():
@@ -214,7 +222,7 @@ def savepluginlist(modname=None):
         if c and c.plugname not in target: target.append(c.plugname)
     assert target
     target.sort()
-    logging.info("saving plugin list")
+    logging.warn("saving plugin list")
     assert pluginlist
     pluginlist.data = target
     pluginlist.save()
