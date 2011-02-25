@@ -76,13 +76,27 @@ def makedirs(ddir=None):
         except (OSError, IOError), ex: logging.error("datadir - failed to copy jsb.data.config: %s" % str(ex))
     try: touch(ddir + os.sep + "config" + os.sep + "__init__.py")
     except: pass
+    # myplugs
+    initsource = getsource("jsb.plugs.myplugs")
+    if not initsource: raise Exception("can't find jsb.plugs.myplugs package")
+    initsource = initsource + os.sep + "__init__.py"
     if not os.path.isdir(ddir + os.sep + 'myplugs'): os.mkdir(ddir + os.sep + 'myplugs')
     if not os.path.isfile(ddir + os.sep + 'myplugs' + os.sep + "__init__.py"):
-        source = getsource("jsb.plugs.myplugs")
-        if not source: raise Exception("can't find jsb.plugs.myplugs package")
         try:
-            shutil.copy(source + os.sep + "__init__.py", os.path.join(ddir, 'myplugs', '__init__.py'))
+            shutil.copy(initsource, os.path.join(ddir, 'myplugs', '__init__.py'))
         except (OSError, IOError), ex: logging.error("datadir - failed to copy myplugs/__init__.py: %s" % str(ex))
+    # myplugs.gae
+    if not os.path.isdir(os.path.join(ddir, 'myplugs', 'gae')): os.mkdir(os.path.join(ddir, 'myplugs', 'gae'))
+    if not os.path.isfile(os.path.join(ddir, 'myplugs', "gae", "__init__.py")):
+        try:
+            shutil.copy(initsource, os.path.join(ddir, 'myplugs', 'gae', '__init__.py'))
+        except (OSError, IOError), ex: logging.error("datadir - failed to copy myplugs/gae/__init__.py: %s" % str(ex))
+    # myplugs.socket
+    if not os.path.isdir(os.path.join(ddir, 'myplugs', 'socket')): os.mkdir(os.path.join(ddir, 'myplugs', 'socket'))
+    if not os.path.isfile(os.path.join(ddir, 'myplugs', 'socket', "__init__.py")):
+        try:
+            shutil.copy(initsource, os.path.join(ddir, 'myplugs', 'socket', '__init__.py'))
+        except (OSError, IOError), ex: logging.error("datadir - failed to copy myplugs/socket/__init__.py: %s" % str(ex))
     if not os.path.isdir(ddir + os.sep +'botlogs'): os.mkdir(ddir + os.sep + 'botlogs')
     if not os.path.isdir(ddir + '/run/'): os.mkdir(ddir + '/run/')
     if not os.path.isdir(ddir + '/users/'): os.mkdir(ddir + '/users/')
