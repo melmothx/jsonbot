@@ -595,4 +595,4 @@ class BotBase(LazyDict):
         e.showall = showall
         e.nooutput = nooutput
         if wait: e.direct = True ; e.nothreads = True
-        if cmnds.woulddispatch(self, e): return self.doevent(e)
+        if cmnds.woulddispatch(self, e) or e.txt[0] == "?": return self.doevent(e)

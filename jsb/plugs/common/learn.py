@@ -62,6 +62,13 @@ def handle_whatis(bot, event):
 cmnds.add('whatis', handle_whatis, ['USER', 'GUEST'])
 examples.add("whatis", "whatis learned about a subject", "whatis jsb")
 
+def handle_items(bot, event):
+    items = PlugPersist(event.channel).data.keys()
+    event.reply("i know %s items: " % len(items), items)
+
+cmnds.add('items', handle_items, ['USER', 'GUEST'])
+examples.add("items", "show what items the bot knows", "items")
+
 def prelearn(bot, event):
     if event.txt and event.txt[0] == "?" and not event.forwarded: return True
     return False
@@ -71,6 +78,7 @@ def learncb(bot, event):
     items = PlugPersist(event.channel)
     target = event.txt[1:].lower().split('!')[0].strip()
     if target in items.data: event.reply("%s is " % target, items.data[target], dot=", ")
+    event.ready()
 
 callbacks.add("PRIVMSG", learncb, prelearn)
 callbacks.add("MESSAGE", learncb, prelearn)

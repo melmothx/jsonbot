@@ -67,6 +67,12 @@ class EventBase(LazyDict):
         e.copyin(self)
         return e
 
+    def ready(self):
+        for queue in self.queues:
+             queue.put_nowait(None)
+        self.resqueue.put_nowait(None)
+        self.outqueue.put_nowait(None)
+
     def prepare(self, bot=None):
         """ prepare the event for dispatch. """
         self.result = []
