@@ -80,7 +80,7 @@ class BotBase(LazyDict):
         self.outqueue = Queue.Queue()
         self.reconnectcount = 0
         self.stopped = False
-        self.plugs = plugs or coreplugs
+        self.plugs = coreplugs
         self.gatekeeper = GateKeeper(self.botname)
         self.gatekeeper.allow(self.user or self.jid or self.server or self.botname)
         self.closed = False
@@ -493,13 +493,13 @@ class BotBase(LazyDict):
         except KeyError:
             logging.debug("botbase - can't find plugin to reload for %s" % event.cmnd)
             return
-        logging.debug("%s - checking %s" % (self.name, unicode(p)))
+        logging.warn("%s - checking %s" % (self.name, unicode(p)))
         for name in p:
             if name in self.plugs: continue
             if name in default_plugins: pass
             elif self.cfg.blacklist and name in self.cfg.blacklist: continue
             elif self.cfg.loadlist and name not in self.cfg.loadlist: continue
-            logging.warn("botbase - on demand reloading of %s" % name)
+            logging.warn("%s - on demand reloading of %s" % (self.name, name))
             try:
                 mod = self.plugs.reload(name, force=True, showerror=False)
                 if mod: plugloaded.append(mod) ; continue

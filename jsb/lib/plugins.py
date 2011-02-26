@@ -14,7 +14,7 @@ from jsb.utils.lazydict import LazyDict
 from jsb.utils.exception import handle_exception
 from boot import cmndtable, plugin_packages, default_plugins
 from errors import NoSuchPlugin
-from jsb.utils.locking import locked
+from jsb.utils.locking import lockdec
 from jsbimport import force_import, _import
 
 ## basic imports
@@ -24,10 +24,16 @@ import logging
 import Queue
 import copy
 import sys
+import thread
 
 ## defines
 
 cpy = copy.deepcopy
+
+## locks
+
+loadlock = thread.allocate_lock()
+locked = lockdec(loadlock)
 
 ## Plugins class
 
@@ -128,7 +134,8 @@ class Plugins(LazyDict):
                 except Exception, ex: handle_exception()
         return loaded
 
-    def reload(self, modname, force=True, showerror=False):
+    @locked
+    def reload(self, modname, force=False, showerror=False):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
         if self.has_key(modname): self.unload(modname)
@@ -192,7 +199,7 @@ class Plugins(LazyDict):
         except KeyError:
             logging.debug("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return
-        if plugin in self: return plugloaded
+        if plugin in self: logging.warn("plugins - %s already loaded" % plugin) ; return plugloaded
         if  plugin in default_plugins: pass
         elif bot.cfg.blacklist and plugin in bot.cfg.blacklist: return plugloaded
         elif bot.cfg.loadlist and plugin not in bot.cfg.loadlist: return plugloaded

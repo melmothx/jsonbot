@@ -263,10 +263,10 @@ def chatlogcb(bot, ievent):
 
 ## make sure plugin gets loaded on start
 
-def dummy(bot, event):
-    logging.warn("chatlog - logging loading.")
-
-callbacks.add("START", dummy)
+#def dummy(bot, event):
+#    logging.warn("chatlog - logging loading.")
+#
+#callbacks.add("START", dummy)
 
 ## plugin start
 
@@ -276,7 +276,14 @@ def init():
     global loggers
     for (botname, channel) in cfg.get("channels"):
         enablelogging(botname, channel)  
-    callbacks.add("ALL", chatlogcb, prechatlogcb)
+    callbacks.add("PRIVMSG", chatlogcb, prechatlogcb)
+    callbacks.add("JOIN", chatlogcb, prechatlogcb)
+    callbacks.add("PART", chatlogcb, prechatlogcb)
+    callbacks.add("NOTICE", chatlogcb, prechatlogcb)
+    callbacks.add("QUIT", chatlogcb, prechatlogcb)
+    callbacks.add("NICK", chatlogcb, prechatlogcb)
+    callbacks.add("PRESENCE", chatlogcb, prechatlogcb)
+    callbacks.add("MESSAGE", chatlogcb, prechatlogcb)
     first_callbacks.add("OUTPUT", chatlogcb, prechatlogcb)
     return 1
 
