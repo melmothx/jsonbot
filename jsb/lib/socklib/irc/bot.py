@@ -339,7 +339,7 @@ class IRCBot(Irc):
         
     def handle_mode(self, ievent):
         """ check if mode is about channel if so request channel mode. """
-        logging.warn("%s - mode change %s" % (self.name, str(ievent.arguments)))
+        logging.info("%s - mode change %s" % (self.name, str(ievent.arguments)))
         try:
             dummy = ievent.arguments[2]
         except IndexError:
