@@ -137,13 +137,13 @@ def savecmndtable(modname=None, saveperms=True):
         if cmndname and c:
             target[cmndname] = c.modname  
             cmndperms[cmndname] = c.perms
-    logging.info("saving command table")
+    logging.warn("saving command table")
     assert cmndtable
     assert target
     cmndtable.data = target
     cmndtable.save()
     if saveperms:
-        logging.info("saving command perms")
+        logging.warn("saving command perms")
         cmndperms.save()
 
 def removecmnds(modname):
@@ -252,9 +252,9 @@ def getpluginlist():
 
 def update_mod(modname):
     """ update the tables with new module. """
-    savepluginlist(modname)
     savecallbacktable(modname)
-    savecmndtable(modname)
+    savecmndtable(modname, saveperms=False)
+    savepluginlist(modname)
 
 def whatcommands(plug):
     tbl = getcmndtable()
