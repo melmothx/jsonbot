@@ -199,7 +199,7 @@ class Plugins(LazyDict):
         except KeyError:
             logging.debug("plugins - can't find plugin to reload for %s" % event.usercmnd)
             return
-        if plugin in self: logging.warn("plugins - %s already loaded" % plugin) ; return plugloaded
+        if plugin in self: logging.debug("plugins - %s already loaded" % plugin) ; return plugloaded
         if  plugin in default_plugins: pass
         elif bot.cfg.blacklist and plugin in bot.cfg.blacklist: return plugloaded
         elif bot.cfg.loadlist and plugin not in bot.cfg.loadlist: return plugloaded

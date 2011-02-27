@@ -493,7 +493,7 @@ class BotBase(LazyDict):
         except KeyError:
             logging.debug("botbase - can't find plugin to reload for %s" % event.cmnd)
             return
-        logging.warn("%s - checking %s" % (self.name, unicode(p)))
+        logging.debug("%s - checking %s" % (self.name, unicode(p)))
         for name in p:
             if name in self.plugs: continue
             if name in default_plugins: pass
