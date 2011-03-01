@@ -13,22 +13,25 @@
     </script>
 </head>
 <body>
-    <title>Login with Openid</title>
-    <div class="related">
-      <ul> 
-        <li class="right" style="margin-right: 10px"><b><i>the JSON everywhere bot<b></i></li>
-        <li><b><i>Welcome to {{ appname }}<b></i></li>
-      </ul>
-    </div> 
-    <div class="footer" id="info_div"><b>login page</b></div>
-    <div class="body" align="center">
-        <div><h1>{{ appname }}</h1></div><br>
-        <div id="topper_div"></div>
+    <div align="center" class="document" style="font-size: 100%;">
+      <div class="related">
+        <ul> 
+          <li class="right" style="margin-right: 10px">{{ loginurl }} - {{ who }}</i></a> |</li>
+          <li><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><b>DOCS</b></a></li>
+          <li>-</li>
+          <li><a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
+          <li>-</li>
+          <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
+        </ul>
+      </div> 
+    <div class="footer" align="center" id="topper_div"></div><br>
+    <div class="body" align="center"><h1><b>{{ appname }}</b></h1></div>
+    <div class="body" align="center" style="font-size: 200%;">
         <form action="/_ah/login_required" method="post" id="openid_form">
 	    <input type="hidden" name="cont" value="continue" />
 	    <fieldset>
     		<legend>Sign-in or Create New Account</legend>
-    		<div id="openid_choice">
+    		<div id="openid_choice" size="150%">
 	    		<p>Please click your account provider:</p>
 	    		<div id="openid_btns"></div>
 			</div>
@@ -40,8 +43,5 @@
 	    </fieldset>
         </form>
     </div>
-    <div class="footer" id="status_div"></div>
-    <div class="footer" id="doc_div"><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><i><b>DOCS</b></i></a></div>
-    <div class="footer" id="bottom_div"></div>
 </body>
 </html>

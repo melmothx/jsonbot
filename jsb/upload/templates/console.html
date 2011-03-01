@@ -22,20 +22,20 @@
       var parameters = "";
       var identtime = new Date();
       var token = "{{ token }}";
-      var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 26px;" size="33" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
+      var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 22px;" size="33" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
 
       // channel stuff
 
       onOpened = function() {
         contime = new Date();
-        topper("channel opened on " + contime.toUTCString());
+        //topper("channel opened on " + contime.toUTCString());
         output("channel opened on " + contime.toUTCString());
       }
 
       onClose = function() {
         contime = new Date();
-        topper("channel closed on " + contime.toUTCString());
+        //topper("channel closed on " + contime.toUTCString());
         output("channel closed on " + contime.toUTCString());
         //setTimeout("doCmnd('!chan-newtoken', openChannel);", 1000); 
       }
@@ -122,11 +122,11 @@
       function update(what) {
         if (what=="feeds") {
             doCmnd('!outputcache', dobottom, "background");
-            doCmnd('!statusline', dotopp, "background");
+            //doCmnd('!statusline', dostatus, "background");
             doCmnd('!rss-feeds', doinfo, "background");
         }
         else {
-            // setTimeout('doCmnd("!statusline", dotop, "background");', 1000);
+            setTimeout('doCmnd("!outputcache", dobottom, "background");', 1000);
             setTimeout('doCmnd("!topper", doinfo, "background");', 1000);
         }
       }
