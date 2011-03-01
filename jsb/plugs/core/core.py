@@ -322,6 +322,7 @@ examples.add('loaded', 'show list of loaded plugins', 'loaded')
 
 def handle_statusline(bot, event):
     """ show a status line. """
+    event.how = "background"
     event.reply("<b>controlchars:</b> %s - <b>perms:</b> %s" % (event.chan.data.cc, ", ".join(event.user.data.perms)))
 	
 cmnds.add('statusline', handle_statusline, ['USER', 'GUEST'])
@@ -331,6 +332,7 @@ examples.add('statusline', 'show status line', 'statusline')
 
 def handle_topper(bot, event):
     """ show a 'topper' startus line. """
+    event.how = "background"
     event.reply("<b>forwards:</b> %s - <b>watched:</b> %s  - <b>feeds:</b> %s" % (", ".join(event.chan.data.forwards) or "none", ", ".join(event.chan.data.watched) or "none", ", ".join([unicode(x) for x in event.chan.data.feeds]) or "none"))
 
 cmnds.add('topper', handle_topper, ['USER', 'GUEST'])
@@ -340,6 +342,7 @@ examples.add('topper', 'show topper line', 'topper')
 
 def handle_running(bot, event):
     """ show running tasks. """
+    event.how = "background"
     event.reply("<b>callbacks:</b> %s - <b>commands:</b> %s - <b>longrunning:</b> %s" % (defaultrunner.running(), cmndrunner.running(), longrunner.running()))
 
 cmnds.add('running', handle_running, ['USER', 'GUEST'])

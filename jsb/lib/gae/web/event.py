@@ -89,6 +89,8 @@ class WebEvent(EventBase):
         if not txt: return
         if self.how == "background": self.bot.outnocb(self.channel, txt, response=self.response)
         else: self.bot.out(self.channel, txt, response=self.response, event=self)
-        self.result.append(txt)
-        self.outqueue.put_nowait(txt)
-        return self
+    #    if self.how == "background": self.bot.outnocb(self.channel, txt)
+    #    else: self.bot.out(self.channel, txt, event=self)
+    #    self.result.append(txt)
+    #    self.outqueue.put_nowait(txt)
+    #    return self

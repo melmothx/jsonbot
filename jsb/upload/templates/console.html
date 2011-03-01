@@ -22,7 +22,7 @@
       var parameters = "";
       var identtime = new Date();
       var token = "{{ token }}";
-      var consoletxt = '<br><form><b>&lt;-</b><input length="100" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form><div class="body" background-color="pink" align="center" id="content_div"><i>Welcome to JSONBOT</i></div>';
+      var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 26px;" size="33" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
 
       // channel stuff
@@ -30,19 +30,19 @@
       onOpened = function() {
         contime = new Date();
         topper("channel opened on " + contime.toUTCString());
-        bottom("channel opened on " + contime.toUTCString());
+        output("channel opened on " + contime.toUTCString());
       }
 
       onClose = function() {
         contime = new Date();
         topper("channel closed on " + contime.toUTCString());
-        bottom("channel closed on " + contime.toUTCString());
+        output("channel closed on " + contime.toUTCString());
         //setTimeout("doCmnd('!chan-newtoken', openChannel);", 1000); 
       }
 
       onMessage = function(m) {
         // newState = JSON.parse(m.data);
-        bottom(m.data);
+        output(m.data);
       }
 
       onError = function(m) {
@@ -50,7 +50,7 @@
       }
 
       openChannel = function(t) {
-        topper("connecting");
+        topper("connecting - ");
         var token = "{{ token }}";
         if (token) {
             var channel = new goog.appengine.Channel(token);
@@ -64,7 +64,7 @@
         socket.onmessage = onMessage;
         socket.onerror = onError;
         socket.onclose = onClose;
-        statusadd(" - socket set");
+        statusadd(" - socket set - ");
       }
 
       // utils functions
@@ -100,10 +100,10 @@
           setCookie();
           openChannel();
           // update();
-          setTimeout("doCmnd('!welcome', response, 'background');", 50);
-          setTimeout("doCmnd('!outputcache', dobottom, 'background');", 50);
+          setTimeout("doCmnd('!welcome', dotop, 'background');", 50);
+          setTimeout("doCmnd('!outputcache', dobottom, 'background');", 150);
           setTimeout("location.reload(true);", 3600000);
-          //setTimeout("update();", 10);
+          setTimeout("update();", 100);
           //setInterval("loop();", 180000);
       }
 
@@ -114,22 +114,20 @@
 
       function consolestart() {
           doconsole();
-          status("booting");
-          output(url);
-          start();
-          statusadd(" - done - " + elapsed() + " msec");
+          status("booting - ");
+          setTimeout("start();", 100);
+          statusadd(elapsed() + " msec");
       }
 
       function update(what) {
         if (what=="feeds") {
             doCmnd('!outputcache', dobottom, "background");
-            doCmnd('!statusline', dotop), "background";
+            doCmnd('!statusline', dotopp, "background");
             doCmnd('!rss-feeds', doinfo, "background");
         }
         else {
-            setTimeout('doCmnd("!statusline", dotop, "background");', 10000);
-            doCmnd('!topper', doinfo, "background");
-            //setTimeout('doCmnd("!uptime", dotop, "background");', 100);
+            // setTimeout('doCmnd("!statusline", dotop, "background");', 1000);
+            setTimeout('doCmnd("!topper", doinfo, "background");', 1000);
         }
       }
 
@@ -199,8 +197,11 @@
       // output functions
 
       function output(text) {
-        var html = "<br>" + text;
+        var html = "";
+        html += text;
+        html += "";
         var element = document.getElementById("content_div");  
+        html += element.innerHTML
         element.innerHTML = html;
       }
 
@@ -229,26 +230,25 @@
       }
 
       function topper(text) {
-        var html = "<i>";
+        var html = '<marquee behavior="scroll" scroll delay="400" direction="left">';
         html += text;
-        html += "</i>";
+        html += "</marquee>";
         var element = document.getElementById("topper_div");  
         element.innerHTML = html;
       }
 
       function statusadd(text) {
-        var html = "<i>";
+        var html = '<i>';
         html += text;
         html += "</i>";
-
         var element = document.getElementById("status_div");  
         element.innerHTML += html;
       }
 
       function status(text) {
-        var html = "<i>";
+        var html = '<b>';
         html += text;
-        html += "</i>";
+        html += "</b>";
 
         var element = document.getElementById("status_div");  
         element.innerHTML = html;
@@ -272,15 +272,6 @@
         element.innerHTML = html;
       }
 
-      function bottom(text) {
-        var html = "";
-        html += text;
-        html += "<br>";
-        var element = document.getElementById("bottom_div");  
-        html += element.innerHTML
-        element.innerHTML = html;
-      }
-
       function doscreen(screentxt) {
         var element = document.getElementById("screen_div");  
         element.innerHTML = screentxt;
@@ -290,10 +281,10 @@
 
       function response(obj) {
           if (obj.how != "background") {
-              statusadd(" - " + obj.readyState.toString())
+              // statusadd(" " + obj.readyState.toString())
           }
           if (obj.readyState==4){
-              statusadd(" - status: " + obj.status + " - ")
+              //statusadd(" - status: " + obj.status + " - ")
               if (obj.status==200) {
                    output(obj.responseText);
                    statusadd(elapsed() + " msec - OK");
@@ -327,14 +318,6 @@
            if (obj.readyState==4) {
                if (obj.status==200) {
                    status(obj.responseText);
-              }
-          }
-      }
-
-      function dobottom(obj) {
-           if (obj.readyState==4) {
-               if (obj.status==200) {
-                   bottom(obj.responseText);
               }
           }
       }
@@ -382,7 +365,7 @@
               u = url;
           }
           if (how != "background") {
-              status("sending command - " + u + " - ");
+              status("loading - ");
           }
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
@@ -397,34 +380,30 @@
 </head>
 <body>
     <title>{{ host }}</title>
-    <div class="related">
-      <ul> 
-        <li class="right" style="margin-right: 10px">
-          <a href="{{ logouturl }}" title="logout">logout</i></a></li>
-        <li class="right" style="margin-right: 10px">{{ loginurl }} - {{ who }}</i></a> |</li>
-        <li><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><b>DOCS</b></a></li>
-        <li>-</li>
-        <li><a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
-        <li>-</li>
-        <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
-      </ul>
-    </div> 
-    <div align="center" class="footer" id="status_div"></div>
-    <div class="footer" id="info_div"></div>
-    <div align="center">
-    <div class="body"><h1><b>{{ appname }}</b></h1><div><br>
-    <div id="topper_div">{{ version }}</div><br>
-    <div style="position: relative; width: 90%; height: 80px; background-color: {{ color }};" id="screen_div"></div>
-    </div></div>
-    <br><br>
-    <div class="related" id="status_div2">
-      <ul align="center">
-        <li><b>outputcache<b></li>
-      </ul>
-    </div>
-    <div align="left" class="footer" id="bottom_div"></div>
-    <div id="down_div"><i>running on {{ host }}</i></div>
-    <br>
+    <div align="center" class="document">
+      <div class="related">
+        <ul> 
+          <li class="right" style="margin-right: 10px">
+            <a href="{{ logouturl }}" title="logout">logout</i></a></li>
+          <li class="right" style="margin-right: 10px">{{ loginurl }} - {{ who }}</i></a> |</li>
+          <li><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><b>DOCS</b></a></li>
+          <li>-</li>
+          <li><a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
+          <li>-</li>
+          <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
+        </ul>
+      </div> 
+    <div class="footer" align="center" id="topper_div"></div><br>
+    <div class="body" align="center"><h1><b>{{ appname }}</b></h1><br>
+      <div class="body" style="font-size: 100%;" align="center" id="info_div"></div>
+      <div style="width: 100%; background-color: {{ color }}; color: black" id="screen_div"><br></div>
+      <div align="center" id="status2_div"></div>
+    <div align="center" class="related">
+      <div align="center" id="status_div" style="background-color: black;"><b>outputcache<b></div>
+    </div><br>
+    <div class="footer" style="font-size: 20px" align="center" id="content_div"></div>
+    <div class="body" style="font-size: 100%;" align="center" id="footer_div"></div>
+  </div>
 </body>
 <body onLoad="init();" />
 </html>

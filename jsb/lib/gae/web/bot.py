@@ -37,15 +37,15 @@ class WebBot(BotBase):
         """  put txt to the client. """
         if not txt: return 
         logging.debug("%s - web - out - %s" % (self.name, txt))
-        if response: response.out.write(toenc(txt + end))
-        elif chan:
+        if chan:
             from google.appengine.api import channel
             logging.warn("%s - sending to channel %s" % (self.name, chan))
             channel.send_message(chan, txt)
+        elif response: response.out.write(toenc(txt + end))
                 
     def outnocb(self, channel, txt, how="cache", event=None, origin=None, response=None, dotime=False, *args, **kwargs):
         txt = self.normalize(txt)
-        if event and not event.how == "background": 
+        if event and event.how != "background": 
             logging.warn("%s - out - %s" % (self.name, txt))             
             if how == "cache": add(channel, [txt, ])
         if True:

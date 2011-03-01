@@ -55,6 +55,7 @@ cpy = copy.deepcopy
 
 def forwardoutpre(bot, event):
     """ preconditon to check if forward callbacks is to be fired. """
+    if event.how == "background": return False
     chan = unicode(event.channel).lower()
     if not chan: return
     logging.debug("forward - pre - %s" % event.channel)
