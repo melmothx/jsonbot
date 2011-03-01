@@ -40,7 +40,7 @@ class WebBot(BotBase):
         if chan:
             from google.appengine.api import channel
             logging.warn("%s - sending to channel %s" % (self.name, chan))
-            channel.send_message(chan, txt)
+            channel.send_message(chan, txt + end)
         elif response: response.out.write(toenc(txt + end))
                 
     def outnocb(self, channel, txt, how="cache", event=None, origin=None, response=None, dotime=False, *args, **kwargs):
@@ -57,7 +57,7 @@ class WebBot(BotBase):
                      except ValueError:  logging.error("web - invalid url - %s" % url)
             if dotime: txt = "[%s] %s" % (hourmin(time.time()), txt)
             if not response: self.update_web(channel, txt)
-            else: self._raw(txt, response)
+            else: self._raw(txt, response=response)
 
     def normalize(self, txt):
         #txt = cgi.escape(txt)
