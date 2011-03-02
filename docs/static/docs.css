@@ -137,7 +137,7 @@ body {
     font-family: sans-serif;
     background-color: #1c4e63;
     margin: 0px;
-    padding: 0;
+    padding: 10;
     font-size: 100%;
 }
 
@@ -147,19 +147,17 @@ div.document {
 }
 
 div.documentwrapper {
-    float: left;
     font-size: 100%;
 }
 
 div.bodywrapper {
-    margin: 0 0 0 300px;
-    float: center;
+    margin: 0 0 0 280px;
     font-size: 100%;
 }
 
 div.body {
     background-color: #ffffff;
-    padding: 0px 50px 30px 50px;
+    padding: 0px 0px 0px 20px;
     overflow: hidden;
     font-size: 100%;
     text-align: left;
@@ -267,6 +265,7 @@ tt {
 
 div.sphinxsidebarwrapper {   
     padding: 10px 5px 0 10px;
+    text-align: left;
 }
 
 div.sphinxsidebar {
