@@ -3,6 +3,10 @@
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
+@import url("basic.css");
+@import utl("default.css");
+
+
 /* -- main layout ----------------------------------------------------------- */
 
 div.clearer {
@@ -155,10 +159,10 @@ div.bodywrapper {
 }
 
 div.body {
-    background-color: #00000;
+    background-color: #ffffff;
     padding: 0 20px 30px 20px;
     overflow: hidden;
-    font-size: 130%;
+    font-size: 100%;
 }
 
 div.body a {
@@ -168,7 +172,7 @@ div.body a {
 
 div.footer {
     text-align: center;
-    font-size: 130%;
+    font-size: 100%;
 }
 
 div.footer a {
@@ -180,12 +184,12 @@ div.related {
     background-color: #000000;
     color: #ffffff;
     text-align: left;
-    font-size: 130%;
+    font-size: 120%;
 }
 
 div.related a {
     text-align: left;
-    font-size: 130%;
+    font-size: 100%;
 }
 
 /* -- body styles ----------------------------------------------------------- */
@@ -262,7 +266,6 @@ tt {
 
 
 div.sphinxsidebar {
-    width: 120%;
 }
  
 div.sphinxsidebar h3 {
@@ -319,7 +322,7 @@ div.sphinxsidebar input {
     div.documentwrapper,
     div.bodywrapper {
         margin: 0;
-        width: 100%;
+        width: 80%;
     }
 
     div.sphinxsidebar,
