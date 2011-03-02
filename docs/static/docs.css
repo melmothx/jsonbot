@@ -4,8 +4,7 @@
  */
 
 @import url("basic.css");
-@import utl("default.css");
-
+@import url("default.css");
 
 /* -- main layout ----------------------------------------------------------- */
 
@@ -153,16 +152,18 @@ div.documentwrapper {
 }
 
 div.bodywrapper {
-    margin: 0 0 0 230px;
-    float: left;
+    margin: 0 0 0 300px;
+    float: center;
     font-size: 100%;
 }
 
 div.body {
     background-color: #ffffff;
-    padding: 0 20px 30px 20px;
+    padding: 0px 50px 30px 50px;
     overflow: hidden;
     font-size: 100%;
+    text-align: left;
+    size: 80%;
 }
 
 div.body a {
@@ -264,6 +265,47 @@ tt {
 
 /* -- page layout ----------------------------------------------------------- */
 
+div.sphinxsidebarwrapper {   
+    padding: 10px 5px 0 10px;
+}
+
+div.sphinxsidebar {
+    float: left; 
+    width: 230px;
+    margin-left: -100%;
+    font-size: 100%;
+}
+
+div.sphinxsidebar ul {
+    list-style: none;
+}
+
+div.sphinxsidebar ul ul,
+div.sphinxsidebar ul.want-points {
+    margin-left: 20px; 
+    list-style: square;
+}
+
+div.sphinxsidebar ul ul {
+    margin-top: 0;   
+    margin-bottom: 0;
+}
+
+div.sphinxsidebar form {
+    margin-top: 10px;
+}
+
+div.sphinxsidebar input {
+    border: 1px solid #98dbcc;
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+
+
+/* BHJTW */
+
+
 
 div.sphinxsidebar {
 }
@@ -323,13 +365,14 @@ div.sphinxsidebar input {
     div.bodywrapper {
         margin: 0;
         width: 80%;
-    }
-
-    div.sphinxsidebar,
+    },
+    div.sphinxsidebar {
+    },
     div.related,
-    #top-link {
+    top-link {
         display: none;
     }
 }
+
 </style>
 
