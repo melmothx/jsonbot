@@ -63,23 +63,20 @@ format = "%(message)s"
 
 ## functions
 
-def format_opt(name, cfg):
-    simple_format = formats['supy']
-    format = formats.get(cfg.get('format'), 'supy')
-    opt = format.get(name, simple_format.get(name, None))
+def format_opt(name, format="log"):
+    try: simple_format = formats[format]
+    except KeyError: return
+    f = formats.get(format, 'log')
+    opt = f.get(name, simple_format.get(name, None))
     return opt
-
-
-def timestr(dt, cfg):
-    return dt.strftime(format_opt('timestamp_format', cfg))
 
 ## formatevent function
 
-def formatevent(bot, ievent, cfg, forwarded=False):
+def formatevent(bot, ievent, channels, forwarded=False):
     m = {
         'datetime': datetime.now(),
-        'separator': format_opt('separator', cfg),
-        'event_prefix': format_opt('event_prefix', cfg),
+        'separator': format_opt('separator'),
+        'event_prefix': format_opt('event_prefix'),
         'network': bot.networkname,
         'nick': ievent.nick,
         'target': stripname(ievent.channel),
@@ -111,7 +108,7 @@ def formatevent(bot, ievent, cfg, forwarded=False):
         cmd = ievent.cmnd
         nick = cmd == 'NICK' and ievent.txt or ievent.nick
         for c in event.user.channels:
-            if [bot.name, c] in cfg.get('channels'):
+            if [bot.name, c] in channels:
                 if True:
                     if cmd == 'NICK': m.txt = '%s (%s) is now known as %s'% (ievent.nick, ievent.userhost, ievent.txt)
                     else: m.txt= '%s (%s) has quit: %s'% (ievent.nick, ievent.userhost, ievent.txt)

@@ -18,7 +18,7 @@ from jsb.lib.eventbase import EventBase
 
 ## plugin imports
 
-from jsb.plugs.socket.chatlog import formatevent
+from jsb.utils.format import formatevent
 
 ## basic imports
 
@@ -153,7 +153,7 @@ def watchcallback(bot, event):
         except ValueError: continue
         if not event.allowatch: pass
         elif channel not in event.allowwatch: logging.warn("watcher - allowwatch denied %s - %s" % (channel, event.allowwatch)) ; continue
-        m = formatevent(bot, event, True)
+        m = formatevent(bot, event, subscribers, True)
         if event.cbtype in ['OUTPUT']: txt = u"[!] %s" % m.txt
         else: txt = u"[%s] %s" % (m.nick or event.nick or event.auth, m.txt)
         if txt.count('] [') > 2: logging.debug("watcher - %s - skipping %s" % (type, txt)) ; continue

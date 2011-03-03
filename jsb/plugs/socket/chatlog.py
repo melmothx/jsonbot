@@ -74,7 +74,7 @@ except: pass
 format = "%(message)s"
 
 def timestr(dt):
-    return dt.strftime(format_opt('timestamp_format', cfg))   
+    return dt.strftime(format_opt('timestamp_format'))   
 
 def enablelogging(botname, channel):
     """ set loglevel to level_name. """
@@ -123,7 +123,7 @@ def log_write(m):
     m.type = m.type.upper()
     line = '%(timestamp)s%(separator)s%(txt)s\n'%({
         'timestamp': timestamp, 
-        'separator': format_opt('separator', cfg),
+        'separator': format_opt('separator'),
         'txt': m.txt,
         'type': m.type
     })
@@ -139,7 +139,7 @@ backends['log'] = log_write
 ## log function
 
 def log(bot, event):
-    m = formatevent(bot, event, cfg)
+    m = formatevent(bot, event, cfg.get("channels"))
     if m["txt"]: write(m)
 
 ## chatlog precondition
