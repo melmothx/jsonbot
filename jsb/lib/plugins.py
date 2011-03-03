@@ -63,7 +63,7 @@ class Plugins(LazyDict):
             logging.debug("plugins - got plugin package %s" % module)
             try:
                 for plug in imp.__plugs__:
-                    try: self.load("%s.%s" % (module,plug), force=force, showerror=True)
+                    try: self.reload("%s.%s" % (module,plug), force=force, showerror=True)
                     except KeyError: logging.debug("failed to load plugin package %s" % module)
                     except Exception, ex: handle_exception()
             except AttributeError: logging.error("no plugins in %s .. define __plugs__ in __init__.py" % module)
@@ -93,7 +93,7 @@ class Plugins(LazyDict):
     def load(self, modname, force=False, showerror=True, loaded=[]):
         """ load a plugin. """
         if not modname: raise NoSuchPlugin(modname)
-        if modname in loaded: logging.warn("plugins - skipping %s" % modname) ; return loaded
+        if not force and modname in loaded: logging.warn("plugins - skipping %s" % modname) ; return loaded
         if self.has_key(modname):
             try:
                 logging.info("plugins - %s already loaded" % modname)                

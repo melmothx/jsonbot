@@ -87,7 +87,7 @@ class Commands(LazyDict):
         """
         event.bind(bot)
         cmnd = cmnd or event.usercmnd.lower()
-        if not cmnd: return None
+        if not cmnd: return
         try:
             cmnd = event.chan.data.aliases[cmnd]
         except (KeyError, TypeError):
@@ -109,12 +109,12 @@ class Commands(LazyDict):
             if self.subs and self.subs.has_key(cmnd):
                 cmndlist = self.subs[cmnd]
                 if len(cmndlist) == 1: result = cmndlist[0]
-                else: event.reply("try one of: %s" % ", ".join([x.cmnd for x in cmndlist]))
+                else: event.reply("try one of: %s" % ", ".join([x.cmnd for x in cmndlist])) ; return
             else:
                 if self.pre and self.pre.has_key(cmnd):
                     cmndlist = self.pre[cmnd]
                     if len(cmndlist) == 1: result = cmndlist[0]
-                    else: event.reply("try one of: %s" % ", ".join([x.cmnd for x in cmndlist]))
+                    else: event.reply("try one of: %s" % ", ".join([x.cmnd for x in cmndlist])) ; return
         logging.debug("commands - woulddispatch result: %s" % result)
         return result
 

@@ -178,6 +178,7 @@ def init():
     callbacks.add("NICK", chatlogcb, prechatlogcb)
     callbacks.add("PRESENCE", chatlogcb, prechatlogcb)
     callbacks.add("MESSAGE", chatlogcb, prechatlogcb)
+    callbacks.add("CONSOLE", chatlogcb, prechatlogcb)
     first_callbacks.add("OUTPUT", chatlogcb, prechatlogcb)
     return 1
 
@@ -200,7 +201,6 @@ def handle_chatlogon(bot, ievent):
         cfg['channels'].append([bot.name, chan])
         cfg.save()
     ievent.reply('chatlog enabled on (%s,%s)' % (bot.name, chan))
-    #else: ievent.reply('chatlog already enabled on (%s,%s)' % (bot.name, chan))
 
 cmnds.add('chatlog-on', handle_chatlogon, 'OPER')
 examples.add('chatlog-on', 'enable chatlog on <channel> or the channel the commands is given in', '1) chatlog-on 2) chatlog-on #dunkbots')
