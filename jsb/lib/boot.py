@@ -34,9 +34,9 @@ sys.path.insert(0, os.getcwd() + os.sep + '..')
 ongae = False
 try:
     import waveapi
-    plugin_packages = ['myplugs.gae','jsb.plugs.core', 'jsb.plugs.gae', 'jsb.plugs.common', 'jsb.plugs.wave', 'jsb.plugs.myplugs', 'myplugs']
+    plugin_packages = ['myplugs.gae','jsb.plugs.core', 'jsb.plugs.gae', 'jsb.plugs.common', 'jsb.plugs.wave', 'jsb.plugs.myplugs.gae']
     ongae = True
-except ImportError: plugin_packages = ['myplugs.socket', 'jsb.plugs.core', 'jsb.plugs.common', 'jsb.plugs.socket', 'jsb.plugs.myplugs', 'myplugs']
+except ImportError: plugin_packages = ['myplugs.socket', 'jsb.plugs.core', 'jsb.plugs.common', 'jsb.plugs.socket', 'jsb.plugs.myplugs.socket']
 
 default_plugins = ['jsb.plugs.core.admin', 'jsb.plugs.core.dispatch', 'jsb.plugs.core.plug']
 

@@ -24,8 +24,7 @@ def handle_adminboot(bot, ievent):
     else: boot(force=True, saveperms=False)
     ievent.done()
 
-cmnds.add('admin-boot', handle_adminboot, 'OPER', threaded=True)
-cmnds.add('admin-init', handle_adminboot, 'OPER', threaded=True)
+cmnds.add('admin-boot', handle_adminboot, 'OPER')
 examples.add('admin-boot', 'initialize the bot .. cmndtable and pluginlist', 'admin-boot')
 
 ## admin-loadall command
