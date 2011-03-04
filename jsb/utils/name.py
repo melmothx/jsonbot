@@ -51,12 +51,13 @@ def stripname(name, allowed=""):
     n = n.replace("@", '+')
     n = n.replace("#", '-')
     n = n.replace("!", '.')
-    res = u""
+    res = []
+    allow = allowednamechars + allowed
     for c in n:
         if ord(c) < 31: continue
-        elif c in allowednamechars + allowed: res += c
-        else: res += "-" + str(ord(c))
-    return res
+        elif c in allow: res.append(c)
+        else: res.append("-" + str(ord(c)))
+    return ''.join(res)
 
 ## testname function
 
