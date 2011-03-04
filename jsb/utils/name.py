@@ -47,6 +47,7 @@ def slugify(value):
 def stripname(name, allowed=""):
     """ strip all not allowed chars from name. """
     n = name.replace(os.sep, '+')
+    n = n.replace("/", '+')
     n = n.replace("@", '+')
     n = n.replace("#", '-')
     n = n.replace("!", '.')
