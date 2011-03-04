@@ -41,7 +41,7 @@ import sys
 ## defines
 try: boot(sys.argv[2], force=True)
 except IndexError: boot(force=True)
-donot = ['reconnect', 'stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get', 'hb-register', 'reboot', 'admin-stop']
+donot = ['admin-boot', 'admin-reloadall', 'reconnect', 'stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get', 'hb-register', 'reboot', 'admin-stop']
 bot = BotBase()
 bot.allowall = True
 #plugs.loadall(plugin_packages, force=True)

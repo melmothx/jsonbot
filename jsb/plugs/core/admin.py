@@ -42,7 +42,7 @@ examples.add('admin-tables', 'show runtime tables', 'admin-tables')
 
 def handle_loadall(bot, ievent):
     """ load all available plugins. """
-    plugs.loadall(plugin_packages)
+    plugs.loadall(plugin_packages, force=True)
     ievent.done()
 
 cmnds.add('admin-loadall', handle_loadall, 'OPER', threaded=True)

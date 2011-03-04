@@ -45,7 +45,7 @@ class Plugins(LazyDict):
         for plugname in self:
             self.unload(plugname)         
 
-    def loadall(self, paths=[], force=False):
+    def loadall(self, paths=[], force=True):
         """
             load all plugins from given paths, if force is true .. 
             otherwise load all plugins for default_plugins list.

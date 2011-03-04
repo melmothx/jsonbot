@@ -169,6 +169,7 @@ class Commands(LazyDict):
                         for q in event.queues:
                             q.put_nowait(None)
                         if not event.dontclose: event.outqueue.put_nowait(None)
+                    return event
             else:
                 if target.threaded and not event.nothreads:
                     logging.warning("commands - launching thread for %s" % event.usercmnd)
