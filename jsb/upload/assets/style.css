@@ -180,19 +180,20 @@ div.related {
 }
 
 div.related a {
-    color: #ffffff;
+    color: black;
     text-align: left;
 }
 
 /* -- body styles ----------------------------------------------------------- */
 
 a {
-    color: #355f7c;
+    color: black;
     text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
+    color: red;
 }
 
 div.body p, div.body dd, div.body li {
@@ -222,7 +223,7 @@ div.body h5 { font-size: 110%; }
 div.body h6 { font-size: 100%; }
 
 a.headerlink {
-    color: #c60f0f;
+    color: black;
     font-size: 0.8em;
     padding: 0 4px 0 4px;
     text-decoration: none;

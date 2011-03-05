@@ -33,15 +33,12 @@ class WebBot(BotBase):
         self.isgae = True
         self.type = u"web"
 
-    def _raw(self, txt, response=None, end=u"<br>", chan=None):
+    def _raw(self, txt, response, end=u"<br>"):
         """  put txt to the client. """
         if not txt: return 
+        txt = txt + end
         logging.debug("%s - out - %s" % (self.name, txt))
-        if chan:
-            from google.appengine.api import channel
-            logging.warn("%s - sending to channel %s" % (self.name, chan))
-            channel.send_message(chan, u"[!] " + txt + end)
-        elif response: response.out.write(toenc(u"[!] " + txt + end))
+        response.out.write(txt)
 
     def outnocb(self, channel, txt, how="cache", event=None, origin=None, response=None, dotime=False, *args, **kwargs):
         txt = self.normalize(txt)
