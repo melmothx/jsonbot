@@ -11,7 +11,7 @@ div.clearer {
 div.related {   
     background-color: #000000;
     line-height: 50px;
-    color: #ffffff;
+    color: red;
     text-align: left;
 } 
 
@@ -168,7 +168,7 @@ div.footer {
 }
 
 div.footer a {
-    color: black;
+    color: red;
     text-decoration: underline;
 }
 
@@ -180,8 +180,13 @@ div.related {
 }
 
 div.related a {
-    color: black;
+    color: #ffffff;
     text-align: left;
+}
+
+div.related a:hover {
+    text-decoration: underline;
+    color: red;
 }
 
 /* -- body styles ----------------------------------------------------------- */
@@ -223,7 +228,7 @@ div.body h5 { font-size: 110%; }
 div.body h6 { font-size: 100%; }
 
 a.headerlink {
-    color: black;
+    color: #ffffff;
     font-size: 0.8em;
     padding: 0 4px 0 4px;
     text-decoration: none;
@@ -231,7 +236,7 @@ a.headerlink {
 
 a.headerlink:hover {
     background-color: #c60f0f;
-    color: white;
+    color: red;
 }
 
 

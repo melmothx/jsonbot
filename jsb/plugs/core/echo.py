@@ -21,7 +21,6 @@ def echopre(bot, event):
     return False
 
 def echocb(bot, event):
-    event.forwarded = True
     bot.outnocb(event.channel, u"[%s] %s" % (event.nick, event.txt), event=event, dotime=False)
 
 first_callbacks.add("DISPATCH", echocb, echopre)
