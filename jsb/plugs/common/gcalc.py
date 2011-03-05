@@ -26,7 +26,9 @@ def handle_gcalc(bot, ievent):
     try:
         rhs = data.split("rhs")[1].split("\"")[1]
         lhs = data.split("lhs")[1].split("\"")[1]
-        ievent.reply("%s = %s" % (lhs,rhs.replace('\\x26#215;', '*').replace('\\x3csup\\x3e', '**').replace('\\x3c/sup\\x3e', '')))
+        if rhs and lhs:
+            ievent.reply("%s = %s" % (lhs,rhs.replace('\\x26#215;', '*').replace('\\x3csup\\x3e', '**').replace('\\x3c/sup\\x3e', '')))
+        else: ievent.reply("hmmm can't get a result ..")
     except Exception, ex:
         ievent.reply(str(ex))    
 
