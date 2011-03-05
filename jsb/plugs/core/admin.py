@@ -34,7 +34,7 @@ def handle_admincommands(bot, ievent):
     cmnds = getcmndtable()
     if not ievent.rest: ievent.reply("commands: ", cmnds)
     else:
-        try: ievent.reply("%s commands: " % ievent.rest, cmnds[ievent.rest])
+        try: ievent.reply("%s command is found in %s " % (ievent.rest, cmnds[ievent.rest]))
         except KeyError: ievent.reply("no such commands available") 
 
 cmnds.add('admin-commands', handle_admincommands, 'OPER')
