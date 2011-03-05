@@ -36,28 +36,27 @@ class WebBot(BotBase):
     def _raw(self, txt, response=None, end=u"<br>", chan=None):
         """  put txt to the client. """
         if not txt: return 
-        logging.debug("%s - web - out - %s" % (self.name, txt))
+        logging.debug("%s - out - %s" % (self.name, txt))
         if chan:
             from google.appengine.api import channel
             logging.warn("%s - sending to channel %s" % (self.name, chan))
-            channel.send_message(chan, txt + end)
-        elif response: response.out.write(toenc(txt + end))
-                
+            channel.send_message(chan, u"[!] " + txt + end)
+        elif response: response.out.write(toenc(u"[!] " + txt + end))
+
     def outnocb(self, channel, txt, how="cache", event=None, origin=None, response=None, dotime=False, *args, **kwargs):
         txt = self.normalize(txt)
-        if event and event.how != "background": 
-            logging.warn("%s - out - %s" % (self.name, txt))             
+        if event and event.how != "background":
+            logging.warn("%s - out - %s" % (self.name, txt))
             if how == "cache": add(channel, [txt, ])
-        if True:
-            if "http://" in txt:
-                 for item in re_url_match.findall(txt):
-                     logging.debug("web - raw - found url - %s" % item)
-                     url = u'<a href="%s" onclick="window.open(\'%s\'); return false;"><b>%s</b></a>' % (item, item, item)
-                     try: txt = re.sub(item, url, txt)
-                     except ValueError:  logging.error("web - invalid url - %s" % url)
-            if dotime: txt = "[%s] %s" % (hourmin(time.time()), txt)
-            if not response: self.update_web(channel, txt)
-            else: self._raw(txt, response=response)
+        if "http://" in txt or "https://" in txt:
+             for item in re_url_match.findall(txt):
+                 logging.debug("web - raw - found url - %s" % item)
+                 url = u'<a href="%s" onclick="window.open(\'%s\'); return false;">%s</a>' % (item, item, item)
+                 try: txt = re.sub(item, url, txt)
+                 except ValueError:  logging.error("web - invalid url - %s" % url)
+        #if dotime: txt = "[%s] %s" % (hourmin(time.time()), txt)
+        if response: self._raw(txt, response)
+        else: self.update_web(channel, txt)
 
     def normalize(self, txt):
         #txt = cgi.escape(txt)
@@ -77,15 +76,17 @@ class WebBot(BotBase):
         txt = strippedtxt(txt)
         return txt
 
-    def update_web(self, channel, txt):
-        import google
+    def update_web(self, channel, txt, end="<br>"):
+        from google.appengine.api.channel import channel as gchan
         chan = ChannelBase(channel, botname="gae-web")
         logging.warn("%s - webchannels are %s" % (self.name, chan.data.webchannels))
         remove = []
         for c in chan.data.webchannels:
             try:
-                self._raw(txt, chan=c)
-            except google.appengine.api.channel.channel.InvalidChannelClientIdError:
+                if c:
+                    logging.debug("%s - sending to channel %s" % (self.name, chan))
+                    gchan.send_message(c, txt + end)
+            except gchan.InvalidChannelClientIdError:
                 remove.append(c)
         if remove:
             for c in remove: chan.data.webchannels.remove(c)

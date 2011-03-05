@@ -17,18 +17,14 @@ import logging
 ## echo callback
 
 def echopre(bot, event):
-    logging.warn("%s - echo pre %s" % (bot.name, event.cbtype))
-    if event.how != "background": return True
+    if event.how != "background" and bot.type == "web" and not event.forwarded and not event.cbtype == "OUTPUT": return True
     return False
 
 def echocb(bot, event):
-    if not event.isdcc:
-        event.forwarded = True
-        if event.cbtype == "OUTPUT": bot.outnocb(event.channel, u"[!] %s" % event.txt, event=event, dotime=True)
-        else: bot.outnocb(event.channel, u"[%s] %s" % (event.nick, event.txt), event=event, dotime=True)
+    event.forwarded = True
+    bot.outnocb(event.channel, u"[%s] %s" % (event.nick, event.txt), event=event, dotime=False)
 
-#callbacks.add("DISPATCH", echocb, echopre, threaded=True)
-#first_callbacks.add("OUTPUT", echocb, echopre, threaded=True)
+first_callbacks.add("DISPATCH", echocb, echopre)
 
 ## echo command
 

@@ -32,6 +32,7 @@ class WebEvent(EventBase):
         EventBase.__init__(self, bot=bot)
         self.bottype = "web"
         self.cbtype = "WEB"
+        self.bot = bot
 
     def __deepcopy__(self, a):
         e = WebEvent()
@@ -52,6 +53,7 @@ class WebEvent(EventBase):
             except KeyError: pass
         self.how = how
         if self.how == "undefined": self.how = "normal"
+        logging.warn("web - how is %s" % self.how)
         self.webchan = request.get('webchan')
         input = request.get('content') or request.get('cmnd')
         if not input:
@@ -85,10 +87,12 @@ class WebEvent(EventBase):
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=600, extend=0, *args, **kwargs):
         """ reply to this event """#
         if self.checkqueues(result): return
-        txt = self.bot.makeoutput(self.channel, txt, result, origin=origin, nr=nr, extend=extend, *args, **kwargs)
         if not txt: return
-        if self.how == "background": self.bot.outnocb(self.channel, txt, response=self.response)
-        else: self.bot.out(self.channel, txt, response=self.response, event=self)
-        self.result.append(txt)
-        self.outqueue.put_nowait(txt)
+        if self.how == "background":
+            txt = self.bot.makeoutput(self.channel, txt, result, origin=origin, nr=nr, extend=extend, *args, **kwargs)
+            self.bot.outnocb(self.channel, txt, self.how, response=self.response)
+        else:
+            self.bot.say(self.channel, txt, result, self.how)
+        #self.result.append(txt)
+        #self.outqueue.put_nowait(txt)
         return self

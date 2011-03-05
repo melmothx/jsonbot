@@ -24,13 +24,14 @@
       var token = "{{ token }}";
       var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 22px;" size="33" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
+      var log = new Array();
 
       // channel stuff
 
       onOpened = function() {
         contime = new Date();
         //topper("channel opened on " + contime.toUTCString());
-        output("channel opened on " + contime.toUTCString());
+        output("channel opened on " + contime.toUTCString() + "<br><br>");
       }
 
       onClose = function() {
@@ -41,16 +42,16 @@
       }
 
       onMessage = function(m) {
-        // newState = JSON.parse(m.data);
         output(m.data);
       }
 
       onError = function(m) {
         // newState = JSON.parse(m.data);
+        status(m.data);
       }
 
       openChannel = function(t) {
-        topper("connecting - ");
+        topper("connecting");
         var token = "{{ token }}";
         if (token) {
             var channel = new goog.appengine.Channel(token);
@@ -64,7 +65,7 @@
         socket.onmessage = onMessage;
         socket.onerror = onError;
         socket.onclose = onClose;
-        statusadd(" - socket set - ");
+        statusadd(" - socket set - OK");
       }
 
       // utils functions
@@ -89,7 +90,6 @@
       function loop() {
           update();
           lastpolled = new Date();
-          //var lpdate = lastpolled.getTime();
           status("last polled at " + lastpolled.toUTCString());
       }
 
@@ -99,12 +99,10 @@
       function start() {
           setCookie();
           openChannel();
-          // update();
-          setTimeout("doCmnd('!welcome', dotop, 'background');", 50);
-          setTimeout("doCmnd('!outputcache', dobottom, 'background');", 150);
+          //setTimeout("doCmnd('!outputcache', response, 'background');", 2000);
+          setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
           setTimeout("location.reload(true);", 3600000);
           setTimeout("update();", 100);
-          //setInterval("loop();", 180000);
       }
 
 
@@ -114,20 +112,18 @@
 
       function consolestart() {
           doconsole();
-          status("booting - ");
+          status("booting ... ");
           setTimeout("start();", 100);
-          statusadd(elapsed() + " msec");
+          statusadd(elapsed() + " msec ");
       }
 
       function update(what) {
         if (what=="feeds") {
-            doCmnd('!outputcache', dobottom, "background");
-            //doCmnd('!statusline', dostatus, "background");
+            doCmnd('!statusline', dostatus, "background");
             doCmnd('!rss-feeds', doinfo, "background");
         }
         else {
-            setTimeout('doCmnd("!outputcache", dobottom, "background");', 1000);
-            setTimeout('doCmnd("!topper", doinfo, "background");', 1000);
+            doCmnd("!topper", doinfo, "background");
         }
       }
 
@@ -155,7 +151,6 @@
       function submitfeed(form) {
            cmnd = "!rss-register " + form.name.value + " " + form.url.value;           
            doCmnd(cmnd, response);
-           // setTimeout("update();", 500);
            return false;
       } 
 
@@ -170,7 +165,6 @@
         {
            cmnd = "!rss-register " + form.name.value + " " + form.url.value;           
            doCmnd(cmnd, response, "background");
-           // setTimeout("update();", 500);
            return false;
         }
         else
@@ -187,7 +181,6 @@
            doCmnd(cmnd, response);
            form.cmnd.value = "";
            form.focus();
-           // setTimeout("update();", 100);
            return false;
         }
         else
@@ -197,11 +190,10 @@
       // output functions
 
       function output(text) {
-        var html = "";
-        html += text;
-        html += "";
+        log.push(text);
+        var sliced = log.slice(-10);
+        var html = sliced.join("");
         var element = document.getElementById("content_div");  
-        html += element.innerHTML
         element.innerHTML = html;
       }
 
@@ -230,7 +222,7 @@
       }
 
       function topper(text) {
-        var html = '<marquee behavior="scroll" scroll delay="400" direction="left">';
+        var html = '<marquee behavior="scroll" scroll delay="200" direction="left">';
         html += text;
         html += "</marquee>";
         var element = document.getElementById("topper_div");  
@@ -238,17 +230,17 @@
       }
 
       function statusadd(text) {
-        var html = '<i>';
+        var html = '';
         html += text;
-        html += "</i>";
+        html += "";
         var element = document.getElementById("status_div");  
         element.innerHTML += html;
       }
 
       function status(text) {
-        var html = '<b>';
+        var html = '';
         html += text;
-        html += "</b>";
+        html += "";
 
         var element = document.getElementById("status_div");  
         element.innerHTML = html;
@@ -280,17 +272,13 @@
       // response functions
 
       function response(obj) {
-          if (obj.how != "background") {
-              // statusadd(" " + obj.readyState.toString())
-          }
           if (obj.readyState==4){
-              //statusadd(" - status: " + obj.status + " - ")
               if (obj.status==200) {
                    output(obj.responseText);
-                   statusadd(elapsed() + " msec - OK");
+                   statusadd(" " + elapsed() + " msec - OK");
               }
               else {
-                   statusadd(elapsed() + " msec - NOT OK");
+                   statusadd(" " + elapsed() + " msec - NOT OK");
                    topper("status is " + obj.status)
                    output(obj.responseText);
               }
@@ -396,13 +384,13 @@
     <div class="footer" align="center" id="topper_div">! ! !</div><br>
     <div class="body" align="center"><h1><b>{{ appname }}</b></h1><br>
       <div class="body" style="font-size: 100%;" align="center" id="info_div">[] [] []</div>
-      <div style="width: 100%; background-color: {{ color }}; color: black" id="screen_div"><br></div>
-      <div align="center" id="status2_div"></div>
+      <div style="width: 100%; background-color: {{ color }}; color: black" id="screen_div"></div>
     <div align="center" class="related">
+      <div align="center" id="status2_div"></div>
       <div align="center" id="status_div" style="background-color: black;"><b>outputcache<b></div>
     </div><br>
-    <div class="footer" style="font-size: 20px" align="center" id="content_div"></div>
-    <div class="body" style="font-size: 100%;" align="center" id="footer_div"></div>
+    <div style="font-size: 20px" align="center" id="content_div"></div>
+    <div class="body" position="fixed" style="font-size: 100%;" align="center" id="footer_div"></div>
   </div>
 </body>
 <body onLoad="init();" />
