@@ -218,8 +218,24 @@ def handle_helpplug(bot, ievent):
         if perms: ievent.reply('no commands available for permissions: %s' % ", ".join(perms))
         else: ievent.reply("can't find help on %s" % what)
 
-cmnds.add('help', handle_helpplug, ['USER', 'GUEST'], how="msg")
-examples.add('help', 'get help on <cmnd> or <plugin>', '1) help 2) help misc')
+cmnds.add('help-plug', handle_helpplug, ['USER', 'GUEST'], how="msg")
+examples.add('help-plug', 'get help on <cmnd> or <plugin>', '1) help-plug 2) help-plug misc')
+
+def handle_help(bot, event):
+     if event.rest:
+         target = cmnds.whereis(event.rest)
+         target = target or event.rest
+         where = bot.plugs.getmodule(target)
+         if where:
+             theplace = os.sep.join(where.split(".")[-2:])
+             event.reply("help for %s is at http://jsonbot.appspot.com/docs/html/plugins/%s.html" % (event.rest.upper(), theplace))
+         else: event.reply("can't find a help url for %s" % event.rest)
+     else:
+         event.reply("documentation for jsonbot can be found at http://jsonbot.appspot.com/docs")
+         event.reply("see !list for loaded plugins and !help <plugin> for a url to the plugin docs.")
+
+cmnds.add("help", handle_help, ["OPER", "USER", "GUEST"])
+examples.add("help", "show url pointing to teh docs", "1) help 2) help rss")
 
 ## apro command
 
