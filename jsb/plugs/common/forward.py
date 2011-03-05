@@ -131,6 +131,7 @@ def handle_forwarddel(bot, event):
         return
     del forward.data.outs[event.rest]
     forward.save()
+    if event.rest in event.chan.data.forwards: event.chan.data.forwards.remove(event.rest) ; event.chan.save()
     event.done()
 
 cmnds.add("forward-del", handle_forwarddel, 'OPER')
@@ -195,7 +196,7 @@ def handle_forwardstop(bot, event):
                 if jid in event.chan.data.forwards: event.chan.data.forwards.remove(jid)
             except ValueError: pass
         forward.save()
-        event.done()
+        event.chan.done()
     except KeyError, ex: event.reply("we are not forwarding %s" %  str(ex))
 
 cmnds.add("forward-stop", handle_forwardstop, 'OPER')

@@ -27,16 +27,31 @@ def handle_adminboot(bot, ievent):
 cmnds.add('admin-boot', handle_adminboot, 'OPER')
 examples.add('admin-boot', 'initialize the bot .. cmndtable and pluginlist', 'admin-boot')
 
-## admin-loadall command
+## admin-commands
 
-def handle_admintables(bot, ievent):
+def handle_admincommands(bot, ievent):
     """ load all available plugins. """
-    if ievent.rest == "cmnd": ievent.reply(unicode(getcmndtable()))
-    else: ievent.reply(unicode(getcallbacktable()))
-    ievent.done()
+    cmnds = getcmndtable()
+    if not ievent.rest: ievent.reply("commands: ", cmnds)
+    else:
+        try: ievent.reply("%s commands: " % ievent.rest, cmnds[ievent.rest])
+        except KeyError: ievent.reply("no such commands available") 
 
-cmnds.add('admin-tables', handle_admintables, 'OPER')
-examples.add('admin-tables', 'show runtime tables', 'admin-tables')
+cmnds.add('admin-commands', handle_admincommands, 'OPER')
+examples.add('admin-commands', 'show runtime command table', 'admin-commands')
+
+## admin-callbacks
+
+def handle_admincallbacks(bot, ievent):
+    """ load all available plugins. """
+    cbs = getcallbacktable()
+    if not ievent.rest: ievent.reply("callbacks: ", cbs)
+    else:
+        try: ievent.reply("%s callbacks: " % ievent.rest, cbs[ievent.rest])
+        except KeyError: ievent.reply("no such callbacks available") 
+
+cmnds.add('admin-callbacks', handle_admincallbacks, 'OPER')
+examples.add('admin-callbacks', 'show runtime callback table', 'admin-callbacks')
 
 ## admin-loadall command
 
