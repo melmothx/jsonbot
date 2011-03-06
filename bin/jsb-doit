@@ -4,4 +4,4 @@
 
 export PATH="./bin:.:$PATH"
 python setup.py sdist
-jsb-nest -f dist/jsb-0.6.1.tar.gz
+jsb-nest -f dist/jsb-0.7a2.tar.gz
