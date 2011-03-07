@@ -26,8 +26,8 @@
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
       var log = new Array();
       var cmndlog = new Array();
-      cmndlog.push("");
-      var cmndindex = 0;
+      cmndlog.push("Welcome to JSONBOT");
+      var disk = {};
 
       // channel stuff
 
@@ -100,12 +100,11 @@
       // INIT
 
       function start() {
-          setCookie();
+          loaddisk();
           openChannel();
-          //setTimeout("doCmnd('!outputcache', response, 'background');", 2000);
           setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
           setTimeout("location.reload(true);", 3600000);
-          setTimeout("update();", 100);
+          setTimeout("update();", 200);
       }
 
 
@@ -128,6 +127,7 @@
         else {
             doCmnd("!topper", doinfo, "background");
         }
+        savedisk();
       }
 
       function doconsole() {
@@ -140,12 +140,35 @@
         document.forms[0].name.focus();
       }
 
+      function loaddisk() {
+        if (!localStorage) { 
+          output("no local storage available");
+        }
+        else {
+          statusadd(" - JSON OK ");
+          data = localStorage.getItem("disk");
+          if (!data) {
+            disk["cmndindex"] = 0;
+          }
+          else {
+            disk = JSON.parse(data)
+          }
+          output("disk is initialised<br>");
+        }
+      } 
 
-      function setCookie() {
-        var val = localStorage && localStorage.getItem("jsb_cookie");
-        if (!val) {
-            val = identtime.getTime();
-            localStorage && localStorage.setItem("jsb_cookie", val);
+      function savedisk() {
+        if (!localStorage) {
+          status("no local storage available");
+        }
+        else {
+          var data = JSON.dump(disk);
+          if (!data) {
+            output("can't dump disk data");
+          }
+          else {
+            localStorage.setItem("disk", data);
+          }
         }
       } 
 
@@ -184,26 +207,26 @@
            cmnd = form.cmnd.value; 
            doCmnd(cmnd, response);
            cmndlog.push(cmnd);
-           cmndindex += 1;
+           disk["cmndindex"] += 1;
            form.cmnd.value = "";
            form.focus();
            return false;
         }
         else if (keycode == 38) {
-           if (cmndindex > 1) {
-               cmndindex -= 1;
+           if (disk["cmndindex"] > 1) {
+               disk["cmndindex"] -= 1;
            }
-           othercmnd = cmndlog[cmndindex];
+           othercmnd = cmndlog[disk["cmndindex"]];
            form.cmnd.value = othercmnd;
            form.focus();
            status(othercmnd);
            return false;
         }
         else if (keycode == 40) {
-           if (cmndindex < cmndlog.length) {
-               cmndindex += 1;
+           if (disk["cmndindex"] < cmndlog.length) {
+               disk["cmndindex"] += 1;
            }
-           othercmnd = cmndlog[cmndindex];
+           othercmnd = cmndlog[disk["cmndindex"]];
            form.cmnd.value = othercmnd;
            form.focus();
            status(othercmnd);
