@@ -22,9 +22,12 @@
       var parameters = "";
       var identtime = new Date();
       var token = "{{ token }}";
-      var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 22px;" size="33" type="text" name="cmnd" onKeyPress="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
+      var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 22px;" size="33" type="text" name="cmnd" onKeyDown="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
       var log = new Array();
+      var cmndlog = new Array();
+      cmndlog.push("");
+      var cmndindex = 0;
 
       // channel stuff
 
@@ -173,14 +176,37 @@
 
       function doexec(form, e) {
         var keycode;
+        var othercmnd;
         if (window.event) keycode = window.event.keyCode;
            else if (e) keycode = e.which;
         else return true;
         if (keycode == 13) {
            cmnd = form.cmnd.value; 
            doCmnd(cmnd, response);
+           cmndlog.push(cmnd);
+           cmndindex += 1;
            form.cmnd.value = "";
            form.focus();
+           return false;
+        }
+        else if (keycode == 38) {
+           if (cmndindex > 1) {
+               cmndindex -= 1;
+           }
+           othercmnd = cmndlog[cmndindex];
+           form.cmnd.value = othercmnd;
+           form.focus();
+           status(othercmnd);
+           return false;
+        }
+        else if (keycode == 40) {
+           if (cmndindex < cmndlog.length) {
+               cmndindex += 1;
+           }
+           othercmnd = cmndlog[cmndindex];
+           form.cmnd.value = othercmnd;
+           form.focus();
+           status(othercmnd);
            return false;
         }
         else
