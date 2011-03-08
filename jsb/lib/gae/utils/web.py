@@ -58,7 +58,7 @@ def start(response, input={}):
     except AttributeError:
          if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
          else: host = os.environ['SERVER_NAME']
-    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#FDFA43"}
+    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#CE1C1C"}
     if input: inputdict.update(input)
     temp = os.path.join(os.getcwd(), 'templates/console.html')
     from google.appengine.ext.webapp import template
@@ -73,7 +73,7 @@ def login(response, input={}):
     except AttributeError:
          if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
          else: host = os.environ['SERVER_NAME']
-    inputdict = {'version': getversion(), 'host': host, 'color': "#FFDA05"}
+    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#CE1C1C"}
     if input: inputdict.update(input)
     temp = os.path.join(os.getcwd(), 'templates/login.html')
     from google.appengine.ext.webapp import template
