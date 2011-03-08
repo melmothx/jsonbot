@@ -10,10 +10,31 @@ from jsb.lib.examples import examples
 from jsb.lib.callbacks import callbacks
 from jsb.lib.channelbase import ChannelBase
 from jsb.lib.datadir import getdatadir
+from jsb.utils.exception import handle_exception
 
 ## basic imports
 
 import os
+import logging
+
+## chan-token command
+
+def handle_chantoken(bot, event):
+    if not bot.isgae: event.reply("this command only works on the App Engine") ; return
+    import google
+    try:
+        (chan, token) = event.chan.gae_create()
+        logging.warn("chantoken - %s - %s" % (chan, token))
+        event.response.out.write(token)
+    except google.appengine.runtime.DeadlineExceededError:
+        event.response.out.write("DeadLineExceededError .. this request took too long to finish.")
+    except Exception, ex:
+        event.response.out.write("An exception occured: %s" % str(ex))
+        handle_exception()
+
+cmnds.add("chan-token", handle_chantoken, ['OPER', 'USER', "GUEST"])
+examples.add("chan-token", "create a new token for the appengine channel API", "chan-token")
+
 
 ## chan-join command
 

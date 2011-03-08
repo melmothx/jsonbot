@@ -88,10 +88,10 @@ def import_simplejson():
         except ImportError:
             try: import jsb.contrib.simplejson as json
             except ImportError:
-                try:
-                    from django.utils import simplejson as json  # Google App Engine
-                except ImportError:
-                    raise ImportError, "Can't load a json library"
+                #try:
+                #    from django.utils import simplejson as json  # Google App Engine
+                #except ImportError:
+                raise ImportError, "Can't load a json library"
 
     return json
 

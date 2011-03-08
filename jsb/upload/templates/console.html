@@ -21,7 +21,7 @@
       var viewerid = "";
       var parameters = "";
       var identtime = new Date();
-      var token = "{{ token }}";
+      var diskname = host + identtime.toString();
       var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 22px;" size="33" type="text" name="cmnd" onKeyDown="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
       var log = new Array();
@@ -31,6 +31,17 @@
 
       // channel stuff
 
+      function renewtoken(obj) {
+           if (obj.readyState==4) {
+               if (obj.status==200) {
+                   var token = obj.responseText;
+                   //status2("token is " + token);
+                   openChannel(token);
+                   output("<br>token renewed on " + contime.toUTCString() + '<br>');
+              }
+          }
+      }
+
       onOpened = function() {
         contime = new Date();
         //topper("channel opened on " + contime.toUTCString());
@@ -38,10 +49,8 @@
       }
 
       onClose = function() {
-        contime = new Date();
-        //topper("channel closed on " + contime.toUTCString());
-        output("channel closed on " + contime.toUTCString());
-        //setTimeout("doCmnd('!chan-newtoken', openChannel);", 1000); 
+        output("<br>channel closed on " + contime.toUTCString()) + '<br>';
+        settimeout("doCmnd('!chan-token', renewtoken, 'background');", 100); 
       }
 
       onMessage = function(m) {
@@ -53,22 +62,17 @@
         status(m.data);
       }
 
-      openChannel = function(t) {
+      openChannel = function(token) {
         topper("connecting");
-        var token = "{{ token }}";
-        if (token) {
-            var channel = new goog.appengine.Channel(token);
-        }
-        else {
-            var channel = new goog.appengine.Channel(t);
-        }
-        statusadd(" - channel created");
+        statusadd(" - creating channel");
+        var channel = new goog.appengine.Channel(token);
+        statusadd(" - making socket - ");
         var socket = channel.open();
         socket.onopen = onOpened;
         socket.onmessage = onMessage;
         socket.onerror = onError;
         socket.onclose = onClose;
-        statusadd(" - socket set - OK");
+        statusadd("OK");
       }
 
       // utils functions
@@ -101,9 +105,10 @@
 
       function start() {
           loaddisk();
-          openChannel();
+          doCmnd('!chan-token', renewtoken, 'background'); 
+          //openChannel();
           setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
-          setTimeout("location.reload(true);", 3600000);
+          //setTimeout("location.reload(true);", 3600000);
           setTimeout("update();", 200);
       }
 
@@ -146,7 +151,7 @@
         }
         else {
           statusadd(" - JSON OK ");
-          data = localStorage.getItem("disk");
+          data = localStorage.getItem(host +"-disk");
           if (!data) {
             disk["cmndindex"] = 0;
           }
@@ -167,7 +172,7 @@
             output("can't dump disk data");
           }
           else {
-            localStorage.setItem("disk", data);
+            localStorage.setItem(host + "-disk", data);
           }
         }
       } 
@@ -300,7 +305,7 @@
         html += text;
         html += "</b>";
 
-        var element = document.getElementById("status_div2");  
+        var element = document.getElementById("status2_div");  
         element.innerHTML += html;
       }
 
@@ -309,7 +314,7 @@
         html += text;
         html += "</b>";
 
-        var element = document.getElementById("status_div2");  
+        var element = document.getElementById("status2_div");  
         element.innerHTML = html;
       }
 
@@ -407,8 +412,7 @@
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
           request.setRequestHeader("Cache-Control", "no-cache");
-          webchan = "{{ webchan }}";
-          parameters="content="+encodeURIComponent(cmnd) + "&how=" + encodeURIComponent(how) + "&webchan=" + encodeURIComponent(webchan);
+          parameters="content="+encodeURIComponent(cmnd) + "&how=" + encodeURIComponent(how);
           starttime = new Date();
           request.send(parameters);
           return true;
@@ -416,20 +420,20 @@
    </script>
 </head>
 <body>
-    <title>{{ host }}</title>
-    <div align="center" class="document">
-      <div class="related">
-        <ul> 
-          <li class="right" style="margin-right: 10px">
-            <a href="{{ logouturl }}" title="logout">logout</i></a></li>
-          <li class="right" style="margin-right: 10px">{{ loginurl }} - {{ who }}</i></a> |</li>
-          <li><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><b>DOCS</b></a></li>
-          <li>-</li>
-          <li><a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
-          <li>-</li>
-          <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
-        </ul>
-      </div> 
+  <title>{{ host }}</title>
+  <div align="center" class="document">
+    <div class="related">
+      <ul> 
+        <li class="right" style="margin-right: 10px">
+          <a href="{{ logouturl }}" title="logout">logout</i></a></li>
+        <li class="right" style="margin-right: 10px">{{ loginurl }} - {{ who }}</i></a> |</li>
+        <li><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><b>DOCS</b></a></li>
+        <li>-</li>
+        <li><a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
+        <li>-</li>
+        <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
+      </ul>
+    </div> 
     <div class="footer" align="center" id="topper_div">! ! !</div><br>
     <div class="body" align="center"><h1><b>{{ appname }}</b></h1><br>
       <div class="body" style="font-size: 100%;" align="center" id="info_div">[] [] []</div>
@@ -438,8 +442,9 @@
       <div align="center" id="status2_div"></div>
       <div align="center" id="status_div" style="background-color: black;"><b>outputcache<b></div>
     </div><br>
-    <div style="font-size: 20px" align="center" id="content_div"></div>
-    <div class="body" position="fixed" style="font-size: 100%;" align="center" id="footer_div"></div>
+    <div style="font-size: 100%" align="center" id="footer_div"></div>
+    <div style="font-size: 100%" align="center" id="content_div">
+    </div>
   </div>
 </body>
 <body onLoad="init();" />
