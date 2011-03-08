@@ -15,12 +15,16 @@ import logging
 ## getjson function
 
 def getjson():
-    try: mod = _import("json")
-    except:
-        try:
-            mod = _import("simplejson")
+    try:
+        import wave
+        mod = _import("jsb.contrib.simplejson")
+    except ImportError:
+        try: mod = _import("json")
         except:
-            mod = _import("jsb.contrib.simplejson")
+            try:
+                mod = _import("simplejson")
+            except:
+                mod = _import("jsb.contrib.simplejson")
     logging.debug("imports - module is %s" % str(mod))
     return mod
 
