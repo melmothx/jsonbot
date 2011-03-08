@@ -50,7 +50,7 @@
 
       onClose = function() {
         output("<br>channel closed on " + contime.toUTCString()) + '<br>';
-        settimeout("doCmnd('!chan-token', renewtoken, 'background');", 100); 
+        doCmnd('!chan-token', renewtoken, 'background'); 
       }
 
       onMessage = function(m) {
@@ -64,6 +64,11 @@
 
       openChannel = function(token) {
         topper("connecting");
+        statusadd("- removing old iframe");
+        thediv = document.getElementById("wcs_iframe");
+        if (thediv) {
+            document.removeChild(thediv);
+        }
         statusadd(" - creating channel");
         var channel = new goog.appengine.Channel(token);
         statusadd(" - making socket - ");
