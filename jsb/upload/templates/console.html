@@ -93,11 +93,18 @@
       // mainloop
 
       function loop() {
-          update();
-          var show = topperlist.pop();
-          if (show) {
-              topper(show);
-          }
+        update();
+        var show = topperlist.pop();
+        if (show) {
+          topper(show);
+        }
+      }
+
+      // time loop
+
+      function timeloop() {
+        var now = new Date();
+        uber(now.toString());
       }
 
 
@@ -109,6 +116,7 @@
           setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
           setTimeout("loop();", 3000);
           setInterval("loop();", 30000);
+          setInterval("timeloop();", 1000);
       }
 
 
@@ -133,7 +141,6 @@
         }
         savedisk();
         updatetime = new Date();
-        uber("updated at " + updatetime.toString());
       }
 
       function doconsole() {
