@@ -64,19 +64,20 @@
 
       openChannel = function(token) {
         topper("connecting");
-        statusadd("- removing old iframe");
+        statusadd("- iframe");
         thediv = document.getElementById("wcs_iframe");
         if (thediv) {
             document.removeChild(thediv);
         }
-        statusadd(" - creating channel");
+        statusadd(" - channel");
         var channel = new goog.appengine.Channel(token);
-        statusadd(" - making socket - ");
+        statusadd(" - socket - ");
         var socket = channel.open();
         socket.onopen = onOpened;
         socket.onmessage = onMessage;
         socket.onerror = onError;
         socket.onclose = onClose;
+        statusadd(elapsed() + " msec - ");
         statusadd("OK");
       }
 
@@ -102,7 +103,7 @@
       function loop() {
           update();
           lastpolled = new Date();
-          status("last saved at " + lastpolled.toUTCString());
+          topper("last saved at " + lastpolled.toUTCString());
       }
 
 
@@ -111,7 +112,6 @@
       function start() {
           loaddisk();
           doCmnd('!chan-token', renewtoken, 'background'); 
-          //openChannel();
           setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
           setTimeout("update();", 200);
           setInterval("loop();", 60000);
@@ -155,7 +155,7 @@
           output("no local storage available");
         }
         else {
-          statusadd(" - JSON OK ");
+          statusadd(" - disk ");
           data = localStorage.getItem(host +"-disk");
           if (!data) {
             disk["cmndindex"] = 0;
@@ -412,7 +412,7 @@
               u = url;
           }
           if (how != "background") {
-              status("loading - ");
+              status("sending command - ");
           }
           request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           request.setRequestHeader("Content-Length", parameters.length);
@@ -440,9 +440,9 @@
       </ul>
     </div> 
     <div class="footer" align="center" id="topper_div">! ! !</div><br>
-    <div class="body" align="center"><h1><b>{{ appname }}</b></h1><br>
+    <div  class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1><br>
       <div class="body" style="font-size: 100%;" align="center" id="info_div">[] [] []</div>
-      <div style="width: 100%; background-color: {{ color }}; color: black" id="screen_div"></div>
+      <div style="width: 100%; background-color: {{ color }}; color: #999999" id="screen_div"></div>
     <div align="center" class="related">
       <div align="center" id="status2_div"></div>
       <div align="center" id="status_div" style="background-color: black;"><b>outputcache<b></div>
