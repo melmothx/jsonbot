@@ -26,8 +26,8 @@
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
       var log = new Array();
       var cmndlog = new Array();
-      cmndlog.push("Welcome to JSONBOT");
       var disk = {};
+      var topperlist = new Array();
 
       // channel stuff
 
@@ -44,7 +44,7 @@
 
       onOpened = function() {
         contime = new Date();
-        //topper("channel opened on " + contime.toUTCString());
+        topperpush("channel opened on " + contime.toUTCString());
         output("channel opened on " + contime.toUTCString() + "<br><br>");
       }
 
@@ -63,7 +63,7 @@
       }
 
       openChannel = function(token) {
-        topper("connecting");
+        info("opening channel on " + "{{ host }}");
         statusadd("- iframe");
         thediv = document.getElementById("wcs_iframe");
         if (thediv) {
@@ -90,20 +90,14 @@
         return diff;
       }
 
-      // state 
-
-      function stateUpdated() {
-        hostid = wave.getHost().getId();
-        viewerid = wave.getViewer().getId();
-        topper(hostid + ' ' + viewerid);
-      }
-
       // mainloop
 
       function loop() {
           update();
-          lastpolled = new Date();
-          topper("last saved at " + lastpolled.toUTCString());
+          var show = topperlist.pop();
+          if (show) {
+              topper(show);
+          }
       }
 
 
@@ -113,8 +107,8 @@
           loaddisk();
           doCmnd('!chan-token', renewtoken, 'background'); 
           setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
-          setTimeout("update();", 200);
-          setInterval("loop();", 60000);
+          setTimeout("loop();", 3000);
+          setInterval("loop();", 30000);
       }
 
 
@@ -124,9 +118,9 @@
 
       function consolestart() {
           doconsole();
-          status("booting ... ");
+          status("<b>BOOTING</b>");
           setTimeout("start();", 100);
-          statusadd(elapsed() + " msec ");
+          //statusadd(elapsed() + " msec ");
       }
 
       function update(what) {
@@ -281,11 +275,15 @@
       }
 
       function topper(text) {
-        var html = '<marquee behavior="scroll" scroll delay="200" direction="left">';
+        var html = '<marquee behavior="scroll" scroll delay="100" direction="left">';
         html += text;
         html += "</marquee>";
         var element = document.getElementById("topper_div");  
         element.innerHTML = html;
+      }
+
+      function topperpush(text) {
+        topperlist.push(text);
       }
 
       function statusadd(text) {
@@ -338,7 +336,7 @@
               }
               else {
                    statusadd(" " + elapsed() + " msec - NOT OK");
-                   topper("status is " + obj.status)
+                   topper("status is " + obj.status);
                    output(obj.responseText);
               }
               update();
@@ -356,7 +354,7 @@
       function dotop(obj) {
           if (obj.readyState==4) {
               if (obj.status==200) {
-                  topper(obj.responseText);
+                  topperpush(obj.responseText);
               }
           }
       }
@@ -442,7 +440,7 @@
     <div class="footer" align="center" id="topper_div">! ! !</div><br>
     <div  class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1><br>
       <div class="body" style="font-size: 100%;" align="center" id="info_div">[] [] []</div>
-      <div style="width: 100%; background-color: {{ color }}; color: #999999" id="screen_div"></div>
+      <div style="width: 100%; background-color: {{ color }}; color: white;" id="screen_div"></div>
     <div align="center" class="related">
       <div align="center" id="status2_div"></div>
       <div align="center" id="status_div" style="background-color: black;"><b>outputcache<b></div>
