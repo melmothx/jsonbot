@@ -132,6 +132,8 @@
             doCmnd("!topper", doinfo, "background");
         }
         savedisk();
+        updatetime = new Date();
+        uber("updated at " + updatetime.toString());
       }
 
       function doconsole() {
@@ -247,6 +249,12 @@
         var sliced = log.slice(-9);
         var html = sliced.join("");
         var element = document.getElementById("content_div");  
+        element.innerHTML = html;
+      }
+
+      function uber(text) {
+        var html = "<i>" + text + "</i>";
+        var element = document.getElementById("uber_div");  
         element.innerHTML = html;
       }
 
@@ -440,14 +448,15 @@
     <div class="footer" align="center" id="topper_div">! ! !</div><br>
     <div  class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1><br>
       <div class="body" style="font-size: 100%;" align="center" id="info_div">[] [] []</div>
+     
       <div style="width: 100%; background-color: {{ color }}; color: white;" id="screen_div"></div>
     <div align="center" class="related">
       <div align="center" id="status2_div"></div>
       <div align="center" id="status_div" style="background-color: black;"><b>outputcache<b></div>
     </div><br>
+    <div style="display: inline;" align="center" id="uber_div">{{ host }}</div><br><br>
     <div style="font-size: 100%" align="center" id="footer_div"></div>
     <div style="font-size: 100%" align="center" id="content_div">
-    </div>
   </div>
 </body>
 <body onLoad="init();" />
