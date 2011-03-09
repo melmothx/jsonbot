@@ -102,7 +102,7 @@
       function loop() {
           update();
           lastpolled = new Date();
-          status("last polled at " + lastpolled.toUTCString());
+          status("last saved at " + lastpolled.toUTCString());
       }
 
 
@@ -113,7 +113,7 @@
           doCmnd('!chan-token', renewtoken, 'background'); 
           //openChannel();
           setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
-          //setTimeout("location.reload(true);", 3600000);
+          setInterval("loop();", 60000);
           setTimeout("update();", 200);
       }
 
@@ -172,7 +172,7 @@
           status("no local storage available");
         }
         else {
-          var data = JSON.dump(disk);
+          var data = JSON.stringify(disk);
           if (!data) {
             output("can't dump disk data");
           }
