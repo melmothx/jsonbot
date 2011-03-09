@@ -212,14 +212,14 @@ div.body h4,
 div.body h5,
 div.body h6 {
     font-family: 'Trebuchet MS', sans-serif;
-    background-color: white;
+    background-color: #ffffff;
     font-weight: 100%;
-    color: #20435c;
+    color: #CE1C1C;
     margin: 20px -20px 10px -20px;
     padding: 3px 0 3px 10px;
 }
 
-div.body h1 { margin-top: 0; font-size: 350%; background-color: white;}
+div.body h1 { margin-top: 0; font-size: 320%; background-color: #ffffff;}
 div.body h2 { font-size: 160%; }
 div.body h3 { font-size: 140%; }
 div.body h4 { font-size: 120%; }

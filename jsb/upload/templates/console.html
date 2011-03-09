@@ -250,7 +250,7 @@
 
       function output(text) {
         log.push(text);
-        var sliced = log.slice(-10);
+        var sliced = log.slice(-9);
         var html = sliced.join("");
         var element = document.getElementById("content_div");  
         element.innerHTML = html;
