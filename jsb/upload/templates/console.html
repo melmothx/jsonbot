@@ -44,12 +44,11 @@
 
       onOpened = function() {
         contime = new Date();
-        topperpush("channel opened on " + contime.toUTCString());
-        output("channel opened on " + contime.toUTCString() + "<br><br>");
+        topper("channel opened on " + contime.toUTCString());
       }
 
       onClose = function() {
-        output("<br>channel closed on " + contime.toUTCString()) + '<br>';
+        topper("channel closed on " + contime.toUTCString());
         doCmnd('!chan-token', renewtoken, 'background'); 
       }
 
@@ -166,7 +165,6 @@
           else {
             disk = JSON.parse(data)
           }
-          output("disk is initialised<br>");
         }
       } 
 
@@ -452,16 +450,16 @@
         <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
       </ul>
     </div> 
-    <div  class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1><br>
+    <div class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1><br>
      <div style="font-size: 100%; font-height: 80%;" align="center" id="info_div">[] [] []</div><br>    
       <div style="width: 100%; background-color: {{ color }}; color: white;" id="screen_div"></div>
     <div align="center" class="related">
       <div align="center" id="status2_div"></div>
       <div align="center" id="status_div" style="background-color: #803E3E;"><b>outputcache<b>
     </div>
-    <div align="center" id="uber_div" style="color: white;"></div>
+    <div align="center" id="uber_div" style="color: white;">Morning !!</div>
     </div></br>
-    <div style="font-size: 100%" align="center" id="content_div"></div></div></div>
+    <div style="font-size: 110%" align="center" id="content_div"></div></div></div>
     <div align="center" class="related">
       <div class="footer" align="center" style="background-color: #803E3E;"id="topper_div">! ! !</div>
     </div>
