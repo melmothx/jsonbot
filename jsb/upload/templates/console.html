@@ -28,6 +28,7 @@
       var cmndlog = new Array();
       var disk = {};
       var topperlist = new Array();
+      topperlist.push("{{ appname }} - {{ host }}");
 
       // channel stuff
 
@@ -44,7 +45,7 @@
 
       onOpened = function() {
         contime = new Date();
-        topper("channel opened on " + contime.toUTCString());
+        topperpush("channel opened on " + contime.toUTCString());
       }
 
       onClose = function() {
@@ -112,9 +113,9 @@
       function start() {
           loaddisk();
           doCmnd('!chan-token', renewtoken, 'background'); 
-          setTimeout("doCmnd('!welcome', dotop, 'background');", 4000);
+          setTimeout("doCmnd('!welcome', dotop, 'background');", 3000);
           setTimeout("loop();", 3000);
-          setInterval("loop();", 30000);
+          setInterval("loop();", 20000);
           setInterval("timeloop();", 1000);
       }
 
@@ -288,7 +289,7 @@
       }
 
       function topper(text) {
-        var html = '<marquee behavior="scroll" scroll delay="100" direction="left">';
+        var html = '<marquee behavior="scroll" scroll delay="200" direction="left">';
         html += text;
         html += "</marquee>";
         var element = document.getElementById("topper_div");  
@@ -296,7 +297,7 @@
       }
 
       function topperpush(text) {
-        topperlist.push(text);
+        topperlist.unshift(text);
       }
 
       function statusadd(text) {
@@ -459,7 +460,7 @@
     </div>
     <div align="center" id="uber_div" style="color: white;">Morning !!</div>
     </div></br>
-    <div style="font-size: 110%" align="center" id="content_div"></div></div></div>
+    <div style="font-size: 110%" align="center" id="content_div"><i>output goes here</i></div></div></div>
     <div align="center" class="related">
       <div class="footer" align="center" style="background-color: #803E3E;"id="topper_div">! ! !</div>
     </div>
