@@ -260,7 +260,7 @@
       }
 
       function uber(text) {
-        var html = "<i>" + text + "</i>";
+        var html = text;
         var element = document.getElementById("uber_div");  
         element.innerHTML = html;
       }
@@ -441,10 +441,10 @@
   <title>{{ host }}</title>
   <div align="center" class="document">
     <div class="related">
-      <ul> 
-        <li class="right" style="margin-right: 10px">
+      <ul>
+        <li class="right" style="margin-right: 10px;">
           <a href="{{ logouturl }}" title="logout">logout</i></a></li>
-        <li class="right" style="margin-right: 10px">{{ loginurl }} - {{ who }}</i></a> |</li>
+        <li class="right" style="margin-right: 10px;">{{ who }}<b> - </b></li>
         <li><a href="http://jsonbot.appspot.com/docs/html/index.html" onclick='window.open("http://jsonbot.appspot.com/docs/html/index.html"); return false'><b>DOCS</b></a></li>
         <li>-</li>
         <li><a href="" title="console" onclick='doconsole(); return false;'><b>console</b></a></li>
@@ -452,18 +452,19 @@
         <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
       </ul>
     </div> 
-    <div class="footer" align="center" id="topper_div">! ! !</div><br>
     <div  class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1><br>
-      <div class="body" style="font-size: 100%;" align="center" id="info_div">[] [] []</div>
-     
+     <div style="font-size: 100%; font-height: 80%;" align="center" id="info_div">[] [] []</div><br>    
       <div style="width: 100%; background-color: {{ color }}; color: white;" id="screen_div"></div>
     <div align="center" class="related">
       <div align="center" id="status2_div"></div>
       <div align="center" id="status_div" style="background-color: black;"><b>outputcache<b></div>
-    </div><br>
-    <div style="display: inline;" align="center" id="uber_div">{{ host }}</div><br><br>
-    <div style="font-size: 100%" align="center" id="footer_div"></div>
-    <div style="font-size: 100%" align="center" id="content_div">
+    </div></br>
+    <div style="font-size: 100%" align="center" id="content_div"></div></div></div>
+    <span id="uber_div"></span>
+    <div align="center" class="related">
+      <div class="footer" align="center" id="topper_div">! ! !</div>
+    </div>
+    </div>
   </div>
 </body>
 <body onLoad="init();" />
