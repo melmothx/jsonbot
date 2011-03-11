@@ -54,6 +54,7 @@
 
       onMessage = function(m) {
         output(m.data);
+        topperpush(m.data);
       }
 
       onError = function(m) {
@@ -95,15 +96,18 @@
         update();
       }
 
+      function outputloop() {
+        var show = topperlist.pop();
+        if (show) {
+          topper(show);
+        }
+      }        
+
       // time loop
 
       function timeloop() {
         var now = new Date();
         uber("<b>" + now.toTimeString() + "</b>");
-        var show = topperlist.pop();
-        if (show) {
-          topper(show);
-        }
       }
 
 
@@ -112,9 +116,11 @@
       function start() {
           loaddisk();
           doCmnd('!chan-token', renewtoken, 'background'); 
+          update();
           setTimeout("doCmnd('!welcome', dotop, 'background');", 3000);
           setInterval("updateloop();", 30000);
           setInterval("timeloop();", 1000);
+          setInterval("outputloop();", 7000);
       }
 
 
@@ -250,7 +256,6 @@
 
       function output(text) {
         log.push(text);
-        topperpush(text);
         var sliced = log.slice(-6);
         var html = sliced.join("");
         var element = document.getElementById("content_div");  
@@ -288,7 +293,7 @@
       }
 
       function topper(text) {
-        var html = '<marquee behavior="slide" scroll-delay="20" direction="left">';
+        var html = '<marquee align="center" behavior="slide" scroll-delay="20" direction="left">';
         html = html + "[!] " + text;
         html += "</marquee>";
         var element = document.getElementById("topper_div");  
