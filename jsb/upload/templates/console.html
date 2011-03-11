@@ -37,18 +37,18 @@
                    var token = obj.responseText;
                    //status2("token is " + token);
                    openChannel(token);
-                   output("<br>token renewed on " + contime.toUTCString() + '<br>');
+                   output("<br>token renewed on " + contime.toTimeString() + '<br>');
               }
           }
       }
 
       onOpened = function() {
         contime = new Date();
-        topperpush("channel opened on " + contime.toUTCString());
+        topperpush("channel opened on " + contime.toTimeString());
       }
 
       onClose = function() {
-        topper("channel closed on " + contime.toUTCString());
+        topper("channel closed on " + contime.toTimeString());
         doCmnd('!chan-token', renewtoken, 'background'); 
       }
 
@@ -91,12 +91,8 @@
 
       // mainloop
 
-      function loop() {
+      function updateloop() {
         update();
-        var show = topperlist.pop();
-        if (show) {
-          topper(show);
-        }
       }
 
       // time loop
@@ -104,6 +100,10 @@
       function timeloop() {
         var now = new Date();
         uber("<b>" + now.toTimeString() + "</b>");
+        var show = topperlist.pop();
+        if (show) {
+          topper(show);
+        }
       }
 
 
@@ -113,8 +113,7 @@
           loaddisk();
           doCmnd('!chan-token', renewtoken, 'background'); 
           setTimeout("doCmnd('!welcome', dotop, 'background');", 3000);
-          setTimeout("loop();", 3000);
-          setInterval("loop();", 20000);
+          setInterval("updateloop();", 30000);
           setInterval("timeloop();", 1000);
       }
 
@@ -251,6 +250,7 @@
 
       function output(text) {
         log.push(text);
+        topperpush(text);
         var sliced = log.slice(-6);
         var html = sliced.join("");
         var element = document.getElementById("content_div");  
@@ -288,8 +288,8 @@
       }
 
       function topper(text) {
-        var html = '<marquee behavior="scroll" scroll delay="200" direction="left">';
-        html += text;
+        var html = '<marquee behavior="slide" scroll-delay="20" direction="left">';
+        html = html + "[!] " + text;
         html += "</marquee>";
         var element = document.getElementById("topper_div");  
         element.innerHTML = html;
