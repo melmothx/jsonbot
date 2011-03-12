@@ -18,7 +18,7 @@ def handle_plugenable(bot, event):
     if not mod: event.reply("can't find module for %s" % event.rest) ; return
     event.reply("reloading and enabling %s" % mod)
     bot.enable(mod)
-    bot.plugs.load(mod, force=True)
+    bot.plugs.reload(mod, force=True)
     #update_mod(mod)
     event.done()
 
