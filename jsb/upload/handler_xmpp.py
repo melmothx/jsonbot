@@ -24,7 +24,6 @@ from jsb.lib.gae.utils.auth import checkuser
 from google.appengine.api import xmpp
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
 from google.appengine.api import users as gusers
 from google.appengine.ext import db
 from google.appengine.ext.webapp import xmpp_handlers

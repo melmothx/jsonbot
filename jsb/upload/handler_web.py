@@ -21,7 +21,6 @@ from jsb.lib.gae.utils.web import start, closer, loginurl, logouturl, login
 ## google imports
 
 from webapp2 import RequestHandler, Route, WSGIApplication
-from google.appengine.ext.webapp import template
 from google.appengine.api import channel
 
 ## basic imports
@@ -67,6 +66,8 @@ class HomePageHandler(RequestHandler):
         except Exception, ex:
             self.response.out.write("An exception occured: %s" % str(ex))
             handle_exception()
+            try: os._exit(1)
+            except: pass
         logging.warn("web_handler - out")
         
 ## the application 

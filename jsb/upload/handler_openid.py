@@ -9,6 +9,7 @@
 from jsb.lib.gae.utils.web import loginurl
 from jsb.lib.version import getversion
 from jsb.utils.exception import handle_exception
+from jsb.utils.lazydict import LazyDict
 
 ## google imports
 
@@ -37,11 +38,11 @@ class OpenIdLoginHandler(webapp.RequestHandler):
             cont = self.request.get('continue')
             logging.info('openid - login form %s' % cont)
             urlstring = self.create_openid_url(cont)
-            template_values = {
+            template_values = LazyDict({
                 'continue': cont,
                 'urlstring': urlstring,
                 'appname': getversion()
-            }
+            })
             try: host = socket.gethostname()
             except AttributeError:
                 if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
@@ -49,8 +50,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
             inputdict = {'version': getversion(), 'host': host}
             template_values.update(inputdict)
             temp = os.path.join(os.getcwd(), 'templates/login.html')
-            from google.appengine.ext.webapp import template
-            outstr = template.render(temp, template_values)  
+            outstr = template._values.render(temp)  
             self.response.out.write(outstr)
         except Exception, ex:
             handle_exception()

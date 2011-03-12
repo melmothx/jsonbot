@@ -22,12 +22,19 @@
       var parameters = "";
       var identtime = new Date();
       var diskname = host + identtime.toString();
-      var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 22px;" size="33" type="text" name="cmnd" onKeyDown="return doexec(this.form, event);" /><b>-&gt;</b></form></div><br>';
+      var consoletxt = '<div style="font-size: 33px;"><br><form><b>&lt;-</b><input style="font-size: 22px;" size="33" type="text" name="cmnd" onKeyDown="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div style="font-size: 110%; font-height: 80%;" align="center" id="info_div">[] [] []</div><br>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
       var log = new Array();
       var cmndlog = new Array();
       var disk = {};
       var topperlist = new Array();
+
+      // clear div
+
+      function clear(divname) {
+        var element = document.getElementById(divname);  
+        element.innerHTML = "<b>[!]</b>";
+      }
 
       // channel stuff
 
@@ -37,7 +44,7 @@
                    var token = obj.responseText;
                    //status2("token is " + token);
                    openChannel(token);
-                   output("<br>token renewed on " + contime.toTimeString() + '<br>');
+                   info("<br>token renewed on " + contime.toTimeString() + '<br>');
               }
           }
       }
@@ -45,10 +52,12 @@
       onOpened = function() {
         contime = new Date();
         topperpush("channel opened on " + contime.toTimeString());
+        info("channel opened on " + contime.toTimeString() + "<br>");
       }
 
       onClose = function() {
-        topper("channel closed on " + contime.toTimeString());
+        topperpush("channel closed on " + contime.toTimeString());
+        info("channel closed on " + contime.toTimeString() + "<br>");
         doCmnd('!chan-token', renewtoken, 'background'); 
       }
 
@@ -67,6 +76,7 @@
       onError = function(m) {
         // newState = JSON.parse(m.data);
         status(m.data);
+        info(m.data);
       }
 
       openChannel = function(token) {
@@ -124,10 +134,11 @@
           loaddisk();
           doCmnd('!chan-token', renewtoken, 'background'); 
           update();
-          setTimeout("doCmnd('!welcome', dotop, 'background');", 3000);
+          setTimeout("doCmnd('!welcome', dotop, 'background');", 300);
           setInterval("updateloop();", 30000);
           setInterval("timeloop();", 1000);
-          setInterval("outputloop();", 7000);
+          setInterval("outputloop();", 30000);
+          setTimeout("outputloop();", 1000);
       }
 
 
@@ -143,13 +154,6 @@
       }
 
       function update(what) {
-        if (what=="feeds") {
-            doCmnd('!statusline', dostatus, "background");
-            doCmnd('!rss-feeds', doinfo, "background");
-        }
-        else {
-            doCmnd("!topper", doinfo, "background");
-        }
         savedisk();
         updatetime = new Date();
       }
@@ -288,6 +292,7 @@
 
         var element = document.getElementById("info_div");  
         element.innerHTML = html;
+        setTimeout("clear('info_div');", 10000);
       }
 
       function footer(text) {
@@ -301,7 +306,7 @@
 
       function topper(text) {
         var html = '<marquee align="center" behavior="slide" scroll-delay="20" direction="left">';
-        html = html + "[!] " + text;
+        html += text;
         html += "</marquee>";
         var element = document.getElementById("topper_div");  
         element.innerHTML = html;
@@ -465,7 +470,7 @@
     <div align="center" id="uber_div" style="font-size: 110%; background-color: white; color: black;">Morning !!</div>
     <div class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1>
      <div style="font-size: 110%; font-height: 80%;" align="center" id="topper_div">[] [] []</div><br>    
-     <div style="font-size: 110%; font-height: 80%;" align="center" id="info_div">[] [] []</div><br>    
+         
       <div style="width: 100%; background-color: {{ color }}; color: white;" id="screen_div"></div>
     <div align="center" class="related">
       <div align="center" id="status2_div"></div>

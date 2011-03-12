@@ -21,6 +21,7 @@ import uuid
 import types
 import threading
 import os
+import re
 
 ## locks
 
@@ -84,6 +85,13 @@ class LazyDict(dict):
     def __setattr__(self, attr, value):
         """ set attribute. """
         self[attr] = value
+
+    def render(self, template):
+        temp = open(template, 'r').read()
+        for key, value in self.iteritems():
+            try: temp = temp.replace("{{ %s }}" % key, value)
+            except: pass 
+        return temp
 
     def dostring(self):
         """ return a string representation of the dict """

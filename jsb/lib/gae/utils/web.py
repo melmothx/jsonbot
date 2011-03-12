@@ -10,6 +10,7 @@ from jsb.utils.generic import fromenc
 from jsb.lib.version import getversion
 from jsb.lib.config import Config
 from jsb.lib.channelbase import ChannelBase
+from jsb.utils.lazydict import LazyDict
 
 ## gaelib imports
 
@@ -43,11 +44,10 @@ def create_openid_url(continue_url):
 
 def mini(response, input={}):
     """ display start html so that bot output can follow. """
-    from google.appengine.ext.webapp import template
-    inputdict = {'version': getversion()}
+    inputdict = LazyDict({'version': getversion()})
     if input: inputdict.update(input)
     temp = os.path.join(os.getcwd(), 'templates/mini.html')
-    outstr = template.render(temp, inputdict)
+    outstr = template.render(temp)
     response.out.write(outstr)
 
 ## start
@@ -58,11 +58,10 @@ def start(response, input={}):
     except AttributeError:
          if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
          else: host = os.environ['SERVER_NAME']
-    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#C54848"}
-    if input: inputdict.update(input)
+    template = LazyDict({'version': getversion(), 'host': host, 'color': Config().color or "#C54848"})
+    if input: template.update(input)
     temp = os.path.join(os.getcwd(), 'templates/console.html')
-    from google.appengine.ext.webapp import template
-    outstr = template.render(temp, inputdict)
+    outstr = template.render(temp)
     response.out.write(outstr)
 
 ## login
@@ -73,11 +72,10 @@ def login(response, input={}):
     except AttributeError:
          if os.environ.get('HTTP_HOST'): host = os.environ['HTTP_HOST']
          else: host = os.environ['SERVER_NAME']
-    inputdict = {'version': getversion(), 'host': host, 'color': Config().color or "#C54848"}
-    if input: inputdict.update(input)
+    template = LazyDict({'version': getversion(), 'host': host, 'color': Config().color or "#C54848"})
+    if input: template.update(input)
     temp = os.path.join(os.getcwd(), 'templates/login.html')
-    from google.appengine.ext.webapp import template
-    outstr = template.render(temp, inputdict)
+    outstr = template.render(temp)
     response.out.write(outstr)
 
 ## commandbox (testing purposes)

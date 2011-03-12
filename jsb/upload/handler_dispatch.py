@@ -31,7 +31,6 @@ from jsb.lib.gae.utils.auth import checkuser
 ## google imports
 
 from webapp2 import RequestHandler, Route, WSGIApplication
-from google.appengine.ext.webapp import template
 from google.appengine.api import users as gusers
 
 ## basic imports
