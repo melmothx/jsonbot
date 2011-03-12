@@ -54,7 +54,14 @@
 
       onMessage = function(m) {
         output(m.data);
-        topperpush(m.data);
+        var index1 = m.data.indexOf("http://");
+        var index2 = m.data.indexOf("https://");
+        if (index1 > -1) {
+            topperpush(m.data);
+        }
+        else if (index2 > -1) {
+            topperpush(m.data);
+        }
       }
 
       onError = function(m) {
