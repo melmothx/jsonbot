@@ -143,7 +143,7 @@ body {
 div.document {
     background-color: #1c4e63;
     text-align: center;
-    font-size: 100%;
+    font-size: 80%;
 }
 
 div.documentwrapper {
@@ -213,7 +213,7 @@ div.body h5,
 div.body h6 {
     font-family: 'Trebuchet MS', sans-serif;
     background-color: #ffffff;
-    font-weight: 100%;
+    font-weight: bold;
     color: #CE1C1C;
     margin: 20px -20px 10px -20px;
     padding: 3px 0 3px 10px;

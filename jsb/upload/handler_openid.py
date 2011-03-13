@@ -50,7 +50,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
             inputdict = {'version': getversion(), 'host': host}
             template_values.update(inputdict)
             temp = os.path.join(os.getcwd(), 'templates/login.html')
-            outstr = template._values.render(temp)  
+            outstr = template_values.render(temp)  
             self.response.out.write(outstr)
         except Exception, ex:
             handle_exception()
