@@ -117,11 +117,12 @@ class Fleet(Persist):
 
     def makebot(self, type, name, domain="", cfg={}, showerror=False):
         """ create a bot .. use configuration if provided. """
+        if not name: logging.warn("fleet - name is not correct: %s" % name) ; return
         if cfg: logging.warn('fleet - making %s (%s) bot - %s' % (type, name, cfg.dump()))
         bot = None
         if not cfg:
             cfg = Config('fleet' + os.sep + stripname(name) + os.sep + 'config')
-            cfg['name'] = cfg['botname'] = name
+        if not cfg.name: cfg['name'] = cfg['botname'] = name
         if cfg.disable:
             logging.warn("fleet - %s bot is disabled. see %s" % (name, cfg.cfile))
             if showerror: raise BotNotEnabled(name)

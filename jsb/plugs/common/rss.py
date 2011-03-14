@@ -220,7 +220,7 @@ sleeptime=15*60, running=0):
             except (AttributeError, KeyError): etag = None
         if not name in urls.data: urls.data[name] = self.data.url ; urls.save()
         logging.debug("rss - got result from %s" % self.data.url)
-        if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (url, result['bozo_exception']))
+        if result and result.has_key('bozo_exception'): logging.warn('rss - %s bozo_exception: %s' % (self.data.url, result['bozo_exception']))
         l = len(result.entries)
         if l > self.data.length: self.data.length = l ; self.save()
         return result.entries
@@ -1263,7 +1263,10 @@ def handle_rssseturl(bot, ievent):
     if not watcher.ownercheck(name, ievent.userhost): ievent.reply("you are not the owner of the %s feed" % name) ; return
     oldurl = watcher.url(name)
     if not oldurl: ievent.reply("no %s rss item found" % name) ; return
-    if watcher.seturl(name, url): watcher.sync(name) ; ievent.reply('url of %s changed' % name)
+    if watcher.seturl(name, url):
+        rssitem = watcher.byname(name)
+        rssitem.sync()
+        ievent.reply('url of %s changed' % name)
     else: ievent.reply('failed to set url of %s to %s' % (name, url))
 
 cmnds.add('rss-seturl', handle_rssseturl, ['USER', ])

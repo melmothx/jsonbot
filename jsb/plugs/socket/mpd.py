@@ -198,7 +198,6 @@ def handle_mpd_outputs(bot, ievent):
 #[('outputid', '0'), ('outputname', 'My ALSA Device'), ('outputenabled', '1')]
     try:
         outputs = mpd('outputs')
-        print outputs
         outputid = '?'
         outputname = '?'
         outputenabled = '?'
@@ -219,26 +218,18 @@ def handle_mpd_outputs(bot, ievent):
 
 def handle_mpd_enable(bot, ievent):
     try:
-        if not ievent.args:
-            ievent.missing('<output #>')
-            return
-        try:    output = int(ievent.args[0])-1
-        except: pass
+        try: output = int(ievent.args[0])-1
+        except: ievent.missing('<output #>') ; return
         result = mpd('enableoutput %d' % output)
-        print result
         ievent.reply(result)
     except MPDError, e:
         ievent.reply(str(e))
 
 def handle_mpd_disable(bot, ievent):
     try:
-        if not ievent.args:
-            ievent.missing('<output #>')
-            return
-        try:    output = int(ievent.args[0])-1
-        except: pass
+        try: output = int(ievent.args[0])-1
+        except: ievent.missing('<output #>') ; return
         result = mpd('disableoutput %d' % output)
-        print result
         ievent.reply(result)
     except MPDError, e:
         ievent.reply(str(e))
@@ -254,7 +245,6 @@ def handle_mpd_playlist(bot, ievent):
               tmp = item[1]
            if item[0] == 'title': tmp = item[1]
            if item[0] == 'name': tmp = '%s: %s' % (item[1], tmp)
-           #print '%s: %s' % (item[0], item[1])
         ievent.reply("\n".join(result))
     except MPDError, e:
         ievent.reply(str(e))
@@ -325,24 +315,16 @@ handle_mpd_crossfade= lambda b,i: handle_mpd_set_option(b,i,'crossfade')
 def handle_mpd_find(bot, ievent):
     type = 'title'
     args = ievent.args
-    if args and args[0].lower() in ['title', 'album', 'artist']:
-        type = args[0].lower()
-        args = args[1:]
-    if not args:
-        ievent.missing('[<type>] <what>')
-        return
+    if args and args[0].lower() in ['title', 'album', 'artist']: type = args[0].lower() ; args = args[1:]
+    if not args: ievent.missing('[<type>] <what>') ; return
     try:
         find = mpd('search %s "%s"' % (type, ' '.join(args)))
         show = []
         for item, value in find:
-            if item == 'file':
-                show.append(value)
-        if show:
-            ievent.reply(show, dot=True, nritems=True)
-        else:
-            ievent.reply('no result')
-    except MPDError, e:
-        ievent.reply(str(e))
+            if item == 'file': show.append(value)
+        if show: ievent.reply("results: ", show)
+        else: ievent.reply('no result')
+    except MPDError, e: ievent.reply(str(e))
 
 def handle_mpd_add(bot, ievent):
     if not ievent.args:

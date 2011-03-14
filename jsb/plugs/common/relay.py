@@ -36,6 +36,7 @@ relay = PlugPersist('relay')
   
 def relayprecondition(bot, event):
     """ check to see whether the callback needs to be executed. """
+    if event.forwarded: return False
     origin = event.printto or event.channel
     logging.debug("relay - precondition - origin is %s" % origin)
     if event.txt:
