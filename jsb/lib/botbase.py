@@ -266,6 +266,7 @@ class BotBase(LazyDict):
     def doremote(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
+        event.forwarded = True
         logging.info("======== start handling REMOTE event ========")
         event.prepare(self)
         self.status = "callback"

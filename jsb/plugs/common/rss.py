@@ -278,13 +278,13 @@ sleeptime=15*60, running=0):
                 if self.markup.get(jsonstring([name, type, channel]), 'all-lines'):
                     for i in res2: 
                         response = self.makeresponse(name, type, [i, ], channel)
-                        try: bot.say(nick or channel, response)
+                        try: bot.saynocb(nick or channel, response)
                         except Exception, ex: handle_exception()
                 else:
                     sep =  self.markup.get(jsonstring([name, type, channel]), 'separator')
                     if sep: response = self.makeresponse(name, type, res2, channel, sep=sep)
                     else: response = self.makeresponse(name, type, res2, channel)
-                    try: bot.say(nick or channel, response)
+                    try: bot.saynocb(nick or channel, response)
                     except Exception, ex: handle_exception()
             return True
         except Exception, ex: handle_exception(txt=name) ; return False
