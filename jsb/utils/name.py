@@ -18,7 +18,7 @@ google requirements on file names:
 ## jsb imports
 
 from jsb.utils.generic import toenc, fromenc
-
+from jsb.lib.errors import NameNotSet
 
 ## basic imports
 
@@ -46,7 +46,7 @@ def slugify(value):
 
 def stripname(namein, allowed=""):
     """ strip all not allowed chars from name. """
-    if not namein: return
+    if not namein: raise NameNotSet(namein)
     n = namein.replace(os.sep, '+')
     n = n.replace("/", '+')
     n = n.replace("@", '+')

@@ -73,7 +73,7 @@ def sanitize(text):
 
 # Get valid URLs
 def getUrls(text):
-  regex = r"http[s]?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]"
+  regex = r"http[s]?://[-A-Za-z0-9+&@#/%=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]"
   p = re.compile(regex)
   urls = []
   
@@ -141,6 +141,7 @@ callbacks.add('PRIVMSG', catchUrls, catchHasUrls, threaded=True)
 callbacks.add('CONSOLE', catchUrls, catchHasUrls, threaded=True)
 callbacks.add('MESSAGE', catchUrls, catchHasUrls, threaded=True)
 callbacks.add('DISPATCH', catchUrls, catchHasUrls, threaded=True)
+callbacks.add('CMND', catchUrls, catchHasUrls, threaded=True)
 
 # Enable on channel
 def handle_urlinfo_enable(bot, ievent):
