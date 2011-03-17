@@ -31,13 +31,16 @@ colors = LazyDict({
 
 def docolormorph(txt):
     if not txt: return txt
-    result = txt
     for t, color in state.data.colormapping.iteritems():
         try:
-            rep = colors[color] + t + colors.ENDC
-            result = txt.replace(t, rep)
-        except KeyError: logging.warn("colors - can't find color %s" % color)
-    return result
+            int(color)
+            rep = "\003%s%s\003" % (color, t)
+        except:
+            try:
+                rep = colors[color] + t + colors.ENDC
+            except KeyError: logging.warn("colors - can't find color %s" % color)
+        txt = txt.replace(t, rep)
+    return txt
 
 ## color-list command
 
