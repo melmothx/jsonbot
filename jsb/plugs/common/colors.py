@@ -27,12 +27,11 @@ state.define("colormapping", {})
 def docolormorph(txt):
     if not txt: return txt
     splitted = txt.split()
-    res = []
     for s in splitted:
         for t, color in state.data.colormapping.iteritems():
             try: c = int(color)
             except: logging.warn("color - %s is not a digit" % color) ; continue
-            if t in s: txt = re.sub(s, "\003%s%s\003" % (c, s), txt)
+            if t in s: txt = txt.replace(s, "\003%s%s\003" % (c, s))
     return txt
 
 ## color-list command
