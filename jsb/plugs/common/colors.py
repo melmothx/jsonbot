@@ -13,33 +13,26 @@ from jsb.lib.morphs import outputmorphs
 from jsb.lib.persiststate import PlugState
 from jsb.utils.lazydict import LazyDict
 
+## basic imports
+
+import re
+
 ## defines
 
 state = PlugState()
 state.define("colormapping", {})
 
-colors = LazyDict({
-    "ERASE_LINE": '\033[2K',
-    "BOLD": '\033[1m',
-    "RED": '\033[91m',
-    "YELLOW": '\033[93m',
-    "GREEN": '\033[92m',
-    "ENDC": '\033[0m'
-})
-
 ## the morph
 
 def docolormorph(txt):
     if not txt: return txt
-    for t, color in state.data.colormapping.iteritems():
-        try:
-            int(color)
-            rep = "\003%s%s\003" % (color, t)
-        except:
-            try:
-                rep = colors[color] + t + colors.ENDC
-            except KeyError: logging.warn("colors - can't find color %s" % color)
-        txt = txt.replace(t, rep)
+    splitted = txt.split()
+    res = []
+    for s in splitted:
+        for t, color in state.data.colormapping.iteritems():
+            try: c = int(color)
+            except: logging.warn("color - %s is not a digit" % color) ; continue
+            if t in s: txt = re.sub(s, "\003%s%s\003" % (c, s), txt)
     return txt
 
 ## color-list command

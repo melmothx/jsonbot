@@ -89,7 +89,7 @@ class Irc(BotBase):
         if not txt.startswith("PONG"): logging.info("%s - sending %s" % (self.name, txt))
         try:
             self.lastoutput = time.time()
-            itxt = toenc(self.outputmorphs.do(txt), self.encoding)
+            itxt = toenc(txt, self.encoding)
             logging.warn(u"%s - out - %s" % (self.name, itxt))             
             if not self.sock: logging.warn("%s - socket disappeared - not sending." % self.name) ; return
             if self.cfg.has_key('ssl') and self.cfg['ssl']: self.sock.write(itxt + '\n')

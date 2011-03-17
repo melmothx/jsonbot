@@ -356,7 +356,7 @@ class BotBase(LazyDict):
         if not txt: return ""
         txt = self.makeresponse(txt, result, dot)
         res1, nritems = self.less(origin or printto, txt, nr+extend)
-        return res1
+        return self.outputmorphs.do(res1)
 
     def out(self, printto, txt, how="msg", event=None, origin=None, html=False, *args, **kwargs):
         self.outnocb(printto, txt, how, event=event, origin=origin, html=html, *args, **kwargs)
