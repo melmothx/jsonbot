@@ -29,6 +29,7 @@ from aliases import getaliases
 from jsb.utils.name import stripname
 from tick import tickloop
 from threads import start_new_thread, threaded
+from morphs import inputmorphs, outputmorphs
 from gatekeeper import GateKeeper
 
 ## basic imports
@@ -127,6 +128,8 @@ class BotBase(LazyDict):
         self.tickqueue = Queue.Queue()
         self.encoding = self.cfg.encoding or "utf-8"
         self.cmndperms = getcmndperms()
+        self.outputmorphs = outputmorphs
+        self.inputmorphs = inputmorphs
         fleet = getfleet(datadir)
         if not fleet.byname(self.name): fleet.bots.append(self) ; 
         if not self.isgae:
@@ -292,6 +295,7 @@ class BotBase(LazyDict):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
         if event.isremote(): self.doremote(event) ; return
+        event.txt = self.inputmorphs.do(fromenc(event.txt, self.encoding))
         msg = "%s - %s - %s - %s" % (self.name, event.auth, event.how, event.cbtype)
         if event.cbtype in ['NOTICE']: logging.warn("%s - %s - %s" % (self.name, event.nick, event.txt))
         else:
@@ -480,8 +484,9 @@ class BotBase(LazyDict):
                     for key, value in i.iteritems():
                         res.append(u"%s: %s" % (key, unicode(value)))
                 else: res.append(unicode(i))
-        if txt: return unicode(txt) + dot.join(res)   
-        elif res: return dot.join(res)
+        if txt: ret = unicode(txt) + dot.join(res)   
+        elif res: ret =  dot.join(res)
+        if ret: return ret
         return ""
     
     def reloadcheck(self, event):
@@ -533,12 +538,12 @@ class BotBase(LazyDict):
         txt = txt.replace("&lt;/li&gt;", "\002")
         return txt
 
-    def dostart(self, botname, bottype, *args, **kwargs):
+    def dostart(self, botname=None, bottype=None, *args, **kwargs):
         """ create an START event and send it to callbacks. """
         e = EventBase()
         e.bot = self
-        e.botname = botname
-        e.bottype = bottype
+        e.botname = botname or self.name
+        e.bottype = bottype or self.type
         e.origin = botname
         e.ruserhost = self.botname +'@' + self.uuid
         e.userhost = e.ruserhost

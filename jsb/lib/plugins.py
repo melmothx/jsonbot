@@ -16,6 +16,7 @@ from boot import cmndtable, plugin_packages, default_plugins
 from errors import NoSuchPlugin
 from jsb.utils.locking import lockdec
 from jsbimport import force_import, _import
+from morphs import outputmorphs, inputmorphs
 
 ## basic imports
 
@@ -88,6 +89,10 @@ class Plugins(LazyDict):
         except KeyError: pass
         try: remote_callbacks.unload(modname)
         except KeyError: pass
+        try: outputmorphs.unload(modname)
+        except: handle_exception()
+        try: inputmorphs.unload(modname)
+        except: handle_exception()
         return True
 
     def load(self, modname, force=False, showerror=True, loaded=[]):
