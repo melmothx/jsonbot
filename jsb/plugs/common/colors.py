@@ -50,7 +50,7 @@ def handle_coloradd(bot, event):
     except (TypeError, ValueError): event.missing("<txt> <color>") ; return
     state.data.colormapping[txt] = color.upper()
     state.save()
-    event.reply("color set to %s" % color)
+    event.reply("color of %s set to %s" % (txt, color))
 
 cmnds.add("color-add", handle_coloradd, ["OPER"])
 examples.add("color-add", "add a text color replacement to the morphs", "color-add dunker red")
