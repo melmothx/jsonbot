@@ -40,7 +40,7 @@ else: boot(opts.datadir)
 
 ## jsb imports
 
-from jsb.utils.generic import waitforqueue
+from jsb.utils.generic import waitforqueue, waitevents
 from jsb.lib.console.bot import ConsoleBot
 from jsb.lib.config import Config
 from jsb.lib.errors import NoOwnerSet
@@ -49,6 +49,7 @@ from jsb.lib.commands import cmnds
 ## basic imports
 
 import getpass
+import time
 
 ## start the bot
 name = opts.name or "default-console"
@@ -58,7 +59,8 @@ userid = getpass.getuser() + '@' + cfg.uuid
 
 if userid not in cfg.owner: cfg.owner.append(userid)
 
-try: bot = ConsoleBot(cfg)
+try:
+    bot = ConsoleBot(cfg)
 except NoOwnerSet:
     print "the owner is not set in %s" % cfg.cfile
     os._exit(1)
@@ -68,12 +70,16 @@ if opts.args:
     for cmnd in opts.args:
         if "|" in cmnd: break
         cmndstring += u" %s" % unicode(cmnd)
+    bot.start(False)
+    cmndstring = "!%s" % cmndstring
     result = bot.docmnd(userid, opts.channel or userid, cmndstring, wait=1, showall=True)
-    if result: waitforqueue(result.outqueue, 60000)
+    waitevents([result,])
+    time.sleep(0.1)
+    #if result: waitforqueue(result.outqueue, 60000)
     try:
         sys.stdout.close()
     except: pass
     os._exit(0)
 
 print getversion('CONSOLE')
-bot.start()
+bot.startshell()

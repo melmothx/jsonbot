@@ -10,6 +10,7 @@ from jsb.lib.threads import getname, start_new_thread, start_bot_command
 from jsb.utils.exception import handle_exception
 from jsb.utils.locking import locked, lockdec
 from jsb.utils.lockmanager import rlockmanager, lockmanager
+from jsb.utils.generic import waitevents
 from jsb.utils.trace import callstack
 from jsb.lib.threadloop import RunnerLoop
 from jsb.lib.callbacks import callbacks
@@ -75,11 +76,13 @@ class BotEventRunner(Runner):
             logging.debug("runner - now running %s" % name)
         
             func(bot, ievent, *args, **kwargs)
-            if ievent.closequeue and ievent.queues:
-                logging.debug("closing %s queues" % len(ievent.queues))
-                for queue in ievent.queues: queue.put_nowait(None)
-            ievent.inqueue.put_nowait(None)
-            if not ievent.dontclose: ievent.outqueue.put_nowait(None)
+            #if ievent.closequeue and ievent.queues:
+            #    logging.debug("closing %s queues" % len(ievent.queues))
+            #    for queue in ievent.queues: queue.put_nowait(None)
+            #ievent.inqueue.put_nowait(None)
+            #if not ievent.dontclose: ievent.outqueue.put_nowait(None)
+            #waitevents([ievent, ])
+            ievent.ready()
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
             if self.elapsed > 3:

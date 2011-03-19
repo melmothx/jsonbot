@@ -76,7 +76,7 @@ class WebBot(BotBase):
     def update_web(self, channel, txt, end="<br>"):
         from google.appengine.api.channel import channel as gchan
         chan = ChannelBase(channel, botname="gae-web")
-        logging.warn("%s - webchannels are %s" % (self.name, chan.data.webchannels))
+        #logging.warn("%s - webchannels are %s" % (self.name, chan.data.webchannels))
         remove = []
         for c in chan.data.webchannels:
             try:

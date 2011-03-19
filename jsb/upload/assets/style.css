@@ -162,6 +162,25 @@ div.body {
     overflow: hidden;
 }
 
+div.bottom {
+    background-color: #1c4e63;
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+}
+
+div.output {
+    background-color: #1c4e63;
+    color: #ffffff;
+    overflow: auto;
+    scrollHeight: 4;
+    position: float;
+    height: 150;
+    top: 200;
+    align: center;
+    width: 100%;
+}
+
 div.footer {
     color: #ffffff;
     text-align: center;
@@ -265,6 +284,8 @@ tt {
 /* -- printout stylesheet --------------------------------------------------- */
 
 @media print {
+    div.output,
+    div.bottom,
     div.document,
     div.documentwrapper,
     div.bodywrapper {

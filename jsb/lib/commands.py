@@ -165,19 +165,21 @@ class Commands(LazyDict):
                     event.reply("task started for %s" % event.auth)
                 else:
                     target.func(bot, event)
-                    if event.closequeue and event.queues:
-                        for q in event.queues:
-                            q.put_nowait(None)
-                        if not event.dontclose: event.outqueue.put_nowait(None)
+                    event.ready()
+                    #if event.closequeue and event.queues:
+                    #    for q in event.queues:
+                    #        q.put_nowait(None)
+                    #    if not event.dontclose: event.outqueue.put_nowait(None)
                     return event
             else:
                 if target.threaded and not event.nothreads:
                     logging.warning("commands - launching thread for %s" % event.usercmnd)
                     thread = start_bot_command(target.func, (bot, event))
-                    if bot.isgae and event.closequeue:
-                        if event.queues:
-                            for q in event.queues: q.put_nowait(None)
-                        if not event.dontclose: event.outqueue.put_nowait(None)
+                    if event.wait: thread.join(event.wait or 5)
+                    #if bot.isgae and event.closequeue:
+                    #    if event.queues:
+                    #        for q in event.queues: q.put_nowait(None)
+                    #    if not event.dontclose: event.outqueue.put_nowait(None)
                 else: cmndrunner.put(target.modname, target.func, bot, event)
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))

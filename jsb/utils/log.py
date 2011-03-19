@@ -52,7 +52,8 @@ except ImportError:
 
 def setloglevel(level_name):
     """ set loglevel to level_name. """
-    level = LEVELS.get(level_name, logging.NOTSET)
+    if not level_name: return
+    level = LEVELS.get(level_name.lower(), logging.NOTSET)
     root = logging.getLogger("")
     if root.handlers:
         for handler in root.handlers: root.removeHandler(handler)
@@ -61,4 +62,4 @@ def setloglevel(level_name):
     except ImportError:
         if filehandler: root.addHandler(filehandler)
     root.setLevel(level)
-    logging.info("loglevel is %s (%s)" % (str(level), level_name))
+    logging.warn("loglevel is %s (%s)" % (str(level), level_name))

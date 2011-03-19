@@ -21,7 +21,7 @@ sys.path.insert(0, "..")
 ## jsb imports
 
 from jsb.utils.exception import handle_exception
-from jsb.utils.generic import toascii, splittxt, strippedtxt, waitforqueue
+from jsb.utils.generic import toascii, splittxt, strippedtxt, waitforqueue, waitevents
 from jsb.lib.plugins import plugs, Plugins
 from jsb.lib.examples import examples
 from jsb.lib.users import Users
@@ -44,7 +44,8 @@ except IndexError: boot(force=True)
 donot = ['admin-boot', 'admin-reloadall', 'reconnect', 'stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get', 'hb-register', 'reboot', 'admin-stop']
 bot = BotBase()
 bot.allowall = True
-#plugs.loadall(plugin_packages, force=True)
+bot.start(False)
+plugs.loadall(force=True)
 users = Users()
 
 try:
@@ -128,6 +129,7 @@ def gendoc(mod, f, output):
     output.write("\n    :commands in this plugin: %s\n\n" % ' .. '.join(cmndlist))
     output.write("| \n" + '\n')
     teller = 1
+    waiting = []
     for command in data['commands']:
         try:
             funcname = cmnds[command].func.func_name
@@ -153,14 +155,16 @@ def gendoc(mod, f, output):
                 try:
                     print "\nDOING %s\n" % i.strip()
                     if 'deadline' in i: continue
-                    out = bot.docmnd("test@test", "#test", i.strip(), wait=5.0)
-                    if not out: continue
-                    res = waitforqueue(out.outqueue, 5000)
+                    e = bot.putevent("test@test", "#test", i.strip(), wait=0)
+                    waitevents([e, ])
+                    res = e.result
                     if not res:
                         output.write("        <output> none" + '\n')
                         continue
                     result = ' - '.join(res)
+                    print result
                     result = result.replace('\002', '')
+                    result = result.replace('\003', '')
                     teller2 = 1
                     for j in splittxt(result, 50):
                         if teller2 > 10:
@@ -264,6 +268,8 @@ if __name__ == '__main__':
     except:
         print "CAN'T COPY OVER ~/jsbregs/jsb/credentials.py"
         handle_exception()
+    from jsb.utils.log import setloglevel
+    setloglevel("debug")
 
     try:
          os.mkdir('docs' + os.sep + 'plugins')

@@ -19,13 +19,14 @@ from jsb.lib.config import Config
 
 ## basic imports
 
-from  xml.sax.saxutils import unescape
+from xml.sax.saxutils import unescape
 import copy
 import logging
 import Queue
 import types
 import socket
 import threading
+import time
 
 ## defines
 
@@ -43,6 +44,7 @@ class EventBase(LazyDict):
         if input: self.copyin(input)
         self.result = []
         self.queues = []
+        self.waitlist = []
         self.inqueue = Queue.Queue()
         self.outqueue = Queue.Queue()
         self.bottype = "botbase"
@@ -59,6 +61,7 @@ class EventBase(LazyDict):
         self.notask = False
         self.speed = 5
         self.nothread = False
+        self.finished = threading.Event()
 
     def __deepcopy__(self, a):
         """ deepcopy an event. """
@@ -68,14 +71,19 @@ class EventBase(LazyDict):
         return e
 
     def ready(self):
-        for queue in self.queues:
-             queue.put_nowait(None)
-        self.resqueue.put_nowait(None)
-        self.outqueue.put_nowait(None)
+        if True or self.closequeus:
+            for queue in self.queues:
+                 queue.put_nowait(None)
+        if not self.dontclose:
+            #self.inqueue.put_nowait(None)
+            self.resqueue.put_nowait(None)
+            self.outqueue.put_nowait(None)
+        time.sleep(0.001)
+        self.finished.set()
 
     def prepare(self, bot=None):
         """ prepare the event for dispatch. """
-        self.result = []
+        #self.result = []
         if bot: self.bot = bot
         assert(self.bot)
         self.origin = self.channel
@@ -86,6 +94,7 @@ class EventBase(LazyDict):
     def bind(self, bot=None, user=None, chan=None):
         """ bind event.bot event.user and event.chan to execute a command on it. """
         target = self.auth
+        assert target
         bot = bot or self.bot
         assert bot
         logging.debug("eventbase - binding user - %s" % str(self.user))
@@ -100,7 +109,7 @@ class EventBase(LazyDict):
             elif self.channel: self.chan = ChannelBase(self.channel, bot.botname)
             elif self.userhost: self.chan = ChannelBase(self.userhost, bot.botname)
             #if bot.isgae and bot.type == "web": self.chan.gae_create()
-        if not self.user: logging.info("eventbase - setting nodispatch") ; self.nodispatch = True
+        if not self.user: logging.info("eventbase - no %s user found .. setting nodispatch" % target) ; self.nodispatch = True
         self.prepare(bot)
         return self
 
@@ -123,10 +132,6 @@ class EventBase(LazyDict):
         if eventin.has_key("sock"): self.sock = eventin['sock']
         if eventin.has_key("chan") and eventin['chan']: self.chan = eventin['chan']
         if eventin.has_key("user"): self.user = eventin['user']
-        if eventin.has_key('queues'):
-            if eventin['queues']: self.queues = eventin['queues']
-        if eventin.has_key("inqueue"): self.inqueue = eventin['inqueue']
-        if eventin.has_key("outqueue"): self.outqueue = eventin['outqueue']
         return self
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
@@ -138,7 +143,7 @@ class EventBase(LazyDict):
         elif self.isdcc: self.bot.say(self.sock, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         else: self.bot.say(self.channel, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
         #self.outqueue.put_nowait(txt)
-        self.result.append(txt)
+        #self.result.append(txt)
         return self
 
     def missing(self, txt):

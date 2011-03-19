@@ -28,7 +28,7 @@ class Morph(object):
     def do(self, *args, **kwargs):
         """ do the morphing. """
         if not self.activate: logging.warn("morphs - %s morph is not enabled" % str(self.func)) ; return
-        logging.warn("morphs - using morph function %s" % str(self.func))
+        #logging.warn("morphs - using morph function %s" % str(self.func))
         try: return self.func(*args, **kwargs)
         except Exception, ex: handle_exception()
 

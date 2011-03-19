@@ -16,6 +16,7 @@ from jsb.utils.lazydict import LazyDict
 ## basic imports
 
 import re
+import logging
 
 ## defines
 
@@ -52,7 +53,7 @@ def handle_coloradd(bot, event):
     event.reply("color of %s set to %s" % (txt, color))
 
 cmnds.add("color-add", handle_coloradd, ["OPER"])
-examples.add("color-add", "add a text color replacement to the morphs", "color-add dunker red")
+examples.add("color-add", "add a text color replacement to the morphs", "color-add dunker 8")
 
 ## color-del command
 

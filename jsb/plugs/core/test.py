@@ -10,7 +10,7 @@ from jsb.lib.examples import examples
 from jsb.lib.eventbase import EventBase
 from jsb.lib.users import users
 from jsb.lib.threads import start_new_thread
-from jsb.utils.generic import waitforqueue
+from jsb.utils.generic import waitforqueue, waitevents
 from jsb.lib.runner import cmndrunner, defaultrunner
 
 ## basic imports
@@ -43,12 +43,13 @@ def dotest(bot, event):
     global teller
     global errors
     match = ""
-    queues = []
+    waiting = []
     if True:
         examplez = examples.getexamples()
         random.shuffle(examplez)
-        logging.warn("test - running examples: %s" % ", ".join(examplez))
+        #logging.warn("test - running examples: %s" % ", ".join(examplez))
         for example in examplez:
+            time.sleep(0.001)
             if match and match not in example: continue
             skip = False
             for dont in donot:
@@ -56,15 +57,15 @@ def dotest(bot, event):
             if skip: continue
             teller += 1
             event.reply('command: ' + example)
-            try:
-                msg = cpy(event)
-                msg.txt = "!" + example
-                e = bot.docmnd(event.auth or event.userhost, event.channel, example, event=msg)
-                if e: queues.append(e.outqueue)
-                else: logging.warn("no result back - %s" % example)
-            except Exception, ex: errors[example] = exceptionmsg()
-    #if not bot.isgae:
-    #    for q in queues: waitforqueue(q)
+            e = cpy(event)
+            e.txt = example
+            e.speed = 6
+            e.bind(bot)
+            bot.put(e)
+            waiting.append(e)
+            teller += 1
+        if not bot.isgae: waitevents(waiting)
+        event.reply("%s commands executed" % teller)
     if errors:
         event.reply("there are %s errors .. " % len(errors))
         for cmnd, error in errors.iteritems(): event.reply("%s - %s" % (cmnd, error))
@@ -75,7 +76,7 @@ def dotest(bot, event):
 
 def handle_testplugs(bot, event):
     """ test the plugins by executing all the available examples. """
-    bot.plugs.loadall()
+    bot.plugs.loadall(force=True)
     global teller
     try: loop = int(event.args[0])
     except (ValueError, IndexError): loop = 1

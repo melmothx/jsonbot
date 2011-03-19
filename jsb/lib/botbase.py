@@ -22,7 +22,7 @@ from less import Less, outcache
 from boot import boot, getcmndperms, default_plugins
 from jsb.utils.locking import lockdec
 from exit import globalshutdown
-from jsb.utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt
+from jsb.utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt, waitevents
 from jsb.utils.trace import whichmodule
 from fleet import getfleet
 from aliases import getaliases
@@ -165,7 +165,10 @@ class BotBase(LazyDict):
 
     def put(self, event):
         """ put an event on the worker queue. """
-        self.inqueue.put_nowait(event)
+        if self.igae:
+            from jsb.lib.gae.tasks import start_botevent
+            start_botevent(self, event, event.speed)
+        else: self.inqueue.put_nowait(event)
 
     def broadcast(self, txt):
         """ broadcast txt to all joined channels. """
@@ -303,7 +306,7 @@ class BotBase(LazyDict):
                 int(event.cbtype)
                 logging.debug("======== start handling local event ========")
                 logging.debug(msg)
-            except ValueError:
+            except (ValueError, TypeError):
                 if event.cbtype in ['PING', 'PRESENCE'] or event.how == "background": 
                     logging.debug("======== start handling local event ========")
                     logging.debug(msg)
@@ -382,10 +385,11 @@ class BotBase(LazyDict):
         if event and event.showall: txt = self.makeresponse(txt, result, dot, *args, **kwargs)
         else: txt = self.makeoutput(channel, txt, result, nr, extend, dot, origin=target, *args, **kwargs)
         if txt: self.out(target, txt, how, event=event, origin=target, *args, **kwargs)
-        if event: event.outqueue.put_nowait(txt)
-        
+        if event: event.outqueue.put_nowait(txt) ; event.result.append(txt)
+
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
+        txt = self.normalize(txt)
         if txt: self.outnocb(channel, txt, how, event=event, origin=channel, *args, **kwargs)
 
     def less(self, printto, what, nr=365):
@@ -522,6 +526,7 @@ class BotBase(LazyDict):
         """ convert markup to IRC bold. """
         txt = strippedtxt(what)
         txt = re.sub("\s+", " ", what)
+        txt = txt.replace("\003", '')
         txt = txt.replace("<b>", "\002")
         txt = txt.replace("</b>", "\002")
         txt = txt.replace("<i>", "")
@@ -568,6 +573,7 @@ class BotBase(LazyDict):
         e.origin = origin
         e.ruserhost = self.botname +'@' + self.uuid
         e.userhost = e.ruserhost
+        e.auth = e.userhost
         e.channel = channel
         e.origtxt = txt
         e.txt = txt
@@ -593,12 +599,47 @@ class BotBase(LazyDict):
         e.txt = unicode(txt)
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
-        e.iscommand = True
-        e.iscallback = False
+        #e.iscommand = True
+        #e.iscallback = False
         e.allowqueues = True
         e.onlyqueues = False
         e.closequeue = True
         e.showall = showall
         e.nooutput = nooutput
-        if wait: e.direct = True ; e.nothreads = True
-        if cmnds.woulddispatch(self, e) or e.txt[0] == "?": return self.doevent(e)
+        e.bind(self)
+        if wait: e.direct = True ; e.nothreads = True ; e.wait = wait
+        #if cmnds.woulddispatch(self, e) or e.txt[0] == "?": return self.doevent(e)
+        self.put(e)
+        return e
+
+    def putevent(self, origin, channel, txt, event=None, wait=0, showall=False, nooutput=False):
+        """ insert an event into the callbacks chain. """
+        assert origin
+        if event: e = cpy(event)
+        else: e = EventBase()
+        e.cbtype = "CMND"
+        e.bot = self
+        e.origin = origin
+        e.ruserhost = origin
+        e.auth = origin
+        e.userhost = origin
+        e.channel = channel
+        e.txt = unicode(txt)
+        e.nick = e.userhost.split('@')[0]
+        e.usercmnd = e.txt.split()[0]
+        #e.iscommand = True
+        #e.iscallback = False
+        e.allowqueues = True
+        e.onlyqueues = False
+        e.closequeue = True
+        e.showall = showall
+        e.nooutput = nooutput
+        e.wait = wait
+        e.bind(self)
+        self.put(e)
+        return e
+
+    def execstr(self, origin, channel, txt, event=None, wait=0, showall=False, nooutput=False):
+        e = self.putevent(origin, channel, txt, event, wait, showall, nooutput)
+        waitevents([e, ])
+        return e.result

@@ -29,6 +29,18 @@
       var disk = {};
       var topperlist = new Array();
 
+      function scrollToBottom(elm_id) {
+	var elm = document.getElementById(elm_id);
+        var f = document.createElement("input");
+        if (f.setAttribute) f.setAttribute("type","text")
+        if (elm.appendChild) elm.appendChild(f);
+        f.style.width = "0px";
+        f.style.height = "0px";
+        if (f.focus) f.focus();
+        if (elm.removeChild) elm.removeChild(f);
+      }
+
+
       // clear div
 
       function clear(divname) {
@@ -267,10 +279,10 @@
 
       function output(text) {
         log.push(text);
-        var sliced = log.slice(-6);
-        var html = sliced.join("");
         var element = document.getElementById("content_div");  
-        element.innerHTML = html;
+        element.innerHTML += text;
+        scrollToBottom("content_div");
+        document.forms[0].cmnd.focus();
       }
 
       function uber(text) {
@@ -468,15 +480,21 @@
       </ul>
     </div>
     <div align="center" id="uber_div" style="font-size: 110%; background-color: white; color: black;">Morning !!</div>
-    <div class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1>
-     <div style="width: 70%; font-size: 110%; font-height: 100%;" align="center" id="topper_div">[] [] []</div><br>
-      <div style="width: 100%; background-color: {{ color }}; color: white;" id="screen_div"></div>
-    <div align="center" class="related">
-      <div align="center" id="status2_div"></div>
-      <div align="center" id="status_div" style="background-color: #803E3E;"><b>outputcache<b>
+    <div class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1></div>
+      <div class="body" style="width: 70%; font-size: 110%; font-height: 100%;" align="center" id="topper_div">[] [] []</div><br>
     </div>
-    </div><br>
-    <div style="font-size: 110%" align="center" id="content_div"><i>output goes here</i></div></div></div>
+      <div class="output" align="center">
+        <div style="font-size: 110%" scroll="auto" align="center" id="content_div"><i>output goes here</i>
+        <br /> <br /> <br /> <br /> <br />
+       </div>
+      </div>
+      <div class="bottom" style="width: 100%; font-size: 110%; font-weight: bold;" align="center">
+        <div align="center" id="status2_div"></div>
+        <div style="width: 80%; background-color: {{ color }}; color: white;" position="fixed" bottom="0""  id="screen_div"></div>
+        <div class="related">
+          <div align="center" id="status_div" style="background-color: #803E3E;"><b>outputcache<b></div>
+        </div>
+      </div>
     </div>
   </div>
 </body>

@@ -11,7 +11,7 @@ from jsb.utils.generic import waitforqueue
 from jsb.lib.errors import NoSuchCommand, NoInput
 from jsb.lib.botbase import BotBase
 from jsb.lib.exit import globalshutdown
-from jsb.utils.generic import strippedtxt
+from jsb.utils.generic import strippedtxt, waitevents
 from jsb.utils.exception import handle_exception
 from event import ConsoleEvent
 
@@ -70,8 +70,9 @@ class ConsoleBot(BotBase):
         self.type = "console"
         self.nick = botname or "console"
 
-    def start(self):
+    def startshell(self, connect=True):
         """ start the console bot. """
+        self.start(False)
         time.sleep(0.1)
         self.dostart()
         while not self.stopped: 
@@ -91,12 +92,13 @@ class ConsoleBot(BotBase):
                         handle_exception()
                         continue
                     #event.direct = True
-                result = self.doevent(event)
-                if not result: continue
-                logging.debug("console - waiting for %s to finish" % event.usercmnd)
-                res = waitforqueue(event.outqueue)
+                self.put(event)
+                waitevents([event, ])
+                #if not result: continue
+                #logging.debug("console - waiting for %s to finish" % event.usercmnd)
+                #res = waitforqueue(event.outqueue)
                 time.sleep(0.2)
-                logging.debug("console - %s" % res)
+                #logging.debug("console - %s" % res)
             except NoInput: continue
             except (KeyboardInterrupt, EOFError): break
             except Exception, ex: handle_exception()
