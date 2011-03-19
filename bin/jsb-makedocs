@@ -157,6 +157,7 @@ def gendoc(mod, f, output):
                     if 'deadline' in i: continue
                     e = bot.putevent("test@test", "#test", i.strip(), wait=0)
                     waitevents([e, ])
+                    print e.result
                     res = e.result
                     if not res:
                         output.write("        <output> none" + '\n')
@@ -269,8 +270,7 @@ if __name__ == '__main__':
         print "CAN'T COPY OVER ~/jsbregs/jsb/credentials.py"
         handle_exception()
     from jsb.utils.log import setloglevel
-    setloglevel("debug")
-
+    setloglevel("error")
     try:
          os.mkdir('docs' + os.sep + 'plugins')
          os.mkdir('docs' + os.sep + 'plugins' + os.sep + 'core') 

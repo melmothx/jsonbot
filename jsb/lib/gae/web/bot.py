@@ -44,7 +44,7 @@ class WebBot(BotBase):
         txt = self.normalize(txt)
         if event and event.how != "background":
             logging.warn("%s - out - %s" % (self.name, txt))
-            if how == "cache": add(channel, [txt, ])
+            #if how == "cache": add(channel, [txt, ])
         if "http://" in txt or "https://" in txt:
              for item in re_url_match.findall(txt):
                  logging.debug("web - raw - found url - %s" % item)

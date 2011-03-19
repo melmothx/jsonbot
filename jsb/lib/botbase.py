@@ -165,7 +165,7 @@ class BotBase(LazyDict):
 
     def put(self, event):
         """ put an event on the worker queue. """
-        if self.igae:
+        if self.isgae:
             from jsb.lib.gae.tasks import start_botevent
             start_botevent(self, event, event.speed)
         else: self.inqueue.put_nowait(event)

@@ -62,9 +62,9 @@ def dotest(bot, event):
             e.speed = 6
             e.bind(bot)
             bot.put(e)
-            waiting.append(e)
+            if not bot.isgae: waiting.append(e)
             teller += 1
-        if not bot.isgae: waitevents(waiting)
+        waitevents(waiting)
         event.reply("%s commands executed" % teller)
     if errors:
         event.reply("there are %s errors .. " % len(errors))
