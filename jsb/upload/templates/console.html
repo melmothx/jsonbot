@@ -22,7 +22,7 @@
       var parameters = "";
       var identtime = new Date();
       var diskname = host + identtime.toString();
-      var consoletxt = '<div style="font-size: 25px;"><br><form><b>&lt;-</b><input style="font-size: 18px;" size="33" type="text" name="cmnd" onKeyDown="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div style="font-size: 110%; font-height: 80%;" align="center" id="info_div">[] [] []</div><br>';
+      var consoletxt = '<div style="font-size: 130%;"><br><form><b>&lt;-</b><input style="font-size: 120%;" size="33" type="text" name="cmnd" onKeyDown="return doexec(this.form, event);" /><b>-&gt;</b></form></div><div c;ass="related" style="font-size: 100%; font-height: 80%;" align="center" id="info_div">[] [] []</div>';
       var feedstxt = '<br><form name="feeddata" action="javascript:submitfeed(this.form);" method="GET"><b>feed name - </b> <input type="text" name="name" /><br></b><b>feed url - </b> <input type="text" name="url" onKeyPress="return doenter(this.form, event);" /><br><br><input type="submit" name="Enter" onClick="return submitfeed(this.form);"/><input type="reset" name="reset" /></form><div class="body" align="left" id="content_div"><i>no feeds entered yet.</i></div>';
       var log = new Array();
       var cmndlog = new Array();
@@ -56,7 +56,8 @@
                    var token = obj.responseText;
                    //status2("token is " + token);
                    openChannel(token);
-                   info("<br>token renewed on " + contime.toTimeString() + '<br>');
+                   info("token renewed on " + contime.toTimeString() + "<br>");
+                   output("token renewed on " + contime.toTimeString() + "<br>");
               }
           }
       }
@@ -65,11 +66,13 @@
         contime = new Date();
         topperpush("channel opened on " + contime.toTimeString());
         info("channel opened on " + contime.toTimeString() + "<br>");
+        output("channel opened on " + contime.toTimeString() + "<br>");
       }
 
       onClose = function() {
         topperpush("channel closed on " + contime.toTimeString());
         info("channel closed on " + contime.toTimeString() + "<br>");
+        output("channel closed on " + contime.toTimeString() + "<br>");
         doCmnd('!chan-token', renewtoken, 'background'); 
       }
 
@@ -479,21 +482,20 @@
         <li><a href="" title="feeds" onclick='dofeeds(); return false;'><i>feeds</i></a></li>
       </ul>
     </div>
-    <div align="center" id="uber_div" style="font-size: 110%; background-color: white; color: black;">Morning !!</div>
-    <div class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1></div>
-      <div class="body" style="width: 70%; font-size: 110%; font-height: 100%;" align="center" id="topper_div">[] [] []</div><br>
-    </div>
+    <div align="center" id="uber_div" style="font-size: 100%; background-color: white; color: black;">Morning !!</div>
+    <div class="body" align="center"><h1 style="background-color: {{ color }}; color: white;"><b>{{ appname }}</b></h1><br>
+   <div class="body" style="width: 100%; font-size: 100%; font-weight: bold;" align="center" id="topper_div">[] [] []</div>
+     </div>
       <div class="output" align="center">
-        <div style="font-size: 110%" scroll="auto" align="center" id="content_div"><i>output goes here</i>
-        <br /> <br /> <br /> <br /> <br />
-       </div>
-      </div>
-      <div class="bottom" style="width: 100%; font-size: 110%; font-weight: bold;" align="center">
+        <div style="width: 90%; font-size: 100%" scroll="auto" align="center" id="content_div"></div>
+      <div class="bottom" style="width: 100%; font-size: 100%; font-weight: bold;" align="center">
         <div align="center" id="status2_div"></div>
-        <div style="width: 80%; background-color: {{ color }}; color: white;" position="fixed" bottom="0""  id="screen_div"></div>
+        <div class="body" width="90%" align="center">
+          <div style="width: 100%; background-color: {{ color }}; color: white;" position="fixed" bottom="0""  id="screen_div">
+       </div>
         <div class="related">
-          <div align="center" id="status_div" style="background-color: #803E3E;"><b>outputcache<b></div>
-        </div>
+            <div align="center" id="status_div" style="background-color: #803E3E;"><b>JSONBOT PRESENT!<b></div>
+          </div>
       </div>
     </div>
   </div>
