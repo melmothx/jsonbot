@@ -35,11 +35,11 @@ class XMPPBot(BotBase):
     def out(self, jids, txt, how="msg", event=None, origin=None, groupchat=None, *args, **kwargs):
         """ output xmpp message. """
         if type(jids) != types.ListType: jids = [jids, ]
-        self.outnocb(jids, txt)
+        self.outnocb(jids, txt, how, event, origin)
         for jid in jids:
             self.outmonitor(self.nick, jid, txt)
 
-    def outnocb(self, jids, txt, from_jid=None, message_type=None, raw_xml=False, event=None, origin=None, groupchat=None, *args, **kwargs):
+    def outnocb(self, jids, txt, how="msg", event=None, origin=None, from_jid=None, message_type=None, raw_xml=False, groupchat=False, *args, **kwargs):
         """ output xmpp message. """
         from google.appengine.api import xmpp
         if not message_type: message_type = xmpp.MESSAGE_TYPE_CHAT
