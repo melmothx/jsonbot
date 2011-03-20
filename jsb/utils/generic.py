@@ -231,7 +231,7 @@ def waitevents(eventlist, millisec=5000):
         if not e or e.bot.isgae: continue
         logging.warn("eventbase - waiting for %s" % e.txt)
         e.finished.wait(millisec)
-        res = waitforqueue(e.resqueue)
+        res = waitforqueue(e.resqueue, 1000)
         result.append(res)
     return result
 ## waitforqueue function
