@@ -149,8 +149,8 @@ class Callbacks(object):
             else:
                 if bot.isgae or event.direct: cb.func(bot, event) 
                 else:
-                    from runner import defaultrunner
-                    defaultrunner.put(cb.modname, cb.func, bot, event)
+                    from runner import callbackrunner
+                    callbackrunner.put(cb.modname, cb.func, bot, event)
             return True
         except Exception, ex:
             handle_exception()

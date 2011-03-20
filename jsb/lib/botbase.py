@@ -384,8 +384,9 @@ class BotBase(LazyDict):
         else: target = channel
         if event and event.showall: txt = self.makeresponse(txt, result, dot, *args, **kwargs)
         else: txt = self.makeoutput(channel, txt, result, nr, extend, dot, origin=target, *args, **kwargs)
-        if txt: self.out(target, txt, how, event=event, origin=target, *args, **kwargs)
-        if event: event.result.append(txt) ; event.resqueue.put_nowait(txt) ; event.outqueue.put_nowait(txt)
+        if txt:
+            self.out(target, txt, how, event=event, origin=target, *args, **kwargs)
+        if event: event.resqueue.put_nowait(txt) ; event.outqueue.put_nowait(txt)
 
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)

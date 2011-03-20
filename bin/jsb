@@ -72,10 +72,9 @@ if opts.args:
         cmndstring += u" %s" % unicode(cmnd)
     bot.start(False)
     cmndstring = "!%s" % cmndstring
-    result = bot.putevent(userid, opts.channel or userid, cmndstring, wait=1, showall=True)
-    waitevents([result,])
+    event = bot.putevent(userid, opts.channel or userid, cmndstring, wait=0, showall=True)
+    print event.waitfor()
     time.sleep(0.1)
-    #if result: waitforqueue(result.outqueue, 60000)
     try:
         sys.stdout.close()
     except: pass

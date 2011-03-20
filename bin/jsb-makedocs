@@ -159,20 +159,20 @@ def gendoc(mod, f, output):
                     e = bot.putevent("test@test", "#test", cmnd, wait=0)
                     if not e: logging.warn("can't execute %s" % cmnd) ; continue
                     #res = waitforqueue(e.outqueue, 5000)
-                    res = waitevents([e, ])
-                    #print res
+                    res = e.waitfor()
+                    print res
                     #res = e.result
                     if not res:
                         output.write("        <output> none" + '\n')
                         continue
                     result = ""
                     for r in res:
-                        result += ' - '.join(r)
+                        result += bot.normalize(r)
                     #print result
-                    result = bot.normalize(result)
+                    #result = bot.normalize(res)
                     #result = result.replace('\002', '')
                     #result = result.replace('\003', '')
-                    output.write('        <output> %s\n' % result)
+                    output.write('        <output> %s\n\n' % result)
                     output.write('\n\n')
                 except Exception, ex:
                     handle_exception(txt=i)

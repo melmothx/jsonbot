@@ -35,12 +35,13 @@ class Runner(RunnerLoop):
 
     """
 
-    def __init__(self, name="runner"):
+    def __init__(self, name="runner", doready=True):
         RunnerLoop.__init__(self, name)
         self.working = False
         self.starttime = time.time()
         self.elapsed = self.starttime
         self.finished = time.time()
+        self.doready = doready
 
     def handle(self, descr, func, *args, **kwargs):
         """ schedule a job. """
@@ -74,25 +75,16 @@ class BotEventRunner(Runner):
             self.name = name
             self.working = True
             logging.debug("runner - now running %s" % name)
-        
             func(bot, ievent, *args, **kwargs)
-            #if ievent.closequeue and ievent.queues:
-            #    logging.debug("closing %s queues" % len(ievent.queues))
-            #    for queue in ievent.queues: queue.put_nowait(None)
-            #ievent.inqueue.put_nowait(None)
-            #if not ievent.dontclose: ievent.outqueue.put_nowait(None)
-            #waitevents([ievent, ])
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
             if self.elapsed > 3:
                 logging.warn('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
         except Exception, ex:
             handle_exception(ievent)
-            #if ievent.showexception: handle_exception(ievent)
-            #else: handle_exception(stop=False)
         finally: lockmanager.release(getname(str(func)))
         self.working = False
-        ievent.ready()
+        if not ievent.donclose: ievent.ready()
 
 ## Runners class
 
@@ -100,10 +92,11 @@ class Runners(object):
 
     """ runners is a collection of runner objects. """
 
-    def __init__(self, max=100, runnertype=Runner):
+    def __init__(self, max=100, runnertype=Runner, doready=True):
         self.max = max
         self.runners = []
-        self.runnertype=runnertype
+        self.runnertype = runnertype
+        self.doready = doready
 
     def runnersizes(self):
         """ return sizes of runner objects. """
@@ -141,7 +134,7 @@ class Runners(object):
         for i in self.runners:
             if not i.queue.qsize(): return i
         if len(self.runners) < self.max:
-            runner = self.runnertype()
+            runner = self.runnertype(self.doready)
             runner.start()
             self.runners.append(runner)
         else: runner = random.choice(self.runners)
@@ -155,9 +148,11 @@ class Runners(object):
             logging.debug("runner - cleanup %s" % runner.name)
             if not runner.queue.qsize(): runner.stop() ; del self.runners[index]
             else: logging.info("runners - %s" % runner.nowrunning)
+
 ## global runners
 
 cmndrunner = defaultrunner = longrunner = Runners(10, BotEventRunner)
+callbackrunner = Runners(20, BotEventRunner, doready=False)
 
 def runnercleanup(bot, event):
     logging.debug("runner sizes: %s" % str(cmndrunner.runnersizes()))
