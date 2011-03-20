@@ -168,7 +168,8 @@ div.bottom {
     color: #ffffff;
     position: fixed;
     bottom: 0;
-    width: 100%;
+    width: 90%;
+    align: center;
 }
 
 div.output {
@@ -288,8 +289,12 @@ tt {
     div.output {
         width: 90%;
         align: center;
-    }
-    div.bottom,
+        scroll: auto;
+    },
+    div.bottom {
+        width: 100%;
+        align: center;
+    },
     div.document,
     div.documentwrapper,
     div.bodywrapper {
