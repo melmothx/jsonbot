@@ -72,7 +72,7 @@ if opts.args:
         cmndstring += u" %s" % unicode(cmnd)
     bot.start(False)
     cmndstring = "!%s" % cmndstring
-    result = bot.docmnd(userid, opts.channel or userid, cmndstring, wait=1, showall=True)
+    result = bot.putevent(userid, opts.channel or userid, cmndstring, wait=1, showall=True)
     waitevents([result,])
     time.sleep(0.1)
     #if result: waitforqueue(result.outqueue, 60000)

@@ -42,8 +42,8 @@ def handle_shop(bot, ievent):
         handle_shop2(bot, ievent)
         return
 
-    if ievent.user.data.shops:
-        sayshop(bot, ievent, ievent.user.data.shops)
+    if ievent.user.state.data.shops:
+        sayshop(bot, ievent, ievent.user.state.data.shops)
     else:
         ievent.reply("no shops")
 
@@ -56,10 +56,10 @@ def handle_shop2(bot, ievent):
         return
     else:
         what = ievent.rest
-    if not ievent.user.data.shops:
-        ievent.user.data.shops = []
-    ievent.user.data.shops.append(what)
-    ievent.user.save()
+    if not ievent.user.state.data.shops:
+        ievent.user.state.data.shops = []
+    ievent.user.state.data.shops.append(what)
+    ievent.user.state.save()
     ievent.reply('shop item added')
 
 examples.add('shop', 'shop [<item>] .. show shop items or add a shop item', '1) shop 2) shop bread')
@@ -77,7 +77,7 @@ def handle_got(bot, ievent):
         ievent.reply('%s is not an integer' % i)
         return
     try:
-        shop = ievent.user.data.shops
+        shop = ievent.user.state.data.shops
     except KeyError:
         ievent.reply('nothing to shop ;]')
         return

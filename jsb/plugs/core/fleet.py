@@ -146,6 +146,7 @@ def fleet_enable(bot, ievent):
             cfg['disable'] = 0
             cfg.save()
             bot = fleet.makebot(cfg.type, cfg.name, cfg)
+            if not bot: ievent.reply("can't make %s bot - %s" % (cfg.name, cfg.type)) ; return
             ievent.reply('enabled and started %s bot' % name)
             start_new_thread(bot.start, ())
         else: ievent.reply('no %s bot in fleet' % name)

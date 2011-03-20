@@ -15,6 +15,7 @@ from jsb.utils.lazydict import LazyDict
 from jsb.utils.generic import splittxt, stripped
 from errors import NoSuchUser
 from jsb.utils.opts import makeeventopts
+from jsb.utils.trace import whichmodule
 from jsb.lib.config import Config
 
 ## basic imports
@@ -70,16 +71,11 @@ class EventBase(LazyDict):
         e.copyin(self)
         return e
 
-    def ready(self):
-        if True or self.closequeus:
-            for queue in self.queues:
-                 queue.put_nowait(None)
-        if not self.dontclose:
-            #self.inqueue.put_nowait(None)
-            self.resqueue.put_nowait(None)
-            self.outqueue.put_nowait(None)
-        time.sleep(0.001)
-        self.finished.set()
+    def ready(self, finish=True):
+        if self.closequeue and self.queues:
+            for q in self.queues:
+                q.put_nowait(None)
+        if not self.dontclose: self.outqueue.put_nowait(None) ; self.finished.set()
 
     def prepare(self, bot=None):
         """ prepare the event for dispatch. """
@@ -97,17 +93,17 @@ class EventBase(LazyDict):
         assert target
         bot = bot or self.bot
         assert bot
-        logging.debug("eventbase - binding user - %s" % str(self.user))
         if not self.user and target:
             cfg = Config()
             if cfg.auto_register: 
                 bot.users.addguest(target)
             self.user = user or bot.users.getuser(target)
-        logging.debug("eventbase - binding channel - %s" % str(self.chan))
+            logging.warn("eventbase - binding user - %s - from %s" % (str(self.user), whichmodule()))
         if not self.chan:
             if chan: self.chan = chan
             elif self.channel: self.chan = ChannelBase(self.channel, bot.botname)
             elif self.userhost: self.chan = ChannelBase(self.userhost, bot.botname)
+            logging.warn("eventbase - binding channel - %s" % str(self.chan))
             #if bot.isgae and bot.type == "web": self.chan.gae_create()
         if not self.user: logging.info("eventbase - no %s user found .. setting nodispatch" % target) ; self.nodispatch = True
         self.prepare(bot)
@@ -128,15 +124,16 @@ class EventBase(LazyDict):
             logging.error("no event given in copyin")
             return self
         self.update(eventin)
-        self.result = []
+        #self.result = []
         if eventin.has_key("sock"): self.sock = eventin['sock']
         if eventin.has_key("chan") and eventin['chan']: self.chan = eventin['chan']
         if eventin.has_key("user"): self.user = eventin['user']
+        #if eventin.has_key("result"): self.result = eventin['result']
         return self
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
-        if self.checkqueues(result): return
+        if self.checkqueues(result): pass
         if self.silent:
             self.msg = True
             self.bot.say(self.nick, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)
@@ -148,12 +145,12 @@ class EventBase(LazyDict):
 
     def missing(self, txt):
         """ display missing arguments. """
-        self.reply("%s %s" % (self.usercmnd, txt)) 
+        self.reply("%s %s" % (self.usercmnd, txt), event=self) 
         return self
 
     def done(self):
         """ tell the user we are done. """
-        self.reply('<b>done</b> - %s' % self.txt)
+        self.reply('<b>done</b> - %s' % self.txt, event=self)
         return self
 
     def leave(self):

@@ -15,7 +15,7 @@ from jsb.utils.xmpp import stripped
 from jsb.utils.trace import calledfrom, whichmodule
 from jsb.utils.exception import handle_exception
 from jsb.utils.lazydict import LazyDict
-from errors import NoSuchCommand
+from errors import NoSuchCommand, NoSuchUser
 from persiststate import UserState
 from runner import cmndrunner
 from boot import getcmndperms
@@ -128,10 +128,11 @@ class Commands(LazyDict):
         if event.groupchat: id = event.auth = event.userhost
         else: id = event.auth
         #if bot.cfg.auto_register: bot.users.addguest(id)
-        if not event.user:
-            event.user = bot.users.getuser(id)
-            if event.user: event.userstate = UserState(event.user.data.name)
-            else: logging.debug("failed to set user %s" % id)
+        if not event.user: raise NoSuchUser(event.auth)
+        #if not event.user:
+        #    event.user = bot.users.getuser(id)
+        #    if event.user: event.userstate = UserState(event.user.data.name)
+        #    else: logging.debug("failed to set user %s" % id)
         c = self.woulddispatch(bot, event)
         if not c: raise NoSuchCommand()
         ## core business
@@ -176,7 +177,7 @@ class Commands(LazyDict):
                     logging.warning("commands - launching thread for %s" % event.usercmnd)
                     t = start_bot_command(target.func, (bot, event))
                     if event.wait and not event.closequeue:
-                        logging.warn("commands- joining %s" % event.txt) ; t.join(event.wait or 5)
+                        logging.warn("commands - joining %s" % event.txt) ; t.join(event.wait or 5)
                     #if bot.isgae and event.closequeue:
                     #    if event.queues:
                     #        for q in event.queues: q.put_nowait(None)

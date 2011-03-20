@@ -29,8 +29,10 @@ def handle_rc(bot, event):
     t = event.rest
     waiting = []
     try:
-        if t.startswith("http"): data = geturl2(t)
-        else: data = open(t, 'r').read()
+        try:
+            if t.startswith("http"): data = geturl2(t)
+            else: data = open(t, 'r').read()
+        except IOError, ex: event.reply("I/O error: %s" % str(ex)) ; return
         if not data: event.reply("can't get data from %s" % event.rest) ; return
         for d in data.split("\n"):
             i = d.strip()

@@ -34,6 +34,7 @@ def predispatch(bot, event):
 
 def dispatch(bot, event):
     """ dispatch an event. """
+    logging.warn("dispatch - doing event %s" % event.dump())
     if event.userhost in bot.ignore: logging.warn("%s - ignore on %s" % (bot.name, event.userhost)) ; return
     if event.nodispatch:
         logging.debug("dispatch - nodispatch option is set - ignoring %s" % event.userhost)
@@ -43,6 +44,7 @@ def dispatch(bot, event):
     bot.curevent = event
     go = False
     execstr = event.iscmnd()
+    logging.warn("dispatch - execstr is %s" % execstr)
     try:
         if execstr:
             event.iscommand = True
@@ -51,7 +53,7 @@ def dispatch(bot, event):
             e.txt = execstr
             e.showexception = True
             if not e.options: e.makeoptions()
-            e.prepare()
+            e.bind(bot)
             if e.usercmnd in event.chan.data.silentcommands: e.silent = True
             result = bot.plugs.dispatch(bot, e)
             #event.leave()

@@ -37,6 +37,7 @@ import os
 import re
 import time
 import sys
+import logging
 
 ## defines
 try: boot(sys.argv[2], force=True)
@@ -45,7 +46,7 @@ donot = ['admin-boot', 'admin-reloadall', 'reconnect', 'stop', 'quit', 'rss-peek
 bot = BotBase()
 bot.allowall = True
 bot.start(False)
-plugs.loadall(force=True)
+#plugs.loadall(force=True)
 users = Users()
 
 try:
@@ -101,7 +102,6 @@ def gendoc(mod, f, output):
                 cmndlist.append(j)
         except AttributeError:
             pass
-    print cmndlist
     for command in cmndlist:
         data['commands'].append(command)
         try:
@@ -150,32 +150,30 @@ def gendoc(mod, f, output):
             for i in data['examples'][command]:
                 if not i:
                      continue
-                output.write('\n    ::\n\n        <user> !%s' % i.strip() + '\n')
+                cmnd = "!%s" % i.strip()
+                output.write('\n    ::\n\n        <user> %s' % cmnd + '\n')
                 out = None
                 try:
-                    print "\nDOING %s\n" % i.strip()
+                    print "\nDOING %s\n" % cmnd
                     if 'deadline' in i: continue
-                    e = bot.putevent("test@test", "#test", i.strip(), wait=0)
-                    waitevents([e, ])
-                    print e.result
-                    res = e.result
+                    e = bot.putevent("test@test", "#test", cmnd, wait=0)
+                    if not e: logging.warn("can't execute %s" % cmnd) ; continue
+                    #res = waitforqueue(e.outqueue, 5000)
+                    res = waitevents([e, ])
+                    #print res
+                    #res = e.result
                     if not res:
                         output.write("        <output> none" + '\n')
                         continue
-                    result = ' - '.join(res)
-                    print result
-                    result = result.replace('\002', '')
-                    result = result.replace('\003', '')
-                    teller2 = 1
-                    for j in splittxt(result, 50):
-                        if teller2 > 10:
-                            output.write('         - output trunked -' + '\n')
-                            break
-                        output.write('        <output> %s' % j + '\n')
-                        teller2 += 1
-                    if teller2 == 1:
-                        output.write('        <output> no output\n')
-                        output.write('\n\n')
+                    result = ""
+                    for r in res:
+                        result += ' - '.join(r)
+                    #print result
+                    result = bot.normalize(result)
+                    #result = result.replace('\002', '')
+                    #result = result.replace('\003', '')
+                    output.write('        <output> %s\n' % result)
+                    output.write('\n\n')
                 except Exception, ex:
                     handle_exception(txt=i)
         teller += 1
@@ -266,8 +264,9 @@ if __name__ == '__main__':
     try:
         shutil.copyfile(os.path.join(os.path.expanduser("~"), 'jsbregs', 'jsb', 'credentials.py'), os.path.join(os.getcwd(), 'jsb', 'data', 'config', 'credentials.py'))
         touch(os.path.join(os.getcwd(), 'jsb', 'data', 'config', '__init__.py'))
-    except:
+    except IOError:
         print "CAN'T COPY OVER ~/jsbregs/jsb/credentials.py"
+    except:
         handle_exception()
     from jsb.utils.log import setloglevel
     setloglevel("error")
@@ -342,8 +341,9 @@ if __name__ == '__main__':
     try:
         shutil.copyfile(os.path.join(os.path.expanduser("~"), 'jsbregs', 'jsb', 'credentials.py'), os.path.join(os.getcwd(), 'jsb', 'data', 'config', 'credentials.py'))
         touch(os.path.join(os.getcwd(), 'jsb', 'data', 'config', '__init__.py'))
-    except:
+    except IOError:
         print "CAN'T COPY OVER ~/jsbregs/jsb/credentials.py"
+    except:
         handle_exception()
 
     for ex in exceptionlist:

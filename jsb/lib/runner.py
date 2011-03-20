@@ -82,7 +82,6 @@ class BotEventRunner(Runner):
             #ievent.inqueue.put_nowait(None)
             #if not ievent.dontclose: ievent.outqueue.put_nowait(None)
             #waitevents([ievent, ])
-            ievent.ready()
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
             if self.elapsed > 3:
@@ -93,6 +92,7 @@ class BotEventRunner(Runner):
             #else: handle_exception(stop=False)
         finally: lockmanager.release(getname(str(func)))
         self.working = False
+        ievent.ready()
 
 ## Runners class
 

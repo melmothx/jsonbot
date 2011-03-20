@@ -226,11 +226,14 @@ def gethighest(ddir, ffile):
 ## waitevents function
 
 def waitevents(eventlist, millisec=5000):
+    result = []
     for e in eventlist:
         if not e or e.bot.isgae: continue
         logging.warn("eventbase - waiting for %s" % e.txt)
         e.finished.wait(millisec)
-
+        res = waitforqueue(e.resqueue)
+        result.append(res)
+    return result
 ## waitforqueue function
 
 def waitforqueue(queue, timeout=5000, maxitems=None):

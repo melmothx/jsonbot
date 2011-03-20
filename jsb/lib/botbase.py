@@ -385,7 +385,7 @@ class BotBase(LazyDict):
         if event and event.showall: txt = self.makeresponse(txt, result, dot, *args, **kwargs)
         else: txt = self.makeoutput(channel, txt, result, nr, extend, dot, origin=target, *args, **kwargs)
         if txt: self.out(target, txt, how, event=event, origin=target, *args, **kwargs)
-        if event: event.outqueue.put_nowait(txt) ; event.result.append(txt)
+        if event: event.result.append(txt) ; event.resqueue.put_nowait(txt) ; event.outqueue.put_nowait(txt)
 
     def saynocb(self, channel, txt, result=[], how="msg", event=None, nr=375, extend=0, dot=", ", *args, **kwargs):
         txt = self.makeoutput(channel, txt, result, nr, extend, dot, *args, **kwargs)
@@ -526,20 +526,21 @@ class BotBase(LazyDict):
         txt = strippedtxt(what)
         txt = re.sub("\s+", " ", what)
         txt = txt.replace("\003", '')
-        txt = txt.replace("<b>", "\002")
-        txt = txt.replace("</b>", "\002")
-        txt = txt.replace("<i>", "")
-        txt = txt.replace("</i>", "")
-        txt = txt.replace("&lt;b&gt;", "\002")
-        txt = txt.replace("&lt;/b&gt;", "\002")
-        txt = txt.replace("&lt;i&gt;", "")
-        txt = txt.replace("&lt;/i&gt;", "")
-        txt = txt.replace("&lt;h2&gt;", "\002")
-        txt = txt.replace("&lt;/h2&gt;", "\002")
-        txt = txt.replace("&lt;h3&gt;", "\002")
-        txt = txt.replace("&lt;/h3&gt;", "\002")
-        txt = txt.replace("&lt;li&gt;", "\002")
-        txt = txt.replace("&lt;/li&gt;", "\002")
+        txt = txt.replace("\002", "")
+        #txt = txt.replace("<b>", "\002")
+        #txt = txt.replace("</b>", "\002")
+        #txt = txt.replace("<i>", "")
+        #txt = txt.replace("</i>", "")
+        #txt = txt.replace("&lt;b&gt;", "\002")
+        #txt = txt.replace("&lt;/b&gt;", "\002")
+        #txt = txt.replace("&lt;i&gt;", "")
+        #txt = txt.replace("&lt;/i&gt;", "")
+        #txt = txt.replace("&lt;h2&gt;", "\002")
+        #txt = txt.replace("&lt;/h2&gt;", "\002")
+        #txt = txt.replace("&lt;h3&gt;", "\002")
+        #txt = txt.replace("&lt;/h3&gt;", "\002")
+        #txt = txt.replace("&lt;li&gt;", "\002")
+        #txt = txt.replace("&lt;/li&gt;", "\002")
         return txt
 
     def dostart(self, botname=None, bottype=None, *args, **kwargs):
@@ -607,9 +608,9 @@ class BotBase(LazyDict):
         e.nooutput = nooutput
         e.bind(self)
         if wait: e.direct = True ; e.nothreads = True ; e.wait = wait
-        #if cmnds.woulddispatch(self, e) or e.txt[0] == "?": return self.doevent(e)
-        self.put(e)
-        return e
+        if cmnds.woulddispatch(self, e) or e.txt[0] == "?": return self.doevent(e)
+        #self.put(e)
+        #return e
 
     def putevent(self, origin, channel, txt, event=None, wait=0, showall=False, nooutput=False):
         """ insert an event into the callbacks chain. """
