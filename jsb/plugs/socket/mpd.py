@@ -457,78 +457,78 @@ def handle_mpd_watch_list(bot, ievent):
         ievent.reply('no watchers running')
 
 
-cmnds.add('mpd-jump',  handle_mpd_jump,  'MPD')
+cmnds.add('mpd-jump',  handle_mpd_jump,  'MPD', threaded=True)
 examples.add('mpd-jump', 'jump to the specified playlist id', 'mpd-jump 666')
-cmnds.add('mpd-watch-start', handle_mpd_watch_start, 'MPD')
-cmnds.add('mpd-watch-stop',  handle_mpd_watch_stop, 'MPD')
-cmnds.add('mpd-watch-list',  handle_mpd_watch_list, 'MPD')
+cmnds.add('mpd-watch-start', handle_mpd_watch_start, 'MPD', threaded=True)
+cmnds.add('mpd-watch-stop',  handle_mpd_watch_stop, 'MPD', threaded=True)
+cmnds.add('mpd-watch-list',  handle_mpd_watch_list, 'MPD', threaded=True)
 
 #mpd                                           Display status
-cmnds.add('mpd', handle_mpd, 'USER')
+cmnds.add('mpd', handle_mpd, 'USER', threaded=True)
 examples.add('mpd', 'Display mpd status', 'mpd')
 
 #mpd-add <file>                                Add a song to the current playlist
-cmnds.add('mpd-add', handle_mpd_add, 'MPD')
-cmnds.add('mpd-queue', handle_mpd_add, 'MPD')
+cmnds.add('mpd-add', handle_mpd_add, 'MPD', threaded=True)
+cmnds.add('mpd-queue', handle_mpd_add, 'MPD', threaded=True)
 examples.add('mpd-add', 'Add a song to the current playlist', 'mpd-add mp3/bigbeat/fatboy slim/fatboy slim - everybody needs a 303.mp3')
 
 #mpd-crop                                      Remove all but the currently playing song
-cmnds.add('mpd-crop', handle_mpd_crop, 'MPD')
+cmnds.add('mpd-crop', handle_mpd_crop, 'MPD', threaded=True)
 examples.add('mpd-crop', 'Remove all but the currently playing song', 'mpd-crop')
 
 #mpd-current                                   Show the currently playing song
-cmnds.add('mpd-current',    handle_mpd_np,    'USER')
-cmnds.add('mpd-np',    handle_mpd_np,    'USER')
+cmnds.add('mpd-current',    handle_mpd_np,    'USER', threaded=True)
+cmnds.add('mpd-np',    handle_mpd_np,    'USER', threaded=True)
 examples.add('mpd-current', 'Show the currently playing song', 'mpd-current')
 
 #mpd-del <position>                            Remove a song from the current playlist
-cmnds.add('mpd-del',  handle_mpd_del,  'MPD')
+cmnds.add('mpd-del',  handle_mpd_del,  'MPD', threaded=True)
 examples.add('mpd-del', 'Remove a song from the current playlist', 'mpd-del 1')
 
 #mpd-play [<position>]                         Start playing at <position> (default: 1)
-cmnds.add('mpd-play',  handle_mpd_play,  'MPD')
+cmnds.add('mpd-play',  handle_mpd_play,  'MPD', threaded=True)
 examples.add('mpd-play', 'Start playing at <position> (default: 1)', 'mpd-play')
 
 #mpd-next                                      Play the next song in the current playlist
-cmnds.add('mpd-next',  handle_mpd_next,  'MPD')
+cmnds.add('mpd-next',  handle_mpd_next,  'MPD', threaded=True)
 examples.add('mpd-next', 'Play the next song in the current playlist', 'mpd-next')
 
 #mpd-prev                                      Play the previous song in the current playlist
-cmnds.add('mpd-prev',  handle_mpd_prev,  'MPD')
+cmnds.add('mpd-prev',  handle_mpd_prev,  'MPD', threaded=True)
 examples.add('mpd-prev', 'Play the previous song in the current playlist', 'mpd-prev')
 
 #mpd-pause                                     Pauses the currently playing song
-cmnds.add('mpd-pause', handle_mpd_pause, 'MPD')
+cmnds.add('mpd-pause', handle_mpd_pause, 'MPD', threaded=True)
 examples.add('mpd-pause', 'Pauses the currently playing song', 'mpd-pause')
 
 #mpd-toggle                                    Toggles Play/Pause, plays if stopped
-cmnds.add('mpd-toggle', handle_mpd_pause, 'MPD')
+cmnds.add('mpd-toggle', handle_mpd_pause, 'MPD', threaded=True)
 examples.add('mpd-toggle', 'Toggles Play/Pause, plays if stopped', 'mpd-toggle')
 
 #mpd-stop                                      Stop the currently playing playlists
-cmnds.add('mpd-stop',  handle_mpd_stop,  'MPD')
+cmnds.add('mpd-stop',  handle_mpd_stop,  'MPD', threaded=True)
 examples.add('mpd-stop', 'Stop the currently playing playlists', 'mpd-stop')
 
 # TODO mpd-seek [+-][HH:MM:SS]|<0-100>%              Seeks to the specified position
 # cmnds.add('mpd-seek', handle_mpd_seek, 'MPD')
 #mpd-clear                                     Clear the current playlist
-cmnds.add('mpd-clear', handle_mpd_clear, 'MPD')
+cmnds.add('mpd-clear', handle_mpd_clear, 'MPD', threaded=True)
 examples.add('mpd-clear', 'Clear the current playlist', 'mpd-clear')
 
 #mpd-outputs                                   Show the current outputs
-cmnds.add('mpd-outputs', handle_mpd_outputs, 'MPD')
+cmnds.add('mpd-outputs', handle_mpd_outputs, 'MPD', threaded=True)
 examples.add('mpd-outputs', 'Show the current outputs', 'mpd-outputs')
 
 #mpd-enable <output #>                         Enable a output
-cmnds.add('mpd-enable', handle_mpd_enable, 'MPD')
+cmnds.add('mpd-enable', handle_mpd_enable, 'MPD', threaded=True)
 examples.add('mpd-enable', 'Enable a output', 'mpd-enable <output #>')
 
 #mpd-disable <output #>                        Disable a output
-cmnds.add('mpd-disable', handle_mpd_disable, 'MPD')
+cmnds.add('mpd-disable', handle_mpd_disable, 'MPD', threaded=True)
 examples.add('mpd-disable', 'Disable a output', 'mpd-disable <output #>')
 
 #mpd-shuffle                                   Shuffle the current playlist
-cmnds.add('mpd-shuffle', handle_mpd_shuffle, 'MPD')
+cmnds.add('mpd-shuffle', handle_mpd_shuffle, 'MPD', threaded=True)
 examples.add('mpd-shuffle', 'Shuffle the current playlist', 'mpd-shuffle')
 
 # TODO mpd move <from> <to>                          Move song in playlist
@@ -536,7 +536,7 @@ examples.add('mpd-shuffle', 'Shuffle the current playlist', 'mpd-shuffle')
 #examples.add('mpd-move', 'Move song in playlist', 'mpd-move <from> <to>')
 
 #mpd-playlist                                  Print the current playlist
-cmnds.add('mpd-playlist', handle_mpd_playlist, 'USER')
+cmnds.add('mpd-playlist', handle_mpd_playlist, 'USER', threaded=True)
 examples.add('mpd-playlist', 'Print the current playlist', 'mpd-playlist')
 
 # TODO mpd listall [<file>]                          List all songs in the music dir
@@ -548,40 +548,40 @@ examples.add('mpd-playlist', 'Print the current playlist', 'mpd-playlist')
 #examples.add('mpd-ls', 'List the contents of <directory>', 'mpd-ls [<directory>]')
 
 #mpd-lsplaylists                               List currently available playlists
-cmnds.add('mpd-lsplaylists', handle_mpd_lsplaylists, 'USER')
+cmnds.add('mpd-lsplaylists', handle_mpd_lsplaylists, 'USER', threaded=True)
 examples.add('mpd-lsplaylists', 'List currently available playlists', 'mpd-lsplaylists')
 
 #mpd-load <file>                               Load <file> as a playlist
-cmnds.add('mpd-load', handle_mpd_load, 'MPD')
+cmnds.add('mpd-load', handle_mpd_load, 'MPD', threaded=True)
 examples.add('mpd-load', 'Load <file> as a playlist', 'mpd-load <file>')
 
 #mpd-save <file>                               Save a playlist as <file>
-cmnds.add('mpd-save', handle_mpd_save, 'MPD')
+cmnds.add('mpd-save', handle_mpd_save, 'MPD', threaded=True)
 examples.add('mpd-save', 'Save a playlist as <file>', 'mpd-save <file>')
 
 #mpd-rm <file>                                 Remove a playlist
-cmnds.add('mpd-rm', handle_mpd_rm, 'MPD')
+cmnds.add('mpd-rm', handle_mpd_rm, 'MPD', threaded=True)
 examples.add('mpd-rm', 'Remove a playlist', 'mpd-rm <file>')
 
 #mpd-volume [+-]<num>                          Set volume to <num> or adjusts by [+-]<num>
 # TODO [+-]
-cmnds.add('mpd-volume', handle_mpd_volume, 'MPD')
+cmnds.add('mpd-volume', handle_mpd_volume, 'MPD', threaded=True)
 examples.add('mpd-volume', 'Set volume to <num> or adjusts by [+-]<num>', 'mpd-volume 42')
 
 #mpd-repeat <on|off>                           Toggle repeat mode, or specify state
-cmnds.add('mpd-repeat', handle_mpd_repeat, 'MPD')
+cmnds.add('mpd-repeat', handle_mpd_repeat, 'MPD', threaded=True)
 examples.add('mpd-volume', 'Toggle repeat mode, or specify state', 'mpd-repeat off')
 
 #mpd-random <on|off>                           Toggle random mode, or specify state
-cmnds.add('mpd-random', handle_mpd_random, 'MPD')
+cmnds.add('mpd-random', handle_mpd_random, 'MPD', threaded=True)
 examples.add('mpd-random', 'Toggle random mode, or specify state', 'mpd-random <on|off>')
 
 #mpd-single <on|off>                           Toggle single mode, or specify state
-cmnds.add('mpd-single', handle_mpd_single, 'MPD')
+cmnds.add('mpd-single', handle_mpd_single, 'MPD', threaded=True)
 examples.add('mpd-single', 'Toggle single mode, or specify state', 'mpd-single <on|off>')
 
 #mpd-consume <on|off>                          Toggle consume mode, or specify state
-cmnds.add('mpd-consume', handle_mpd_consume, 'MPD')
+cmnds.add('mpd-consume', handle_mpd_consume, 'MPD', threaded=True)
 examples.add('mpd-consume', 'Toggle consume mode, or specify state', 'mpd-consume <on|off>')
 
 # TODO mpd search <type> <query>                     Search for a song
@@ -589,7 +589,7 @@ examples.add('mpd-consume', 'Toggle consume mode, or specify state', 'mpd-consum
 #examples.add('mpd-search', 'Search for a song', 'mpd-search <type> <query>')
 
 #mpd-find <type> <query>                       Find a song (exact match)
-cmnds.add('mpd-find',  handle_mpd_find,  'MPD')
+cmnds.add('mpd-find',  handle_mpd_find,  'MPD', threaded=True)
 examples.add('mpd-find', 'Find a song (exact match)', 'mpd-find title love')
 
 # TODO mpd-findadd <type> <query>                    Find songs and add them to the current playlist
@@ -601,7 +601,7 @@ examples.add('mpd-find', 'Find a song (exact match)', 'mpd-find title love')
 #examples.add('mpd-list', 'Show all tags of <type>', 'mpd-list <type> [<type> <query>]')
 
 #mpd-crossfade [<seconds>]                     Set and display crossfade settings
-cmnds.add('mpd-crossfade', handle_mpd_crossfade, 'MPD')
+cmnds.add('mpd-crossfade', handle_mpd_crossfade, 'MPD', threaded=True)
 examples.add('mpd-crossfade', 'Set and display crossfade settings', 'mpd-crossfade 42')
 
 #mpd-update [<path>]                           Scan music directory for updates
@@ -611,7 +611,7 @@ examples.add('mpd-crossfade', 'Set and display crossfade settings', 'mpd-crossfa
 #cmnds.add('mpd-sticker', handle_mpd_sticker, 'MPD')
 
 #mpd-stats                                     Display statistics about MPD
-cmnds.add('mpd-stats', handle_mpd_stats, 'USER')
+cmnds.add('mpd-stats', handle_mpd_stats, 'USER', threaded=True)
 examples.add('mpd-stats', 'Display statistics about MPD', 'mpd-stats')
 
 #mpd-version                                   Report version of MPD

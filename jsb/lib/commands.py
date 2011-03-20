@@ -176,8 +176,8 @@ class Commands(LazyDict):
                 if target.threaded and not event.nothreads:
                     logging.warning("commands - launching thread for %s" % event.usercmnd)
                     t = start_bot_command(target.func, (bot, event))
-                    if event.wait and not event.closequeue:
-                        logging.warn("commands - joining %s" % event.txt) ; t.join(event.wait or 5)
+                    #if event.wait and not event.closequeue:
+                    #    logging.warn("commands - joining %s" % event.txt) ; t.join(event.wait or 5)
                     #if bot.isgae and event.closequeue:
                     #    if event.queues:
                     #        for q in event.queues: q.put_nowait(None)

@@ -75,7 +75,10 @@ class EventBase(LazyDict):
         if self.closequeue and self.queues:
             for q in self.queues:
                 q.put_nowait(None)
-        if not self.dontclose: self.outqueue.put_nowait(None) ; self.finished.set()
+        if not self.dontclose:
+            self.outqueue.put_nowait(None)
+            self.resqueue.put_nowait(None)
+            self.finished.set()
 
     def prepare(self, bot=None):
         """ prepare the event for dispatch. """
@@ -128,12 +131,16 @@ class EventBase(LazyDict):
         if eventin.has_key("sock"): self.sock = eventin['sock']
         if eventin.has_key("chan") and eventin['chan']: self.chan = eventin['chan']
         if eventin.has_key("user"): self.user = eventin['user']
-        #if eventin.has_key("result"): self.result = eventin['result']
+        if eventin.has_key('queues'):
+            if eventin['queues']: self.queues = eventin['queues']
+        if eventin.has_key("inqueue"): self.inqueue = eventin['inqueue']
+        if eventin.has_key("outqueue"): self.outqueue = eventin['outqueue']
+        if eventin.has_key("result"): self.result = eventin['result']
         return self
 
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
-        if self.checkqueues(result): pass
+        if self.checkqueues(result): return
         if self.silent:
             self.msg = True
             self.bot.say(self.nick, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)

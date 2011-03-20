@@ -139,7 +139,6 @@ class Plugins(LazyDict):
                 except Exception, ex: handle_exception()
         return loaded
 
-    @locked
     def reload(self, modname, force=False, showerror=False):
         """ reload a plugin. just load for now. """ 
         modname = modname.replace("..", ".")
