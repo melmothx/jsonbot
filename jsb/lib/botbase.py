@@ -489,6 +489,7 @@ class BotBase(LazyDict):
                     for key, value in i.iteritems():
                         res.append(u"%s: %s" % (key, unicode(value)))
                 else: res.append(unicode(i))
+        ret = ""
         if txt: ret = unicode(txt) + dot.join(res)   
         elif res: ret =  dot.join(res)
         if ret: return ret
