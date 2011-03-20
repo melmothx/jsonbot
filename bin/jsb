@@ -73,7 +73,7 @@ if opts.args:
     bot.start(False)
     cmndstring = "!%s" % cmndstring
     event = bot.putevent(userid, opts.channel or userid, cmndstring, wait=0, showall=True)
-    event.waitfor()
+    print event.waitfor()
     time.sleep(0.1)
     try:
         sys.stdout.close()

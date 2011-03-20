@@ -328,6 +328,7 @@ class BotBase(LazyDict):
             callbacks.check(self, e1)
             if not e1.stop: last_callbacks.check(self, e1)
         event.callbackdone = True
+        if not self.isgae: import asyncore ; asyncore.loop()
         return event
 
     def ownercheck(self, userhost):
@@ -524,24 +525,18 @@ class BotBase(LazyDict):
 
     def normalize(self, what):
         """ convert markup to IRC bold. """
-        txt = strippedtxt(what)
+        txt = strippedtxt(what, ["\002", "\003"])
         txt = re.sub("\s+", " ", what)
         txt = txt.replace("\003", '')
-        txt = txt.replace("\002", "")
-        #txt = txt.replace("<b>", "\002")
-        #txt = txt.replace("</b>", "\002")
-        #txt = txt.replace("<i>", "")
-        #txt = txt.replace("</i>", "")
-        #txt = txt.replace("&lt;b&gt;", "\002")
-        #txt = txt.replace("&lt;/b&gt;", "\002")
-        #txt = txt.replace("&lt;i&gt;", "")
-        #txt = txt.replace("&lt;/i&gt;", "")
-        #txt = txt.replace("&lt;h2&gt;", "\002")
-        #txt = txt.replace("&lt;/h2&gt;", "\002")
-        #txt = txt.replace("&lt;h3&gt;", "\002")
-        #txt = txt.replace("&lt;/h3&gt;", "\002")
-        #txt = txt.replace("&lt;li&gt;", "\002")
-        #txt = txt.replace("&lt;/li&gt;", "\002")
+        txt = txt.replace("\002", "*")
+        txt = txt.replace("<b>", "*")
+        txt = txt.replace("</b>", "*")
+        txt = txt.replace("<i>", "")
+        txt = txt.replace("</i>", "")
+        txt = txt.replace("&lt;b&gt;", "*")
+        txt = txt.replace("&lt;/b&gt;", "*")
+        txt = txt.replace("&lt;i&gt;", "")
+        txt = txt.replace("&lt;/i&gt;", "")
         return txt
 
     def dostart(self, botname=None, bottype=None, *args, **kwargs):
@@ -628,7 +623,7 @@ class BotBase(LazyDict):
         e.txt = unicode(txt)
         e.nick = e.userhost.split('@')[0]
         e.usercmnd = e.txt.split()[0]
-        #e.iscommand = True
+        e.iscommand = False
         #e.iscallback = False
         e.allowqueues = True
         e.onlyqueues = False

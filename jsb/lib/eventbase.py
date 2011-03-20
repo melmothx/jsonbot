@@ -16,6 +16,7 @@ from jsb.utils.generic import splittxt, stripped, waitforqueue
 from errors import NoSuchUser
 from jsb.utils.opts import makeeventopts
 from jsb.utils.trace import whichmodule
+from jsb.utils.locking import lockdec
 from jsb.lib.config import Config
 
 ## basic imports
@@ -28,10 +29,13 @@ import types
 import socket
 import threading
 import time
+import thread
 
 ## defines
 
 cpy = copy.deepcopy
+lock = thread.allocate_lock()
+locked = lockdec(lock)
 
 ## classes
 
@@ -72,20 +76,20 @@ class EventBase(LazyDict):
         return e
 
     def ready(self, finish=True):
-        logging.debug("%s - %s ready called from %s" % (self.cbtype, self.txt, whichmodule()))
+        logging.debug("%s - %s - ready called from %s" % (self.cbtype, self.txt, whichmodule()))
         if self.closequeue and self.queues:
             for q in self.queues:
                 q.put_nowait(None)
         if not self.dontclose:
-            self.inqueue.put_nowait(None)
             self.outqueue.put_nowait(None)
             self.resqueue.put_nowait(None)
+            self.inqueue.put_nowait(None)
         if finish: self.finished.set()
 
     def prepare(self, bot=None):
         """ prepare the event for dispatch. """
         #self.result = []
-        self.finished.clear()
+        #self.finished.clear()
         if bot: self.bot = bot
         assert(self.bot)
         self.origin = self.channel
@@ -124,8 +128,10 @@ class EventBase(LazyDict):
         self.channel = event.channel
         self.auth = stripped(self.userhost)
 
-    def waitfor(self, millisec=5000):
-        #self.finished.wait(millisec)
+    def waitfor(self, millisec=10000):
+        logging.warn("eventbase - waiting for %s" % self.txt)
+        self.finished.wait(millisec)
+        #self.finished.clear()
         return waitforqueue(self.resqueue, millisec)
 
     def copyin(self, eventin):
@@ -146,9 +152,10 @@ class EventBase(LazyDict):
         if eventin.has_key("result"): self.result = eventin['result']
         return self
 
+    @locked
     def reply(self, txt, result=[], event=None, origin="", dot=u", ", nr=375, extend=0, *args, **kwargs):
         """ reply to this event """
-        if self.checkqueues(result): return
+        if self.checkqueues(result): return self
         if self.silent:
             self.msg = True
             self.bot.say(self.nick, txt, result, self.userhost, extend=extend, event=self, *args, **kwargs)

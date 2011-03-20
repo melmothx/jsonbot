@@ -80,11 +80,12 @@ class BotEventRunner(Runner):
             self.elapsed = self.finished - self.starttime
             if self.elapsed > 3:
                 logging.warn('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
+            if ievent.iscommand: time.sleep(0.001) ; ievent.ready()
+            #ievent.ready()
         except Exception, ex:
             handle_exception(ievent)
         finally: lockmanager.release(getname(str(func)))
         self.working = False
-        if not ievent.donclose: ievent.ready()
 
 ## Runners class
 
@@ -151,8 +152,8 @@ class Runners(object):
 
 ## global runners
 
-cmndrunner = defaultrunner = longrunner = Runners(10, BotEventRunner)
-callbackrunner = Runners(20, BotEventRunner, doready=False)
+cmndrunner = defaultrunner = longrunner = Runners(30, BotEventRunner)
+callbackrunner = Runners(50, BotEventRunner, doready=False)
 
 def runnercleanup(bot, event):
     logging.debug("runner sizes: %s" % str(cmndrunner.runnersizes()))

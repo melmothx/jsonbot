@@ -249,6 +249,7 @@ def waitforqueue(queue, timeout=5000, maxitems=None):
             counter += 1
             if counter > timeout: break
             continue
+        #print res
         if res == None: break 
         result.append(res)
         if maxitems and len(result) == maxitems: break

@@ -11,6 +11,7 @@
 ## jsb imports
 
 from threads import getname, start_new_thread
+from jsb.utils.locking import lockdec
 from jsb.utils.exception import handle_exception
 from jsb.utils.trace import calledfrom, whichplugin, callstack
 from jsb.utils.dol import Dol
@@ -21,6 +22,11 @@ import sys
 import copy
 import thread
 import logging
+
+## locks
+
+lock = thread.allocate_lock()
+locked = lockdec(lock)
 
 ## Callback class
 
