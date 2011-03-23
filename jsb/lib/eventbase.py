@@ -1,7 +1,3 @@
-
-
-
-
 # jsb/eventbase.py
 #
 #
@@ -43,40 +39,20 @@ class EventBase(LazyDict):
 
     """ basic event class. """
 
-    def __init__(self, input=None, bot=None):
+    def __init__(self, input={}, bot=None):
         LazyDict.__init__(self)
         if bot: self.bot = bot
-        if input: self.copyin(input)
-        self.threads = []
-        self.result = []
-        self.queues = []
-        self.waitlist = []
-        self.inqueue = Queue.Queue()
-        self.outqueue = Queue.Queue()
         self.bottype = "botbase"
-        self.closequeue = True
-        self.ttl = 1
-        self.how = "channel"
-        self.chantag = None
-        self.resqueue = Queue.Queue()
-        self.forwarded = False
-        self.iscommand = False
-        self.stop = False
-        self.usercmnd = ""
-        self.botevent = False
-        self.notask = False
-        self.speed = 5
-        self.nothread = False
-        self.finished = threading.Event()
-
+        self.copyin(input)
+        
     def __deepcopy__(self, a):
         """ deepcopy an event. """
         logging.debug("eventbase - cpy - %s" % type(self))
-        e = EventBase()
-        e.copyin(self)
+        e = EventBase(self)
         return e
 
     def ready(self, finish=True):
+        """ signal the event as ready - push None to all queues. """
         logging.debug("%s - %s - ready called from %s" % (self.cbtype, self.txt, whichmodule()))
         if self.closequeue and self.queues:
             for q in self.queues:
@@ -89,8 +65,6 @@ class EventBase(LazyDict):
 
     def prepare(self, bot=None):
         """ prepare the event for dispatch. """
-        #self.result = []
-        #self.finished.clear()
         if bot: self.bot = bot
         assert(self.bot)
         self.origin = self.channel
@@ -115,7 +89,6 @@ class EventBase(LazyDict):
             elif self.channel: self.chan = ChannelBase(self.channel, bot.botname)
             elif self.userhost: self.chan = ChannelBase(self.userhost, bot.botname)
             logging.warn("eventbase - binding channel - %s" % str(self.chan))
-            #if bot.isgae and bot.type == "web": self.chan.gae_create()
         if not self.user: logging.info("eventbase - no %s user found .. setting nodispatch" % target) ; self.nodispatch = True
         self.prepare(bot)
         return self
@@ -130,27 +103,20 @@ class EventBase(LazyDict):
         self.auth = stripped(self.userhost)
 
     def waitfor(self, millisec=10000):
+        """ wait for the event to finish. """
         logging.warn("eventbase - waiting for %s" % self.txt)
-        self.finished.wait(millisec)
-        for t in self.threads: t.join(5)
-        #self.finished.clear()
-        return waitforqueue(self.resqueue, millisec)
+        self.finished.wait(5)
+        return waitforqueue(self.resqueue , millisec)
 
     def copyin(self, eventin):
         """ copy in an event. """
-        if not eventin:
-            logging.error("no event given in copyin")
-            return self
         self.update(eventin)
-        if eventin.has_key("sock"): self.sock = eventin['sock']
-        if eventin.has_key("chan") and eventin['chan']: self.chan = eventin['chan']
-        if eventin.has_key("user"): self.user = eventin['user']
-        if eventin.has_key('queues'):
-            if eventin['queues']: self.queues = eventin['queues']
-        if eventin.has_key("resqueue"): self.resqueue = eventin['resqueue']
-        if eventin.has_key("inqueue"): self.inqueue = eventin['inqueue']
-        if eventin.has_key("outqueue"): self.outqueue = eventin['outqueue']
-        if eventin.has_key("result"): self.result = eventin['result']
+        self.threads = self.threads or []
+        self.queues = self.queues or []
+        self.finished = self.finished or threading.Event()
+        self.resqueue = self.resqueue or Queue.Queue()
+        self.inqueue = self.inqueue or Queue.Queue()
+        self.outqueue = self.outqueue or Queue.Queue()
         return self
 
     @locked
@@ -175,11 +141,13 @@ class EventBase(LazyDict):
         return self
 
     def leave(self):
+        """ lower the time to leave. """
         self.ttl -= 1
         if self.ttl <= 0 : self.status = "done"
         logging.info("======== STOP handling event ========")
 
     def makeoptions(self):
+        """ check the given txt for options. """
         try: self.options = makeeventopts(self.txt)
         except: return 
         if not self.options: return
@@ -222,6 +190,7 @@ class EventBase(LazyDict):
         return self.bot.less(what, nr)
 
     def isremote(self):
+        """ check whether the event is off remote origin. """
         if self.txt: return self.txt.startswith('{"') or self.txt.startswith("{&")
 
     def iscmnd(self):
@@ -233,9 +202,7 @@ class EventBase(LazyDict):
         cc = "!"
         if not self.chan: self.chan = ChannelBase(self.channel, self.bot.botname) 
         cc = self.chan.data.cc
-        if not cc:
-            self.chan.data.cc = "!"
-            self.chan.save()
+        if not cc: self.chan.data.cc = "!" ; self.chan.save()
         if not cc: cc = "!"
         if self.type == "DISPATCH": cc += "!"
         if not self.bot: logging.warn("eventbase - bot is not bind into event.") ; return False

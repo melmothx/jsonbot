@@ -293,6 +293,7 @@ class BotBase(LazyDict):
         logging.info("======== start handling REMOTE event ========")
         return
 
+    @locked
     def doevent(self, event):
         """ dispatch an event. """
         if not event: raise NoEventProvided()
