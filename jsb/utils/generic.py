@@ -253,6 +253,7 @@ def waitforqueue(queue, timeout=5000, maxitems=None):
         if res == None: break 
         result.append(res)
         if maxitems and len(result) == maxitems: break
+    logging.warn("waitforqueue - result is %s" % str(result))
     return result
 
 ## checkqueues function
