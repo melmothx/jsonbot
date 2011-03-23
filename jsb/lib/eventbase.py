@@ -47,6 +47,7 @@ class EventBase(LazyDict):
         LazyDict.__init__(self)
         if bot: self.bot = bot
         if input: self.copyin(input)
+        self.threads = []
         self.result = []
         self.queues = []
         self.waitlist = []
@@ -131,6 +132,7 @@ class EventBase(LazyDict):
     def waitfor(self, millisec=10000):
         logging.warn("eventbase - waiting for %s" % self.txt)
         self.finished.wait(millisec)
+        for t in self.threads: t.join(5)
         #self.finished.clear()
         return waitforqueue(self.resqueue, millisec)
 

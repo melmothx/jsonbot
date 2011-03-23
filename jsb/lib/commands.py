@@ -157,8 +157,8 @@ class Commands(LazyDict):
         event.how = target.how
         logging.warning('commands - dispatching %s for %s' % (event.usercmnd, id))
         try:
-            if bot.isgae or wait:
-                if bot.isgae and not event.notask and (target.threaded or event.threaded) and not event.nothreads:
+            if bot.isgae:
+                if not event.notask and (target.threaded or event.threaded) and not event.nothreads:
                     logging.warn("commands - LAUNCHING AS TASK")
                     from jsb.lib.gae.tasks import start_botevent
                     event.txt = event.origtxt
@@ -172,6 +172,7 @@ class Commands(LazyDict):
                 if target.threaded and not event.nothreads:
                     logging.warning("commands - launching thread for %s" % event.usercmnd)
                     t = start_bot_command(target.func, (bot, event))
+                    event.threads.append(t)
                 else: event.dontclose = False; cmndrunner.put(target.modname, target.func, bot, event)
         except Exception, ex:
             logging.error('commands - %s - error executing %s' % (whichmodule(), str(target.func)))

@@ -80,7 +80,7 @@ class BotEventRunner(Runner):
             self.elapsed = self.finished - self.starttime
             if self.elapsed > 3:
                 logging.warn('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
-            if ievent.iscommand: time.sleep(0.001) ; ievent.ready()
+            if ievent.iscommand: ievent.ready()
             #ievent.ready()
         except Exception, ex:
             handle_exception(ievent)
@@ -115,6 +115,7 @@ class Runners(object):
  
     def put(self, *data):
         """ put a job on a free runner. """
+        logging.warn("runners - size is %s" % len(self.runners))
         for runner in self.runners:
             if not runner.queue.qsize():
                 runner.put(*data)

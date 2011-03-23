@@ -40,13 +40,16 @@ import sys
 import logging
 
 ## defines
+
 try: boot(sys.argv[2], force=True)
 except IndexError: boot(force=True)
+
 donot = ['admin-boot', 'admin-reloadall', 'reconnect', 'stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get', 'hb-register', 'reboot', 'admin-stop']
+
 bot = BotBase()
 bot.allowall = True
 bot.start(False)
-#plugs.loadall(force=True)
+
 users = Users()
 
 try:
@@ -58,6 +61,8 @@ try:
     users.setemail('test', 'bthate@gmail.com')
 except Exception, ex:
     pass
+
+noresult = []
 
 ## functions
 

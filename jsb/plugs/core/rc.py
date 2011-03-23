@@ -46,7 +46,7 @@ def handle_rc(bot, event):
             #result = bot.docmnd(event.userhost, event.channel, i, wait=1, event=event)
             #if result: result.waitall()
             teller += 1
-        waitevents(waiting)
+        #waitevents(waiting)
         event.reply("%s commands executed" % teller)
     except Exception, ex: event.reply("an error occured: %s" % str(ex)) ; handle_exception()
 
