@@ -44,7 +44,7 @@ import logging
 try: boot(sys.argv[2], force=True)
 except IndexError: boot(force=True)
 
-donot = ['admin-boot', 'admin-reloadall', 'reconnect', 'stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get', 'hb-register', 'reboot', 'admin-stop']
+donot = ['test-plugs', 'admin-boot', 'admin-reloadall', 'reconnect', 'stop', 'quit', 'rss-peek' , 'rss-register', 'rss-get', 'hb-register', 'reboot', 'admin-stop']
 
 bot = BotBase()
 bot.allowall = True
@@ -163,20 +163,18 @@ def gendoc(mod, f, output):
                     if 'deadline' in i: continue
                     e = bot.putevent("test@test", "#test", cmnd, wait=0)
                     if not e: logging.warn("can't execute %s" % cmnd) ; continue
-                    #res = waitforqueue(e.outqueue, 5000)
                     res = e.waitfor()
                     print res
-                    #res = e.result
                     if not res:
                         output.write("        <output> none" + '\n')
+                        noresult.append(cmnd)
+                        print "======"
+                        print "NO RESULT - %s" % cmnd
+                        print "------" 
                         continue
                     result = ""
                     for r in res:
                         result += bot.normalize(r)
-                    #print result
-                    #result = bot.normalize(res)
-                    #result = result.replace('\002', '')
-                    #result = result.replace('\003', '')
                     output.write('        <output> %s\n\n' % result)
                     output.write('\n\n')
                 except Exception, ex:
@@ -353,3 +351,5 @@ if __name__ == '__main__':
 
     for ex in exceptionlist:
         print ex
+
+    print noresult
