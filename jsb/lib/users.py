@@ -427,6 +427,8 @@ class Users(Persist):
                 user.data.userhosts.remove(userhost)
                 user.save()
                 return 1
+            try: del self.data.name[userhost] ; self.save()
+            except KeyError: pass
 
     def deluseremail(self, name, email):
         """ delete email. """
