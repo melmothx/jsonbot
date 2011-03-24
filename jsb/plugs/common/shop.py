@@ -94,7 +94,7 @@ def handle_got(bot, ievent):
                 teller += 1
             except IndexError:
                 pass
-    ievent.user.save()
+    ievent.user.state.save()
     ievent.reply('%s shop item(s) deleted' % teller)
 
 cmnds.add('got', handle_got, ['USER', 'GUEST'])
