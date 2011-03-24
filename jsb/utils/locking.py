@@ -45,8 +45,10 @@ def lockdec(lock):
             res = None
             try: res = func(*args, **kwargs)
             finally:
-                lock.release()
-                logging.debug('locking - releasing %s' % where)
+                try:
+                    lock.release()
+                    logging.debug('locking - releasing %s' % where)
+                except: pass
             return res
         return lockedfunc
     return locked
