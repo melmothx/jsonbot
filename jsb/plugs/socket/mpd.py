@@ -374,7 +374,7 @@ def handle_mpd_stats(bot, ievent):
         result = []
         for item in sorted(status.keys()):
             result.append('%s: %s' % (item, status[item]))
-        ievent.reply(" | ".join(result), dot=True)
+        ievent.reply(" | ".join(result))
     except MPDError, e:
         ievent.reply(str(e))
 

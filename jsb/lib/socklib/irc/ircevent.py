@@ -101,8 +101,6 @@ class IrcEvent(EventBase):
         elif self.msg: self.bot.say(self.nick, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
         elif self.silent or (self.chan and self.chan.data and self.chan.data.silent): self.bot.say(self.nick, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
         else: self.bot.say(self.channel, txt, result, 'msg', self, nr, extend, dot, *args, **kwargs)
-        self.result.append(txt)
-        self.outqueue.put_nowait(txt)
         return self
 
 ## postfix count - how many arguments

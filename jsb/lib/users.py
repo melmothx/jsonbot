@@ -317,6 +317,8 @@ class Users(Persist):
         if not user: user = self.users[name] = JsonUser(name=name)
         user.data.userhosts.append(userhost)
         user.save()
+        self.data.names[userhost] = name
+        self.save()
         return 1
 
     def adduseremail(self, name, email):
