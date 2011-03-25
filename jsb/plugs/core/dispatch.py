@@ -7,7 +7,7 @@
 ## jsb imports
 
 from jsb.lib.callbacks import last_callbacks
-from jsb.lib.errors import NoSuchCommand
+from jsb.lib.errors import NoSuchCommand, NoSuchUser
 
 ## basic logging
 
@@ -60,10 +60,9 @@ def dispatch(bot, event):
             #event.leave()
         else:
             logging.debug("dispatch - no go for %s (cc is %s)" % (event.auth or event.userhost, execstr))
-            result =  []
-    except NoSuchCommand:
-        logging.info("no such command: %s" % event.usercmnd)
-        result = []
+            result =  None
+    except NoSuchUser, ex: logging.error("no such user: %s" % str(ex)) ; result = None
+    except NoSuchCommand: logging.info("no such command: %s" % event.usercmnd) ; result = None
     return result
 
 ## register callback
