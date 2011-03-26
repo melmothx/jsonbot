@@ -17,7 +17,7 @@ import re
 
 ## defines
 
-RE_KARMA = re.compile(r'(?P<item>\([^\)]+\)|\[[^\]]+\]|\w+)(?P<mod>\+\+|--)( |$)')
+RE_KARMA = re.compile(r'^(?P<item>\([^\)]+\)|\[[^\]]+\]|\w+)(?P<mod>\+\+|--)( |$)')
 
 ## KarmaItem class
 
@@ -35,9 +35,14 @@ class KarmaItem(PlugPersist):
 ## karma precondition
 
 def prekarma(bot, event):
-    if not event.iscmnd(): return False
+     # if not event.iscmnd(): return False
+     # we want to catch all the ++ and to avoid cheating
     if event.userhost in bot.ignore: return False
-    if re.search(RE_KARMA, event.txt): return True
+    karmastring = re.search(RE_KARMA, event.txt)
+    if karmastring:
+         # ignore the karma from the same user
+         if karmastring.group('item') == event.nick : return False
+         else: return True
     return False
 
 ## karma callbacks
