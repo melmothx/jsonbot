@@ -115,7 +115,7 @@ class Runners(object):
  
     def put(self, *data):
         """ put a job on a free runner. """
-        logging.warn("runners - size is %s" % len(self.runners))
+        logging.debug("runners - size is %s" % len(self.runners))
         for runner in self.runners:
             if not runner.queue.qsize():
                 runner.put(*data)

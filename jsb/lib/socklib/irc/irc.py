@@ -195,7 +195,7 @@ class Irc(BotBase):
                     intxt = intxt[:-1]
                 for r in intxt:
                     try:
-                        r = strippedtxt(r.rstrip(), ["\001", "\002"]) 
+                        r = strippedtxt(r.rstrip(), ["\001", "\002", "\003"]) 
                         rr = unicode(fromenc(r.rstrip(), self.encoding))
                     except UnicodeDecodeError:
                         logging.warn("%s - decode error - ignoring" % self.name)

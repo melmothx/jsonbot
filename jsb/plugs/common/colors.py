@@ -25,8 +25,9 @@ state.define("colormapping", {})
 
 ## the morph
 
-def docolormorph(txt):
+def docolormorph(txt, event):
     if not txt: return txt
+    if event and not event.bottype == "irc": return txt
     splitted = txt.split()
     for s in splitted:
         for t, color in state.data.colormapping.iteritems():

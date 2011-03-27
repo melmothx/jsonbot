@@ -11,8 +11,9 @@ from jsb.lib.callbacks import first_callbacks
 from jsb.lib.persist import PlugPersist
 from jsb.lib.examples import examples
 from jsb.lib.fleet import getfleet
-from jsb.utils.exception import handle_exception
 from jsb.lib.errors import NoSuchWave
+from jsb.utils.exception import handle_exception
+from jsb.utils.generic import stripcolor
 
 ## basic imports
 
@@ -36,7 +37,6 @@ relay = PlugPersist('relay')
   
 def relayprecondition(bot, event):
     """ check to see whether the callback needs to be executed. """
-    if event.isrelay: return False
     origin = event.printto or event.channel
     logging.debug("relay - precondition - origin is %s" % origin)
     if event.txt:
@@ -75,8 +75,8 @@ def relaycallback(bot, event):
                         txt = event.txt
                     else:
                         txt = "[%s] %s" % (event.nick, event.txt)
-                    event.isrelay = True
-                    outbot.saynocb(target, txt)
+                    txt = stripcolor(txt)
+                    outbot.outnocb(target, txt)
                 else: logging.error("can't find %s bot" % type)
             except Exception, ex: handle_exception()
     except KeyError: pass

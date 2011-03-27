@@ -17,7 +17,7 @@ from jsb.lib.container import Container
 from jsb.lib.errors import NoProperDigest
 from jsb.utils.exception import handle_exception
 from jsb.utils.locking import locked
-from jsb.utils.generic import strippedtxt
+from jsb.utils.generic import strippedtxt, stripcolor
 
 ## jsb.plugs.common imports
 
@@ -86,6 +86,7 @@ def forwardoutcb(bot, event):
         if outbot:
             e.source = outbot.jid
             txt = outbot.normalize(e.tojson())
+            txt = stripcolor(txt)
             #txt = e.tojson()
             container = Container(outbot.jid, txt)
             outbot.outnocb(jid, container.tojson()) 

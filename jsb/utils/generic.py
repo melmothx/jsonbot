@@ -162,6 +162,16 @@ def strippedtxt(what, allowed=[]):
         if ord(i) > 31 or (allowed and i in allowed): txt.append(i)
     return ''.join(txt)
 
+## stripcolor function
+
+REcolor = re.compile(r"\003\d+(.+?)\003")
+
+def matchcolor(match):
+    return match.group(1)
+
+def stripcolor(txt):
+    return REcolor.sub(matchcolor, txt)
+
 ## uniqlist function
 
 def uniqlist(l):
