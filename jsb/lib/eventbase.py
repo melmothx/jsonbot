@@ -43,6 +43,7 @@ class EventBase(LazyDict):
         LazyDict.__init__(self)
         if bot: self.bot = bot
         self.bottype = "botbase"
+        self.relayed = []
         self.copyin(input)
         
     def __deepcopy__(self, a):
