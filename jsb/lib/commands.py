@@ -127,15 +127,9 @@ class Commands(LazyDict):
         event.bind(bot)
         if event.groupchat: id = event.auth = event.userhost
         else: id = event.auth
-        #if bot.cfg.auto_register: bot.users.addguest(id)
         if not event.user: raise NoSuchUser(event.auth)
-        #if not event.user:
-        #    event.user = bot.users.getuser(id)
-        #    if event.user: event.userstate = UserState(event.user.data.name)
-        #    else: logging.debug("failed to set user %s" % id)
         c = self.woulddispatch(bot, event)
         if not c: raise NoSuchCommand()
-        ## core business
         if bot.cmndperms and bot.cmndperms[c.cmnd]: perms = bot.cmndperms[c.cmnd]
         else: perms = c.perms
         if bot.allowall: return self.doit(bot, event, c, wait=wait)
@@ -164,10 +158,7 @@ class Commands(LazyDict):
                     event.txt = event.origtxt
                     start_botevent(bot, event, event.speed)
                     event.reply("task started for %s" % event.auth)
-                else:
-                    target.func(bot, event)
-                    event.ready()
-                    return event
+                else: target.func(bot, event) ; event.ready() ; return event
             else:
                 if target.threaded and not event.nothreads:
                     logging.warning("commands - launching thread for %s" % event.usercmnd)
