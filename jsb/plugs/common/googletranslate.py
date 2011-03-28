@@ -1,9 +1,9 @@
 ## jsb imports
 
 from jsb.lib.commands import cmnds
-from jsb.utils.url import geturl2, striphtml, decode_html_entities
+from jsb.utils.url import geturl2
 from jsb.imports import getjson
-import logging
+# import logging
 import re
 from urllib import quote
 
@@ -27,12 +27,26 @@ def handle_translate(bot, event):
         return
 #    event.reply(URL % query)
     rawresult = {}
-    rawresult = getjson().loads(geturl2(URL % query))
-#    rawresult = {"responseData": {"translatedText":"test"}, "responseDetails": None, "responseStatus": 200}
-    logging.warn(URL % query)
-    logging.warn(rawresult)
-    translation = rawresult['responseData']['translatedText']
-    event.reply(translation)
+    try:
+        rawresult = getjson().loads(geturl2(URL % query))
+    except:
+        event.reply("Query to Google failed")
+        return
+# debug
+#     rawresult = {"responseData": {"translatedText":"test"}, "responseDetails": None, "responseStatus": 201}
+    # logging.warn(URL % query)
+    # logging.warn(rawresult)
+    if rawresult['responseStatus'] != 200:
+        event.reply("Error in the query: ", rawresult)
+        return
+    if 'responseData' in rawresult:
+        if 'translatedText' in rawresult['responseData']:
+            translation = rawresult['responseData']['translatedText']
+            event.reply(translation)
+        else:
+            event.reply("No text available")
+    else:
+        event.reply("Something is wrong, probably the API changed")
 
 cmnds.add("translate", handle_translate, ["OPER", "USER", "GUEST"])
 
