@@ -79,7 +79,7 @@ class BotEventRunner(Runner):
             self.finished = time.time()
             self.elapsed = self.finished - self.starttime
             if self.elapsed > 3:
-                logging.warn('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
+                logging.info('runner - ALERT %s %s job taking too long: %s seconds' % (descr, str(func), self.elapsed))
             if ievent.iscommand: ievent.ready()
             #ievent.ready()
         except Exception, ex:
@@ -144,7 +144,7 @@ class Runners(object):
 
     def cleanup(self):
         """ clean up idle runners. """
-        if not len(self.runners): logging.info("nothing to clean")
+        if not len(self.runners): logging.debug("nothing to clean")
         for index in range(len(self.runners)-1, -1, -1):
             runner = self.runners[index]
             logging.debug("runner - cleanup %s" % runner.name)
