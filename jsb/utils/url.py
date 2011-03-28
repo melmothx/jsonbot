@@ -174,7 +174,7 @@ def decode_html_entities(s):
     def to_entn(match):
         """ convert to entities """
         if htmlentitydefs.entitydefs.has_key(match.group(1)):
-            return htmlentitydefs.entitydefs[match.group(1)].decode('utf-8', 'replace')
+            return htmlentitydefs.entitydefs[match.group(1)].decode('latin1', 'replace')
         return match.group(0)
 
     def to_utf8(match):
