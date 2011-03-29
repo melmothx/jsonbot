@@ -41,9 +41,8 @@ def handle_geo(bot, event):
         event.missing("<ip>")
         return
     query = event.rest.strip()
-    res = host2ip(query)
-    if not res: event.reply("Couldn't look up the hostname") ; return
-    else: return
+    ip = host2ip(query)
+    if not ip: event.reply("Couldn't look up the hostname") ; return
     event.reply("geo of %s is: " % ip, querygeoipserver(ip))
 
 cmnds.add("geo", handle_geo, ["OPER", "GEO"])
