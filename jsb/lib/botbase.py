@@ -22,7 +22,7 @@ from less import Less, outcache
 from boot import boot, getcmndperms, default_plugins
 from jsb.utils.locking import lockdec
 from exit import globalshutdown
-from jsb.utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt, waitevents
+from jsb.utils.generic import splittxt, toenc, fromenc, waitforqueue, strippedtxt, waitevents, stripcolor
 from jsb.utils.trace import whichmodule
 from fleet import getfleet
 from aliases import getaliases
@@ -532,7 +532,6 @@ class BotBase(LazyDict):
         txt = strippedtxt(what, ["\002", "\003"])
         txt = re.sub("\s+", " ", what)
         txt = stripcolor(txt)
-        txt = txt.replace("\003", '')
         txt = txt.replace("\002", "*")
         txt = txt.replace("<b>", "*")
         txt = txt.replace("</b>", "*")
