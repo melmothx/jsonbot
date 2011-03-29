@@ -56,6 +56,7 @@ def karmacb(bot, event):
     for target in targets:
         try: item, what, bogus = target
         except ValueError: print target ; continue
+        item = item.lower()
         if what == "++":
             i = KarmaItem(event.channel + "-" + item)
             i.data.count += 1
