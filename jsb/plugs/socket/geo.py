@@ -48,7 +48,7 @@ def handle_geo(bot, event):
 cmnds.add("geo", handle_geo, ["OPER", "GEO"])
 
 def handle_geoPRE(bot, event):
-    if event.chan.data.dogeo: return True 
+    if "." in event.hostname and event.chan.data.dogeo: return True 
 
 def handle_geoJOIN(bot, event):
     event.reply("geo - doing query on %s" % event.hostname)
