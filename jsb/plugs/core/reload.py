@@ -31,7 +31,7 @@ def handle_reload(bot, ievent):
         modname = bot.plugs.getmodule(plug)
         if not modname: errors.append("can't find %s plugin" % plug) ; continue
         try:
-            loaded = bot.plugs.loaddeps(modname, force=True, showerror=True)
+            loaded = bot.plugs.reload(modname, force=True, showerror=True)
             for plug in loaded:
                 reloaded.append(plug)
                 logging.warn("reload - %s reloaded" % plug) 

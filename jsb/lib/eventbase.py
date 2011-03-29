@@ -85,12 +85,12 @@ class EventBase(LazyDict):
             if cfg.auto_register: 
                 bot.users.addguest(target)
             self.user = user or bot.users.getuser(target)
-            logging.warn("eventbase - binding user - %s - from %s" % (str(self.user), whichmodule()))
+            logging.info("eventbase - binding user - %s - from %s" % (str(self.user), whichmodule()))
         if not self.chan:
             if chan: self.chan = chan
             elif self.channel: self.chan = ChannelBase(self.channel, bot.botname)
             elif self.userhost: self.chan = ChannelBase(self.userhost, bot.botname)
-            logging.warn("eventbase - binding channel - %s" % str(self.chan))
+            logging.info("eventbase - binding channel - %s" % str(self.chan))
         if not self.user: logging.info("eventbase - no %s user found .. setting nodispatch" % target) ; self.nodispatch = True
         self.prepare(bot)
         return self

@@ -90,7 +90,7 @@ class Irc(BotBase):
         try:
             self.lastoutput = time.time()
             itxt = toenc(txt, self.encoding)
-            logging.warn(u"%s - out - %s" % (self.name, itxt))             
+            logging.info(u"%s - out - %s" % (self.name, itxt))             
             if not self.sock: logging.warn("%s - socket disappeared - not sending." % self.name) ; return
             if self.cfg.has_key('ssl') and self.cfg['ssl']: self.sock.write(itxt + '\n')
             else: self.sock.send(itxt[:500] + '\n')

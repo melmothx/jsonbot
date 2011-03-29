@@ -80,6 +80,8 @@ class IrcEvent(EventBase):
             self.ruserhost = self.userhost
             self.stripped = self.userhost
             self.auth = self.userhost
+            try: self.hostname = self.userhost.split("@")[1]
+            except: self.hostname = None
         self.origtxt = self.txt
         if self.channel:
             self.channel = self.channel.strip()

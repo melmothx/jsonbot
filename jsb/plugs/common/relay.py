@@ -41,7 +41,7 @@ def relayprecondition(bot, event):
     splitted = event.txt.split("]")
     try: bn = splitted[0][1:]
     except: bn = None
-    if event.nick == bot.nick and not event.iscommand: logging.warn("relay - %s already relayed" % bot.nick) ; return
+    if event.nick == bot.nick and not event.iscommand: logging.info("relay - %s already relayed" % bot.nick) ; return
     origin = event.printto or event.channel
     logging.debug("relay - precondition - origin is %s" % origin)
     if event.txt:
