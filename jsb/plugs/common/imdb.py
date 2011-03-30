@@ -3,20 +3,53 @@
 from jsb.lib.commands import cmnds
 from jsb.utils.url import geturl2, striphtml, decode_html_entities
 from jsb.imports import getjson
+from urllib import quote
 import logging
+import re
 
-# URL = "http://imdbapi.poromenos.org/js/?name=%s" # for this tweaking is needed, but it doesn't appear to work as adviced. E.g., inception return None
-URL = "http://www.deanclatworthy.com/imdb/?q=%s"
+def do_imdb_api_query(query):
+    url = "http://www.deanclatworthy.com/imdb/?" + query
+    logging.warn(url)
+    result = getjson().loads(geturl2(url))
+    return result
+ 
+def scan_query(userstring):
+    params = map(quote, userstring.split())
+    yg = "1"
+    year = None
+    query = ""
+    if len(params) > 1:
+        lastparam = params.pop()
+        if not re.match("^\d{4}$", lastparam):
+            params.append(lastparam)
+        else:
+            year = lastparam
+            yg = "0"
+
+    query = '+'.join(params)
+    return { 'q': query,
+             'year': year,
+             'yg': yg,
+             'type': "json",
+             }
+
+def build_query(querydict):
+    outstring = ""
+    query_list = []
+    for k, v in querydict.iteritems():
+        if v:
+            token = k + '=' + v
+            query_list.append(token)
+    return "&".join(query_list)
 
 
 def handle_imdb(bot, event):
     if not event.rest: 
         event.missing("<query>")
         return
-    query = event.rest.strip()
-    urlquery = query.replace(" ", "+")
+    query = build_query(scan_query(event.rest.strip()))
     result = {}
-    rawresult = getjson().loads(geturl2(URL % urlquery))
+    rawresult = do_imdb_api_query(query)
 
 # the API are limited to 30 query per hour, so avoid querying it just for 
 # testing purposes
