@@ -10,6 +10,7 @@
 from jsb.lib.callbacks import callbacks
 from jsb.lib.commands import cmnds
 from jsb.utils.url import geturl2
+from jsb.utils.exception import handle_exception
 from jsb.imports import getjson
 
 ## system imports
@@ -52,9 +53,11 @@ def handle_geoPRE(bot, event):
 
 def handle_geoJOIN(bot, event):
     event.reply("geo - doing query on %s" % event.hostname)
-    result = querygeoipserver(host2ip(event.hostname))
-    if result: event.reply("geo info: ", result)
-    else: event.reply("no result")
+    try:
+        result = querygeoipserver(host2ip(event.hostname))
+        if result: event.reply("%s lives in %s, %s (%s)" % (event.nick, result['city'], result['country_name'], result['country_code']))
+        else: event.reply("no result")
+    except: handle_exception()
 
 callbacks.add("JOIN", handle_geoJOIN, handle_geoPRE)
 

@@ -52,7 +52,7 @@ class Seen(Pdod):
         else:
             text = self.data[nick]['text'] and ': %s' % self.data[nick]['text'] or ''
             try:
-                ievent.reply('%s was last seen on %s at %s, %s%s' % (nick, self.data[nick]['server'], 
+                ievent.reply('%s was last seen on %s (%s) at %s, %s%s' % (nick, self.data[nick]['channel'], self.data[nick]['server'], 
                     time.strftime('%a, %d %b %Y %H:%M:%S '+ str(cfg.get('tz')), time.localtime(self.data[nick]['time'])),
                     self.data[nick]['what'], text))
             except KeyError:

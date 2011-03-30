@@ -51,21 +51,21 @@ def karmacb(bot, event):
     event.bind(bot)
     targets = re.findall(RE_KARMA, event.txt)
     karma = []
-    try: reason = event.txt.split('#', 1)[1]
+    try: reason = event.txt.split('#', 1)[1] ; reason = reason.strip()
     except IndexError: reason = None
     for target in targets:
         try: item, what, bogus = target
         except ValueError: print target ; continue
         item = item.lower()
         if what == "++":
-            i = KarmaItem(event.channel + "-" + item)
+            i = KarmaItem(event.channel.lower() + "-" + item)
             i.data.count += 1
             if event.nick not in i.data.whoup: i.data.whoup[event.nick] = 0
             i.data.whoup[event.nick] += 1
             if reason and reason not in i.data.whyup: i.data.whyup.append(reason)
             i.save()
         else:
-            i = KarmaItem(event.channel + "-" + item)
+            i = KarmaItem(event.channel.lower() + "-" + item)
             i.data.count -= 1
             if event.nick not in i.data.whodown: i.data.whodown[event.nick] = 0
             i.data.whodown[event.nick] -= 1
@@ -73,7 +73,7 @@ def karmacb(bot, event):
             i.save()
         karma.append("%s: %s" % (item, i.data.count))
         got = item or item2
-    event.reply("karma - ", karma)
+    if karma: event.reply("karma - ", karma) ; event.ready()
 
 callbacks.add('PRIVMSG', karmacb, prekarma)
 callbacks.add('MESSAGE', karmacb, prekarma)
@@ -84,7 +84,7 @@ callbacks.add('CONSOLE', karmacb, prekarma)
 def handle_karma(bot, event):
     if not event.rest: event.missing("<what>") ; return
     k = event.rest.lower()
-    item = KarmaItem(event.channel + "-" + k)
+    item = KarmaItem(event.channel.lower() + "-" + k)
     if item.data.count: event.reply("karma of %s is %s" % (k, item.data.count))
     else: event.reply("%s doesn't have karma yet." % k)
 
@@ -102,12 +102,12 @@ examples.add("karma-whyup", "show why a karma item is upped", "karma-whyup jsb")
 
 def handle_karmawhoup(bot, event):
     k = event.rest.lower()
-    item = KarmaItem(event.channel + "-" + k)
+    item = KarmaItem(event.channel.lower() + "-" + k)
     sd = StatDict(item.data.whoup)
     res = []
     for i in sd.top():
         res.append("%s: %s" % i)
-    if item.data.whoup: event.reply("uppers of %s are: " % k, res)
+    if res: event.reply("uppers of %s are: " % k, res)
     else: event.reply("nobody upped %s yet" % k)
 
 cmnds.add("karma-whoup", handle_karmawhoup, ['USER', 'GUEST'])
@@ -115,7 +115,7 @@ examples.add("karma-whoup", "show who upped an item", "karma-whoup jsb")
 
 def handle_karmawhydown(bot, event):
     k = event.rest.lower()
-    item = KarmaItem(event.channel + "-" + k)
+    item = KarmaItem(event.channel.lower() + "-" + k)
     if item.data.whydown: event.reply("reasons for karmadown are: ", item.data.whydown)
     else: event.reply("no reasons for karmadown of %s known yet" % k)
 
@@ -124,12 +124,12 @@ examples.add("karma-whydown", "show why a karma item is downed", "karma-whydown 
 
 def handle_karmawhodown(bot, event):
     k = event.rest.lower()
-    item = KarmaItem(event.channel + "-" + k)
+    item = KarmaItem(event.channel.lower() + "-" + k)
     sd = StatDict(item.data.whodown)
     res = []
     for i in sd.down():
         res.append("%s: %s" % i)
-    if item.data.whodown: event.reply("downers of %s are: " % k, res)
+    if res: event.reply("downers of %s are: " % k, res)
     else: event.reply("nobody downed %s yet" % k)
 
 cmnds.add("karma-whodown", handle_karmawhodown, ['USER', 'GUEST'])

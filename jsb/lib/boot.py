@@ -112,7 +112,9 @@ def boot(ddir=None, force=False, encoding="utf-8", umask=None, saveperms=True, f
         logging.info("boot - plugins not loaded .. loading defaults")
         for plug in default_plugins:
             plugs.reload(plug, showerror=True, force=True)
-        if not fast: plugs.loadall(["myplugs", "jsb.plugs.myplugs"], force=True)
+        if not fast:
+            if ongae: plugs.loadall(["myplugs.gae", "jsb.plugs.myplugs"], force=True)
+            else: plugs.loadall(["myplugs.socket", "jsb.plugs.myplugs"], force=True)
         else: logging.error("skipped loading of myplugs")
     logging.warn("boot - done")
 
